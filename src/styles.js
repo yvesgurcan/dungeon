@@ -1,9 +1,11 @@
+const HUDBlockPadding = "10px"
+
 const styles = {
     // Grid
     Game: {
         display: "grid",
         gridTemplateColumns: "repeat(10, 10%)",
-        gridTemplateRows: "25px repeat(4, 100px)",
+        gridTemplateRows: "25px repeat(2, 100px) 115px",
         gridGap: "10px",
         userSelect: "none",
         cursor: "pointer",
@@ -24,6 +26,7 @@ const styles = {
         gridRowEnd: "4",
         userSelect: "text",
         border: "1px solid black",
+        padding: HUDBlockPadding,
     },
     Text: {
         userSelect: "text",
@@ -41,11 +44,20 @@ const styles = {
         gridRowStart: "2",
         gridRowEnd: "4",
         border: "1px solid black",
+        padding: HUDBlockPadding,
     },
     MapObject: {
         display: "inline-block",
         width: "15px",
         height: "15px",
+    },
+    // Lower HUD
+    HUDLowerBlock: {
+        gridColumnStart: "1",
+        gridColumnEnd: "10",
+        gridRowStart: "4",
+        border: "1px solid black",
+        padding: HUDBlockPadding,
     },
     // Directional Arrows
     ArrowContainer: {
@@ -55,12 +67,12 @@ const styles = {
         textAlign: "center",
     },
     ArrowRow: {
-        width: "68px",
+        width: "72px",
     },
     ArrowBlock: {
         display: "inline-block",
-        width: "30px",
-        height: "25px",
+        width: "32px",
+        height: "23px",
         textAlign: "center",
         border: "1px solid black",
         paddingTop: "5px",
@@ -68,8 +80,8 @@ const styles = {
     },
     ArrowBlockHover: {
         display: "inline-block",
-        width: "30px",
-        height: "25px",
+        width: "32px",
+        height: "23px",
         textAlign: "center",
         border: "1px solid black",
         paddingTop: "5px",
@@ -78,8 +90,8 @@ const styles = {
     },
     ArrowBlockClick: {
         display: "inline-block",
-        width: "30px",
-        height: "25px",
+        width: "32px",
+        height: "23px",
         textAlign: "center",
         border: "1px solid black",
         paddingTop: "5px",

@@ -136,15 +136,17 @@ class Arrows extends Component {
 }
 
 class Map extends Component {
+
   DrawMap = () => {
-    let {WallMap} = this.props.state
-    return WallMap.map((HorizontalLine, y) => {
+    let {WallMap, WallMapRevealed} = this.props.state
+    return WallMapRevealed.map((HorizontalLine, y) => {
       return (
         <Block key={y}>
-          {HorizontalLine.map((MapObject, x) => {
+          {HorizontalLine.map((MapObjectRevealed, x) => {
+            let MapObject = WallMap[y][x]
             return (
-              <Inline key={x} style={Styles.MapObject}>
-                {this.PlayerPosition(MapObject, x, y)}
+              <Inline key={x} style={Styles.MapObject} title={[x,y].join(",")}>
+                {this.DrawMapObject(MapObject, MapObjectRevealed, x, y)}
               </Inline>
             )
           })}
@@ -152,14 +154,40 @@ class Map extends Component {
       )
     })
   }
-  PlayerPosition = (MapObject, x,y) => {
-    let {Player} = this.props.state
+
+  DrawMapObject = (MapObject, MapObjectRevealed, x,y) => {
+    let {Player, WallMap, WallMapRevealed, ShowFullMap} = this.props.state
     if (x === Player.x && y === Player.y) {
       return "O"
     }
     else {
-      return MapObject
+      if (MapObjectRevealed === MapObject || ShowFullMap) {
+        return MapObject
+      }
+      else {
+        if (this.DetectObjectInVicinityOfActor(x,y,Player.x,Player.y)) {
+          WallMapRevealed[y][x] = WallMap[y][x]
+          return WallMap[y][x]
+        }
+        else {
+          return " "
+        }
+      } 
     }
+  }
+
+  DetectObjectInVicinityOfActor = (wallX, wallY, actorX, actorY) => {
+    if (
+      // detect horizontal objects
+      (wallX === actorX && (wallY === actorY + 1 || wallY === actorY - 1))
+      // detect veretical objects
+      || (wallY === actorY && (wallX === actorX + 1 || wallX === actorX - 1))
+      // detect diagonal objects
+      || ((wallY === actorY + 1 || wallY === actorY - 1) && (wallX === actorX + 1 || wallX === actorX - 1))
+      ) {
+      return true
+    }
+    return false
   }
   render() {
     return (
@@ -174,6 +202,16 @@ class TextBlock extends Component {
   render() {
     return (
       <Block style={Styles.TextBlock}>
+        {this.props.children}
+      </Block>
+    )
+  }
+}
+
+class LowerHUD extends Component {
+  render() {
+    return (
+      <Block style={Styles.HUDLowerBlock}>
         {this.props.children}
       </Block>
     )
@@ -221,18 +259,20 @@ class Game extends Component {
     // get the target coordinates
     let targetCoordinates = this.MoveObject({x: State.Player.x, y: State.Player.y}, Direction)
     
-    // check if the object is a locked door
+    // check if there is a locked door in the way
     if (this.CheckLockedDoor(targetCoordinates)) {
-      this.setState({currentMessage: StaticAssets.Messages.LockedDoor})        
-      return false
+      this.setState({currentMessage: StaticAssets.Messages.LockedDoor})   
+      return
     }
 
-    // the player can not go there
+    // the player can not go there (there is a wall in the way)
     if (!this.DetectCollision(targetCoordinates)) {
-      // something is blocking the way
       this.setState({currentMessage: StaticAssets.Messages.Collision})
-      return false
+      return
     }
+
+    // there is a loot container here
+    this.CheckLootContainer(targetCoordinates)
 
     // save the new coordinates
     State.Player.x = targetCoordinates.x
@@ -273,27 +313,47 @@ class Game extends Component {
 
     // target is, apparently, empty
     let targetCoordinates = State.WallMap[y][x]
-    if (targetCoordinates === " ")
+    if (targetCoordinates === " ") {
       return true
+    }
     
     // target is a door
     if (targetCoordinates === "D")
       // check if the door is locked
-      if (!this.CheckLockedDoor(targetCoordinates))
-      return true 
+      if (!this.CheckLockedDoor({x,y})) {
+        return true 
+      }
 
     return false
   }
 
   CheckLockedDoor = ({x,y}) => {
 
-    let State = this.state
+    let {LockedDoors} = this.state
 
-    let matchLockedDoor = State.LockedDoor.filter((door) => {
-      return door.x === x && door.y === y && !door.unlocked
+    let matchLockedDoor = LockedDoors.filter((object) => {
+      return object.x === x && object.y === y && !object.unlocked
     })
 
     return matchLockedDoor.length > 0
+
+  }
+
+  CheckLootContainer = ({x,y}) => {
+
+    let {LootContainers} = this.state
+
+    let matchLootContainer = LootContainers.filter((object) => {
+      return object.x === x && object.y === y
+    })
+
+    if (matchLootContainer.length > 0) {
+      console.log("loot!")
+      console.log(matchLootContainer)
+    }
+
+    return matchLootContainer.length > 0
+
   }
 
   UpdateText = ({x, y}) => {
@@ -332,7 +392,9 @@ class Game extends Component {
           </TextBlock>
           <Map {... this}/>
         {/* row 4 */}
-        <Arrows {... this}/>
+        <LowerHUD>
+          <Arrows {... this}/>
+        </LowerHUD>
       </PageContainer>
     )
   }
