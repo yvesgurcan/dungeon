@@ -1,7 +1,8 @@
-import React, { Component } from 'react'
-import Assets from './assets.js'
-import Functions from './functions.js'
-import Styles from './styles.js'
+import React, { Component } from "react"
+import StaticAssets from "./StaticAssets.js"
+import DynamicAssets from "./DynamicAssets.js"
+import Functions from "./functions.js"
+import Styles from "./styles.js"
 
 class Inline extends Component {
   render() {
@@ -15,6 +16,7 @@ class Block extends Component {
   }
 }
 
+// a brief message that provides feedback on the user's actions ("you can not go there")
 class Message extends Component {
   render() {
     return (
@@ -25,11 +27,23 @@ class Message extends Component {
   }
 }
 
+// a descriptive paragraph about the surroundings of the user
 class Text extends Component {
   render() {
     return (
       <Block style={Styles.Text}>
         {this.props.currentText}
+      </Block>
+    )
+  }
+}
+
+// some text that describes an event that has just occurred ("you found a chest")
+class Event extends Component {
+  render() {
+    return (
+      <Block style={Styles.Event}>
+        Yay!
       </Block>
     )
   }
@@ -156,10 +170,20 @@ class Map extends Component {
   }
 }
 
+class TextBlock extends Component {
+  render() {
+    return (
+      <Block style={Styles.TextBlock}>
+        {this.props.children}
+      </Block>
+    )
+  }
+}
+
 class PageContainer extends Component {
   render() {
     return (
-      <Block {... this.props}>
+      <Block style={Styles.Game}>
         {this.props.children}
       </Block>
     )
@@ -172,10 +196,7 @@ class Game extends Component {
     super(props)
   
     // grab the assets
-    let initState = Assets
-    // add some game-init data
-    initState.currentMessage = ""
-    initState.currentText = Assets.Text[0].text
+    let initState = Object.assign(StaticAssets,DynamicAssets)
     this.state = initState
   
   }
@@ -202,14 +223,14 @@ class Game extends Component {
     
     // check if the object is a locked door
     if (this.CheckLockedDoor(targetCoordinates)) {
-      this.setState({currentMessage: Assets.Messages.LockedDoor})        
+      this.setState({currentMessage: StaticAssets.Messages.LockedDoor})        
       return false
     }
 
     // the player can not go there
     if (!this.DetectCollision(targetCoordinates)) {
       // something is blocking the way
-      this.setState({currentMessage: Assets.Messages.Collision})
+      this.setState({currentMessage: StaticAssets.Messages.Collision})
       return false
     }
 
@@ -299,12 +320,19 @@ class Game extends Component {
   }
 
   render() {
+    // grid
     return (
-      <PageContainer style={Styles.Game}>
-        <Message {... this}/>
-        <Text {... this.state}/>
+      <PageContainer>
+          {/* row 1 */}
+          <Message {... this}/>
+          {/* row 2 and 3 */}
+          <TextBlock>
+            <Text {... this.state}/>
+            <Event {... this.state}/>
+          </TextBlock>
+          <Map {... this}/>
+        {/* row 4 */}
         <Arrows {... this}/>
-        <Map {... this}/>
       </PageContainer>
     )
   }
