@@ -16,39 +16,6 @@ class Block extends Component {
   }
 }
 
-// a brief message that provides feedback on the user's actions ("you can not go there")
-class Message extends Component {
-  render() {
-    return (
-      <Block style={Styles.Message}>
-        {this.props.state.currentMessage}
-      </Block>
-    )
-  }
-}
-
-// a descriptive paragraph about the surroundings of the user
-class Text extends Component {
-  render() {
-    return (
-      <Block style={Styles.Text}>
-        {this.props.currentText}
-      </Block>
-    )
-  }
-}
-
-// some text that describes an event that has just occurred ("you found a chest")
-class Event extends Component {
-  render() {
-    return (
-      <Block style={Styles.Event}>
-        Yay!
-      </Block>
-    )
-  }
-}
-
 class GoNorth extends Component {
   MovePlayer = () => {
     let {MovePlayer} = this.props
@@ -93,11 +60,11 @@ class Arrow extends Component {
     super(props)
     this.state = {style: Styles.ArrowBlock}
   }
-  HoverStyle = () => {
-    this.setState({style: Styles.ArrowBlockHover})
-  }
   NormalStyle = () => {
     this.setState({style: Styles.ArrowBlock})
+  }
+  HoverStyle = () => {
+    this.setState({style: Styles.ArrowBlockHover})
   }
   onClick = () => {
     this.props.onClick()
@@ -130,6 +97,119 @@ class Arrows extends Component {
         <Block style={Styles.ArrowRow}>
           <GoSouth {... this.props}/>
         </Block>
+      </Block>
+    )
+  }
+}
+
+class Inspect extends Component {
+  render() {
+    return (
+      <ActionButton {... this.props}>
+        Inspect
+      </ActionButton>
+    )
+  }
+}
+
+class ActionButton extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {style: Styles.ActionButton}
+  }
+  NormalStyle = () => {
+    this.setState({style: Styles.ActionButton})
+  }
+  HoverStyle = () => {
+    this.setState({style: Styles.ActionButtonHover})
+  }
+  onClick = () => {
+    this.props.onClick()
+    this.setState({style: Styles.ActionButtonClick})
+    let that = this
+    setTimeout(function() {
+      if (that.state.style === Styles.ActionButtonClick) {
+        that.setState({style: Styles.ActionButtonHover})
+      }
+    },50)
+  }
+  render() {
+    return (
+      <Block onClick={this.onClick} onMouseMove={this.HoverStyle} onMouseLeave={this.NormalStyle} style={this.state.style}>
+        Inspect
+      </Block>
+    )
+  }
+}
+
+// a brief message that provides feedback on the user's actions ("you can not go there")
+class Message extends Component {
+  render() {
+    return (
+      <Block style={Styles.Message}>
+        {this.props.state.currentMessage}
+      </Block>
+    )
+  }
+}
+
+// a descriptive paragraph about the surroundings of the user
+class Text extends Component {
+  render() {
+    return (
+      <Block style={Styles.Text}>
+        {this.props.currentText}
+      </Block>
+    )
+  }
+}
+
+class ItemImage extends Component {
+  render() {
+    return (
+      <Inline>
+        <img src={this.props.image} style={Styles.ItemImage}/>
+      </Inline>
+    )
+  }
+}
+
+class ItemImageBlock extends Component {
+  render() {
+    return (
+      <Block style={Styles.ItemImageBlock}>
+        <ItemImage image={this.props.image} />
+      </Block>
+    )
+  }
+}
+
+// some text that describes an event that has just occurred ("you found a chest")
+class Event extends Component {
+
+  Inspect = () => {
+    console.log("YO")
+  }
+
+  GenerateEventText = () => {
+
+    let {currentEvent} = this.props
+
+    return currentEvent.map((event, index) => {
+      return (
+        <Inline key={index}>
+          You found {event.article} {event.name}.
+          <Inspect onClick={this.Inspect}/>
+        </Inline>
+      )
+    })
+
+  }
+
+  render() {
+    return (
+      <Block style={Styles.Event}>
+        {this.GenerateEventText()}
       </Block>
     )
   }
@@ -208,6 +288,18 @@ class TextBlock extends Component {
   }
 }
 
+class Inventory extends Component {
+  render() {
+    return (
+      <Block style={Styles.Inventory}>
+        <ItemImageBlock image={"/graphics/items/potion_mana.png"} />
+        <ItemImageBlock image={"/graphics/items/potion_mana.png"} />
+        <ItemImageBlock image={"/graphics/test.png"} />
+      </Block>
+    )
+  }
+}
+
 class LowerHUD extends Component {
   render() {
     return (
@@ -260,7 +352,7 @@ class Game extends Component {
     let targetCoordinates = this.MoveObject({x: State.Player.x, y: State.Player.y}, Direction)
     
     // check if there is a locked door in the way
-    if (this.CheckLockedDoor(targetCoordinates)) {
+    if (this.CheckLockedDoors(targetCoordinates)) {
       this.setState({currentMessage: StaticAssets.Messages.LockedDoor})   
       return
     }
@@ -271,8 +363,8 @@ class Game extends Component {
       return
     }
 
-    // there is a loot container here
-    this.CheckLootContainer(targetCoordinates)
+    // add containers to the list of events
+    State.currentEvent =  this.CheckLootContainers(targetCoordinates)
 
     // save the new coordinates
     State.Player.x = targetCoordinates.x
@@ -320,14 +412,14 @@ class Game extends Component {
     // target is a door
     if (targetCoordinates === "D")
       // check if the door is locked
-      if (!this.CheckLockedDoor({x,y})) {
+      if (!this.CheckLockedDoors({x,y})) {
         return true 
       }
 
     return false
   }
 
-  CheckLockedDoor = ({x,y}) => {
+  CheckLockedDoors = ({x,y}) => {
 
     let {LockedDoors} = this.state
 
@@ -339,7 +431,7 @@ class Game extends Component {
 
   }
 
-  CheckLootContainer = ({x,y}) => {
+  CheckLootContainers = ({x,y}) => {
 
     let {LootContainers} = this.state
 
@@ -347,12 +439,7 @@ class Game extends Component {
       return object.x === x && object.y === y
     })
 
-    if (matchLootContainer.length > 0) {
-      console.log("loot!")
-      console.log(matchLootContainer)
-    }
-
-    return matchLootContainer.length > 0
+    return matchLootContainer
 
   }
 
@@ -395,6 +482,7 @@ class Game extends Component {
         <LowerHUD>
           <Arrows {... this}/>
         </LowerHUD>
+        <Inventory/>
       </PageContainer>
     )
   }

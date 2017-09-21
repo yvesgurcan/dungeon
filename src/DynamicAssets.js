@@ -8,11 +8,14 @@ export const DynamicAssets = {
     currentText: StaticAssets.Text[0].text
     ,
 
+    currentEvent: []
+    ,
+
     // creates an array without wall information
     WallMapRevealed:
         StaticAssets.WallMap.map(HorizontalLine => HorizontalLine.map(x => " ")),
 
-    ShowFullMap: true
+    ShowFullMap: false
     ,
 
     Player: {
@@ -25,7 +28,8 @@ export const DynamicAssets = {
             id: 1,
             x: 2,
             y: 4,
-            type: "chest",
+            name: "chest",
+            article: "a",
             Items: [
                 StaticAssets.UniqueItems.IronKey
             ]
@@ -38,6 +42,7 @@ export const DynamicAssets = {
             x: 3,
             y: 2,
             key: "iron key",
+            unlocked: true,
         },
     ],
 }

@@ -1,11 +1,25 @@
 const HUDBlockPadding = "10px"
+const HUDBorder = "1px solid black"
+
+const ButtonNormalBackground = "lightgray"
+const ButtonHoverBackground = "darkgray"
+const ButtonClickBackground = "gray"
 
 const styles = {
     // Grid
     Game: {
         display: "grid",
         gridTemplateColumns: "repeat(10, 10%)",
-        gridTemplateRows: "25px repeat(2, 100px) 115px",
+        gridTemplateRows:
+            // row 1
+            "25px " +
+            // row 2
+            "250px " +
+            // row 3
+            "115px " +
+            // row 4
+            "auto "
+        ,
         gridGap: "10px",
         userSelect: "none",
         cursor: "pointer",
@@ -23,9 +37,8 @@ const styles = {
         gridColumnStart: "1",
         gridColumnEnd: "6",
         gridRowStart: "2",
-        gridRowEnd: "4",
         userSelect: "text",
-        border: "1px solid black",
+        border: HUDBorder,
         padding: HUDBlockPadding,
     },
     Text: {
@@ -42,9 +55,11 @@ const styles = {
         gridColumnStart: "6",
         gridColumnEnd: "10",
         gridRowStart: "2",
-        gridRowEnd: "4",
-        border: "1px solid black",
+        border: HUDBorder,
+        overflow: "hidden",
         padding: HUDBlockPadding,
+        // otherwise, the map will be distorted
+        minWidth: "300px",
     },
     MapObject: {
         display: "inline-block",
@@ -55,15 +70,15 @@ const styles = {
     HUDLowerBlock: {
         gridColumnStart: "1",
         gridColumnEnd: "10",
-        gridRowStart: "4",
-        border: "1px solid black",
+        gridRowStart: "3",
+        border: HUDBorder,
         padding: HUDBlockPadding,
     },
     // Directional Arrows
     ArrowContainer: {
         gridColumnStart: "1",
         gridColumnEnd: "2",
-        gridRowStart: "4",
+        gridRowStart: "3",
         textAlign: "center",
     },
     ArrowRow: {
@@ -75,8 +90,9 @@ const styles = {
         height: "23px",
         textAlign: "center",
         border: "1px solid black",
-        paddingTop: "5px",
+        paddingTop: "3px",
         margin: "1px",
+        background: ButtonNormalBackground,
     },
     ArrowBlockHover: {
         display: "inline-block",
@@ -84,9 +100,9 @@ const styles = {
         height: "23px",
         textAlign: "center",
         border: "1px solid black",
-        paddingTop: "5px",
+        paddingTop: "3px",
         margin: "1px",
-        background: "lightgray",
+        background: ButtonHoverBackground,
     },
     ArrowBlockClick: {
         display: "inline-block",
@@ -94,9 +110,58 @@ const styles = {
         height: "23px",
         textAlign: "center",
         border: "1px solid black",
-        paddingTop: "5px",
+        paddingTop: "3px",
         margin: "1px",
-        background: "gray",
+        background: ButtonClickBackground,
+    },
+    // Actions
+    ActionButton: {
+        display: "inline-block",
+        textAlign: "center",
+        border: "1px solid black",
+        padding: "3px",
+        margin: "1px 1px 1px 5px",
+        userSelect: "none",
+        background: ButtonNormalBackground,
+    },
+    ActionButtonHover: {
+        display: "inline-block",
+        textAlign: "center",
+        border: "1px solid black",
+        padding: "3px",
+        margin: "1px 1px 1px 5px",
+        userSelect: "none",
+        background: ButtonHoverBackground,
+    },
+    ActionButtonClick: {
+        display: "inline-block",
+        textAlign: "center",
+        border: "1px solid black",
+        padding: "3px",
+        margin: "1px 1px 1px 5px",
+        userSelect: "none",
+        background: ButtonClickBackground,
+    },
+    Inventory: {
+        gridColumnStart: "1",
+        gridColumnEnd: "10",
+        gridRowStart: "4",
+        border: HUDBorder,
+    },
+    // Item Image
+    ItemImageBlock: {
+        height: "32px",
+        width: "32px",
+        border: "1px solid gray",
+        margin: "1px",
+        textAlign: "center",
+        float: "left",
+    },
+    ItemImage: {
+        textAlign: "center",
+        maxHeight: "30px",
+        maxWidth: "30px",
+        padding: "1px",
     },
 }
 
