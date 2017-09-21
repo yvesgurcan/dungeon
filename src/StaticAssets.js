@@ -38,8 +38,16 @@ export const StaticAssets = {
             type: "key",
             name: "iron key",
             doorId: 1,
+            image: "key"
         }
     },
+
+    RandomItems: {
+        Level1: {
+            level: 1,
+            random: true,
+        }
+    }
 }
 
 export default StaticAssets

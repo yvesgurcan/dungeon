@@ -22,7 +22,7 @@ class GoNorth extends Component {
     MovePlayer("North")
   }
   render() {
-    return <Arrow {... this.props} onClick={this.MovePlayer}>↑</Arrow>
+    return <Arrow {... this.props} onClick={this.MovePlayer} arrow="ArrowUp">↑</Arrow>
   }
 }
 
@@ -32,7 +32,7 @@ class GoWest extends Component {
     MovePlayer("West")
   }
   render() {
-    return <Arrow {... this.props} onClick={this.MovePlayer}>←</Arrow>
+    return <Arrow {... this.props} onClick={this.MovePlayer} arrow="ArrowLeft">←</Arrow>
   }
 }
 
@@ -42,7 +42,7 @@ class GoEast extends Component {
     MovePlayer("East")
   }
   render() {
-    return <Arrow {... this.props} onClick={this.MovePlayer}>→</Arrow>
+    return <Arrow {... this.props} onClick={this.MovePlayer} arrow="ArrowRight">→</Arrow>
   }
 }
 class GoSouth extends Component {
@@ -51,7 +51,7 @@ class GoSouth extends Component {
     MovePlayer("South")
   }
   render() {
-    return <Arrow {... this.props} onClick={this.MovePlayer}>↓</Arrow>
+    return <Arrow {... this.props} onClick={this.MovePlayer}arrow="ArrowDown">↓</Arrow>
   }
 }
 
@@ -78,7 +78,7 @@ class Arrow extends Component {
   }
   render() {
     return (
-      <Block onClick={this.onClick} onMouseMove={this.HoverStyle} onMouseLeave={this.NormalStyle} style={this.state.style}>{this.props.children}</Block>
+      <Block onClick={this.onClick} onMouseMove={this.HoverStyle} onMouseLeave={this.NormalStyle} style={this.props.arrowStyle &&  this.props.arrowStyle[this.props.arrow] ? this.props.arrowStyle[this.props.arrow] : null || this.state.style}>{this.props.children}</Block>
     )
   }
 }
@@ -184,24 +184,40 @@ class ItemImageBlock extends Component {
   }
 }
 
+class LootList extends Component {
+
+  render() {
+    return (
+      <Block>
+        {this.props.items.map(item => {
+          return (
+            <ItemImageBlock image={"/graphics/items/" + item.image + ".png"} />
+          )
+        })}
+      </Block>
+    )
+  }
+}
+
 // some text that describes an event that has just occurred ("you found a chest")
 class Event extends Component {
-
-  Inspect = () => {
-    console.log("YO")
-  }
 
   GenerateEventText = () => {
 
     let {currentEvent} = this.props
 
     return currentEvent.map((event, index) => {
-      return (
-        <Inline key={index}>
-          You found {event.article} {event.name}.
-          <Inspect onClick={this.Inspect}/>
-        </Inline>
-      )
+      if (event.eventType === "loot") {
+        return (
+          <Inline key={index}>
+            You found {event.article} {event.name}.
+            <LootList items={event.items} />
+          </Inline>
+        )
+      }
+      else {
+        console.warn("Unknown type of event.", event)
+      }
     })
 
   }
@@ -326,9 +342,16 @@ class Game extends Component {
     super(props)
   
     // grab the assets
-    let initState = Object.assign(StaticAssets,DynamicAssets)
+    let initState = Object.assign(
+      StaticAssets,
+      DynamicAssets,
+    )
     this.state = initState
   
+  }
+
+  componentWillMount() {
+    document.addEventListener("keydown", this.ListenToKeyboard, false)
   }
 
   componentWillUpdate(nextProps,nextState) {
@@ -342,6 +365,52 @@ class Game extends Component {
         }.bind(this), 2000)
       }
 
+      if (nextState.arrowStyle !== null) {
+        setTimeout(function() {
+          this.setState({arrowStyle: null})
+        }.bind(this),50)
+      }
+
+  }
+
+  ListenToKeyboard = (keypress) => {
+
+    console.log(keypress)
+
+    keypress.preventDefault()
+
+    switch(keypress.key) {
+
+      case "ArrowDown":
+        this.MovePlayer("South")
+        this.onClickArrow(keypress.key)
+        break;
+
+        case "ArrowUp":
+        this.MovePlayer("North")
+        this.onClickArrow(keypress.key)
+        break;
+      
+        case "ArrowLeft":
+        this.MovePlayer("West")
+        this.onClickArrow(keypress.key)
+        break;
+      
+        case "ArrowRight":
+        this.MovePlayer("East")
+        this.onClickArrow(keypress.key)
+        break;
+      
+    }
+
+
+  }
+
+  onClickArrow = (key) => {
+    let arrowStyle = {}
+    arrowStyle[key] = Styles.ArrowBlockClick
+    this.setState({arrowStyle: arrowStyle})
+    let that = this
   }
 
   MovePlayer = (Direction) => {
@@ -364,7 +433,7 @@ class Game extends Component {
     }
 
     // add containers to the list of events
-    State.currentEvent =  this.CheckLootContainers(targetCoordinates)
+    State.currentEvent = this.CheckLootContainers(targetCoordinates)
 
     // save the new coordinates
     State.Player.x = targetCoordinates.x
@@ -439,6 +508,11 @@ class Game extends Component {
       return object.x === x && object.y === y
     })
 
+    matchLootContainer = matchLootContainer.map(loot => {
+      loot.eventType = "loot"
+      return loot
+    })
+
     return matchLootContainer
 
   }
@@ -480,7 +554,7 @@ class Game extends Component {
           <Map {... this}/>
         {/* row 4 */}
         <LowerHUD>
-          <Arrows {... this}/>
+          <Arrows {... this} {... this.state}/>
         </LowerHUD>
         <Inventory/>
       </PageContainer>

@@ -158,7 +158,6 @@ const styles = {
         float: "left",
     },
     ItemImage: {
-        textAlign: "center",
         maxHeight: "30px",
         maxWidth: "30px",
         padding: "1px",

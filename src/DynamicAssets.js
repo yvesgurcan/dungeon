@@ -19,8 +19,8 @@ export const DynamicAssets = {
     ,
 
     Player: {
-        x: 1,
-        y: 2,
+        x: 2,
+        y: 3,
     },
 
     LootContainers: [
@@ -30,8 +30,9 @@ export const DynamicAssets = {
             y: 4,
             name: "chest",
             article: "a",
-            Items: [
-                StaticAssets.UniqueItems.IronKey
+            items: [
+                StaticAssets.UniqueItems.IronKey,
+                StaticAssets.RandomItems.Level1
             ]
         }
     ],
