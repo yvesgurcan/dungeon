@@ -559,6 +559,11 @@ class Game extends Component {
     let {LootContainers} = this.state
 
     let matchLootContainer = LootContainers.filter((object) => {
+      if (object.items) {
+        object.items = object.items.map(item => {
+          return this.GenerateRandomLoot(item)
+        })
+      }
       return object.x === x && object.y === y
     })
 
@@ -569,6 +574,10 @@ class Game extends Component {
 
     return matchLootContainer
 
+  }
+
+  GenerateRandomLoot = (item) => {
+    return item
   }
 
   UpdateText = ({x, y}) => {
