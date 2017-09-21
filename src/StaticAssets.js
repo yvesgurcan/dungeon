@@ -33,13 +33,6 @@ export const StaticAssets = {
         [" ","X","X","X"," "," "," "," ",],
     ],
 
-    RandomItems: {
-        Level1: {
-            level: 1,
-            random: true,
-        }
-    },
-
     UniqueItems: {
         IronKey: {
             type: "key",
@@ -50,10 +43,17 @@ export const StaticAssets = {
     },
 
     Items: {
+        HealthPotion: {
+            level: 1,
+            type: "potion",
+            name: "health potion",
+            image: "potion_health"
+        },
         ManaPotion: {
             level: 1,
             type: "potion",
             name: "mana potion",
+            image: "potion_mana"
         }
     }
 

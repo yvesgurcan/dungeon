@@ -9,14 +9,14 @@ const styles = {
     // Grid
     Game: {
         display: "grid",
-        gridTemplateColumns: "repeat(10, 10%)",
+        gridTemplateColumns: "repeat(10, 95px)",
         gridTemplateRows:
             // row 1
             "25px " +
             // row 2
             "250px " +
             // row 3
-            "115px " +
+            "auto " +
             // row 4
             "auto "
         ,
@@ -72,14 +72,31 @@ const styles = {
         gridColumnEnd: "10",
         gridRowStart: "3",
         border: HUDBorder,
-        padding: HUDBlockPadding,
     },
-    // Directional Arrows
-    ArrowContainer: {
+    // Player Stats
+    PlayerStats1: {
         gridColumnStart: "1",
         gridColumnEnd: "2",
         gridRowStart: "3",
+        padding: HUDBlockPadding,
+    },
+    PlayerStats2: {
+        gridColumnStart: "5",
+        gridColumnEnd: "6",
+        gridRowStart: "3",
+        padding: HUDBlockPadding,
+    },
+    PlayerStat: {
+        paddingBottom: "5px",
+    },
+    // Directional Arrows
+    ArrowContainer: {
+        gridColumnStart: "2",
+        gridColumnEnd: "3",
+        gridRowStart: "3",
         textAlign: "center",
+        padding: HUDBlockPadding,
+        margin: "auto",
     },
     ArrowRow: {
         width: "72px",
@@ -115,6 +132,12 @@ const styles = {
         background: ButtonClickBackground,
     },
     // Actions
+    Actions: {
+        gridColumnStart: "3",
+        gridColumnEnd: "5",
+        gridRowStart: "3",
+        padding: HUDBlockPadding,
+    },
     ActionButton: {
         display: "inline-block",
         textAlign: "center",
@@ -142,6 +165,7 @@ const styles = {
         userSelect: "none",
         background: ButtonClickBackground,
     },
+    // Inventory
     Inventory: {
         gridColumnStart: "1",
         gridColumnEnd: "10",
@@ -161,6 +185,9 @@ const styles = {
         maxHeight: "30px",
         maxWidth: "30px",
         padding: "1px",
+        // placeholder style when asset is missing
+        overflow: "hidden",
+        fontSize: "10px"
     },
 }
 

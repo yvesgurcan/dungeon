@@ -1,4 +1,5 @@
 import StaticAssets from "./StaticAssets.js"
+import UtilityAssets from "./UtilityAssets.js"
 
 export const DynamicAssets = {
 
@@ -21,6 +22,12 @@ export const DynamicAssets = {
     Player: {
         x: 2,
         y: 3,
+        Health: 0,
+        MaxHealth: 0,
+        Mana: 0,
+        MaxMana: 0,
+        Stamina: 1,
+        Luck: null,
     },
 
     LootContainers: [
@@ -32,7 +39,7 @@ export const DynamicAssets = {
             article: "a",
             items: [
                 StaticAssets.UniqueItems.IronKey,
-                StaticAssets.RandomItems.Level1
+                UtilityAssets.GenerateRandomItems.Level1
             ]
         }
     ],
