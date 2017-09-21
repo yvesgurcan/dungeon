@@ -4,6 +4,8 @@ import DynamicAssets from "./DynamicAssets.js"
 import Functions from "./functions.js"
 import Styles from "./styles.js"
 
+/* web components */
+
 class Inline extends Component {
   render() {
     return <span {...this.props}>{this.props.children}</span>
@@ -15,6 +17,63 @@ class Block extends Component {
     return <div {...this.props}>{this.props.children}</div>
   }
 }
+
+class Image extends Component {
+  // built-in handling of broken image links
+  constructor(props) {
+    super(props)
+    this.state = {placeholder: false}
+  }
+  showPlaceholder = () => {
+    this.setState({placeholder: true})
+  }
+  hidePlaceholder = () => {
+    this.setState({placeholder: false})
+  }
+  render() {{
+    if (this.state.placeholder) {
+      return (
+        null
+      )
+    }
+    else {
+      return (
+        <img
+          onLoad={this.hidePlaceholder}
+          onError={this.showPlaceholder}
+          title={this.props.title}
+          {... this.props}/>
+      )
+    }
+  }}
+}
+
+/* custom components */
+
+class ItemImage extends Component {
+  render() {
+    return (
+      <Inline>
+        <Image
+          src={this.props.image}
+          style={Styles.ItemImage}
+          title={this.props.name}/>
+      </Inline>
+    )
+  }
+}
+
+class ItemImageBlock extends Component {
+  render() {
+    return (
+      <Block style={Styles.ItemImageBlock}>
+        <ItemImage {... this.props} />
+      </Block>
+    )
+  }
+}
+
+/* directional arrows */
 
 class GoNorth extends Component {
   MovePlayer = () => {
@@ -102,6 +161,8 @@ class Arrows extends Component {
   }
 }
 
+/* action buttons */
+
 class Inspect extends Component {
   render() {
     return (
@@ -142,6 +203,8 @@ class ActionButton extends Component {
   }
 }
 
+/* story and events */
+
 // a brief message that provides feedback on the user's actions ("you can not go there")
 class Message extends Component {
   render() {
@@ -164,34 +227,17 @@ class Text extends Component {
   }
 }
 
-class ItemImage extends Component {
-  render() {
-    return (
-      <Inline>
-        <img src={this.props.image} style={Styles.ItemImage}/>
-      </Inline>
-    )
-  }
-}
-
-class ItemImageBlock extends Component {
-  render() {
-    return (
-      <Block style={Styles.ItemImageBlock}>
-        <ItemImage image={this.props.image} />
-      </Block>
-    )
-  }
-}
-
 class LootList extends Component {
 
   render() {
     return (
       <Block>
-        {this.props.items.map(item => {
+        {this.props.items.map((item, index) => {
           return (
-            <ItemImageBlock image={"/graphics/items/" + item.image + ".png"} />
+            <ItemImageBlock
+              key={index}
+              image={"/graphics/items/" + item.image + ".png"}
+              name={item.name}/>
           )
         })}
       </Block>
@@ -230,6 +276,18 @@ class Event extends Component {
     )
   }
 }
+
+class TextBlock extends Component {
+  render() {
+    return (
+      <Block style={Styles.TextBlock}>
+        {this.props.children}
+      </Block>
+    )
+  }
+}
+
+/* map */
 
 class Map extends Component {
 
@@ -294,15 +352,19 @@ class Map extends Component {
   }
 }
 
-class TextBlock extends Component {
+/* low part pf the HUD */
+
+class LowerHUD extends Component {
   render() {
     return (
-      <Block style={Styles.TextBlock}>
+      <Block style={Styles.HUDLowerBlock}>
         {this.props.children}
       </Block>
     )
   }
 }
+
+/* inventory */
 
 class Inventory extends Component {
   render() {
@@ -316,15 +378,7 @@ class Inventory extends Component {
   }
 }
 
-class LowerHUD extends Component {
-  render() {
-    return (
-      <Block style={Styles.HUDLowerBlock}>
-        {this.props.children}
-      </Block>
-    )
-  }
-}
+/* main */
 
 class PageContainer extends Component {
   render() {
@@ -375,7 +429,7 @@ class Game extends Component {
 
   ListenToKeyboard = (keypress) => {
 
-    console.log(keypress)
+    // console.log(keypress)
 
     keypress.preventDefault()
 
