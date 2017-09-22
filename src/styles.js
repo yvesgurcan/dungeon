@@ -9,7 +9,7 @@ const styles = {
     // Grid
     Game: {
         display: "grid",
-        gridTemplateColumns: "repeat(4, 100px) 130px repeat(5, 100px)",
+        gridTemplateColumns: "repeat(10, 95px)",
         gridTemplateRows:
             // row 1
             "25px " +
