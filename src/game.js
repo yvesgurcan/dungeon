@@ -398,6 +398,15 @@ class PlayerStats2 extends Component {
         <Block style={Styles.PlayerStat}>
           Luck: {this.props.Player.Luck}
         </Block>
+        <Block style={Styles.PlayerStat}>
+          Constitution: {this.props.Player.Constitution}
+        </Block>
+        <Block style={Styles.PlayerStat}>
+          Strength: {this.props.Player.Strength}
+        </Block>
+        <Block style={Styles.PlayerStat}>
+          Dexterity: {this.props.Player.Dexterity}
+        </Block>
       </Block>
     )
   }
@@ -552,6 +561,9 @@ class Game extends Component {
   GeneratePlayerStats = (Player) => {
 
     Player.Luck = this.RandomIntegerFromRange(10,20)
+    Player.Constitution = this.RandomIntegerFromRange(10,20)
+    Player.Strength = this.RandomIntegerFromRange(10,20)
+    Player.Dexterity = this.RandomIntegerFromRange(10,20)
 
     return Player
 
