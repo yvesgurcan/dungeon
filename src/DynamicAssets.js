@@ -28,6 +28,9 @@ export const DynamicAssets = {
         MaxMana: 0,
         Stamina: 1,
         Luck: null,
+        Constitution: null,
+        Strength: null,
+        Dexterity: null,
     },
 
     LootContainers: [
