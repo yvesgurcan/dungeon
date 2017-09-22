@@ -138,6 +138,7 @@ class ItemImage extends Component {
     return (
       <Text>
         <Graphics
+          onClick={this.props.onClick}
           src={this.props.image ? itemPath + this.props.image + imgExt : null}
           style={Styles.ItemImage}
           title={this.props.name} />
@@ -428,6 +429,25 @@ class Story extends Component {
   }
 }
 
+// single loot item
+class Loot extends Component {
+
+  onClick = () => {
+    this.props.TakeSingleLoot(this.props.index,this.props.lootContainerId)
+  }
+
+  render() {
+    let {item} = this.props
+    return (
+      <ItemImageBlock
+        onClick={this.onClick}
+        image={(item && item.image) || null}
+        name={(item && item.name) || null}
+        {... this.props}/>      
+    )
+  }
+}
+
 // the loot found by the player
 class LootList extends Component {
 
@@ -438,10 +458,12 @@ class LootList extends Component {
         {
           this.props.items && this.props.items.map((item, index) => {
             return (
-              <ItemImageBlock
+              <Loot
                 key={index}
-                image={item.image}
-                name={item.name} />
+                index={index}
+                item={item}
+                lootContainerId={this.props.lootContainerId}
+                TakeSingleLoot={this.props.TakeSingleLoot} />
             )
           })
         }
@@ -511,7 +533,7 @@ class Event extends Component {
               <Text> </Text>
               <Text>{event.name}</Text>
               <Text>.</Text>
-              <LootList items={event.items} />
+              <LootList items={event.items} lootContainerId={event.id} {... this.props} />
               <ClearFloat />
             </Text>
           )
@@ -903,7 +925,7 @@ class Game extends Component {
 
   GenerateRandomLoot = (item) => {
     let { RandomItems } = this.state
-    if (item.random) {
+    if (item && item.random) {
       if (!this.GetUnlucky(10)) {
         item = RandomItems["Level" + item.level][this.RandomIntegerFromRange(0, RandomItems["Level" + item.level].length - 1)]
       }
@@ -917,6 +939,8 @@ class Game extends Component {
   TakeAllLoot = () => {
 
     let {currentEvent, Backpack} = this.state
+
+    // TODO: check if there is room in the inventory
 
     let loot = []
 
@@ -933,6 +957,26 @@ class Game extends Component {
     Backpack.Items = Backpack.Items.concat(loot)
 
     this.setState({Backpack: Backpack, Stationary: true})
+
+  }
+
+  TakeSingleLoot = (lootIndex, containerId) => {
+    
+    let {LootContainers, Backpack} = this.state
+
+    // TODO: check if there is room in the inventory
+
+    let matchLootContainer = LootContainers.filter(lootContainer => {
+      return lootContainer.id === containerId
+    })[0]
+
+
+    Backpack.Items.push(matchLootContainer.items[lootIndex])
+
+    this.setState({Backpack: Backpack}, function() {
+      matchLootContainer.items[lootIndex] = null
+      this.setState({currentEvent: this.state.currentEvent})
+    })
 
   }
 
