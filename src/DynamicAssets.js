@@ -20,8 +20,8 @@ export const DynamicAssets = {
     ,
 
     Player: {
-        x: 2,
-        y: 3,
+        x: 1,
+        y: 2,
         Health: 0,
         MaxHealth: 0,
         Mana: 0,
