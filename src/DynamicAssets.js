@@ -33,6 +33,13 @@ export const DynamicAssets = {
         Dexterity: null,
     },
 
+    Backpack: {
+        maxItems: 5,
+        Items: [
+            StaticAssets.Items.ManaPotion,
+        ],
+    },
+
     LootContainers: [
         {
             id: 1,

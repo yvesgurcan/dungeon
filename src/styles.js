@@ -1,3 +1,12 @@
+const TitleRow = 1
+const MessageRow = 2
+const MainRow = 3
+const ControlRow = 4
+const InventoryRow = 5
+
+const FirstColumn = 1
+const LastColumn = 10
+
 const HUDBlockPadding = "10px"
 const HUDBorder = "1px solid black"
 
@@ -9,8 +18,17 @@ const styles = {
     // Grid
     Game: {
         display: "grid",
-        gridTemplateColumns: "repeat(4, 100px) 130px repeat(5, 100px)",
+        gridTemplateColumns:
+            // column1-4
+            "repeat(4, 90px) " +
+            // column5
+            "130px " + 
+            // column6-10
+            "repeat(5, 90px)"
+        ,
         gridTemplateRows:
+            // row1
+            "auto " +
             // row 1
             "25px " +
             // row 2
@@ -24,24 +42,59 @@ const styles = {
         userSelect: "none",
         cursor: "pointer",
     },
+    // page title
+    Header: {
+        gridColumnStart: FirstColumn,
+        gridColumnEnd: LastColumn,
+        gridRowStart: TitleRow,
+        textAlign: "center",
+    },
+    H1: {
+        margin: "0px",
+        fontStyle: "italic",
+
+    },
+    H2: {
+        margin: "0px",
+    },
+    // links
+    Link: {
+        color: "inherit",
+    },
+    LinkHover: {
+        color: "inherit",
+        textDecoration: "none",
+    },
+    // Contact info
+    Contact: {
+        gridColumnStart: "7",
+        gridColumnEnd: LastColumn,
+        gridRowStart: MessageRow,
+        textAlign: "right",
+    },
+    GitHubLogo: {
+        height: "30px",
+        verticalAlign: "middle",
+        marginLeft: "2px",
+    },
     // Top-screen Message
     Message: {
-        gridColumnStart: "1",
-        gridColumnEnd: "10",
-        gridRowStart: "1",
+        gridColumnStart: FirstColumn,
+        gridColumnEnd: "7",
+        gridRowStart: MessageRow,
         minHeight: "25px",
         fontWeight: "bold",
     },
     // Story
-    TextBlock: {
-        gridColumnStart: "1",
+    StoryBlock: {
+        gridColumnStart: FirstColumn,
         gridColumnEnd: "6",
-        gridRowStart: "2",
+        gridRowStart: MainRow,
         userSelect: "text",
         border: HUDBorder,
         padding: HUDBlockPadding,
     },
-    Text: {
+    Story: {
         userSelect: "text",
         minHeight: "25px",
     },
@@ -53,8 +106,8 @@ const styles = {
     // Map
     Map: {
         gridColumnStart: "6",
-        gridColumnEnd: "10",
-        gridRowStart: "2",
+        gridColumnEnd: LastColumn,
+        gridRowStart: MainRow,
         border: HUDBorder,
         overflow: "hidden",
         padding: HUDBlockPadding,
@@ -66,24 +119,24 @@ const styles = {
         width: "15px",
         height: "15px",
     },
-    // Lower HUD
-    HUDLowerBlock: {
-        gridColumnStart: "1",
-        gridColumnEnd: "10",
-        gridRowStart: "3",
+    // Various Player Controls
+    ControlBlock: {
+        gridColumnStart: FirstColumn,
+        gridColumnEnd: LastColumn,
+        gridRowStart: ControlRow,
         border: HUDBorder,
     },
     // Player Stats
     PlayerStats1: {
-        gridColumnStart: "1",
+        gridColumnStart: FirstColumn,
         gridColumnEnd: "2",
-        gridRowStart: "3",
+        gridRowStart: ControlRow,
         padding: HUDBlockPadding,
     },
     PlayerStats2: {
         gridColumnStart: "5",
         gridColumnEnd: "6",
-        gridRowStart: "3",
+        gridRowStart: ControlRow,
         padding: HUDBlockPadding,
     },
     PlayerStat: {
@@ -93,7 +146,7 @@ const styles = {
     ArrowContainer: {
         gridColumnStart: "2",
         gridColumnEnd: "3",
-        gridRowStart: "3",
+        gridRowStart: ControlRow,
         textAlign: "center",
         padding: HUDBlockPadding,
         margin: "auto",
@@ -135,7 +188,7 @@ const styles = {
     Actions: {
         gridColumnStart: "3",
         gridColumnEnd: "5",
-        gridRowStart: "3",
+        gridRowStart: ControlRow,
         padding: HUDBlockPadding,
     },
     ActionButton: {
@@ -143,7 +196,7 @@ const styles = {
         textAlign: "center",
         border: "1px solid black",
         padding: "3px",
-        margin: "1px 1px 1px 5px",
+        margin: "1px",
         userSelect: "none",
         background: ButtonNormalBackground,
     },
@@ -152,7 +205,7 @@ const styles = {
         textAlign: "center",
         border: "1px solid black",
         padding: "3px",
-        margin: "1px 1px 1px 5px",
+        margin: "1px",
         userSelect: "none",
         background: ButtonHoverBackground,
     },
@@ -161,15 +214,15 @@ const styles = {
         textAlign: "center",
         border: "1px solid black",
         padding: "3px",
-        margin: "1px 1px 1px 5px",
+        margin: "1px",
         userSelect: "none",
         background: ButtonClickBackground,
     },
     // Inventory
     Inventory: {
-        gridColumnStart: "1",
-        gridColumnEnd: "10",
-        gridRowStart: "4",
+        gridColumnStart: FirstColumn,
+        gridColumnEnd: LastColumn,
+        gridRowStart: InventoryRow,
         border: HUDBorder,
     },
     // Item Image
@@ -187,7 +240,7 @@ const styles = {
         padding: "1px",
         // placeholder style when asset is missing
         overflow: "hidden",
-        fontSize: "10px"
+        fontSize: "10px",
     },
 }
 

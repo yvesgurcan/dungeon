@@ -1,68 +1,147 @@
 import React, { Component } from "react"
 import StaticAssets from "./StaticAssets.js"
 import DynamicAssets from "./DynamicAssets.js"
-import Functions from "./functions.js"
 import Styles from "./styles.js"
+
+const authorEmail = "gurcan.yves@gmail.com"
+const contactTemplate = "mailto:" + authorEmail +"?subject=Dungeon!"
+const repository = "https://github.com/yvesgurcan/dungeon"
+const gitHubLogo = "/graphics/misc/Octocat.png"
+const itemPath = "/graphics/items/"
+const imgExt = ".png"
 
 /* web components */
 
-class Inline extends Component {
+// a
+class URL extends Component {
   render() {
-    return <span {...this.props}>{this.props.children}</span>
+    return (
+      <a {... this.props} children={this.props.children}/>
+    )
   }
 }
 
+// span
+class Text extends Component {
+  render() {
+    return <span {...this.props} />
+  }
+}
+
+// div
 class Block extends Component {
   render() {
-    return <div {...this.props}>{this.props.children}</div>
+    return <div {...this.props} />
   }
 }
 
+// h2
+class PageSubtitle extends Component {
+  render() {
+    return <h2 {...this.props} style={Styles.H2} children={this.props.children} />
+  }
+}
+
+// h1
+class PageTitle extends Component {
+  render() {
+    return <h1 {...this.props} style={Styles.H1} children={this.props.children} />
+  }
+}
+
+// view (React Native compatibility)
+class View extends Component {
+  render() {
+    return <div {...this.props} />
+  }
+}
+
+// img
 class Image extends Component {
-  // built-in handling of broken image links
+  render() {
+    return (
+      <img
+        alt={this.props.alt || this.props.title || ""}
+        {...this.props} />
+    )
+  }
+}
+
+/* small components */
+
+class ClearFloat extends Component {
+  render() {
+    return  <View style={{clear: "both"}} />
+  }
+}
+
+class Version extends Component {
+  render() {
+    return (
+      <View>
+        {this.props.children} version
+      </View>
+    )
+  }
+}
+
+class GitHub extends Component {
+  render() {
+    return (
+      <Graphics
+        src={gitHubLogo}
+        style={Styles.GitHubLogo}
+        title="GitHub repository"/>
+    )
+  }
+}
+
+class Link extends Component {
   constructor(props) {
     super(props)
-    this.state = { placeholder: false }
+    this.state = {}
   }
-  showPlaceholder = () => {
-    this.setState({ placeholder: true })
+  NormalStyle = () => {
+    this.setState({ style: Styles.Link})
   }
-  hidePlaceholder = () => {
-    this.setState({ placeholder: false })
+  HoverStyle = () => {
+    this.setState({ style: Styles.LinkHover})
   }
   render() {
-    {
-      if (this.state.placeholder) {
-        return (
-          <img
-            style={this.props.style}
-            title={this.props.title} />
-        )
-      }
-      else {
-        return (
-          <img
-            onLoad={this.hidePlaceholder}
-            onError={this.showPlaceholder}
-            title={this.props.title}
-            {... this.props} />
-        )
-      }
+    return (
+      <URL
+        onMouseMove={this.HoverStyle}
+        onMouseLeave={this.NormalStyle}
+        style={this.state.style || Styles.Link}
+        {...this.props}/>
+    )
+  }
+}
+
+/* images */
+
+class Graphics extends Component {
+  render() {
+    if (this.props.image === null) return null
+    else {
+      return (
+        <Image
+          title={this.props.title}
+          {... this.props} />
+      )
     }
   }
 }
 
-/* custom components */
-
 class ItemImage extends Component {
   render() {
     return (
-      <Inline>
-        <Image
-          src={this.props.image}
+      <Text>
+        <Graphics
+          src={this.props.image ? itemPath + this.props.image + imgExt : null}
           style={Styles.ItemImage}
           title={this.props.name} />
-      </Inline>
+      </Text>
     )
   }
 }
@@ -70,200 +149,48 @@ class ItemImage extends Component {
 class ItemImageBlock extends Component {
   render() {
     return (
-      <Block style={Styles.ItemImageBlock}>
+      <View style={Styles.ItemImageBlock}>
         <ItemImage {... this.props} />
-      </Block>
+      </View>
     )
   }
 }
 
-/* action buttons */
+/* inventory */
 
-class Inspect extends Component {
-  render() {
-    return (
-      <ActionButton {... this.props}>
-        Inspect
-      </ActionButton>
-    )
-  }
-}
+class Inventory extends Component {
+  
+  DisplayInventory = () => {
 
-class ActionButton extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { style: Styles.ActionButton }
-  }
-  NormalStyle = () => {
-    this.setState({ style: Styles.ActionButton })
-  }
-  HoverStyle = () => {
-    this.setState({ style: Styles.ActionButtonHover })
-  }
-  onClick = () => {
-    this.props.onClick()
-    this.setState({ style: Styles.ActionButtonClick })
-    let that = this
-    setTimeout(function () {
-      if (that.state.style === Styles.ActionButtonClick) {
-        that.setState({ style: Styles.ActionButtonHover })
-      }
-    }, 50)
-  }
-  render() {
-    return (
-      <Block onClick={this.onClick} onMouseMove={this.HoverStyle} onMouseLeave={this.NormalStyle} style={this.state.style}>
-        Inspect
-      </Block>
-    )
-  }
-}
+    let {Backpack} = this.props
+    let list = []
 
-/* story and events */
-
-// a brief message that provides feedback on the user's actions ("you can not go there")
-class Message extends Component {
-  render() {
-    return (
-      <Block style={Styles.Message}>
-        {this.props.state.currentMessage}
-      </Block>
-    )
-  }
-}
-
-// a descriptive paragraph about the surroundings of the user
-class Text extends Component {
-  render() {
-    return (
-      <Block style={Styles.Text}>
-        {this.props.currentText}
-      </Block>
-    )
-  }
-}
-
-class LootList extends Component {
-
-  render() {
-    return (
-      <Block>
-        {this.props.items.map((item, index) => {
-          return (
-            <ItemImageBlock
-              key={index}
-              image={"/graphics/items/" + item.image + ".png"}
-              name={item.name} />
-          )
-        })}
-      </Block>
-    )
-  }
-}
-
-// some text that describes an event that has just occurred ("you found a chest")
-class Event extends Component {
-
-  GenerateEventText = () => {
-
-    let { currentEvent } = this.props
-
-    return currentEvent.map((event, index) => {
-      if (event.eventType === "loot") {
-        return (
-          <Inline key={index}>
-            You found {event.article} {event.name}.
-            <LootList items={event.items} />
-          </Inline>
-        )
+    for (let i = 0; i < Backpack.maxItems; i++) {
+      if (Backpack.Items[i] !== undefined) {
+        list.push(Backpack.Items[i])
       }
       else {
-        console.warn("Unknown type of event.", event)
+        list.push(null)
       }
-    })
+    }
 
-  }
-
-  render() {
-    return (
-      <Block style={Styles.Event}>
-        {this.GenerateEventText()}
-      </Block>
-    )
-  }
-}
-
-class TextBlock extends Component {
-  render() {
-    return (
-      <Block style={Styles.TextBlock}>
-        {this.props.children}
-      </Block>
-    )
-  }
-}
-
-/* map */
-
-class Map extends Component {
-
-  DrawMap = () => {
-    let { WallMap, WallMapRevealed } = this.props.state
-    return WallMapRevealed.map((HorizontalLine, y) => {
+    let inventory = list.map((item, index) => {
       return (
-        <Block key={y}>
-          {HorizontalLine.map((MapObjectRevealed, x) => {
-            let MapObject = WallMap[y][x]
-            return (
-              <Inline key={x} style={Styles.MapObject} title={[x, y].join(",")}>
-                {this.DrawMapObject(MapObject, MapObjectRevealed, x, y)}
-              </Inline>
-            )
-          })}
-        </Block>
+        <ItemImageBlock
+          key={index}
+          image={(item && item.image) || null}
+          name={(item && item.name) || null}/>
       )
     })
+
+    return inventory
   }
 
-  DrawMapObject = (MapObject, MapObjectRevealed, x, y) => {
-    let { Player, WallMap, WallMapRevealed, ShowFullMap } = this.props.state
-    if (x === Player.x && y === Player.y) {
-      return "O"
-    }
-    else {
-      if (MapObjectRevealed === MapObject || ShowFullMap) {
-        return MapObject
-      }
-      else {
-        if (this.DetectObjectInVicinityOfActor(x, y, Player.x, Player.y)) {
-          WallMapRevealed[y][x] = WallMap[y][x]
-          return WallMap[y][x]
-        }
-        else {
-          return " "
-        }
-      }
-    }
-  }
-
-  DetectObjectInVicinityOfActor = (wallX, wallY, actorX, actorY) => {
-    if (
-      // detect horizontal objects
-      (wallX === actorX && (wallY === actorY + 1 || wallY === actorY - 1))
-      // detect veretical objects
-      || (wallY === actorY && (wallX === actorX + 1 || wallX === actorX - 1))
-      // detect diagonal objects
-      || ((wallY === actorY + 1 || wallY === actorY - 1) && (wallX === actorX + 1 || wallX === actorX - 1))
-    ) {
-      return true
-    }
-    return false
-  }
   render() {
     return (
-      <Block style={Styles.Map}>
-        {this.DrawMap()}
-      </Block>
+      <View style={Styles.Inventory}>
+        {this.DisplayInventory()}
+      </View>
     )
   }
 }
@@ -332,7 +259,16 @@ class Arrow extends Component {
   }
   render() {
     return (
-      <Block onClick={this.onClick} onMouseMove={this.HoverStyle} onMouseLeave={this.NormalStyle} style={this.props.arrowStyle && this.props.arrowStyle[this.props.arrow] ? this.props.arrowStyle[this.props.arrow] : null || this.state.style}>{this.props.children}</Block>
+      <Text
+        onClick={this.onClick}
+        onMouseMove={this.HoverStyle}
+        onMouseLeave={this.NormalStyle}
+        style={
+          this.props.arrowStyle && this.props.arrowStyle[this.props.arrow]
+            ? this.props.arrowStyle[this.props.arrow]
+            : null || this.state.style}>
+        {this.props.children}
+      </Text>
     )
   }
 }
@@ -340,7 +276,7 @@ class Arrow extends Component {
 class Arrows extends Component {
   render() {
     return (
-      <Block style={Styles.ArrowContainer}>
+      <View style={Styles.ArrowContainer}>
         <Block style={Styles.ArrowRow}>
           <GoNorth {... this.props} />
         </Block>
@@ -351,29 +287,73 @@ class Arrows extends Component {
         <Block style={Styles.ArrowRow}>
           <GoSouth {... this.props} />
         </Block>
-      </Block>
+      </View>
     )
   }
 }
 
 /* player actions */
 
-class Actions extends Component {
+class TakeAll extends Component {
   render() {
     return (
-      <Block style={Styles.Actions}>
-      </Block>
+      <ActionButton {... this.props}>
+        Take All
+      </ActionButton>
     )
   }
 }
 
+class ActionButton extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { style: Styles.ActionButton }
+  }
+  NormalStyle = () => {
+    this.setState({ style: Styles.ActionButton })
+  }
+  HoverStyle = () => {
+    this.setState({ style: Styles.ActionButtonHover })
+  }
+  onClick = () => {
+    this.props.onClick()
+    this.setState({ style: Styles.ActionButtonClick })
+    let that = this
+    setTimeout(function () {
+      if (that.state.style === Styles.ActionButtonClick) {
+        that.setState({ style: Styles.ActionButtonHover })
+      }
+    }, 50)
+  }
+  render() {
+    return (
+      <View
+        onClick={this.onClick}
+        onMouseMove={this.HoverStyle}
+        onMouseLeave={this.NormalStyle}
+        style={this.state.style}>
+        {this.props.children}
+      </View>
+    )
+  }
+}
+
+class Actions extends Component {
+  render() {
+    return (
+      <View style={Styles.Actions}>
+        {/* todo */}
+      </View>
+    )
+  }
+}
 
 /* player stats */
 
 class PlayerStats1 extends Component {
   render() {
     return (
-      <Block style={Styles.PlayerStats1}>
+      <View style={Styles.PlayerStats1}>
         <Block style={Styles.PlayerStat}>
           Health:
           <br />{this.props.Player.Health}/{this.props.Player.MaxHealth}
@@ -386,7 +366,7 @@ class PlayerStats1 extends Component {
           Stamina:
           <br />{this.props.Player.Stamina * 100}%
         </Block>
-      </Block>
+      </View>
     )
   }
 }
@@ -394,7 +374,7 @@ class PlayerStats1 extends Component {
 class PlayerStats2 extends Component {
   render() {
     return (
-      <Block style={Styles.PlayerStats2}>
+      <View style={Styles.PlayerStats2}>
         <Block style={Styles.PlayerStat}>
           Luck: {this.props.Player.Luck}
         </Block>
@@ -407,48 +387,281 @@ class PlayerStats2 extends Component {
         <Block style={Styles.PlayerStat}>
           Dexterity: {this.props.Player.Dexterity}
         </Block>
-      </Block>
+      </View>
     )
   }
 }
 
-/* low part pf the HUD */
+/* player controls */
 
-class LowerHUD extends Component {
+class Controls extends Component {
   render() {
     return (
-      <Block style={Styles.HUDLowerBlock}>
+      <View style={Styles.ControlBlock}>
         {this.props.children}
-      </Block>
+      </View>
     )
   }
 }
 
-/* inventory */
+/* story and events */
 
-class Inventory extends Component {
+// a brief message that provides feedback on the user's actions (example: "you can't go there")
+class Message extends Component {
   render() {
     return (
-      <Block style={Styles.Inventory}>
-        <ItemImageBlock image={"/graphics/items/potion_mana.png"} />
-        <ItemImageBlock image={"/graphics/items/potion_mana.png"} />
-        <ItemImageBlock image={"/graphics/test.png"} />
-      </Block>
+      <View style={Styles.Message}>
+        {this.props.state.currentMessage}
+      </View>
+    )
+  }
+}
+
+// a descriptive paragraph about the surroundings of the user, to set the mood :)
+class Story extends Component {
+  render() {
+    return (
+      <View style={Styles.Story}>
+        {this.props.currentText}
+      </View>
+    )
+  }
+}
+
+// the loot found by the player
+class LootList extends Component {
+
+  render() {
+    return (
+      <View>
+        <Block>
+        {
+          this.props.items && this.props.items.map((item, index) => {
+            return (
+              <ItemImageBlock
+                key={index}
+                image={item.image}
+                name={item.name} />
+            )
+          })
+        }
+        </Block>
+
+      </View>
+    )
+  }
+}
+
+// some text that describes an event that has just occurred ("you found a chest")
+class Event extends Component {
+
+  ItemArticle = (itemName) => {
+    if (itemName) {
+
+      const Vowels = ["a","e","i","u","o"]
+
+      if (isNaN(itemName) && Vowels.includes(itemName[0].toLowerCase())) {
+        return "an"
+      }
+      else {
+        return "a"
+      }
+    }
+    else {
+      return null
+    }
+  }
+
+  GenerateEventText = () => {
+
+    let { currentEvent, Stationary } = this.props
+    let loot = false
+    let lootIsEmpty = true
+
+    let eventText = currentEvent.map((event, index) => {
+
+      if (event.eventType === "loot") {
+
+        loot = true
+
+        if (event.items.length === 0) {
+          if (!Stationary) {
+            event.name = "empty " + event.name.replace("empty ","")
+          }
+        }
+        else {
+          lootIsEmpty = false
+        }
+
+        if (Stationary && event.items.length === 0) {
+          return (
+            <Text key={index}>
+              <Text>The  </Text>
+              <Text>{event.name}</Text>
+              <Text> is empty.</Text>
+              <ClearFloat />
+            </Text>
+          )
+        }
+        else {
+          return (
+            <Text key={index}>
+              <Text>You found </Text>
+              <Text>{this.ItemArticle(event.name)}</Text>
+              <Text> </Text>
+              <Text>{event.name}</Text>
+              <Text>.</Text>
+              <LootList items={event.items} />
+              <ClearFloat />
+            </Text>
+          )
+        }
+      }
+      else {
+        console.warn("Unknown type of event.", event)
+      }
+      return null
+    })
+
+    if (loot && !lootIsEmpty) {
+      eventText.push(
+        <Block key="TakeAll">
+          <TakeAll
+            onClick={this.props.TakeAllLoot}/>
+        </Block>
+      )
+    }
+
+    return eventText
+
+  }
+
+  render() {
+    return (
+      <View style={Styles.Event}>
+        {this.GenerateEventText()}
+      </View>
+    )
+  }
+}
+
+class StoryBlock extends Component {
+  render() {
+    return (
+      <View style={Styles.StoryBlock}>
+        {this.props.children}
+      </View>
+    )
+  }
+}
+
+/* map */
+
+class Map extends Component {
+
+  DrawMap = () => {
+    let { WallMap, WallMapRevealed } = this.props.state
+    return WallMapRevealed.map((HorizontalLine, y) => {
+      return (
+        <View key={y}>
+          {HorizontalLine.map((MapObjectRevealed, x) => {
+            let MapObject = WallMap[y][x]
+            return (
+              <Text key={x} style={Styles.MapObject} title={[x, y].join(",")}>
+                {this.DrawMapObject(MapObject, MapObjectRevealed, x, y)}
+              </Text>
+            )
+          })}
+        </View>
+      )
+    })
+  }
+
+  DrawMapObject = (MapObject, MapObjectRevealed, x, y) => {
+    let { Player, WallMap, WallMapRevealed, ShowFullMap } = this.props.state
+    if (x === Player.x && y === Player.y) {
+      return "O"
+    }
+    else {
+      if (MapObjectRevealed === MapObject || ShowFullMap) {
+        return MapObject
+      }
+      else {
+        if (this.DetectObjectInVicinityOfActor(x, y, Player.x, Player.y)) {
+          WallMapRevealed[y][x] = WallMap[y][x]
+          return WallMap[y][x]
+        }
+        else {
+          return " "
+        }
+      }
+    }
+  }
+
+  DetectObjectInVicinityOfActor = (wallX, wallY, actorX, actorY) => {
+    if (
+      // detect horizontal objects
+      (wallX === actorX && (wallY === actorY + 1 || wallY === actorY - 1))
+      // detect veretical objects
+      || (wallY === actorY && (wallX === actorX + 1 || wallX === actorX - 1))
+      // detect diagonal objects
+      || ((wallY === actorY + 1 || wallY === actorY - 1) && (wallX === actorX + 1 || wallX === actorX - 1))
+    ) {
+      return true
+    }
+    return false
+  }
+  render() {
+    return (
+      <View style={Styles.Map}>
+        {this.DrawMap()}
+      </View>
+    )
+  }
+}
+
+/* top */
+
+class Contact extends Component {
+  render() {
+    return (
+      <View style={Styles.Contact}>
+        <Text>
+          <Text>
+          written by&nbsp;
+          </Text>
+          <Text>
+            <Link
+              href={contactTemplate}
+              title={authorEmail}
+              target="_blank">
+              Yves Gurcan
+            </Link>
+            <Link
+              href={repository}
+              target="_blank">
+              <GitHub/>
+            </Link>
+          </Text>
+        </Text>
+      </View>
+    )
+  }
+}
+
+class Header extends Component {
+  render() {
+    return (
+      <View style={Styles.Header}>
+        <PageTitle>Dungeon!</PageTitle>
+        <PageSubtitle>a D&amp;D-inspired game written with ReactJS</PageSubtitle>
+        <Version>pre-alpha</Version>
+      </View>
     )
   }
 }
 
 /* main */
-
-class PageContainer extends Component {
-  render() {
-    return (
-      <Block style={Styles.Game}>
-        {this.props.children}
-      </Block>
-    )
-  }
-}
 
 class Game extends Component {
 
@@ -502,6 +715,10 @@ class Game extends Component {
 
   }
 
+  componentDidUpdate(nextProps, nextState) {
+
+  }
+
   RandomIntegerFromRange = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min
   }
@@ -526,28 +743,29 @@ class Game extends Component {
 
     switch (keypress.key) {
 
+      default:
+        break
       case "ArrowDown":
         this.MovePlayer("South")
         this.onClickArrow(keypress.key)
-        break;
+        break
 
       case "ArrowUp":
         this.MovePlayer("North")
         this.onClickArrow(keypress.key)
-        break;
+        break
 
       case "ArrowLeft":
         this.MovePlayer("West")
         this.onClickArrow(keypress.key)
-        break;
+        break
 
       case "ArrowRight":
         this.MovePlayer("East")
         this.onClickArrow(keypress.key)
-        break;
+        break
 
     }
-
 
   }
 
@@ -555,7 +773,6 @@ class Game extends Component {
     let arrowStyle = {}
     arrowStyle[key] = Styles.ArrowBlockClick
     this.setState({ arrowStyle: arrowStyle })
-    let that = this
   }
 
   GeneratePlayerStats = (Player) => {
@@ -594,6 +811,7 @@ class Game extends Component {
     // save the new coordinates
     State.Player.x = targetCoordinates.x
     State.Player.y = targetCoordinates.y
+    State.Stationary = false
 
     // check if the text needs to be updated
     this.UpdateText(targetCoordinates)
@@ -627,6 +845,11 @@ class Game extends Component {
   DetectCollision = ({ x, y }) => {
 
     let State = this.state
+
+    // can not get out of the map boundaries
+    if (y < 0 || x < 0 || y >= State.WallMap.length || x >= State.WallMap[y].length ) {
+      return false
+    }
 
     // target is, apparently, empty
     let targetCoordinates = State.WallMap[y][x]
@@ -691,6 +914,28 @@ class Game extends Component {
     return item
   }
 
+  TakeAllLoot = () => {
+
+    let {currentEvent, Backpack} = this.state
+
+    let loot = []
+
+    currentEvent.map(event => {
+      if (event.eventType === "loot") {
+        if (event.items) {
+          loot = loot.concat(event.items)
+          event.items = []
+        }
+      }
+      return null
+    })
+
+    Backpack.Items = Backpack.Items.concat(loot)
+
+    this.setState({Backpack: Backpack, Stationary: true})
+
+  }
+
   UpdateText = ({ x, y }) => {
     let State = this.state
 
@@ -717,23 +962,26 @@ class Game extends Component {
   render() {
     // grid
     return (
-      <PageContainer>
+      <View style={Styles.Game}>
         {/* row 1 */}
-        <Message {... this} />
+        <Header/>
         {/* row 2 */}
-        <TextBlock>
-          <Text {... this.state} />
-          <Event {... this.state} />
-        </TextBlock>
-        <Map {... this} />
+        <Contact/>
+        <Message {... this} />
         {/* row 3 */}
-        <LowerHUD />
+        <StoryBlock>
+          <Story {... this.state} />
+          <Event {... this} {... this.state} />
+        </StoryBlock>
+        <Map {... this} />
+        {/* row 4 */}
+        <Controls />
         <PlayerStats1 {... this.state} />
         <Arrows {... this} {... this.state} />
         <Actions/>
         <PlayerStats2 {... this.state} />
-        <Inventory />
-      </PageContainer>
+        <Inventory {... this.state} />
+      </View>
     )
   }
 }
