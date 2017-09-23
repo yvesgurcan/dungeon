@@ -27,6 +27,7 @@ export const DynamicAssets = {
         Mana: 0,
         MaxMana: 0,
         Stamina: 1,
+        MaxWeight: null,
         Luck: null,
         Constitution: null,
         Strength: null,
@@ -56,11 +57,10 @@ export const DynamicAssets = {
 
     LockedDoors: [
         {
-            id: 1,
+            Id: 1,
             x: 3,
             y: 2,
-            key: "iron key",
-            unlocked: true,
+            key: "IronKey",
         },
     ],
 }

@@ -10,7 +10,12 @@ export const StaticAssets = {
 
     Messages: {
         Collision: "You can't go there.",
-        LockedDoor: "The door is locked.", 
+        LockedDoor: "The door is locked.",
+    },
+
+    PartialMessages: {
+        UnlockDoor: "You unlocked the door with the ",
+        Period: ".",
     },
 
     Text: [
@@ -36,8 +41,8 @@ export const StaticAssets = {
     UniqueItems: {
         IronKey: {
             type: "key",
-            name: "iron key",
-            doorId: 1,
+            Name: "iron key",
+            DoorId: 1,
             image: "key"
         }
     },

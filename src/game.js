@@ -816,8 +816,19 @@ class Game extends Component {
     let targetCoordinates = this.MoveObject({ x: State.Player.x, y: State.Player.y }, Direction)
 
     // check if there is a locked door in the way
-    if (this.CheckLockedDoors(targetCoordinates)) {
-      this.setState({ currentMessage: StaticAssets.Messages.LockedDoor })
+    let Door = this.CheckLockedDoors(targetCoordinates)
+    if (Door.Locked) {
+      let LockedDoor = this.UnlockDoor(Door.Object)
+      if (LockedDoor.Unlocked) {
+        let UnlockMessage =
+          StaticAssets.PartialMessages.UnlockDoor  + 
+          LockedDoor.Key +
+          StaticAssets.PartialMessages.Period
+        this.setState({ currentMessage: UnlockMessage})
+      }
+      else {
+        this.setState({ currentMessage: StaticAssets.Messages.LockedDoor })
+      }
       return
     }
 
@@ -880,11 +891,16 @@ class Game extends Component {
     }
 
     // target is a door
-    if (targetCoordinates === "D")
+    if (targetCoordinates === "D") {
       // check if the door is locked
-      if (!this.CheckLockedDoors({ x, y })) {
+      let Door = this.CheckLockedDoors({ x, y })
+      if (Door.Locked) {
+        return false
+      }
+      else {
         return true
       }
+    }
 
     return false
   }
@@ -894,10 +910,32 @@ class Game extends Component {
     let { LockedDoors } = this.state
 
     let matchLockedDoor = LockedDoors.filter((object) => {
-      return object.x === x && object.y === y && !object.unlocked
+      return object.x === x && object.y === y && !object.Unlocked
     })
 
-    return matchLockedDoor.length > 0
+    return {
+      Locked: matchLockedDoor.length > 0,
+      Object: matchLockedDoor.length > 0 ? matchLockedDoor[0] : null
+    }
+
+  }
+
+  UnlockDoor = (Door) => {
+
+    let {Backpack} = this.state
+
+    let matchKey = Backpack.Items.filter(Item => {
+      return Item.DoorId === Door.Id
+    })
+
+    if (matchKey.length > 0) {
+      Door.Unlocked = true
+      this.setState({Backpack: Backpack})
+    }
+
+    return {
+      Unlocked: matchKey.length > 0,
+      Key: matchKey.length > 0 ? matchKey[0].Name : null}
 
   }
 
