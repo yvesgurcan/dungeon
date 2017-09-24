@@ -582,20 +582,39 @@ class StoryBlock extends Component {
 class Map extends Component {
 
   DrawMap = () => {
-    let { WallMap, WallMapRevealed } = this.props.state
+    let {WallMap, WallMapRevealed, WallMapVisibleRange, Player} = this.props
     return WallMapRevealed.map((HorizontalLine, y) => {
-      return (
-        <View key={y}>
-          {HorizontalLine.map((MapObjectRevealed, x) => {
-            let MapObject = WallMap[y][x]
-            return (
-              <Text key={x} style={Styles.MapObject} title={[x, y].join(",")}>
-                {this.DrawMapObject(MapObject, MapObjectRevealed, x, y)}
-              </Text>
-            )
-          })}
-        </View>
-      )
+      // make sure that the map object is in the max/min Y sight
+      if (
+        Player.y + WallMapVisibleRange.y >= y &&
+        Player.y - WallMapVisibleRange.y <= y) {
+        return (
+          <View key={y}>
+            {HorizontalLine.map((MapObjectRevealed, x) => {
+              let MapObject = WallMap[y][x]
+              // make sure that the map object is in the max/min X sight
+              if (
+                Player.x + WallMapVisibleRange.x >= x &&
+                Player.x - WallMapVisibleRange.x <= x
+              ) {
+                return (
+                  <Text key={x} style={Styles.MapObject} title={[x, y].join(",")}>
+                    {this.DrawMapObject(MapObject, MapObjectRevealed, x, y)}
+                  </Text>
+                )
+              }
+              // out of sight X
+              else {
+                return " "
+              }
+            })}
+          </View>
+        )
+      }
+      // out of sight Y
+      else {
+        return " "
+      }
     })
   }
 
@@ -633,6 +652,7 @@ class Map extends Component {
     }
     return false
   }
+  
   render() {
     return (
       <View style={Styles.Map}>
@@ -785,6 +805,10 @@ class Game extends Component {
       case "ArrowRight":
         this.MovePlayer("East")
         this.onClickArrow(keypress.key)
+        break
+
+      case "t":
+        this.TakeAllLoot("")
         break
 
     }
@@ -1055,7 +1079,7 @@ class Game extends Component {
           <Story {... this.state} />
           <Event {... this} {... this.state} />
         </StoryBlock>
-        <Map {... this} />
+        <Map {... this} {... this.state}/>
         {/* row 4 */}
         <Controls />
         <PlayerStats1 {... this.state} />

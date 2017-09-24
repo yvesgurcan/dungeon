@@ -20,11 +20,12 @@ const styles = {
         display: "grid",
         gridTemplateColumns:
             // column1-4
-            "repeat(4, 90px) " +
+            "repeat(4, 95px) " +
             // column5
             "130px " + 
             // column6-10
-            "repeat(5, 90px)"
+            "repeat(5, 76.8px)"
+
         ,
         gridTemplateRows:
             // row1
@@ -32,7 +33,7 @@ const styles = {
             // row 1
             "25px " +
             // row 2
-            "250px " +
+            "235px " +
             // row 3
             "auto " +
             // row 4
