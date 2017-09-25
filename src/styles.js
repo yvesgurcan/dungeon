@@ -14,6 +14,17 @@ const ButtonNormalBackground = "lightgray"
 const ButtonHoverBackground = "darkgray"
 const ButtonClickBackground = "gray"
 
+const WallLine = "1px solid black"
+const WallBoxWidth = 14
+const WallBoxHeight = 19
+const WallBoxWidthPadding = "5px"
+const WallBoxHeightPadding = "12px"
+
+const WallBoxWidthCentered = "7px"
+const WallBoxHeightCentered = "10px"
+
+const px = "px"
+
 const styles = {
     // Grid
     Game: {
@@ -119,6 +130,56 @@ const styles = {
         display: "inline-block",
         width: "15px",
         height: "15px",
+    },
+    Wall: {
+        Pillar: {
+            border: WallLine,
+            margin: "5px 5px 5px 0px",
+            width: (WallBoxWidth - 6) + px,
+            height: (WallBoxHeight - 10) + px,
+            background: "black",
+        },
+        NorthToSouth: {
+            borderLeft: WallLine,
+            marginLeft: WallBoxWidthPadding,
+            width: WallBoxWidthCentered,
+            height: WallBoxHeight + px,
+        },
+        WestToEast: {
+            borderBottom: WallLine,
+            marginBottom: WallBoxHeightPadding,
+            width: WallBoxWidth + px,
+            height: WallBoxHeightCentered,
+        },
+        NorthToEast: {
+            borderLeft: WallLine,
+            borderBottom: WallLine,
+            marginLeft: "5px",
+            width: "9px",
+            height: WallBoxHeightCentered,
+        },
+        NorthToWest: {
+            borderRight: WallLine,
+            borderBottom: WallLine,
+            marginLeft: "-1px",
+            width: "4px",
+            height: WallBoxHeightCentered,
+        },
+        SouthToEast: {
+            borderLeft: WallLine,
+            borderTop: WallLine,
+            marginLeft: "5px",
+            marginTop: "10px",
+            width: "9px",
+            height: WallBoxHeightCentered,
+        },
+        SouthToWest: {
+            borderRight: WallLine,
+            borderTop: WallLine,
+            marginTop: "10px",
+            width: "5px",
+            height: WallBoxHeightCentered,
+        },
     },
     // Various Player Controls
     ControlBlock: {

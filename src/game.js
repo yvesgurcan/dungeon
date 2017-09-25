@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import StaticAssets from "./StaticAssets.js"
 import DynamicAssets from "./DynamicAssets.js"
+import UtilityAssets from "./UtilityAssets.js"
 import Styles from "./styles.js"
 
 const authorEmail = "gurcan.yves@gmail.com"
@@ -9,6 +10,9 @@ const repository = "https://github.com/yvesgurcan/dungeon"
 const gitHubLogo = "/graphics/misc/Octocat.png"
 const itemPath = "/graphics/items/"
 const imgExt = ".png"
+
+const {North, South, West, East} = UtilityAssets.Directions
+const {Wall, Door, Empty} = UtilityAssets.MapObjects
 
 /* web components */
 
@@ -605,7 +609,7 @@ class Map extends Component {
               }
               // out of sight X
               else {
-                return " "
+                return Empty
               }
             })}
           </View>
@@ -613,29 +617,177 @@ class Map extends Component {
       }
       // out of sight Y
       else {
-        return " "
+        return Empty
       }
     })
   }
 
   DrawMapObject = (MapObject, MapObjectRevealed, x, y) => {
+
     let { Player, WallMap, WallMapRevealed, ShowFullMap } = this.props.state
+
+    // player marker
     if (x === Player.x && y === Player.y) {
-      return "O"
+      return UtilityAssets.MapObjects.Player
     }
+
     else {
+
+      // area has already been discovered
       if (MapObjectRevealed === MapObject || ShowFullMap) {
+
+        if (MapObject === Wall) {
+
+          let topRow = WallMap[y-1].slice(x-1, x+2)
+          let middleRow = WallMap[y].slice(x-1, x+2)
+          let bottomRow = WallMap[y+1].slice(x-1, x+2)
+
+          let MapObjectInContext = [
+            topRow,
+            middleRow,
+            bottomRow,
+          ]
+
+          return this.DrawWall(MapObjectInContext, MapObject)
+
+        }
+
         return MapObject
+
       }
+
+
       else {
+
+        // reveal new area
         if (this.DetectObjectInVicinityOfActor(x, y, Player.x, Player.y)) {
           WallMapRevealed[y][x] = WallMap[y][x]
+
+          if (MapObject === Wall) {
+            
+            let topRow = WallMap[y-1].slice(x-1, x+2)
+            let middleRow = WallMap[y].slice(x-1, x+2)
+            let bottomRow = WallMap[y+1].slice(x-1, x+2)
+  
+            let MapObjectInContext = [
+              topRow,
+              middleRow,
+              bottomRow,
+            ]
+  
+            return this.DrawWall(MapObjectInContext, MapObject)
+
+          }
+
           return WallMap[y][x]
+
         }
+
+        // still hidden area
         else {
-          return " "
+          return Empty
         }
+
       }
+
+    }
+
+  }
+
+  DrawWall = (MapObjectInContext, MapObject) => {
+
+    let EmptySurrounding = 0
+
+    MapObjectInContext.map(Row => {
+      Row.map(MapObject => {
+        if (MapObject === Empty) {
+          EmptySurrounding++
+        }
+      })
+    })
+
+    console.log(EmptySurrounding)
+
+    // Pillar
+    if (
+      EmptySurrounding === 8
+    ) {
+      return <Block style={Styles.Wall.Pillar} />
+    }
+    // Surrounded by walls
+    else if (
+      EmptySurrounding === 0
+    ) {
+      return Empty
+    }
+    // North to East
+    else if (
+      (
+        MapObjectInContext[North.y][North.x] === Wall
+      || MapObjectInContext[North.y][North.x] === Door)
+    && (
+      MapObjectInContext[East.y][East.x] === Wall
+      || MapObjectInContext[East.y][East.x] === Door)
+    ) {
+      return <Block style={Styles.Wall.NorthToEast} />
+    }
+    // South to West
+    else if (
+      (
+        MapObjectInContext[South.y][South.x] === Wall
+      || MapObjectInContext[South.y][South.x] === Door)
+    && (
+      MapObjectInContext[West.y][West.x] === Wall
+      || MapObjectInContext[West.y][West.x] === Door)
+    ) {
+      return <Block style={Styles.Wall.SouthToWest} />
+    }
+    // South to East
+    else if (
+      (
+        MapObjectInContext[South.y][South.x] === Wall
+      || MapObjectInContext[South.y][South.x] === Door)
+    && (
+      MapObjectInContext[East.y][East.x] === Wall
+      || MapObjectInContext[East.y][East.x] === Door)
+    ) {
+      return <Block style={Styles.Wall.SouthToEast} />
+    }
+    // North to West
+    else if (
+      (
+        MapObjectInContext[North.y][North.x] === Wall
+      || MapObjectInContext[North.y][North.x] === Door)
+    && (
+      MapObjectInContext[West.y][West.x] === Wall
+      || MapObjectInContext[West.y][West.x] === Door)
+    ) {
+      return <Block style={Styles.Wall.NorthToWest} />
+    }
+    // North to South
+    else if (
+      (
+        MapObjectInContext[North.y][North.x] === Wall
+        || MapObjectInContext[North.y][North.x] === Door)
+      && (
+        MapObjectInContext[South.y][South.x] === Wall
+        || MapObjectInContext[South.y][South.x] === Door)
+    ) {
+      return <Block style={Styles.Wall.NorthToSouth} />
+    }
+    // West to East
+    else if (
+      (
+        MapObjectInContext[West.y][West.x] === Wall
+        || MapObjectInContext[West.y][West.x] === Door)
+      && (
+        MapObjectInContext[East.y][East.x] === Wall
+        || MapObjectInContext[East.y][East.x] === Door)
+    ) {
+      return <Block style={Styles.Wall.WestToEast} />
+    }
+    else {
+      return MapObject
     }
   }
 
@@ -714,6 +866,7 @@ class Game extends Component {
     let initState = Object.assign(
       StaticAssets,
       DynamicAssets,
+      {WallMapVisibleRange: UtilityAssets.WallMapVisibleRange},
     )
 
     // create the list of random items to draw from, grouped by level
@@ -910,12 +1063,12 @@ class Game extends Component {
 
     // target is, apparently, empty
     let targetCoordinates = State.WallMap[y][x]
-    if (targetCoordinates === " ") {
+    if (targetCoordinates === Empty) {
       return true
     }
 
     // target is a door
-    if (targetCoordinates === "D") {
+    if (targetCoordinates === Door) {
       // check if the door is locked
       let Door = this.CheckLockedDoors({ x, y })
       if (Door.Locked) {

@@ -16,12 +16,12 @@ export const DynamicAssets = {
     WallMapRevealed:
         StaticAssets.WallMap.map(HorizontalLine => HorizontalLine.map(x => " ")),
 
-    ShowFullMap: false
+    ShowFullMap: true
     ,
 
     Player: {
-        x: 1,
-        y: 2,
+        x: 15,
+        y: 8,
         Health: 0,
         MaxHealth: 0,
         Mana: 0,

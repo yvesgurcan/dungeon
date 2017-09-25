@@ -30,11 +30,6 @@ export const StaticAssets = {
         [" "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ","X","X"," ",],
     ],
 
-    WallMapVisibleRange: {
-        x: 10,
-        y: 5,
-    },
-
     Messages: {
         Collision: "You can't go there.",
         LockedDoor: "The door is locked.",
