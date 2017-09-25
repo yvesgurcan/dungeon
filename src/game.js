@@ -593,7 +593,7 @@ class Map extends Component {
         Player.y + WallMapVisibleRange.y >= y &&
         Player.y - WallMapVisibleRange.y <= y) {
         return (
-          <View key={y}>
+          <View key={y} style={Styles.MapRow}>
             {HorizontalLine.map((MapObjectRevealed, x) => {
               let MapObject = WallMap[y][x]
               // make sure that the map object is in the max/min X sight
@@ -628,7 +628,7 @@ class Map extends Component {
 
     // player marker
     if (x === Player.x && y === Player.y) {
-      return UtilityAssets.MapObjects.Player
+      return <Block style={Styles.Player} />
     }
 
     else {
@@ -638,9 +638,23 @@ class Map extends Component {
 
         if (MapObject === Wall) {
 
-          let topRow = WallMap[y-1].slice(x-1, x+2)
+
+          // grab neighboring objects (if vertically out of range, assume that what is outside is walls)
+          let topRow = y-1 >= 0 ? WallMap[y-1].slice(x-1, x+2) : [Wall, Wall, Wall]
           let middleRow = WallMap[y].slice(x-1, x+2)
-          let bottomRow = WallMap[y+1].slice(x-1, x+2)
+          let bottomRow = y+1 < WallMap.length ? WallMap[y+1].slice(x-1, x+2) : [Wall, Wall, Wall]
+
+          // if horizontally out of range, assume that what is outside is nothing
+          if (x === 0) {
+            topRow = [Empty, WallMap[y-1][x], WallMap[y-1][x+1]]
+            middleRow = [Empty, WallMap[y][x], WallMap[y][x+1]]
+            bottomRow = [Empty, WallMap[y+1][x], WallMap[y+1][x+1]]
+          }
+          else if (x === WallMap[y].length - 1) {
+            topRow = [WallMap[y-1][x-1], WallMap[y-1][x], Empty]
+            middleRow = [WallMap[y-1][x-1], WallMap[y][x], Empty]
+            bottomRow = [WallMap[y-1][x-1], WallMap[y+1][x], Empty]
+          }
 
           let MapObjectInContext = [
             topRow,
@@ -648,11 +662,13 @@ class Map extends Component {
             bottomRow,
           ]
 
+          // it's a wall
           return this.DrawWall(MapObjectInContext, MapObject)
 
         }
 
-        return MapObject
+        // it's a door
+        return <Block style={{textAlign: "center"}}>{MapObject}</Block>
 
       }
 
@@ -665,10 +681,23 @@ class Map extends Component {
 
           if (MapObject === Wall) {
             
-            let topRow = WallMap[y-1].slice(x-1, x+2)
+            // grab neighboring objects (if vertically out of range, assume that what is outside is walls)
+            let topRow = y-1 >= 0 ? WallMap[y-1].slice(x-1, x+2) : [Wall, Wall, Wall]
             let middleRow = WallMap[y].slice(x-1, x+2)
-            let bottomRow = WallMap[y+1].slice(x-1, x+2)
-  
+            let bottomRow = y+1 < WallMap.length ? WallMap[y+1].slice(x-1, x+2) : [Wall, Wall, Wall]
+
+            // if horizontally out of range, assume that what is outside is nothing
+            if (x === 0) {
+              topRow = [Empty, WallMap[y-1][x], WallMap[y-1][x+1]]
+              middleRow = [Empty, WallMap[y][x], WallMap[y][x+1]]
+              bottomRow = [Empty, WallMap[y+1][x], WallMap[y+1][x+1]]
+            }
+            else if (x === WallMap[y].length - 1) {
+              topRow = [WallMap[y-1][x-1], WallMap[y-1][x], Empty]
+              middleRow = [WallMap[y-1][x-1], WallMap[y][x], Empty]
+              bottomRow = [WallMap[y-1][x-1], WallMap[y+1][x], Empty]
+            }
+
             let MapObjectInContext = [
               topRow,
               middleRow,
@@ -706,21 +735,96 @@ class Map extends Component {
       })
     })
 
-    console.log(EmptySurrounding)
-
     // Pillar
     if (
       EmptySurrounding === 8
     ) {
       return <Block style={Styles.Wall.Pillar} />
     }
-    // Surrounded by walls
+    // Completely surrounded by walls
     else if (
       EmptySurrounding === 0
     ) {
       return Empty
     }
-    // North to East
+    // 4 surrounding walls (odd-shaped walls)
+    // North, West, East, and NorthWest
+    else if (
+      (
+        MapObjectInContext[North.y][North.x] === Wall
+      || MapObjectInContext[North.y][North.x] === Door)
+    && (
+      MapObjectInContext[East.y][East.x] === Wall
+      || MapObjectInContext[East.y][East.x] === Door)
+    && (
+      MapObjectInContext[West.y][West.x] === Wall
+      || MapObjectInContext[West.y][West.x] === Door)
+      && (
+        MapObjectInContext[North.y][East.x] === Wall
+        || MapObjectInContext[North.y][East.x] === Door)
+    ) {
+      return (
+        <Block style={Styles.Wall.NorthWestEastAndNorthWest}/>
+      )
+    }
+    // North, South, East, and SouthEast
+    else if (
+      (
+        MapObjectInContext[North.y][North.x] === Wall
+      || MapObjectInContext[North.y][North.x] === Door)
+    && (
+      MapObjectInContext[South.y][South.x] === Wall
+      || MapObjectInContext[South.y][South.x] === Door)
+    && (
+      MapObjectInContext[East.y][East.x] === Wall
+      || MapObjectInContext[East.y][East.x] === Door)
+      && (
+        MapObjectInContext[South.y][East.x] === Wall
+        || MapObjectInContext[South.y][East.x] === Door)
+    ) {
+      return (
+        <Block style={Styles.Wall.NorthSouthEastAndSouthEast}/>
+      )
+    }
+    // 3 surrounding walls (T-shaped walls)
+    // North, South and East
+    else if (
+      (
+        MapObjectInContext[North.y][North.x] === Wall
+      || MapObjectInContext[North.y][North.x] === Door)
+    && (
+      MapObjectInContext[South.y][South.x] === Wall
+      || MapObjectInContext[South.y][South.x] === Door)
+    && (
+      MapObjectInContext[East.y][East.x] === Wall
+      || MapObjectInContext[East.y][East.x] === Door)
+    ) {
+      return (
+        <Block style={Styles.Wall.TShapedWallNSE}>
+          <Block style={Styles.Wall.NorthSouthAndEast} />
+          </Block>
+      )
+    }
+    // North, South and West
+    else if (
+      (
+        MapObjectInContext[North.y][North.x] === Wall
+      || MapObjectInContext[North.y][North.x] === Door)
+    && (
+      MapObjectInContext[South.y][South.x] === Wall
+      || MapObjectInContext[South.y][South.x] === Door)
+    && (
+      MapObjectInContext[West.y][West.x] === Wall
+      || MapObjectInContext[West.y][West.x] === Door)
+    ) {
+      return (
+        <Block style={Styles.Wall.TShapedWallNSW}>
+          <Block style={Styles.Wall.NorthSouthAndWest} />
+          </Block>
+      )
+    }
+    // 2 surrounding walls (continuous walls)
+    // North and East
     else if (
       (
         MapObjectInContext[North.y][North.x] === Wall
@@ -731,7 +835,7 @@ class Map extends Component {
     ) {
       return <Block style={Styles.Wall.NorthToEast} />
     }
-    // South to West
+    // South and West
     else if (
       (
         MapObjectInContext[South.y][South.x] === Wall
@@ -742,7 +846,7 @@ class Map extends Component {
     ) {
       return <Block style={Styles.Wall.SouthToWest} />
     }
-    // South to East
+    // South and East
     else if (
       (
         MapObjectInContext[South.y][South.x] === Wall
@@ -753,7 +857,7 @@ class Map extends Component {
     ) {
       return <Block style={Styles.Wall.SouthToEast} />
     }
-    // North to West
+    // North and West
     else if (
       (
         MapObjectInContext[North.y][North.x] === Wall
@@ -764,7 +868,7 @@ class Map extends Component {
     ) {
       return <Block style={Styles.Wall.NorthToWest} />
     }
-    // North to South
+    // North and South
     else if (
       (
         MapObjectInContext[North.y][North.x] === Wall
@@ -775,7 +879,7 @@ class Map extends Component {
     ) {
       return <Block style={Styles.Wall.NorthToSouth} />
     }
-    // West to East
+    // West and East
     else if (
       (
         MapObjectInContext[West.y][West.x] === Wall

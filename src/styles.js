@@ -14,14 +14,23 @@ const ButtonNormalBackground = "lightgray"
 const ButtonHoverBackground = "darkgray"
 const ButtonClickBackground = "gray"
 
-const WallLine = "1px solid black"
-const WallBoxWidth = 14
-const WallBoxHeight = 19
-const WallBoxWidthPadding = "5px"
-const WallBoxHeightPadding = "12px"
+const MapBackgroundColor = "white"
 
-const WallBoxWidthCentered = "7px"
-const WallBoxHeightCentered = "10px"
+const BorderThickness = 1.5
+const BorderColor = "black"
+const WallLine = BorderThickness + "px solid " + BorderColor
+
+const WallBoxWidth = 15
+const WallBoxHeight = 15
+
+const WallBoxWidthWithBorder = WallBoxWidth - BorderThickness
+const WallBoxHeightWithBorder = WallBoxHeight - BorderThickness
+
+const PillarBoxWidth = WallBoxWidth - 5
+const PillarBoxHeight = WallBoxHeight - 5
+
+const WallBoxWidthCentered = WallBoxWidthWithBorder/2
+const WallBoxHeightCentered = WallBoxHeightWithBorder/2
 
 const px = "px"
 
@@ -41,13 +50,13 @@ const styles = {
         gridTemplateRows:
             // row1
             "auto " +
-            // row 1
+            // row2
             "25px " +
-            // row 2
-            "235px " +
-            // row 3
+            // row3
+            "245px " +
+            // row4
             "auto " +
-            // row 4
+            // row5
             "auto "
         ,
         gridGap: "10px",
@@ -126,59 +135,114 @@ const styles = {
         // otherwise, the map will be distorted
         minWidth: "300px",
     },
+    MapRow: {
+        height: WallBoxHeight + px,
+    },
     MapObject: {
         display: "inline-block",
-        width: "15px",
-        height: "15px",
+        width: WallBoxWidth + px,
+        height: WallBoxHeight + px,
+    },
+    Player: {
+        boxSizing: "border-box",
+        width: WallBoxWidth + px,
+        height: WallBoxHeight  + px,
+        background: "purple",
+        borderRadius: "50%",
     },
     Wall: {
         Pillar: {
-            border: WallLine,
-            margin: "5px 5px 5px 0px",
-            width: (WallBoxWidth - 6) + px,
-            height: (WallBoxHeight - 10) + px,
+            boxSizing: "border-box",
+            marginTop: (WallBoxHeight - PillarBoxHeight)/2 + px,
+            marginRight: (WallBoxWidth - PillarBoxWidth)/2 + px,
+            marginBottom: (WallBoxHeight - PillarBoxHeight)/2 + px,
+            marginLeft: (WallBoxWidth - PillarBoxWidth)/2 + px,
+            width: PillarBoxWidth + px,
+            height: PillarBoxHeight + px,
             background: "black",
         },
+        Placeholder: {
+            background: "red",
+            width: WallBoxWidth + px,
+            height: WallBoxHeight + px,
+        },
+        // Continous Walls
         NorthToSouth: {
+            boxSizing: "border-box",
             borderLeft: WallLine,
-            marginLeft: WallBoxWidthPadding,
-            width: WallBoxWidthCentered,
+            marginLeft: WallBoxWidthCentered + px,
+            width: BorderThickness + px,
             height: WallBoxHeight + px,
         },
         WestToEast: {
-            borderBottom: WallLine,
-            marginBottom: WallBoxHeightPadding,
+            boxSizing: "border-box",
+            borderTop: WallLine,
+            marginTop: WallBoxHeightCentered + px,
             width: WallBoxWidth + px,
-            height: WallBoxHeightCentered,
+            height: BorderThickness + px,
+
         },
         NorthToEast: {
+            boxSizing: "border-box",
             borderLeft: WallLine,
             borderBottom: WallLine,
-            marginLeft: "5px",
-            width: "9px",
-            height: WallBoxHeightCentered,
+            marginLeft:  WallBoxHeightCentered + px,
+            width: WallBoxWidthCentered + BorderThickness + px,
+            height: WallBoxHeightCentered + BorderThickness + px,
         },
         NorthToWest: {
+            boxSizing: "border-box",
             borderRight: WallLine,
             borderBottom: WallLine,
-            marginLeft: "-1px",
-            width: "4px",
-            height: WallBoxHeightCentered,
+            marginRight:  WallBoxHeightCentered + px,
+            width: WallBoxWidthCentered + BorderThickness + px,
+            height: WallBoxHeightCentered + BorderThickness + px,
         },
         SouthToEast: {
+            boxSizing: "border-box",
             borderLeft: WallLine,
             borderTop: WallLine,
-            marginLeft: "5px",
-            marginTop: "10px",
-            width: "9px",
-            height: WallBoxHeightCentered,
+            marginTop:  WallBoxHeightCentered + px,
+            marginLeft:  WallBoxHeightCentered + px,
+            width: WallBoxWidthCentered + BorderThickness + px,
+            height: WallBoxHeightCentered + BorderThickness + px,
         },
         SouthToWest: {
+            boxSizing: "border-box",
             borderRight: WallLine,
             borderTop: WallLine,
-            marginTop: "10px",
-            width: "5px",
-            height: WallBoxHeightCentered,
+            marginTop:  WallBoxHeightCentered + px,
+            marginRight:  WallBoxHeightCentered + px,
+            width: WallBoxWidthCentered + BorderThickness + px,
+            height: WallBoxHeightCentered + BorderThickness + px,
+        },
+        // T-shaped walls
+        TShapedWallNSE: {
+            boxSizing: "border-box",
+            background: BorderColor,
+            marginLeft: WallBoxHeightCentered + px
+        },
+        NorthSouthAndEast: {
+            boxSizing: "border-box",
+            borderTop: WallBoxWidthCentered + "px solid " + MapBackgroundColor,
+            borderBottom: WallBoxWidthCentered + "px solid " + MapBackgroundColor,
+            marginLeft: BorderThickness + px,
+            width: WallBoxWidthCentered + BorderThickness + px,
+            height: WallBoxHeight + px,
+            background: BorderColor,
+        },
+        TShapedWallNSW: {
+            boxSizing: "border-box",
+            background: BorderColor,
+            marginRight: WallBoxHeightCentered + px
+        },
+        NorthSouthAndWest: {
+            boxSizing: "border-box",
+            borderTop: WallBoxWidthCentered + "px solid " + MapBackgroundColor,
+            borderBottom: WallBoxWidthCentered + "px solid " + MapBackgroundColor,
+            width: WallBoxWidthCentered + px,
+            height: WallBoxHeight + px,
+            background: BorderColor,
         },
     },
     // Various Player Controls
@@ -305,5 +369,10 @@ const styles = {
         fontSize: "10px",
     },
 }
+
+// Odd-shaped walls
+
+styles.Wall.NorthWestEastAndNorthWest = styles.Wall.WestToEast
+styles.Wall.NorthSouthEastAndSouthEast = styles.Wall.NorthToEast
 
 export default styles

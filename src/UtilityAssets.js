@@ -9,14 +9,13 @@ export const UtilityAssets = {
 
     WallMapVisibleRange: {
         x: 10,
-        y: 5,
+        y: 7,
     },
 
     MapObjects: {
         Wall: "X",
         Door: "D",
         Empty: " ",
-        Player: "O",
     },
 
     Directions: {
