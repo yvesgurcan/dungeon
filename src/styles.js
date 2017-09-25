@@ -1,11 +1,36 @@
-const TitleRow = 1
-const MessageRow = 2
-const MainRow = 3
-const ControlRow = 4
-const InventoryRow = 5
+
+let SmallScreen = window.matchMedia( "(max-width: 768px)" ).matches
+
+let TitleRow = 1
+let MessageRow = 2
+let MainRow = 3
+let MapRow = MainRow
+let ControlRow = 4
+let InventoryRow = 5
+
+if (SmallScreen) {
+    TitleRow = 1
+    MessageRow = 2
+    MainRow = 3
+    MapRow = 4
+    ControlRow = 5
+    InventoryRow = 6
+}
 
 const FirstColumn = 1
 const LastColumn = 10
+
+let StoryStartColumn = FirstColumn
+let StoryEndColumn = 6
+let MapStartColumn = 6
+let MapEndColumn = LastColumn
+
+if (SmallScreen) {
+    StoryStartColumn = FirstColumn
+    StoryEndColumn = LastColumn
+    MapStartColumn = FirstColumn
+    MapEndColumn = LastColumn
+}
 
 const HUDBlockPadding = "10px"
 const HUDBorder = "1px solid black"
@@ -55,8 +80,10 @@ const styles = {
             // row3
             "245px " +
             // row4
-            "auto " +
+            (SmallScreen ? "245px " : "") +
             // row5
+            "auto " +
+            // row6
             "auto "
         ,
         gridGap: "10px",
@@ -108,8 +135,8 @@ const styles = {
     },
     // Story
     StoryBlock: {
-        gridColumnStart: FirstColumn,
-        gridColumnEnd: "6",
+        gridColumnStart: StoryStartColumn,
+        gridColumnEnd: StoryEndColumn,
         gridRowStart: MainRow,
         userSelect: "text",
         border: HUDBorder,
@@ -126,9 +153,9 @@ const styles = {
     },
     // Map
     Map: {
-        gridColumnStart: "6",
-        gridColumnEnd: LastColumn,
-        gridRowStart: MainRow,
+        gridColumnStart: MapStartColumn,
+        gridColumnEnd: MapEndColumn,
+        gridRowStart: MapRow,
         border: HUDBorder,
         overflow: "hidden",
         padding: HUDBlockPadding,
