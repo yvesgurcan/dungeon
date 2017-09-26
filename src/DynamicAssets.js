@@ -3,6 +3,13 @@ import UtilityAssets from "./UtilityAssets.js"
 
 export const DynamicAssets = {
 
+
+    // debug
+    ShowFullMap: false
+    ,
+    NoClip: false
+    ,
+
     currentMessage: ""
     ,
 
@@ -15,9 +22,6 @@ export const DynamicAssets = {
     // creates an array without wall information
     WallMapRevealed:
         StaticAssets.WallMap.map(HorizontalLine => HorizontalLine.map(x => " ")),
-
-    ShowFullMap: false
-    ,
 
     Player: {
         x: 1,
@@ -43,28 +47,6 @@ export const DynamicAssets = {
         Items: [],
     },
 
-    LootContainers: [
-        {
-            id: 1,
-            x: 2,
-            y: 4,
-            name: "chest",
-            items: [
-                StaticAssets.UniqueItems.IronKey,
-                UtilityAssets.GenerateRandomItems.Level1
-            ]
-        },
-        {
-            id: 2,
-            x: 7,
-            y: 9,
-            name: "table",
-            items: [
-                StaticAssets.Items.HealthPotion,
-            ]
-        },
-    ],
-
     LockedDoors: [
         {
             Id: 1,
@@ -73,6 +55,38 @@ export const DynamicAssets = {
             key: "IronKey",
         },
     ],
+
+    LootContainers: [
+        {
+            Id: 1,
+            x: 2,
+            y: 4,
+            Name: "chest",
+            items: [
+                StaticAssets.UniqueItems.IronKey,
+                UtilityAssets.GenerateRandomItems.Level1
+            ]
+        },
+        {
+            Id: 2,
+            x: 7,
+            y: 9,
+            Name: "table",
+            items: [
+                StaticAssets.Items.HealthPotion,
+            ]
+        },
+    ],
+
+    Monsters: [
+        {...
+            StaticAssets.Bestiary.Imp,
+            Stationary: true,
+            x: 6,
+            y: 3,
+        },
+    ],
+
 }
 
 export default DynamicAssets

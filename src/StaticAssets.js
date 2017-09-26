@@ -76,7 +76,15 @@ export const StaticAssets = {
             image: "potion_mana",
             Weight: 0.5,
         }
-    }
+    },
+
+    Bestiary: {
+        Imp: {
+            Name: "Imp",
+            Health: 5,
+            Damage: {Min: 1, Max: 3},
+        }
+    },
 
 }
 

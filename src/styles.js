@@ -186,6 +186,14 @@ const styles = {
         background: "orange",
         borderRadius: "50%",
     },
+    Monster: {
+        boxSizing: "border-box",
+        margin: "1.5px",
+        width: WallBoxWidth - 3 + px,
+        height: WallBoxHeight - 3 + px,
+        background: "red",
+        borderRadius: "50%",
+    },
     Wall: {
         Pillar: {
             boxSizing: "border-box",

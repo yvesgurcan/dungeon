@@ -12,7 +12,7 @@ const itemPath = "/graphics/items/"
 const imgExt = ".png"
 
 const {North, South, West, East} = UtilityAssets.Directions
-const {Wall, Door, LootContainer, Undiscovered, Empty} = UtilityAssets.MapObjects
+const {Wall, Door, LootContainer, Enemy, Undiscovered, Empty} = UtilityAssets.MapObjects
 
 /* web components */
 
@@ -184,7 +184,7 @@ class Inventory extends Component {
         <ItemImageBlock
           key={index}
           image={(item && item.image) || null}
-          name={(item && item.name) || null}/>
+          name={(item && item.Name) || null}/>
       )
     })
 
@@ -502,7 +502,7 @@ class Loot extends Component {
       <ItemImageBlock
         onClick={this.onClick}
         image={(item && item.image) || null}
-        name={(item && item.name) || null}
+        name={(item && item.Name) || null}
         {... this.props}/>      
     )
   }
@@ -568,7 +568,7 @@ class Event extends Component {
 
         if (event.items.length === 0) {
           if (!Stationary) {
-            event.name = "empty " + event.name.replace("empty ","")
+            event.Name = "empty " + event.Name.replace("empty ","")
           }
         }
         else {
@@ -579,7 +579,7 @@ class Event extends Component {
           return (
             <Text key={index}>
               <Text>The  </Text>
-              <Text>{event.name}</Text>
+              <Text>{event.Name}</Text>
               <Text> is empty.</Text>
               <ClearFloat />
             </Text>
@@ -589,11 +589,11 @@ class Event extends Component {
           return (
             <Text key={index}>
               <Text>You found </Text>
-              <Text>{this.ItemArticle(event.name)}</Text>
+              <Text>{this.ItemArticle(event.Name)}</Text>
               <Text> </Text>
-              <Text>{event.name}</Text>
+              <Text>{event.Name}</Text>
               <Text>.</Text>
-              <LootList items={event.items} lootContainerId={event.id} {... this.props} />
+              <LootList items={event.items} lootContainerId={event.Id} {... this.props} />
               <ClearFloat />
             </Text>
           )
@@ -659,7 +659,7 @@ class Map extends Component {
               ) {
                 return (
                   <Text key={x} style={Styles.MapObject} title={[x, y].join(",")}>
-                    {this.DrawMapObject(MapObject, MapObjectRevealed, x, y)}
+                    {this.DrawMonster({x, y}) || this.DrawMapObject(MapObject, MapObjectRevealed, x, y)}
                   </Text>
                 )
               }
@@ -678,9 +678,24 @@ class Map extends Component {
     })
   }
 
+  DrawMonster = ({x, y}) => {
+
+    let {Player, MonsterMap, ShowFullMap} = this.props
+
+    if (ShowFullMap || x >= Player.x - 1 && x <= Player.x + 1 && y >= Player.y - 1 && y <= Player.y + 1) {
+      if (MonsterMap[y][x] === Enemy) {
+        if (x === Player.x && y === Player.y) {
+          return null
+        }
+        return <Block style={Styles.Monster} />
+      }
+    }
+    return null
+  }
+
   DrawMapObject = (MapObject, MapObjectRevealed, x, y) => {
 
-    let { Player, WallMap, WallMapRevealed, ShowFullMap, LootMap } = this.props
+    let {Player, ShowFullMap, WallMap, WallMapRevealed, DiscoveryMap, LootMap, MonsterMap} = this.props
 
     // player marker
     if (x === Player.x && y === Player.y) {
@@ -693,7 +708,6 @@ class Map extends Component {
       if (MapObjectRevealed === MapObject || ShowFullMap) {
 
         if (MapObject === Wall) {
-
 
           // grab neighboring objects (if vertically out of range, assume that what is outside is walls)
           let topRow = y-1 >= 0 ? WallMap[y-1].slice(x-1, x+2) : [Wall, Wall, Wall]
@@ -722,8 +736,8 @@ class Map extends Component {
           return this.DrawWall(MapObjectInContext, MapObject)
 
         }
-        // this is a loot container
-        else if (LootMap[y][x] === LootContainer) {
+        // this is a loot container and it is part of the map that has been explored
+        else if (LootMap[y][x] === LootContainer && (DiscoveryMap[y][x] === Empty || ShowFullMap)) {
           return <Block style={Styles.Loot} />
         }
 
@@ -731,7 +745,6 @@ class Map extends Component {
         return <Block style={{textAlign: "center"}}>{MapObject}</Block>
 
       }
-
 
       else {
 
@@ -1046,7 +1059,7 @@ class Game extends Component {
     })
 
     // create discovery map, given player start position
-      let DiscoveryMap = JSON.parse(JSON.stringify(StaticAssets.WallMap.map((HorizontalLine, y) => HorizontalLine.map((MapObject, x) => {
+    initState.DiscoveryMap = JSON.parse(JSON.stringify(StaticAssets.WallMap.map((HorizontalLine, y) => HorizontalLine.map((MapObject, x) => {
         if ((x >= DynamicAssets.Player.x - 1 && x <= DynamicAssets.Player.x + 1) && (y >= DynamicAssets.Player.y - 1 && y <= DynamicAssets.Player.y + 1)) {
           return Empty
         }
@@ -1055,8 +1068,6 @@ class Game extends Component {
         }
       }))
     ))
-
-    initState.DiscoveryMap = DiscoveryMap
 
     // create the map of loot containers
     let LootMap = JSON.parse(JSON.stringify(StaticAssets.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))))
@@ -1067,6 +1078,16 @@ class Game extends Component {
     })
 
     initState.LootMap = LootMap
+
+    // create the map of monster locations
+    let MonsterMap = JSON.parse(JSON.stringify(StaticAssets.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))))
+
+    DynamicAssets.Monsters.map(Monster => {
+      MonsterMap[Monster.y][Monster.x] = Enemy
+      return null
+    })
+
+    initState.MonsterMap = MonsterMap
 
     // give the player first randomly generated stats
     initState.Player = this.GeneratePlayerStats(initState.Player)
@@ -1225,7 +1246,7 @@ class Game extends Component {
 
     // check if there is a locked door in the way
     let Door = this.CheckLockedDoors(targetCoordinates)
-    if (Door.Locked) {
+    if (Door.Locked && !State.NoClip) {
       let LockedDoor = this.UnlockDoor(Door.Object)
       if (LockedDoor.Unlocked) {
         let UnlockMessage =
@@ -1253,8 +1274,8 @@ class Game extends Component {
       return
     }
 
-    // show things, such as loot and monsters
-    this.RevealThings(targetCoordinates)
+    // update the data about which parts of the map were revealed, in order to show loot containers on the map
+    State.DiscoveryMap = this.UpdateDiscoveryMap(targetCoordinates)
 
     // add containers to the list of events
     State.currentEvent = this.CheckLootContainers(targetCoordinates)
@@ -1298,21 +1319,29 @@ class Game extends Component {
 
   DetectCollision = ({ x, y }) => {
 
-    let State = this.state
+    let {WallMap, MonsterMap, NoClip} = this.state
+
+    if (NoClip) {
+      return true
+    }
 
     // can not get out of the map boundaries
-    if (y < 0 || x < 0 || y >= State.WallMap.length || x >= State.WallMap[y].length ) {
+    if (y < 0 || x < 0 || y >= WallMap.length || x >= WallMap[y].length ) {
       return false
     }
 
-    // target is, apparently, empty
-    let targetCoordinates = State.WallMap[y][x]
-    if (targetCoordinates === Empty) {
+    // target is a monster
+    if (MonsterMap[y][x] === Enemy) {
+      return false
+    }
+
+    // target is empty or non-blocking
+    if (WallMap[y][x] === Empty) {
       return true
     }
 
     // target is a door
-    if (targetCoordinates === Door) {
+    if (WallMap[y][x] === Door) {
       // check if the door is locked
       let Door = this.CheckLockedDoors({ x, y })
       if (Door.Locked) {
@@ -1326,8 +1355,27 @@ class Game extends Component {
     return false
   }
 
-  RevealThings = ({x, y}) => {
-    let 
+  UpdateDiscoveryMap = ({x, y}) => {
+
+    let {DiscoveryMap} = this.state
+
+    let NewDiscoveryMap = DiscoveryMap.map((HorizontalLine, MapY) => {
+      return HorizontalLine.map((MapObject, MapX) => {
+        if (MapY >= y-1 && MapY <= y+1 && MapX >= x-1 && MapX <= x+1) {
+          return Empty
+        }
+        else {
+          return MapObject
+        }
+      })
+    })
+
+    return NewDiscoveryMap
+
+  }
+
+  RevealThings = () => {
+
   }
 
   CheckLockedDoors = ({ x, y }) => {
@@ -1431,7 +1479,7 @@ class Game extends Component {
     // TODO: check if there is room in the inventory
 
     let matchLootContainer = LootContainers.filter(lootContainer => {
-      return lootContainer.id === containerId
+      return lootContainer.Id === containerId
     })[0]
 
 

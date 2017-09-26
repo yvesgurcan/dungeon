@@ -16,6 +16,7 @@ export const UtilityAssets = {
         Wall: "X",
         Door: "D",
         LootContainer: "L",
+        Enemy: "M",
         Undiscovered: "U",
         Empty: " ",
     },
