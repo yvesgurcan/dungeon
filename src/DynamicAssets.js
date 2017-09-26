@@ -49,7 +49,6 @@ export const DynamicAssets = {
             x: 2,
             y: 4,
             name: "chest",
-            article: "a",
             items: [
                 StaticAssets.UniqueItems.IronKey,
                 UtilityAssets.GenerateRandomItems.Level1

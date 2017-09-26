@@ -680,7 +680,7 @@ class Map extends Component {
 
   DrawMapObject = (MapObject, MapObjectRevealed, x, y) => {
 
-    let { Player, WallMap, WallMapRevealed, ShowFullMap } = this.props.state
+    let { Player, WallMap, WallMapRevealed, ShowFullMap, LootMap } = this.props
 
     // player marker
     if (x === Player.x && y === Player.y) {
@@ -721,6 +721,10 @@ class Map extends Component {
           // it's a wall
           return this.DrawWall(MapObjectInContext, MapObject)
 
+        }
+        // this is a loot container
+        else if (LootMap[y][x] === UtilityAssets.MapObjects.Loot) {
+          return <Block style={Styles.Loot} />
         }
 
         // it's a door
@@ -1029,7 +1033,7 @@ class Game extends Component {
       {WallMapVisibleRange: UtilityAssets.WallMapVisibleRange},
     )
 
-    // create the list of random items to draw from, grouped by level
+    // create the list of random items to draw from when looting, grouped by level
     initState.RandomItems = {}
 
     Object.keys(initState.Items).map(itemObjectName => {
@@ -1041,6 +1045,17 @@ class Game extends Component {
       return null
     })
 
+    // create the map of loot containers
+    let LootMap = JSON.parse(JSON.stringify(StaticAssets.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))))
+
+    DynamicAssets.LootContainers.map(Container => {
+      LootMap[Container.y][Container.x] = UtilityAssets.MapObjects.Loot
+      return null
+    })
+
+    initState.LootMap = LootMap
+
+    // give the player first randomly generated stats
     initState.Player = this.GeneratePlayerStats(initState.Player)
 
     this.state = initState
@@ -1049,12 +1064,6 @@ class Game extends Component {
 
   componentWillMount() {
     document.addEventListener("keydown", this.ListenToKeyboard, false)
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-  }
-
-  componentDidUpdate(nextProps, nextState) {
   }
 
   RandomIntegerFromRange = (min, max) => {

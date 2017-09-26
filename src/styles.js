@@ -34,6 +34,7 @@ if (SmallScreen) {
 
 const HUDBlockPadding = "10px"
 const HUDBorder = "1px solid black"
+const HUDStatBarHeight = "10px"
 
 const ButtonNormalBackground = "lightgray"
 const ButtonHoverBackground = "darkgray"
@@ -177,6 +178,14 @@ const styles = {
         background: "purple",
         borderRadius: "50%",
     },
+    Loot: {
+        boxSizing: "border-box",
+        margin: "1.5px",
+        width: WallBoxWidth - 3 + px,
+        height: WallBoxHeight - 3 + px,
+        background: "orange",
+        borderRadius: "50%",
+    },
     Wall: {
         Pillar: {
             boxSizing: "border-box",
@@ -304,18 +313,15 @@ const styles = {
     },
     HealthBar: {
         background: "red",
-        // width: "100%",
-        height: "10px",
+        height: HUDStatBarHeight,
     },
     ManaBar: {
         background: "blue",
-        // width: "100%",
-        height: "10px",
+        height: HUDStatBarHeight,
     },
     StaminaBar: {
         background: "green",
-        // width: "100%",
-        height: "10px",
+        height: HUDStatBarHeight,
     },
     // Directional Arrows
     ArrowContainer: {

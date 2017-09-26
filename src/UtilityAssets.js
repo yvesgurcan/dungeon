@@ -15,6 +15,7 @@ export const UtilityAssets = {
     MapObjects: {
         Wall: "X",
         Door: "D",
+        Loot: "L",
         Empty: " ",
     },
 
