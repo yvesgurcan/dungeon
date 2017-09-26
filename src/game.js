@@ -192,9 +192,14 @@ class Inventory extends Component {
   }
 
   render() {
+    let {Player, Backpack} = this.props
     return (
       <View style={Styles.Inventory}>
         {this.DisplayInventory()}
+        <ClearFloat/>
+        <Text>
+          Weight: {Number(Backpack.Weight).toFixed(2)} / {Player.MaxWeight} lbs
+        </Text>
       </View>
     )
   }
@@ -355,21 +360,69 @@ class Actions extends Component {
 
 /* player stats */
 
+class StatBar extends Component {
+  render() {
+    return (
+      <View>
+        <Block
+          style={Styles.StatBar} 
+          title={this.props.ratio || (this.props.current + "/" + this.props.max)}>
+          <Block
+            style={this.props.style}/>
+        </Block>
+      </View>
+    )
+  }
+}
+
+class StaminaBar extends Component {
+  render() {
+    let style = {... Styles.StaminaBar, width: Math.min(100, Math.ceil(this.props.current/this.props.max * 100)) + "%"}
+    return (
+      <View>
+        <StatBar style={style} ratio={Styles.StaminaBar.width}/>
+      </View>
+    )
+  }
+}
+
+class ManaBar extends Component {
+  render() {
+    let style = {... Styles.ManaBar, width: Math.min(100, this.props.current/this.props.max * 100) + "%"}
+    return (
+      <View>
+        <StatBar style={style} max={this.props.max} current={this.props.current}/>
+      </View>
+    )
+  }
+}
+
+class HealthBar extends Component {
+  render() {
+    let style = {... Styles.HealthBar, width: Math.min(100, this.props.current/this.props.max * 100) + "%"}
+    return (
+      <View>
+        <StatBar style={style} max={this.props.max} current={this.props.current}/>
+      </View>
+    )
+  }
+}
+
 class PlayerStats1 extends Component {
   render() {
     return (
       <View style={Styles.PlayerStats1}>
         <Block style={Styles.PlayerStat}>
-          Health:
-          <br />{this.props.Player.Health}/{this.props.Player.MaxHealth}
+          Health
+          <HealthBar current={this.props.Player.Health} max={this.props.Player.MaxHealth}/>
         </Block>
         <Block style={Styles.PlayerStat}>
           Mana:
-          <br />{this.props.Player.Mana}/{this.props.Player.MaxMana}
+          <ManaBar current={this.props.Player.Mana} max={this.props.Player.MaxMana}/>
         </Block>
         <Block style={Styles.PlayerStat}>
           Stamina:
-          <br />{this.props.Player.Stamina * 100}%
+          <StaminaBar current={this.props.Player.Stamina} max={this.props.Player.MaxStamina}/>
         </Block>
       </View>
     )
@@ -391,6 +444,9 @@ class PlayerStats2 extends Component {
         </Block>
         <Block style={Styles.PlayerStat}>
           Dexterity: {this.props.Player.Dexterity}
+        </Block>
+        <Block style={Styles.PlayerStat}>
+          Intelligence: {this.props.Player.Intelligence}
         </Block>
       </View>
     )
@@ -609,7 +665,7 @@ class Map extends Component {
               }
               // out of sight X
               else {
-                return Empty
+                return <Text key={x}>{Empty}</Text>
               }
             })}
           </View>
@@ -617,7 +673,7 @@ class Map extends Component {
       }
       // out of sight Y
       else {
-        return Empty
+        return <View key={y}>{Empty}</View>
       }
     })
   }
@@ -996,26 +1052,9 @@ class Game extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-
-    // set timer to clear message after it has been displayed
-    if (nextState.curentMessage !== " ") {
-      setTimeout(function () {
-        if (nextState.currentMessage !== "") {
-          this.setState({ currentMessage: "" })
-        }
-      }.bind(this), 2000)
-    }
-
-    if (nextState.arrowStyle !== null) {
-      setTimeout(function () {
-        this.setState({ arrowStyle: null })
-      }.bind(this), 50)
-    }
-
   }
 
   componentDidUpdate(nextProps, nextState) {
-
   }
 
   RandomIntegerFromRange = (min, max) => {
@@ -1072,10 +1111,27 @@ class Game extends Component {
 
   }
 
+  ResetMessage = () => {
+    setTimeout(function () {
+      if (this.state.currentMessage !== "") {
+        this.setState({ currentMessage: "" })
+      }
+    }.bind(this), 2000)
+  }
+
   onClickArrow = (key) => {
     let arrowStyle = {}
     arrowStyle[key] = Styles.ArrowBlockClick
     this.setState({ arrowStyle: arrowStyle })
+    this.ResetArrowStyle()
+  }
+
+  ResetArrowStyle = () => {
+    if (this.state.arrowStyle !== null) {
+      setTimeout(function () {
+        this.setState({ arrowStyle: null })
+      }.bind(this), 50)
+    }
   }
 
   GeneratePlayerStats = (Player) => {
@@ -1084,9 +1140,58 @@ class Game extends Component {
     Player.Constitution = this.RandomIntegerFromRange(10,20)
     Player.Strength = this.RandomIntegerFromRange(10,20)
     Player.Dexterity = this.RandomIntegerFromRange(10,20)
+    Player.Intelligence = this.RandomIntegerFromRange(10,20)
+    Player.MaxWeight = this.CalculateMaxWeight(Player)
+    Player.MaxHealth = Player.Health = this.CalculateMaxHealth(Player)
+    Player.MaxMana = Player.Mana = this.CalculateMaxMana(Player)
+    Player.MaxStamina = Player.Stamina = this.CalculateMaxStamina(Player)
 
     return Player
 
+  }
+
+  CalculateMaxWeight = (Player) => {
+    // level up
+    if (Player.MaxWeight) {
+      return Math.ceil((Player.Constitution * 1.25) + (Player.Strength * 1.75))
+    }
+    // new player
+    else {
+      return Math.ceil((Player.Constitution * 1.25) + (Player.Strength * 1.75))
+    }
+  }
+
+  CalculateMaxHealth = (Player) => {
+    // level up
+    if (Player.MaxHealth) {
+      return Math.ceil((Player.MaxHealth * 1.1) + Player.Luck/6)
+    }
+    // new player
+    else {
+      return Math.ceil((Player.Constitution * 2.25) + (Player.Strength/3) + this.RandomIntegerFromRange(-3, Player.Luck/3))
+    }
+  }
+
+  CalculateMaxMana = (Player) => {
+    // level up
+    if (Player.MaxMana) {
+      return Math.ceil((Player.MaxMana * 1.1) + Player.Luck/4)
+    }
+    // new player
+    else {
+     return Math.ceil((Player.Intelligence) * 1.45) + this.RandomIntegerFromRange(-4, Player.Luck/4)
+    }
+  }
+
+  CalculateMaxStamina = (Player) => {
+    // level up
+    if (Player.MaxStamina) {
+      return Math.ceil(Player.MaxStamina * 1.5)
+    }
+    // new player
+    else {
+     return Math.ceil((Player.Strength) * 5) + this.RandomIntegerFromRange(-5, Player.Luck/2)
+    }
   }
 
   MovePlayer = (Direction) => {
@@ -1106,16 +1211,23 @@ class Game extends Component {
           LockedDoor.Key +
           StaticAssets.PartialMessages.Period
         this.setState({ currentMessage: UnlockMessage})
+        this.ResetMessage()
       }
       else {
-        this.setState({ currentMessage: StaticAssets.Messages.LockedDoor })
+        this.setState({
+          currentMessage: StaticAssets.Messages.LockedDoor
+        })
+        this.ResetMessage()
       }
       return
     }
 
     // the player can not go there (there is a wall in the way)
     if (!this.DetectCollision(targetCoordinates)) {
-      this.setState({ currentMessage: StaticAssets.Messages.Collision })
+      this.setState({
+        currentMessage: StaticAssets.Messages.Collision
+      })
+      this.ResetMessage()
       return
     }
 
@@ -1126,6 +1238,9 @@ class Game extends Component {
     State.Player.x = targetCoordinates.x
     State.Player.y = targetCoordinates.y
     State.Stationary = false
+
+    // update player stats
+    State.Player.Stamina = State.Player.Stamina - 1
 
     // check if the text needs to be updated
     this.UpdateText(targetCoordinates)
@@ -1274,6 +1389,7 @@ class Game extends Component {
     })
 
     Backpack.Items = Backpack.Items.concat(loot)
+    this.RecalculateInventoryWeight(Backpack.Items)
 
     this.setState({Backpack: Backpack, Stationary: true})
 
@@ -1297,6 +1413,21 @@ class Game extends Component {
       this.setState({currentEvent: this.state.currentEvent})
     })
 
+  }
+
+  RecalculateInventoryWeight = (Items) => {
+
+    let {Backpack} = this.state
+
+    if (Items) {
+      Backpack.Weight = Items.map(Item => {return Item.Weight}).reduce((sum, val) => sum + val)
+    }
+    else {
+      Backpack.Weight = Backpack.Items.map(Item => {return Item.Weight}).reduce((sum, val) => sum + val)
+    }
+
+    this.setState({Backpack: Backpack})
+    
   }
 
   UpdateText = ({ x, y }) => {

@@ -22,23 +22,25 @@ export const DynamicAssets = {
     Player: {
         x: 1,
         y: 2,
+        Level: 1,
         Health: 0,
         MaxHealth: 0,
         Mana: 0,
         MaxMana: 0,
-        Stamina: 1,
+        Stamina: null,
+        MaxStamina: null,
         MaxWeight: null,
         Luck: null,
         Constitution: null,
         Strength: null,
         Dexterity: null,
+        Intelligence: null,
     },
 
     Backpack: {
         maxItems: 5,
-        Items: [
-            StaticAssets.Items.ManaPotion,
-        ],
+        Weight: 0,
+        Items: [],
     },
 
     LootContainers: [

@@ -295,6 +295,28 @@ const styles = {
     PlayerStat: {
         paddingBottom: "5px",
     },
+    StatBar: {
+        boxSizing: "border-box",
+        width: "100%",
+        height: "14px",
+        padding: "1px",
+        border: "1px solid gray",
+    },
+    HealthBar: {
+        background: "red",
+        // width: "100%",
+        height: "10px",
+    },
+    ManaBar: {
+        background: "blue",
+        // width: "100%",
+        height: "10px",
+    },
+    StaminaBar: {
+        background: "green",
+        // width: "100%",
+        height: "10px",
+    },
     // Directional Arrows
     ArrowContainer: {
         gridColumnStart: "2",

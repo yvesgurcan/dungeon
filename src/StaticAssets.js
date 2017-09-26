@@ -56,7 +56,8 @@ export const StaticAssets = {
             type: "key",
             Name: "iron key",
             DoorId: 1,
-            image: "key"
+            image: "key",
+            Weight: 0.1
         }
     },
 
@@ -65,13 +66,15 @@ export const StaticAssets = {
             level: 1,
             type: "potion",
             name: "health potion",
-            image: "potion_health"
+            image: "potion_health",
+            Weight: 0.5,
         },
         ManaPotion: {
             level: 1,
             type: "potion",
             name: "mana potion",
-            image: "potion_mana"
+            image: "potion_mana",
+            Weight: 0.5,
         }
     }
 
