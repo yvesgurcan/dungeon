@@ -16,7 +16,7 @@ export const DynamicAssets = {
     WallMapRevealed:
         StaticAssets.WallMap.map(HorizontalLine => HorizontalLine.map(x => " ")),
 
-    ShowFullMap: true
+    ShowFullMap: false
     ,
 
     Player: {
@@ -49,12 +49,20 @@ export const DynamicAssets = {
             x: 2,
             y: 4,
             name: "chest",
-            article: "a",
             items: [
                 StaticAssets.UniqueItems.IronKey,
                 UtilityAssets.GenerateRandomItems.Level1
             ]
-        }
+        },
+        {
+            id: 2,
+            x: 7,
+            y: 9,
+            name: "table",
+            items: [
+                StaticAssets.Items.HealthPotion,
+            ]
+        },
     ],
 
     LockedDoors: [

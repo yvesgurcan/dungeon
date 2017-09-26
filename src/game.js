@@ -12,7 +12,7 @@ const itemPath = "/graphics/items/"
 const imgExt = ".png"
 
 const {North, South, West, East} = UtilityAssets.Directions
-const {Wall, Door, Empty} = UtilityAssets.MapObjects
+const {Wall, Door, LootContainer, Undiscovered, Empty} = UtilityAssets.MapObjects
 
 /* web components */
 
@@ -472,7 +472,7 @@ class Message extends Component {
   render() {
     return (
       <View style={Styles.Message}>
-        {this.props.state.currentMessage}
+        {this.props.currentMessage}
       </View>
     )
   }
@@ -680,7 +680,7 @@ class Map extends Component {
 
   DrawMapObject = (MapObject, MapObjectRevealed, x, y) => {
 
-    let { Player, WallMap, WallMapRevealed, ShowFullMap } = this.props.state
+    let { Player, WallMap, WallMapRevealed, ShowFullMap, LootMap } = this.props
 
     // player marker
     if (x === Player.x && y === Player.y) {
@@ -721,6 +721,10 @@ class Map extends Component {
           // it's a wall
           return this.DrawWall(MapObjectInContext, MapObject)
 
+        }
+        // this is a loot container
+        else if (LootMap[y][x] === LootContainer) {
+          return <Block style={Styles.Loot} />
         }
 
         // it's a door
@@ -1029,7 +1033,7 @@ class Game extends Component {
       {WallMapVisibleRange: UtilityAssets.WallMapVisibleRange},
     )
 
-    // create the list of random items to draw from, grouped by level
+    // create the list of random items to draw from when looting, grouped by level
     initState.RandomItems = {}
 
     Object.keys(initState.Items).map(itemObjectName => {
@@ -1041,20 +1045,38 @@ class Game extends Component {
       return null
     })
 
+    // create discovery map, given player start position
+      let DiscoveryMap = JSON.parse(JSON.stringify(StaticAssets.WallMap.map((HorizontalLine, y) => HorizontalLine.map((MapObject, x) => {
+        if ((x >= DynamicAssets.Player.x - 1 && x <= DynamicAssets.Player.x + 1) && (y >= DynamicAssets.Player.y - 1 && y <= DynamicAssets.Player.y + 1)) {
+          return Empty
+        }
+        else {
+          return Undiscovered
+        }
+      }))
+    ))
+
+    initState.DiscoveryMap = DiscoveryMap
+
+    // create the map of loot containers
+    let LootMap = JSON.parse(JSON.stringify(StaticAssets.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))))
+
+    DynamicAssets.LootContainers.map(Container => {
+      LootMap[Container.y][Container.x] = LootContainer
+      return null
+    })
+
+    initState.LootMap = LootMap
+
+    // give the player first randomly generated stats
     initState.Player = this.GeneratePlayerStats(initState.Player)
-
+    
     this.state = initState
-
+    
   }
 
   componentWillMount() {
     document.addEventListener("keydown", this.ListenToKeyboard, false)
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-  }
-
-  componentDidUpdate(nextProps, nextState) {
   }
 
   RandomIntegerFromRange = (min, max) => {
@@ -1468,7 +1490,7 @@ class Game extends Component {
         <Header/>
         {/* row 2 */}
         <Contact/>
-        <Message {... this} />
+        <Message {... this} {... this.state} />
         {/* row 3 */}
         <StoryBlock>
           <Story {... this.state} />
