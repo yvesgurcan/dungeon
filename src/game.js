@@ -1222,7 +1222,7 @@ class Game extends Component {
       return
     }
 
-    // the player can not go there (there is a wall in the way)
+    // the player can not go there (there is a wall/door in the way)
     if (!this.DetectCollision(targetCoordinates)) {
       this.setState({
         currentMessage: StaticAssets.Messages.Collision
@@ -1230,6 +1230,9 @@ class Game extends Component {
       this.ResetMessage()
       return
     }
+
+    // show things, such as loot and monsters
+    this.RevealThings(targetCoordinates)
 
     // add containers to the list of events
     State.currentEvent = this.CheckLootContainers(targetCoordinates)
@@ -1299,6 +1302,10 @@ class Game extends Component {
     }
 
     return false
+  }
+
+  RevealThings = ({x, y}) => {
+    let 
   }
 
   CheckLockedDoors = ({ x, y }) => {
