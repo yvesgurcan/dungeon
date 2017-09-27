@@ -81,8 +81,8 @@ export const StaticAssets = {
     Bestiary: {
         Imp: {
             Name: "imp",
-            Health: 5,
-            Damage: {Min: 1, Max: 3},
+            Health: 14,
+            Damage: {Min: 2, Max: 5},
         }
     },
 

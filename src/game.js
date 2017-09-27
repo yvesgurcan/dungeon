@@ -381,7 +381,7 @@ class StaminaBar extends Component {
     let style = {... Styles.StaminaBar, width: Math.min(100, Math.ceil(this.props.current/this.props.max * 100)) + "%"}
     return (
       <View>
-        <StatBar style={style} ratio={Styles.StaminaBar.width}/>
+        <StatBar style={style} ratio={style.width}/>
       </View>
     )
   }
@@ -473,7 +473,7 @@ class Message extends Component {
   render() {
     return (
       <View style={Styles.Message}>
-        {this.props.currentMessage}
+        {this.props.permanentMessage || this.props.currentMessage}
       </View>
     )
   }
@@ -563,7 +563,7 @@ class Event extends Component {
           return (
             <Text key={index}>
               <Text>The  </Text>
-              <Text>{event.Name}</Text>
+              <Text>{event.Name.replace("empty","")}</Text>
               <Text> is empty.</Text>
               <ClearFloat />
             </Text>
@@ -1085,17 +1085,20 @@ class Game extends Component {
   }
 
   RandomDirection = (array) => {
-    let randomY = Math.floor(Math.random() * (array.length - 1))
-    let randomX = Math.floor(Math.random() * (array[randomY].length - 1))
+
+    array = array.filter(HorizontalLine => HorizontalLine.length > 0)
+
+    let randomY = Math.floor(Math.random() * (array.length))
+    let randomX = Math.floor(Math.random() * (array[randomY].length))
     return array[randomY][randomX]
   }
 
   RandomIntegerFromRange = (min, max) => {
-    return Math.floor(Math.random() * (max - min + 1)) + min
+    return Math.floor(Math.random() * (Math.floor(max) - Math.floor(min) + 1)) + Math.floor(min)
   }
 
   RandomInteger = (max = 100) => {
-    return Math.floor(Math.random() * max)
+    return Math.floor(Math.random() * Math.floor(max))
   }
 
   RollD20 = () => {
@@ -1108,10 +1111,15 @@ class Game extends Component {
 
   ListenToKeyboard = (keypress) => {
 
+    let {Player} = this.state
+
     // console.log(keypress)
 
     keypress.preventDefault()
 
+    if (Player.Dead) return false
+
+    // in-game keyboard controls
     switch (keypress.key) {
 
       default:
@@ -1142,6 +1150,10 @@ class Game extends Component {
 
     }
 
+  }
+
+  SetPermanentMessage = (Message) => {
+    this.setState({ permanentMessage: Message})
   }
 
   SetMessage = (Message) => {
@@ -1231,9 +1243,12 @@ class Game extends Component {
     }
   }
 
-  MovePlayer = (Direction) => {
+  MovePlayer = (Direction) => {      
 
-    let {Player, DiscoveryMap, currentEvent, Stationary, NoClip} = this.state
+    let {Player, DiscoveryMap, MonsterMap, currentEvent, Stationary, NoClip} = this.state
+    let UpdateState = true
+
+    if (Player.Dead) return false
 
     // get the target coordinates
     let targetCoordinates = this.MoveObject(
@@ -1260,13 +1275,23 @@ class Game extends Component {
       return
     }
 
-    // the player can not go there (there is a wall/door in the way)
-    if (!this.DetectCollision(targetCoordinates)) {
-      this.setState({
-        currentMessage: StaticAssets.Messages.Collision
-      })
-      this.ResetMessage()
-      return
+    // player is attacking a monster
+    if (MonsterMap[targetCoordinates.y][targetCoordinates.x] !== Empty) {
+      UpdateState = false
+      this.AttackMonster(targetCoordinates)
+
+    }
+    else {
+
+      // the player can not go there (there is a wall/door in the way)
+      if (!this.DetectCollision(targetCoordinates)) {
+        this.setState({
+          currentMessage: StaticAssets.Messages.Collision
+        })
+        this.ResetMessage()
+        return
+      }
+
     }
 
     // wake up any monster in the vicinity of the player
@@ -1276,28 +1301,31 @@ class Game extends Component {
     this.MoveMonsters(targetCoordinates)
 
     // update state
+    if (UpdateState) {
 
-    // init
-    let State = this.state
-    
-    // update the data about which parts of the map were revealed, in order to show loot containers on the map
-    State.DiscoveryMap = this.UpdateDiscoveryMap(targetCoordinates)
+      // init
+      let State = this.state
+      
+      // update the data about which parts of the map were revealed, in order to show loot containers on the map
+      State.DiscoveryMap = this.UpdateDiscoveryMap(targetCoordinates)
 
-    // add containers to the list of events
-    State.currentEvent = this.CheckLootContainers(targetCoordinates)
+      // add containers to the list of events
+      State.currentEvent = this.CheckLootContainers(targetCoordinates)
 
-    // save the new coordinates
-    State.Player.x = targetCoordinates.x
-    State.Player.y = targetCoordinates.y
-    State.Stationary = false
+      // save the new coordinates
+      State.Player.x = targetCoordinates.x
+      State.Player.y = targetCoordinates.y
+      State.Stationary = false
 
-    // update player stats
-    State.Player.Stamina = State.Player.Stamina - 1
+      // update player stats
+      State.Player.Stamina = State.Player.Stamina - 1
 
-    // check if the text needs to be updated
-    this.UpdateText(targetCoordinates)
+      // check if the text needs to be updated
+      this.UpdateText(targetCoordinates)
 
-    this.setState(State)
+      this.setState(State)
+
+    }
   }
 
   MoveObject = (originalCoordinates, Direction) => {
@@ -1397,7 +1425,7 @@ class Game extends Component {
 
   UnlockDoor = (Door) => {
 
-    let {Backpack} = this.state
+    let {Backpack, WallMap} = this.state
 
     let matchKey = Backpack.Items.filter(Item => {
       return Item.DoorId === Door.Id
@@ -1451,7 +1479,9 @@ class Game extends Component {
 
   TakeAllLoot = () => {
 
-    let {currentEvent, Backpack} = this.state
+    let {currentEvent, Backpack, Player} = this.state
+
+    if (Player.Dead) return false
 
     // TODO: check if there is room in the inventory
 
@@ -1467,16 +1497,21 @@ class Game extends Component {
       return null
     })
 
-    Backpack.Items = Backpack.Items.concat(loot)
-    this.RecalculateInventoryWeight(Backpack.Items)
+    if (loot.length > 0) {
 
-    this.setState({Backpack: Backpack, Stationary: true})
+      Backpack.Items = Backpack.Items.concat(loot)
+      this.RecalculateInventoryWeight(Backpack.Items)
+      this.setState({Backpack: Backpack, Stationary: true})
+
+    }
 
   }
 
   TakeSingleLoot = (lootIndex, containerId) => {
     
-    let {LootContainers, Backpack} = this.state
+    let {LootContainers, Backpack, Player} = this.state
+
+    if (Player.Dead) return false
 
     // TODO: check if there is room in the inventory
 
@@ -1523,21 +1558,20 @@ class Game extends Component {
     MonsterAwake.ChasePlayer = true
     MonsterAwake.Stationary = false
 
-    this.SetMessage(Functions.IndefiniteArticle(MonsterAwake.Name, true) + " " + MonsterAwake.Name + " noticed you!")
     this.ResetMessage()
 
   }
 
-  MoveMonsters = () => {
+  MoveMonsters = (PlayerNewCoordinates) => {
     let {Monsters, Player} = this.state
 
     let MovingMonsters = Monsters.filter(Monster => {
-      return Monster.ChasePlayer || !Monster.Stationary
+      return !Monster.Dead && (Monster.ChasePlayer || !Monster.Stationary)
     })
 
     MovingMonsters.map(Monster => {
       if (Monster.ChasePlayer) {
-        return this.ChasePlayer(Monster, Player)
+        return this.ChasePlayer(Monster, PlayerNewCoordinates)
       }
       else {
         return this.Patrol(Monster)
@@ -1547,22 +1581,26 @@ class Game extends Component {
 
   }
 
-  ChasePlayer = (Monster, Player) => {
-
-  }
-
   Patrol = (Monster) => {
 
     let {MonsterMap} = this.state
 
     let Surroundings = this.GetSurroundingWalls({x: Monster.x, y: Monster.y})
-    console.log(Surroundings)
 
     // indicate coordinates in the array
     Surroundings = Surroundings.map((HorizontalLine, y) => {
       return HorizontalLine.map((MapObject, x) => {
         if (MapObject === Empty) {
-          return {x: x, y: y}
+          // do not let monsters move diagonally
+          if (
+            (x === 0 && y === 0)
+            || (x === 2 && y === 2)
+            || (x === 2 && y === 0)
+            || (x === 0 && y === 2)
+          ) {
+            return Wall
+          }
+          return {x: x - 1, y: y - 1}
         }
         else {
           return MapObject
@@ -1579,8 +1617,6 @@ class Game extends Component {
 
     let Direction = this.RandomDirection(Surroundings)
 
-    console.log(Direction)
-
     MonsterMap[Monster.y][Monster.x] = Empty
     MonsterMap[Monster.y + Direction.y][Monster.x + Direction.x] = Monster.Id
 
@@ -1590,6 +1626,140 @@ class Game extends Component {
     return Monster
 
   }
+
+  ChasePlayer = (Monster, PlayerNewCoordinates) => {
+
+    let {Player, MonsterMap, WallMap} = this.state
+
+    let originalMonsterCoordinates = {x: Monster.x, y: Monster.y}
+    let HorizontalDistance = PlayerNewCoordinates.x - Monster.x
+    let VerticalDistance = PlayerNewCoordinates.y - Monster.y
+
+    if (HorizontalDistance > 0 && WallMap[Monster.y][Monster.x+1] !== Wall && WallMap[Monster.y][Monster.x+1] !== Door) {
+      Monster.x += 1
+    }
+    else if (HorizontalDistance < 0 && WallMap[Monster.y][Monster.x-1] !== Wall && WallMap[Monster.y][Monster.x-1] !== Door) {
+      Monster.x -= 1
+    }
+    else if (VerticalDistance > 0 && WallMap[Monster.y+1][Monster.x] !== Wall && WallMap[Monster.y+1][Monster.x] !== Door) {
+      Monster.y += 1
+    }
+    else if (VerticalDistance < 0 && WallMap[Monster.y-1][Monster.x] !== Wall && WallMap[Monster.y-1][Monster.x] !== Door) {
+      Monster.y -= 1
+    }
+    else {
+      // the monster has lost interest in the player
+      if (this.RandomInteger(100) <= 1 + Player.Luck/5) {
+        Monster.ChasePlayer = false
+      }
+    }
+
+    // recalculate distance for attack after move
+    HorizontalDistance = PlayerNewCoordinates.x - Monster.x
+    VerticalDistance = PlayerNewCoordinates.y - Monster.y
+
+    console.log(HorizontalDistance, VerticalDistance)
+
+    if (
+      (HorizontalDistance === 0 && (VerticalDistance === 1 || VerticalDistance === -1))
+      || (VerticalDistance === 0 && (HorizontalDistance === 1 || HorizontalDistance === -1))
+      || (HorizontalDistance === 0 && VerticalDistance === 0)
+    ) {
+      this.AttackPlayer(Monster)
+    }
+
+    MonsterMap[originalMonsterCoordinates.y][originalMonsterCoordinates.x] = Empty
+    MonsterMap[Monster.y][Monster.x] = Monster.Id
+  }
+
+  AttackPlayer = (Monster) => {
+
+    let {Player} = this.state
+
+    if (this.RandomInteger(100) >= (Player.Dexterity + Player.Luck/3)) {
+
+      let Damage = this.RandomIntegerFromRange(Monster.Damage.Min,Monster.Damage.Max)
+
+      if (this.PlayerTakeDamage(Damage)) {
+        this.SetMessage(Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + " is attacking you.")
+        this.ResetMessage()
+      }
+    }
+    else {
+
+      this.SetMessage(Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + " tried to attack you and missed their target.")
+      this.ResetMessage()
+
+    }
+
+  }
+
+  AttackMonster = (MonsterCoordinates) => {
+
+    let {Player, Monsters} = this.state
+
+    if (this.RandomInteger(100) >= (Player.Dexterity + Player.Luck/3)) {
+      
+      let Monster = Monsters.filter(Enemy => {
+        return Enemy.x === MonsterCoordinates.x && Enemy.y === MonsterCoordinates.y
+      })
+
+      if (Monster.length > 0) {
+
+        Monster = Monster[0]
+
+        let Damage = this.RandomIntegerFromRange(1, Player.Strength / 2 + Player.Luck / 8)
+
+        console.log("Damage inflicted to monster:",Damage)
+
+        if (this.MonsterTakeDamage(Monster, Damage)) {
+          this.SetMessage("You hit your target!")
+          this.ResetMessage()
+        }
+
+      }
+
+    }
+    else {
+      this.SetMessage("You missed your target!")
+      this.ResetMessage()
+
+    }
+
+  }
+
+  PlayerTakeDamage = (Damage) => {
+
+    let {Player, currentMessage} = this.state
+
+    Player.Health = Math.max(0,Player.Health - Damage)
+
+    if (Player.Health <= 0) {
+      Player.Dead = true
+      this.SetPermanentMessage("You are dead.")
+      return false
+    }
+
+    this.setState({Player: Player})
+    return true
+  }
+
+  MonsterTakeDamage = (Monster, Damage) => {
+
+    let {Player, MonsterMap, currentMessage} = this.state
+
+    Monster.Health = Math.max(0,Monster.Health - Damage)
+
+    if (Monster.Health <= 0) {
+      Monster.Dead = true
+      MonsterMap[Monster.y][Monster.x] = Empty
+      this.SetMessage("You killed " + Functions.IndefiniteArticle(Monster.Name) + " " + Monster.Name + ".")
+      return false
+    }
+
+    return true
+  }
+
 
   GetSurroundingWalls = ({x, y}) => {
 

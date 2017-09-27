@@ -7,7 +7,7 @@ export const DynamicAssets = {
     // debug
     ShowFullMap: true
     ,
-    NoClip: true
+    NoClip: false
     ,
 
     currentMessage: ""
@@ -24,8 +24,8 @@ export const DynamicAssets = {
         StaticAssets.WallMap.map(HorizontalLine => HorizontalLine.map(x => " ")),
 
     Player: {
-        x: 10,
-        y: 2,
+        x: 2,
+        y: 3,
         Level: 1,
         Health: 0,
         MaxHealth: 0,
