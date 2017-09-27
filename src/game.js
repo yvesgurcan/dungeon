@@ -3,6 +3,7 @@ import StaticAssets from "./StaticAssets.js"
 import DynamicAssets from "./DynamicAssets.js"
 import UtilityAssets from "./UtilityAssets.js"
 import Styles from "./styles.js"
+import Functions from "./Functions.js"
 
 const authorEmail = "gurcan.yves@gmail.com"
 const contactTemplate = "mailto:" + authorEmail +"?subject=Dungeon!"
@@ -12,7 +13,7 @@ const itemPath = "/graphics/items/"
 const imgExt = ".png"
 
 const {North, South, West, East} = UtilityAssets.Directions
-const {Wall, Door, LootContainer, Enemy, Undiscovered, Empty} = UtilityAssets.MapObjects
+const {Wall, Door, LootContainer, Undiscovered, Empty} = UtilityAssets.MapObjects
 
 /* web components */
 
@@ -537,23 +538,6 @@ class LootList extends Component {
 // some text that describes an event that has just occurred ("you found a chest")
 class Event extends Component {
 
-  ItemArticle = (itemName) => {
-    if (itemName) {
-
-      const Vowels = ["a","e","i","u","o"]
-
-      if (isNaN(itemName) && Vowels.includes(itemName[0].toLowerCase())) {
-        return "an"
-      }
-      else {
-        return "a"
-      }
-    }
-    else {
-      return null
-    }
-  }
-
   GenerateEventText = () => {
 
     let { currentEvent, Stationary } = this.props
@@ -589,7 +573,7 @@ class Event extends Component {
           return (
             <Text key={index}>
               <Text>You found </Text>
-              <Text>{this.ItemArticle(event.Name)}</Text>
+              <Text>{Functions.IndefiniteArticle(event.Name)}</Text>
               <Text> </Text>
               <Text>{event.Name}</Text>
               <Text>.</Text>
@@ -683,7 +667,7 @@ class Map extends Component {
     let {Player, MonsterMap, ShowFullMap} = this.props
 
     if (ShowFullMap || x >= Player.x - 1 && x <= Player.x + 1 && y >= Player.y - 1 && y <= Player.y + 1) {
-      if (MonsterMap[y][x] === Enemy) {
+      if (MonsterMap[y][x] !== Empty) {
         if (x === Player.x && y === Player.y) {
           return null
         }
@@ -748,8 +732,8 @@ class Map extends Component {
 
       else {
 
-        // reveal new area
-        if (this.DetectObjectInVicinityOfActor(x, y, Player.x, Player.y)) {
+        // reveal new walls or doors
+        if (this.DetectWallInVicinityOfActor(x, y, Player.x, Player.y)) {
           WallMapRevealed[y][x] = WallMap[y][x]
 
           if (MapObject === Wall) {
@@ -968,7 +952,7 @@ class Map extends Component {
     }
   }
 
-  DetectObjectInVicinityOfActor = (wallX, wallY, actorX, actorY) => {
+  DetectWallInVicinityOfActor = (wallX, wallY, actorX, actorY) => {
     if (
       // detect horizontal objects
       (wallX === actorX && (wallY === actorY + 1 || wallY === actorY - 1))
@@ -1083,7 +1067,7 @@ class Game extends Component {
     let MonsterMap = JSON.parse(JSON.stringify(StaticAssets.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))))
 
     DynamicAssets.Monsters.map(Monster => {
-      MonsterMap[Monster.y][Monster.x] = Enemy
+      MonsterMap[Monster.y][Monster.x] = Monster.Id
       return null
     })
 
@@ -1098,6 +1082,12 @@ class Game extends Component {
 
   componentWillMount() {
     document.addEventListener("keydown", this.ListenToKeyboard, false)
+  }
+
+  RandomDirection = (array) => {
+    let randomY = Math.floor(Math.random() * (array.length - 1))
+    let randomX = Math.floor(Math.random() * (array[randomY].length - 1))
+    return array[randomY][randomX]
   }
 
   RandomIntegerFromRange = (min, max) => {
@@ -1152,6 +1142,10 @@ class Game extends Component {
 
     }
 
+  }
+
+  SetMessage = (Message) => {
+    this.setState({ currentMessage: Message})
   }
 
   ResetMessage = () => {
@@ -1239,14 +1233,15 @@ class Game extends Component {
 
   MovePlayer = (Direction) => {
 
-    let State = this.state
+    let {Player, DiscoveryMap, currentEvent, Stationary, NoClip} = this.state
 
     // get the target coordinates
-    let targetCoordinates = this.MoveObject({ x: State.Player.x, y: State.Player.y }, Direction)
+    let targetCoordinates = this.MoveObject(
+      {x: Player.x, y: Player.y}, Direction)
 
     // check if there is a locked door in the way
     let Door = this.CheckLockedDoors(targetCoordinates)
-    if (Door.Locked && !State.NoClip) {
+    if (Door.Locked && !NoClip) {
       let LockedDoor = this.UnlockDoor(Door.Object)
       if (LockedDoor.Unlocked) {
         let UnlockMessage =
@@ -1274,6 +1269,17 @@ class Game extends Component {
       return
     }
 
+    // wake up any monster in the vicinity of the player
+    this.WakeUpMonster(targetCoordinates)
+
+    // the monsters get to move now
+    this.MoveMonsters(targetCoordinates)
+
+    // update state
+
+    // init
+    let State = this.state
+    
     // update the data about which parts of the map were revealed, in order to show loot containers on the map
     State.DiscoveryMap = this.UpdateDiscoveryMap(targetCoordinates)
 
@@ -1331,7 +1337,7 @@ class Game extends Component {
     }
 
     // target is a monster
-    if (MonsterMap[y][x] === Enemy) {
+    if (MonsterMap[y][x] !== Empty) {
       return false
     }
 
@@ -1371,10 +1377,6 @@ class Game extends Component {
     })
 
     return NewDiscoveryMap
-
-  }
-
-  RevealThings = () => {
 
   }
 
@@ -1505,6 +1507,118 @@ class Game extends Component {
 
     this.setState({Backpack: Backpack})
     
+  }
+
+  WakeUpMonster = ({x, y}) => {
+    
+    let {Monsters} = this.state
+
+    let MonsterAwake = Monsters.filter(Monster => {
+      return Monster.x >= x-1 && Monster.x <= x+1 && Monster.y >= y-1 && Monster.y <= y+1 && !Monster.ChasePlayer
+    })
+
+    if (MonsterAwake.length === 0) return null
+    else MonsterAwake = MonsterAwake[0]
+
+    MonsterAwake.ChasePlayer = true
+    MonsterAwake.Stationary = false
+
+    this.SetMessage(Functions.IndefiniteArticle(MonsterAwake.Name, true) + " " + MonsterAwake.Name + " noticed you!")
+    this.ResetMessage()
+
+  }
+
+  MoveMonsters = () => {
+    let {Monsters, Player} = this.state
+
+    let MovingMonsters = Monsters.filter(Monster => {
+      return Monster.ChasePlayer || !Monster.Stationary
+    })
+
+    MovingMonsters.map(Monster => {
+      if (Monster.ChasePlayer) {
+        return this.ChasePlayer(Monster, Player)
+      }
+      else {
+        return this.Patrol(Monster)
+      }
+      return null
+    })
+
+  }
+
+  ChasePlayer = (Monster, Player) => {
+
+  }
+
+  Patrol = (Monster) => {
+
+    let {MonsterMap} = this.state
+
+    let Surroundings = this.GetSurroundingWalls({x: Monster.x, y: Monster.y})
+    console.log(Surroundings)
+
+    // indicate coordinates in the array
+    Surroundings = Surroundings.map((HorizontalLine, y) => {
+      return HorizontalLine.map((MapObject, x) => {
+        if (MapObject === Empty) {
+          return {x: x, y: y}
+        }
+        else {
+          return MapObject
+        }
+      })
+    })
+
+    // filter out walls and doors to only give valid choices
+    Surroundings = Surroundings.map((HorizontalLine, y) => {
+      return HorizontalLine.filter(x => {
+        return x !== Wall && x !== Door
+      })
+    })
+
+    let Direction = this.RandomDirection(Surroundings)
+
+    console.log(Direction)
+
+    MonsterMap[Monster.y][Monster.x] = Empty
+    MonsterMap[Monster.y + Direction.y][Monster.x + Direction.x] = Monster.Id
+
+    Monster.x = Monster.x + Direction.x
+    Monster.y = Monster.y + Direction.y
+
+    return Monster
+
+  }
+
+  GetSurroundingWalls = ({x, y}) => {
+
+    let {WallMap} = this.state
+
+    let Surroundings = [
+      y-1 >= 0 ? WallMap[y-1].slice(x-1, x+2) : [Wall, Wall, Wall],
+      WallMap[y].slice(x-1, x+2),
+      y+1 < WallMap.length ? WallMap[y+1].slice(x-1, x+2) : [Wall, Wall, Wall],
+    ]
+
+    // if horizontally out of range, block the object from moving outside with walls
+    if (x === 0) {
+      Surroundings = [
+        [Wall, WallMap[y-1][x], WallMap[y-1][x+1]],
+        [Wall, WallMap[y][x], WallMap[y][x+1]],
+        [Wall, WallMap[y+1][x], WallMap[y+1][x+1]],
+      ]
+    }
+    else if (x === WallMap[y].length - 1) {
+      Surroundings = [
+        [WallMap[y-1][x-1], WallMap[y-1][x], Wall],
+        [WallMap[y-1][x-1], WallMap[y][x], Wall],
+        [WallMap[y-1][x-1], WallMap[y+1][x], Wall],
+      ]
+    }
+
+    return Surroundings
+
   }
 
   UpdateText = ({ x, y }) => {
