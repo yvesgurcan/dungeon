@@ -1245,7 +1245,7 @@ class Game extends Component {
 
   MovePlayer = (Direction) => {      
 
-    let {Player, DiscoveryMap, MonsterMap, currentEvent, Stationary, NoClip} = this.state
+    let {Player, WallMap, DiscoveryMap, MonsterMap, currentEvent, Stationary, NoClip} = this.state
     let UpdateState = true
 
     if (Player.Dead) return false
@@ -1253,6 +1253,15 @@ class Game extends Component {
     // get the target coordinates
     let targetCoordinates = this.MoveObject(
       {x: Player.x, y: Player.y}, Direction)
+
+    // out of range
+    if (targetCoordinates.y > WallMap.length - 1 || targetCoordinates.y < 0 || targetCoordinates.x > WallMap[targetCoordinates.y].length - 1 || targetCoordinates.x < 0) {
+      this.setState({
+        currentMessage: StaticAssets.Messages.Collision
+      })
+      this.ResetMessage()
+      return
+    }
 
     // check if there is a locked door in the way
     let Door = this.CheckLockedDoors(targetCoordinates)
@@ -1271,8 +1280,8 @@ class Game extends Component {
           currentMessage: StaticAssets.Messages.LockedDoor
         })
         this.ResetMessage()
+        return
       }
-      return
     }
 
     // player is attacking a monster
@@ -1326,6 +1335,7 @@ class Game extends Component {
       this.setState(State)
 
     }
+    
   }
 
   MoveObject = (originalCoordinates, Direction) => {
@@ -1657,8 +1667,6 @@ class Game extends Component {
     // recalculate distance for attack after move
     HorizontalDistance = PlayerNewCoordinates.x - Monster.x
     VerticalDistance = PlayerNewCoordinates.y - Monster.y
-
-    console.log(HorizontalDistance, VerticalDistance)
 
     if (
       (HorizontalDistance === 0 && (VerticalDistance === 1 || VerticalDistance === -1))
