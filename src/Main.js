@@ -691,7 +691,7 @@ class Map extends Component {
       // area has already been discovered
       if (MapObjectRevealed === MapObject || ShowFullMap) {
 
-        if (MapObject === Wall) {
+        if (MapObject === Wall || MapObject === Door) {
 
           // grab neighboring objects (if vertically out of range, assume that what is outside is walls)
           let topRow = y-1 >= 0 ? WallMap[y-1].slice(x-1, x+2) : [Wall, Wall, Wall]
@@ -717,26 +717,35 @@ class Map extends Component {
           ]
 
           // it's a wall
-          return this.DrawWall(MapObjectInContext, MapObject)
+          if (MapObject === Wall) {
+            return this.DrawWall(MapObjectInContext, MapObject)
+          }
+          // it's a door
+          if (MapObject === Door) {
+            return <Block style={{textAlign: "center"}}>{MapObject}</Block>
+          }
 
         }
         // this is a loot container and it is part of the map that has been explored
         else if (LootMap[y][x] === LootContainer && (DiscoveryMap[y][x] === Empty || ShowFullMap)) {
+
           return <Block style={Styles.Loot} />
+
         }
 
-        // it's a door
+        // it's somethin else
         return <Block style={{textAlign: "center"}}>{MapObject}</Block>
 
       }
 
+      // this area was newly discovered
       else {
 
         // reveal new walls or doors
         if (this.DetectWallInVicinityOfActor(x, y, Player.x, Player.y)) {
           WallMapRevealed[y][x] = WallMap[y][x]
 
-          if (MapObject === Wall) {
+          if (MapObject === Wall || MapObject === Door) {
             
             // grab neighboring objects (if vertically out of range, assume that what is outside is walls)
             let topRow = y-1 >= 0 ? WallMap[y-1].slice(x-1, x+2) : [Wall, Wall, Wall]
@@ -761,10 +770,18 @@ class Map extends Component {
               bottomRow,
             ]
   
-            return this.DrawWall(MapObjectInContext, MapObject)
+            // it's a wall
+            if (MapObject === Wall) {
+              return this.DrawWall(MapObjectInContext, MapObject)
+            }
+            // it's a door
+            if (MapObject === Door) {
+              return <Block style={{textAlign: "center"}}>{MapObject}</Block>
+            }
 
           }
 
+          // it's somethin else
           return WallMap[y][x]
 
         }
