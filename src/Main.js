@@ -722,7 +722,8 @@ class Map extends Component {
           }
           // it's a door
           if (MapObject === Door) {
-            return <Block style={{textAlign: "center"}}>{MapObject}</Block>
+            return this.DrawDoor(MapObjectInContext, MapObject)
+            // <Block style={{textAlign: "center"}}>{MapObject}</Block>
           }
 
         }
@@ -776,7 +777,7 @@ class Map extends Component {
             }
             // it's a door
             if (MapObject === Door) {
-              return <Block style={{textAlign: "center"}}>{MapObject}</Block>
+              return this.DrawDoor(MapObjectInContext, MapObject)
             }
 
           }
@@ -802,8 +803,8 @@ class Map extends Component {
     let EmptySurrounding = 0
 
     MapObjectInContext.map(Row => {
-      Row.map(MapObject => {
-        if (MapObject === Empty) {
+      Row.map(MapObj => {
+        if (MapObj === Empty) {
           EmptySurrounding++
         }
       })
@@ -824,18 +825,17 @@ class Map extends Component {
     // 4 surrounding walls (odd-shaped walls)
     // North, West, East, and NorthWest
     else if (
-      (
-        MapObjectInContext[North.y][North.x] === Wall
-      || MapObjectInContext[North.y][North.x] === Door)
-    && (
-      MapObjectInContext[East.y][East.x] === Wall
-      || MapObjectInContext[East.y][East.x] === Door)
-    && (
-      MapObjectInContext[West.y][West.x] === Wall
-      || MapObjectInContext[West.y][West.x] === Door)
+        (MapObjectInContext[North.y][North.x] === Wall
+        || MapObjectInContext[North.y][North.x] === Door)
       && (
-        MapObjectInContext[North.y][East.x] === Wall
-        || MapObjectInContext[North.y][East.x] === Door)
+        MapObjectInContext[East.y][East.x] === Wall
+        || MapObjectInContext[East.y][East.x] === Door)
+      &&
+        (MapObjectInContext[West.y][West.x] === Wall
+        || MapObjectInContext[West.y][West.x] === Door)
+        &&
+          (MapObjectInContext[North.y][East.x] === Wall
+          || MapObjectInContext[North.y][East.x] === Door)
     ) {
       return (
         <Block style={Styles.Wall.NorthWestEastAndNorthWest}/>
@@ -843,18 +843,17 @@ class Map extends Component {
     }
     // North, South, East, and SouthEast
     else if (
-      (
-        MapObjectInContext[North.y][North.x] === Wall
-      || MapObjectInContext[North.y][North.x] === Door)
-    && (
-      MapObjectInContext[South.y][South.x] === Wall
-      || MapObjectInContext[South.y][South.x] === Door)
-    && (
-      MapObjectInContext[East.y][East.x] === Wall
-      || MapObjectInContext[East.y][East.x] === Door)
-      && (
-        MapObjectInContext[South.y][East.x] === Wall
-        || MapObjectInContext[South.y][East.x] === Door)
+        (MapObjectInContext[North.y][North.x] === Wall
+        || MapObjectInContext[North.y][North.x] === Door)
+      &&
+        (MapObjectInContext[South.y][South.x] === Wall
+        || MapObjectInContext[South.y][South.x] === Door)
+      &&
+        (MapObjectInContext[East.y][East.x] === Wall
+        || MapObjectInContext[East.y][East.x] === Door)
+        &&
+          (MapObjectInContext[South.y][East.x] === Wall
+          || MapObjectInContext[South.y][East.x] === Door)
     ) {
       return (
         <Block style={Styles.Wall.NorthSouthEastAndSouthEast}/>
@@ -863,15 +862,14 @@ class Map extends Component {
     // 3 surrounding walls (T-shaped walls)
     // North, South and East
     else if (
-      (
-        MapObjectInContext[North.y][North.x] === Wall
-      || MapObjectInContext[North.y][North.x] === Door)
-    && (
-      MapObjectInContext[South.y][South.x] === Wall
-      || MapObjectInContext[South.y][South.x] === Door)
-    && (
-      MapObjectInContext[East.y][East.x] === Wall
-      || MapObjectInContext[East.y][East.x] === Door)
+        (MapObjectInContext[North.y][North.x] === Wall
+        || MapObjectInContext[North.y][North.x] === Door)
+      &&
+        (MapObjectInContext[South.y][South.x] === Wall
+        || MapObjectInContext[South.y][South.x] === Door)
+      &&
+        (MapObjectInContext[East.y][East.x] === Wall
+        || MapObjectInContext[East.y][East.x] === Door)
     ) {
       return (
         <Block style={Styles.Wall.TShapedWallNSE}>
@@ -881,15 +879,14 @@ class Map extends Component {
     }
     // North, South and West
     else if (
-      (
-        MapObjectInContext[North.y][North.x] === Wall
-      || MapObjectInContext[North.y][North.x] === Door)
-    && (
-      MapObjectInContext[South.y][South.x] === Wall
-      || MapObjectInContext[South.y][South.x] === Door)
-    && (
-      MapObjectInContext[West.y][West.x] === Wall
-      || MapObjectInContext[West.y][West.x] === Door)
+        (MapObjectInContext[North.y][North.x] === Wall
+        || MapObjectInContext[North.y][North.x] === Door)
+      &&
+        (MapObjectInContext[South.y][South.x] === Wall
+        || MapObjectInContext[South.y][South.x] === Door)
+      &&
+        (MapObjectInContext[West.y][West.x] === Wall
+        || MapObjectInContext[West.y][West.x] === Door)
     ) {
       return (
         <Block style={Styles.Wall.TShapedWallNSW}>
@@ -900,66 +897,60 @@ class Map extends Component {
     // 2 surrounding walls (continuous walls)
     // North and East
     else if (
-      (
-        MapObjectInContext[North.y][North.x] === Wall
-      || MapObjectInContext[North.y][North.x] === Door)
-    && (
-      MapObjectInContext[East.y][East.x] === Wall
-      || MapObjectInContext[East.y][East.x] === Door)
+        (MapObjectInContext[North.y][North.x] === Wall
+        || MapObjectInContext[North.y][North.x] === Door)
+      &&
+        (MapObjectInContext[East.y][East.x] === Wall
+        || MapObjectInContext[East.y][East.x] === Door)
     ) {
       return <Block style={Styles.Wall.NorthToEast} />
     }
     // South and West
     else if (
-      (
-        MapObjectInContext[South.y][South.x] === Wall
-      || MapObjectInContext[South.y][South.x] === Door)
-    && (
-      MapObjectInContext[West.y][West.x] === Wall
-      || MapObjectInContext[West.y][West.x] === Door)
+        (MapObjectInContext[South.y][South.x] === Wall
+        || MapObjectInContext[South.y][South.x] === Door)
+      &&
+        (MapObjectInContext[West.y][West.x] === Wall
+        || MapObjectInContext[West.y][West.x] === Door)
     ) {
       return <Block style={Styles.Wall.SouthToWest} />
     }
     // South and East
     else if (
-      (
-        MapObjectInContext[South.y][South.x] === Wall
-      || MapObjectInContext[South.y][South.x] === Door)
-    && (
-      MapObjectInContext[East.y][East.x] === Wall
-      || MapObjectInContext[East.y][East.x] === Door)
+        (MapObjectInContext[South.y][South.x] === Wall
+        || MapObjectInContext[South.y][South.x] === Door)
+      &&
+        (MapObjectInContext[East.y][East.x] === Wall
+        || MapObjectInContext[East.y][East.x] === Door)
     ) {
       return <Block style={Styles.Wall.SouthToEast} />
     }
     // North and West
     else if (
-      (
-        MapObjectInContext[North.y][North.x] === Wall
-      || MapObjectInContext[North.y][North.x] === Door)
-    && (
-      MapObjectInContext[West.y][West.x] === Wall
-      || MapObjectInContext[West.y][West.x] === Door)
+        (MapObjectInContext[North.y][North.x] === Wall
+        || MapObjectInContext[North.y][North.x] === Door)
+      &&
+        (MapObjectInContext[West.y][West.x] === Wall
+        || MapObjectInContext[West.y][West.x] === Door)
     ) {
       return <Block style={Styles.Wall.NorthToWest} />
     }
     // North and South
     else if (
-      (
-        MapObjectInContext[North.y][North.x] === Wall
+        (MapObjectInContext[North.y][North.x] === Wall
         || MapObjectInContext[North.y][North.x] === Door)
-      && (
-        MapObjectInContext[South.y][South.x] === Wall
+      &&
+        (MapObjectInContext[South.y][South.x] === Wall
         || MapObjectInContext[South.y][South.x] === Door)
     ) {
       return <Block style={Styles.Wall.NorthToSouth} />
     }
     // West and East
     else if (
-      (
-        MapObjectInContext[West.y][West.x] === Wall
+        (MapObjectInContext[West.y][West.x] === Wall
         || MapObjectInContext[West.y][West.x] === Door)
-      && (
-        MapObjectInContext[East.y][East.x] === Wall
+      &&
+        (MapObjectInContext[East.y][East.x] === Wall
         || MapObjectInContext[East.y][East.x] === Door)
     ) {
       return <Block style={Styles.Wall.WestToEast} />
@@ -967,6 +958,30 @@ class Map extends Component {
     else {
       return MapObject
     }
+  }
+
+  DrawDoor = (MapObjectInContext, MapObject) => {
+
+    if (
+        (MapObjectInContext[North.y][North.x] === Wall
+        || MapObjectInContext[North.y][North.x] === Door)
+      &&
+        (MapObjectInContext[South.y][South.x] === Wall
+        || MapObjectInContext[South.y][South.x] === Door)
+      ) {
+        return <Block style={Styles.Door.NorthToSouth} />
+      }
+    else if (
+        (MapObjectInContext[West.y][West.x] === Wall
+        || MapObjectInContext[West.y][West.x] === Door)
+      &&
+        (MapObjectInContext[East.y][East.x] === Wall
+        || MapObjectInContext[East.y][East.x] === Door)
+      ) {
+        return <Block style={Styles.Door.WestToEast} />
+      }
+
+    return MapObject
   }
 
   DetectWallInVicinityOfActor = (wallX, wallY, actorX, actorY) => {

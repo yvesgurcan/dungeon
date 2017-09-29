@@ -58,6 +58,11 @@ const PillarBoxHeight = WallBoxHeight - 5
 const WallBoxWidthCentered = WallBoxWidthWithBorder/2
 const WallBoxHeightCentered = WallBoxHeightWithBorder/2
 
+const DoorLine = Math.max(1,BorderThickness-BorderThickness/2) + "px solid " + BorderColor
+const DoorColor = "lightsteelblue"
+const DoorLongSize = 7
+const DoorBoxLongSizeCentered = DoorLongSize-3
+
 const px = "px"
 
 const styles = {
@@ -287,6 +292,24 @@ const styles = {
             width: WallBoxWidthCentered + px,
             height: WallBoxHeight + px,
             background: BorderColor,
+        },
+    },
+    Door: {
+        NorthToSouth: {
+            boxSizing: "border-box",
+            border: DoorLine,
+            marginLeft: DoorBoxLongSizeCentered + px,
+            width: DoorLongSize + px,
+            height: WallBoxHeight + px,
+            background: DoorColor,
+        },
+        WestToEast: {
+            boxSizing: "border-box",
+            border: DoorLine,
+            marginTop: DoorBoxLongSizeCentered + px,
+            width: WallBoxHeight + px,
+            height: DoorLongSize + px,
+            background: DoorColor,
         },
     },
     // Various Player Controls
