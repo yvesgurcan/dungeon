@@ -89,7 +89,15 @@ export const StaticAssets = {
             Name: "mana potion",
             image: "potion_mana",
             Weight: 0.5,
-        }
+        },
+        FireSword: {
+            Name: "fire sword",
+            Type: "weapon",
+        },
+        Fireball: {
+            Name: "fireball",
+            Type: "spell",
+        },
     },
 
     Bestiary: {

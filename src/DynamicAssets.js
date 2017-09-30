@@ -46,8 +46,8 @@ export const DynamicAssets = {
 
     Gear: {
         LeftHand: null,
-        RightHand: null,
-        PreparedSpell1: null,
+        RightHand: StaticAssets.Items.FireSword,
+        PreparedSpell1: StaticAssets.Items.Fireball,
         PreparedSpell2: null,
     },
 

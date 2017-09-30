@@ -446,36 +446,39 @@ class HealthBar extends Component {
 
 /* weapons at hand and prepared spells */
 
-class LeftHand extends Component {
+class WeaponReady extends Component {
   render() {
-    return (
-      <View style={Styles.ReadyItem}>
-      <ItemImagePlaceholder
-        image={null}
-        name={"Left hand"}/>
-    </View>
-    )
+    let {Item, Slot} = this.props
+    if (!Item) {
+      return (
+        <View style={Styles.ReadyItem}>
+          <ItemImagePlaceholder
+            image={null}
+            name={Slot + ": none"}/>
+        </View>
+      )
+    }
+    else {
+      return (
+        <View style={Styles.ReadyItem}>
+          <ItemImageBlock
+          onClick={this.onClick}
+          image={(Item && Item.image) || null}
+          name={Item && Item.Name ? Slot + ": " + Item.Name : null}
+          {... this.props}/>
+        </View>
+      )
+    }
   }
 }
 
-class RightHand extends Component {
+class WeaponReadyBlock extends Component {
   render() {
-    return (
-      <View style={Styles.ReadyItem}>
-      <ItemImagePlaceholder
-        image={null}
-        name={"Right hand"}/>
-    </View>
-    )
-  }
-}
-
-class PlayerReadyWeapons extends Component {
-  render() {
+    let {Gear} = this.props
     return (
       <View>
-        <LeftHand />
-        <RightHand />
+        <WeaponReady Slot="Left hand" Item={Gear.LeftHand} />
+        <WeaponReady Slot="Right hand" Item={Gear.RightHand} />
       </View>
     )
   }
@@ -483,22 +486,37 @@ class PlayerReadyWeapons extends Component {
 
 class PreparedSpell extends Component {
   render() {
-    return (
-      <View style={Styles.ReadyItem}>
-      <ItemImagePlaceholder
-        image={null}
-        name={"Prepared spell"}/>
-    </View>
-    )
+    let {Item} = this.props
+    if (!Item) {
+      return (
+        <View style={Styles.ReadyItem}>
+          <ItemImagePlaceholder
+            image={null}
+            name={"Prepared spell: none"}/>
+        </View>
+      )
+    }
+    else {
+      return (
+        <View style={Styles.ReadyItem}>
+          <ItemImageBlock
+          onClick={this.onClick}
+          image={(Item && Item.image) || null}
+          name={Item && Item.Name ? "Prepared spell: " + Item.Name : null}
+          {... this.props}/>
+        </View>
+      )
+    }
   }
 }
 
-class PlayerPreparedSpells extends Component {
+class PreparedSpellBlock extends Component {
   render() {
+    let {Gear} = this.props
     return (
       <View>
-        <PreparedSpell />
-        <PreparedSpell />
+        <PreparedSpell Item={Gear.PreparedSpell1} />
+        <PreparedSpell Item={Gear.PreparedSpell2} />
       </View>
     )
   }
@@ -515,8 +533,8 @@ class PlayerStats0 extends Component {
           <Text>{Player.Name}</Text>
         </Block>
         <Block style={Styles.ReadyItemBlock}>
-          <PlayerReadyWeapons/>
-          <PlayerPreparedSpells/>
+          <WeaponReadyBlock {... this.props} />
+          <PreparedSpellBlock {... this.props} />
         </Block>
       </View>
     )
