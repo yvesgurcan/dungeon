@@ -1677,16 +1677,36 @@ class Game extends Component {
     let HorizontalDistance = PlayerNewCoordinates.x - Monster.x
     let VerticalDistance = PlayerNewCoordinates.y - Monster.y
 
-    if (HorizontalDistance > 0 && WallMap[Monster.y][Monster.x+1] !== Wall && WallMap[Monster.y][Monster.x+1] !== Door) {
+    if (
+      HorizontalDistance > 0
+      && WallMap[Monster.y][Monster.x+1] !== Wall
+      && WallMap[Monster.y][Monster.x+1] !== Door
+      && Monster.x+1 !== PlayerNewCoordinates.x
+    ) {
       Monster.x += 1
     }
-    else if (HorizontalDistance < 0 && WallMap[Monster.y][Monster.x-1] !== Wall && WallMap[Monster.y][Monster.x-1] !== Door) {
+    else if (
+      HorizontalDistance < 0
+      && WallMap[Monster.y][Monster.x-1] !== Wall
+      && WallMap[Monster.y][Monster.x-1] !== Door
+      && Monster.x-1 !== PlayerNewCoordinates.x
+    ) {
       Monster.x -= 1
     }
-    else if (VerticalDistance > 0 && WallMap[Monster.y+1][Monster.x] !== Wall && WallMap[Monster.y+1][Monster.x] !== Door) {
+    else if (
+      VerticalDistance > 0
+      && WallMap[Monster.y+1][Monster.x] !== Wall
+      && WallMap[Monster.y+1][Monster.x] !== Door
+      && Monster.y+1 !== PlayerNewCoordinates.y
+    ) {
       Monster.y += 1
     }
-    else if (VerticalDistance < 0 && WallMap[Monster.y-1][Monster.x] !== Wall && WallMap[Monster.y-1][Monster.x] !== Door) {
+    else if (
+      VerticalDistance < 0
+      && WallMap[Monster.y-1][Monster.x] !== Wall
+      && WallMap[Monster.y-1][Monster.x] !== Door
+      && Monster.y-1 !== PlayerNewCoordinates.y
+    ) {
       Monster.y -= 1
     }
     else {
@@ -1701,9 +1721,14 @@ class Game extends Component {
     VerticalDistance = PlayerNewCoordinates.y - Monster.y
 
     if (
-      (HorizontalDistance === 0 && (VerticalDistance === 1 || VerticalDistance === -1))
-      || (VerticalDistance === 0 && (HorizontalDistance === 1 || HorizontalDistance === -1))
-      || (HorizontalDistance === 0 && VerticalDistance === 0)
+      (HorizontalDistance === 0
+        && (VerticalDistance === 1
+          || VerticalDistance === -1))
+      || (VerticalDistance === 0
+        && (HorizontalDistance === 1
+          || HorizontalDistance === -1))
+      || (HorizontalDistance === 0
+        && VerticalDistance === 0)
     ) {
       this.AttackPlayer(Monster)
     }
@@ -1770,18 +1795,23 @@ class Game extends Component {
 
   PlayerTakeDamage = (Damage) => {
 
-    let {Player, currentMessage} = this.state
+    let {Player, currentMessage, GodMode} = this.state
 
-    Player.Health = Math.max(0,Player.Health - Damage)
+    if (!GodMode) {
 
-    if (Player.Health <= 0) {
-      Player.Dead = true
-      this.SetPermanentMessage("You are dead.")
-      return false
+      Player.Health = Math.max(0,Player.Health - Damage)
+
+      if (Player.Health <= 0) {
+        Player.Dead = true
+        this.SetPermanentMessage("You are dead.")
+        return false
+      }
+
+      this.setState({Player: Player})
     }
 
-    this.setState({Player: Player})
     return true
+
   }
 
   MonsterTakeDamage = (Monster, Damage) => {
