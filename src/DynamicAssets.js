@@ -5,11 +5,11 @@ export const DynamicAssets = {
 
 
     // debug
-    ShowFullMap: true
+    ShowFullMap: false
     ,
-    NoClip: true
+    NoClip: false
     ,
-    GodMode: true
+    GodMode: false
     ,
 
     currentMessage: ""
@@ -26,8 +26,8 @@ export const DynamicAssets = {
         StaticAssets.WallMap.map(HorizontalLine => HorizontalLine.map(x => " ")),
 
     Player: {
-        x: 10,
-        y: 9,
+        x: 1,
+        y: 2,
         Level: 1,
         Health: 0,
         MaxHealth: 0,
@@ -90,17 +90,29 @@ export const DynamicAssets = {
 
     Monsters: [
         {...
-            StaticAssets.Bestiary.Imp,
+            StaticAssets.Bestiary.Orc,
             Id: 1,
             Stationary: true,
             x: 6,
             y: 3,
         },
         {...
-            StaticAssets.Bestiary.Imp,
+            StaticAssets.Bestiary.Goblin,
             Id: 2,
             x: 15,
             y: 8,
+        },
+        {...
+            StaticAssets.Bestiary.Goblin,
+            Id: 3,
+            x: 3,
+            y: 8,
+        },
+        {...
+            StaticAssets.Bestiary.Goblin,
+            Id: 4,
+            x: 8,
+            y: 11,
         },
     ],
 

@@ -1,12 +1,5 @@
 export const UtilityAssets = {
 
-    GenerateRandomItems: {
-        Level1: {
-            level: 1,
-            random: true,
-        }
-    },
-
     WallMapVisibleRange: {
         x: 10,
         y: 7,
@@ -39,19 +32,16 @@ export const UtilityAssets = {
         },
     },
 
-    DirectionX: {
-        North: 1,
-        West: 0,
-        East: 2,
-        South: 1,
+    GenerateRandomItems: {
+        Level1: {
+            level: 1,
+            random: true,
+        }
     },
 
-    DirectionY: {
-        North: 0,
-        West: 1,
-        East: 1,
-        South: 2,
-    }
+    MonsterTypes: {
+        GreenSkin: "green skin",
+    },
 
 }
 

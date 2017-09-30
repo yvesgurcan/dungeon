@@ -525,7 +525,6 @@ class PlayerStats0 extends Component {
 
 class PlayerStats1 extends Component {
   render() {
-    console.log(this)
     let {Player} = this.props
     return (
       <View style={Styles.PlayerStats1}>

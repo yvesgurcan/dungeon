@@ -6,6 +6,8 @@
     ["X","X","X","X","X","X","X"],
 */
 
+import UtilityAssets from "./UtilityAssets.js"
+
 export const StaticAssets = {
 
     WallMap: [
@@ -96,7 +98,29 @@ export const StaticAssets = {
             Level: 1,
             Health: 14,
             Damage: {Min: 2, Max: 5},
-        }
+        },
+        // green skin
+        Goblin: {
+            Name: "goblin",
+            Type: UtilityAssets.GreenSkin,
+            Level: 1,
+            Health: 7,
+            Damage: {Min: 1, Max: 4},
+        },
+        Hobgoblin: {
+            Name: "hobgoblin",
+            Type: UtilityAssets.GreenSkin,
+            Level: 1,
+            Health: 11,
+            Damage: {Min: 2, Max: 6},
+        },
+        Orc: {
+            Name: "orc",
+            Type: UtilityAssets.GreenSkin,
+            Level: 1,
+            Health: 15,
+            Damage: {Min: 4, Max: 7},
+        },
     },
 
 }
