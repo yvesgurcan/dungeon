@@ -41,6 +41,14 @@ export const DynamicAssets = {
         Strength: null,
         Dexterity: null,
         Intelligence: null,
+        Name: "Leto Seldon",
+    },
+
+    Gear: {
+        LeftHand: null,
+        RightHand: null,
+        PreparedSpell1: null,
+        PreparedSpell2: null,
     },
 
     Backpack: {

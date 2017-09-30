@@ -70,12 +70,16 @@ const styles = {
     Game: {
         display: "grid",
         gridTemplateColumns:
-            // column1-4
+            // column1
+            "110px " +
+            // column2-4
             "repeat(4, 95px) " +
             // column5
-            "130px " + 
-            // column6-10
-            "repeat(5, 76.8px)"
+            "130px " +
+            // column 7
+            "25px " + 
+            // column7-10
+            "repeat(3, 76.8px)"
 
         ,
         gridTemplateRows:
@@ -320,21 +324,51 @@ const styles = {
         border: HUDBorder,
     },
     // Player Stats
-    PlayerStats1: {
+    PlayerStats0: {
         gridColumnStart: FirstColumn,
         gridColumnEnd: "2",
         gridRowStart: ControlRow,
         padding: HUDBlockPadding,
+        textAlign: "center",
+    },
+    PlayerStats1: {
+        gridColumnStart: "2",
+        gridColumnEnd: "3",
+        gridRowStart: ControlRow,
+        padding: HUDBlockPadding,
+    },
+    ArrowContainer: {
+        gridColumnStart: "3",
+        gridColumnEnd: "4",
+        gridRowStart: ControlRow,
+        textAlign: "center",
+        padding: HUDBlockPadding,
+        margin: "auto",
+    },
+    Actions: {
+        gridColumnStart: "4",
+        gridColumnEnd: "6",
+        gridRowStart: ControlRow,
+        padding: HUDBlockPadding,
     },
     PlayerStats2: {
-        gridColumnStart: "5",
-        gridColumnEnd: "6",
+        gridColumnStart: "6",
+        gridColumnEnd: "7",
         gridRowStart: ControlRow,
         padding: HUDBlockPadding,
     },
     PlayerStat: {
         paddingBottom: "5px",
     },
+    // Weapons At Hand and Prepared Spells
+    ReadyItemBlock: {
+        paddingTop: "10px",
+        height: "calc(100% - 18px)",
+    },
+    ReadyItem: {
+        display: "inline-block",
+    },
+    // Player Stat Bars
     StatBar: {
         boxSizing: "border-box",
         width: "100%",
@@ -355,14 +389,6 @@ const styles = {
         height: HUDStatBarHeight,
     },
     // Directional Arrows
-    ArrowContainer: {
-        gridColumnStart: "2",
-        gridColumnEnd: "3",
-        gridRowStart: ControlRow,
-        textAlign: "center",
-        padding: HUDBlockPadding,
-        margin: "auto",
-    },
     ArrowRow: {
         width: "72px",
     },
@@ -397,12 +423,6 @@ const styles = {
         background: ButtonClickBackground,
     },
     // Actions
-    Actions: {
-        gridColumnStart: "3",
-        gridColumnEnd: "5",
-        gridRowStart: ControlRow,
-        padding: HUDBlockPadding,
-    },
     ActionButton: {
         display: "inline-block",
         textAlign: "center",
@@ -453,6 +473,13 @@ const styles = {
         // placeholder style when asset is missing
         overflow: "hidden",
         fontSize: "10px",
+    },
+    ItemImagePlaceholder: {
+        height: "30px",
+        width: "30px",
+        border: "1px solid gray",
+        padding: "1px",
+        margin: "1px"
     },
 }
 

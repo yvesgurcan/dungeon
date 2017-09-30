@@ -138,6 +138,19 @@ class Graphics extends Component {
   }
 }
 
+class ItemImagePlaceholder extends Component {
+  render() {
+    return (
+      <Text>
+      <Block
+        onClick={this.props.onClick}
+        style={Styles.ItemImagePlaceholder}
+        title={this.props.name} />
+      </Text>   
+    )
+  }
+}
+
 class ItemImage extends Component {
   render() {
     return (
@@ -305,6 +318,26 @@ class Arrows extends Component {
 
 /* player actions */
 
+class ShortRest extends Component {
+  render() {
+    return (
+      <ActionButton {... this.props}>
+        Short Rest
+      </ActionButton>
+    )
+  }
+}
+
+class LongRest extends Component {
+  render() {
+    return (
+      <ActionButton {... this.props}>
+        Long Rest
+      </ActionButton>
+    )
+  }
+}
+
 class TakeAll extends Component {
   render() {
     return (
@@ -354,12 +387,14 @@ class Actions extends Component {
     return (
       <View style={Styles.Actions}>
         {/* todo */}
+        <ShortRest />
+        <LongRest />
       </View>
     )
   }
 }
 
-/* player stats */
+/* stat bar */
 
 class StatBar extends Component {
   render() {
@@ -409,21 +444,102 @@ class HealthBar extends Component {
   }
 }
 
+/* weapons at hand and prepared spells */
+
+class LeftHand extends Component {
+  render() {
+    return (
+      <View style={Styles.ReadyItem}>
+      <ItemImagePlaceholder
+        image={null}
+        name={"Left hand"}/>
+    </View>
+    )
+  }
+}
+
+class RightHand extends Component {
+  render() {
+    return (
+      <View style={Styles.ReadyItem}>
+      <ItemImagePlaceholder
+        image={null}
+        name={"Right hand"}/>
+    </View>
+    )
+  }
+}
+
+class PlayerReadyWeapons extends Component {
+  render() {
+    return (
+      <View>
+        <LeftHand />
+        <RightHand />
+      </View>
+    )
+  }
+}
+
+class PreparedSpell extends Component {
+  render() {
+    return (
+      <View style={Styles.ReadyItem}>
+      <ItemImagePlaceholder
+        image={null}
+        name={"Prepared spell"}/>
+    </View>
+    )
+  }
+}
+
+class PlayerPreparedSpells extends Component {
+  render() {
+    return (
+      <View>
+        <PreparedSpell />
+        <PreparedSpell />
+      </View>
+    )
+  }
+}
+
+/* player stats */
+
+class PlayerStats0 extends Component {
+  render() {
+    let {Player} = this.props
+    return (
+      <View style={Styles.PlayerStats0}>
+        <Block>
+          <Text>{Player.Name}</Text>
+        </Block>
+        <Block style={Styles.ReadyItemBlock}>
+          <PlayerReadyWeapons/>
+          <PlayerPreparedSpells/>
+        </Block>
+      </View>
+    )
+  }
+}
+
 class PlayerStats1 extends Component {
   render() {
+    console.log(this)
+    let {Player} = this.props
     return (
       <View style={Styles.PlayerStats1}>
         <Block style={Styles.PlayerStat}>
           Health
-          <HealthBar current={this.props.Player.Health} max={this.props.Player.MaxHealth}/>
+          <HealthBar current={Player.Health} max={Player.MaxHealth}/>
         </Block>
         <Block style={Styles.PlayerStat}>
           Mana:
-          <ManaBar current={this.props.Player.Mana} max={this.props.Player.MaxMana}/>
+          <ManaBar current={Player.Mana} max={Player.MaxMana}/>
         </Block>
         <Block style={Styles.PlayerStat}>
           Stamina:
-          <StaminaBar current={this.props.Player.Stamina} max={this.props.Player.MaxStamina}/>
+          <StaminaBar current={Player.Stamina} max={Player.MaxStamina}/>
         </Block>
       </View>
     )
@@ -432,22 +548,23 @@ class PlayerStats1 extends Component {
 
 class PlayerStats2 extends Component {
   render() {
+    let {Player} = this.props
     return (
       <View style={Styles.PlayerStats2}>
         <Block style={Styles.PlayerStat}>
-          Luck: {this.props.Player.Luck}
+          Luck: {Player.Luck}
         </Block>
         <Block style={Styles.PlayerStat}>
-          Constitution: {this.props.Player.Constitution}
+          Constitution: {Player.Constitution}
         </Block>
         <Block style={Styles.PlayerStat}>
-          Strength: {this.props.Player.Strength}
+          Strength: {Player.Strength}
         </Block>
         <Block style={Styles.PlayerStat}>
-          Dexterity: {this.props.Player.Dexterity}
+          Dexterity: {Player.Dexterity}
         </Block>
         <Block style={Styles.PlayerStat}>
-          Intelligence: {this.props.Player.Intelligence}
+          Intelligence: {Player.Intelligence}
         </Block>
       </View>
     )
@@ -1901,6 +2018,7 @@ class Game extends Component {
         <Map {... this} {... this.state}/>
         {/* row 4 */}
         <Controls />
+        <PlayerStats0 {... this.state} />
         <PlayerStats1 {... this.state} />
         <Arrows {... this} {... this.state} />
         <Actions/>
