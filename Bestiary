@@ -1,71 +1,75 @@
 (59 creatures)
 
+// forest
 winter wolf
 hyena
+poisonous snake
+boar
+black bear
+swarm of wasps
+kobold
+gnoll
+dryad
+stirge
+kenku
+
+// undergrounds
+bullywug
 subterranean lizard
 giant rat
 evil spider
-
-bandit
-flumph
-poisonous snake
-kobold
-manes
-stirge
-tribal warrior
-
-acolyte
-boar
-bullywug
-deep rothe
-dwarf
-goblin
-dretch
-kenku
-sprite
 troglodyte
+deep rothe
+
+// undead
 zombie
-
 skeleton
-black bear
-gnome
-gnoll
-hobgoblin
-orc
-satyr
-swarm of wasps
-
-dryad
-harpy
-half-ogre
 ghoul
 gargoyle
-
-animated table
-centaur
-ogre
-manticore
 hell hound
-minotaur
 mummy
 banshee
 lost soul (flameskull)
-
-elemental
-steel golem
-troll
 vampire
-
-cyclop
-wyvern
-
-assassin
-genie
-stone giant
-
-aboleth
-djinn
 bone devil
-
 lich
 pit fiend
+manes
+
+// humanoids
+bandit
+dwarf
+gnome
+tribal warrior
+assassin
+
+// green skins
+goblin
+hobgoblin
+orc
+troll
+dretch
+
+// giants
+half-ogre
+ogre
+cyclop
+steel golem
+stone giant
+
+// magic
+acolyte
+sprite
+satyr
+elemental
+djinn
+
+// hybrids
+harpy
+centaur
+manticore
+minotaur
+
+// for fun
+flumph
+animated table
