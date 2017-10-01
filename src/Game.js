@@ -4,18 +4,23 @@ import DynamicAssets from "./DynamicAssets.js"
 import UtilityAssets from "./UtilityAssets.js"
 import Functions from "./Functions.js"
 
+/* utility */
+
+const {North, South, West, East} = UtilityAssets.Directions
+const {Wall, Door, LootContainer, Undiscovered, Empty} = UtilityAssets.MapObjects
+const {ScreenBreakpoints} = UtilityAssets
+
+let MobileScreen = UtilityAssets.ScreenSize.MobileScreen()
+let TabletScreen = UtilityAssets.ScreenSize.TabletScreen()
+
+/* miscellani */
+
 const authorEmail = "gurcan.yves@gmail.com"
 const contactTemplate = "mailto:" + authorEmail +"?subject=Dungeon!"
 const repository = "https://github.com/yvesgurcan/dungeon"
 const gitHubLogo = "/graphics/misc/Octocat.png"
 const itemPath = "/graphics/items/"
 const imgExt = ".png"
-
-const {North, South, West, East} = UtilityAssets.Directions
-const {Wall, Door, LootContainer, Undiscovered, Empty} = UtilityAssets.MapObjects
-
-let MobileScreen = UtilityAssets.MobileScreen()
-let TabletScreen = UtilityAssets.TabletScreen()
 
 /* css */
 
@@ -1424,8 +1429,8 @@ class Game extends Component {
 
   CalculateStyles = () => {
 
-    MobileScreen = UtilityAssets.MobileScreen()
-    TabletScreen = UtilityAssets.TabletScreen()
+    MobileScreen = UtilityAssets.ScreenSize.MobileScreen()
+    TabletScreen = UtilityAssets.ScreenSize.TabletScreen()
     
     // grid rows
     let TitleRow = 1
@@ -1438,14 +1443,16 @@ class Game extends Component {
     let InventoryRow = 5
 
     if (MobileScreen) {
-        TitleRow = 1
-        ContactRow = 2
-        MessageRow = 3
-        MainRow = 4
-        MapRow = 5
-        ControlRow = 6
-        ControlRow2 = 7
-        InventoryRow = 8
+
+      TitleRow = 1
+      ContactRow = 2
+      MessageRow = 3
+      MainRow = 4
+      MapRow = 5
+      ControlRow = 6
+      ControlRow2 = 7
+      InventoryRow = 8
+
     }
 
     let StoryStartColumn = FirstColumn
@@ -1474,37 +1481,39 @@ class Game extends Component {
 
     if (MobileScreen) {
 
-        StoryStartColumn = FirstColumn
-        StoryEndColumn = LastColumn
-        MapStartColumn = FirstColumn
-        MapEndColumn = LastColumn
+      StoryStartColumn = FirstColumn
+      StoryEndColumn = LastColumn
+      MapStartColumn = FirstColumn
+      MapEndColumn = LastColumn
 
-        ContactColumnStart = FirstColumn
-        ContactColumnStop = LastColumn
+      ContactColumnStart = FirstColumn
+      ContactColumnStop = LastColumn
 
-        PlayerWeaponStartColumn = FirstColumn
-        PlayerWeaponStopColumn = 4
-        PlayerVitalStartColumn = PlayerWeaponStopColumn
-        PlayerVitalStopColumn = 7
-        DirectionalArrowStartColumn = PlayerVitalStopColumn
-        DirectionalArrowStopColumn = 9
+      PlayerWeaponStartColumn = FirstColumn
+      PlayerWeaponStopColumn = 4
+      PlayerVitalStartColumn = PlayerWeaponStopColumn
+      PlayerVitalStopColumn = 7
+      DirectionalArrowStartColumn = PlayerVitalStopColumn
+      DirectionalArrowStopColumn = 9
 
-        PlayerActionStartColumn = FirstColumn
-        PlayerActionStopColumn = 4
-        PlayerStatStartColumn = PlayerActionStopColumn
-        PlayerStatBlockSeparation = 7
-        PlayerStatStopColumn = 10
+      PlayerActionStartColumn = FirstColumn
+      PlayerActionStopColumn = 4
+      PlayerStatStartColumn = PlayerActionStopColumn
+      PlayerStatBlockSeparation = 7
+      PlayerStatStopColumn = 10
 
     }
     else if (TabletScreen) {
-        PlayerVitalStartColumn = PlayerWeaponStopColumn
-        PlayerVitalStopColumn = 4
-        DirectionalArrowStartColumn = PlayerVitalStopColumn
-        DirectionalArrowStopColumn = 5
-        PlayerActionStartColumn = DirectionalArrowStopColumn
-        PlayerActionStopColumn = 7
-        PlayerStatStartColumn = PlayerActionStopColumn
-        PlayerStatStopColumn = LastColumn
+
+      PlayerVitalStartColumn = PlayerWeaponStopColumn
+      PlayerVitalStopColumn = 4
+      DirectionalArrowStartColumn = PlayerVitalStopColumn
+      DirectionalArrowStopColumn = 5
+      PlayerActionStartColumn = DirectionalArrowStopColumn
+      PlayerActionStopColumn = 7
+      PlayerStatStartColumn = PlayerActionStopColumn
+      PlayerStatStopColumn = LastColumn
+
     }
 
     Styles = {

@@ -1,10 +1,18 @@
+let MobileScreenBreakpoint = 376
+let TableScreenBreakpoint = 769
+
 export const UtilityAssets = {
 
-    // screen sizes
-    MobileScreen: function() {return window.matchMedia( "(max-width: 376px)" ).matches}
-    ,
-    TabletScreen: function() {return window.matchMedia( "(max-width: 769px)" ).matches}
-    ,
+    ScreenSize: {
+        MobileScreen: function() {return window.matchMedia( "(max-width: " + MobileScreenBreakpoint + "px)" ).matches}
+        ,
+        TabletScreen: function() {return window.matchMedia( "(max-width: " + TableScreenBreakpoint + "px)" ).matches}
+    },
+
+    ScreenBreakpoints: {
+        MobileScreen: MobileScreenBreakpoint,
+        TabletScreen: TableScreenBreakpoint,
+    },
 
     WallMapVisibleRange: {
         x: 10,
