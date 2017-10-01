@@ -79,7 +79,22 @@ export const DynamicAssets = {
             Name: "chest",
             items: [
                 StaticAssets.UniqueItems.IronKey,
-                UtilityAssets.GenerateRandomItems.Level1
+                UtilityAssets.GenerateRandomItems.Level1,
+                UtilityAssets.GenerateRandomItems.Level1,
+                UtilityAssets.GenerateRandomItems.Level1,
+                UtilityAssets.GenerateRandomItems.Level1,
+                UtilityAssets.GenerateRandomItems.Level1,
+                UtilityAssets.GenerateRandomItems.Level1,
+                UtilityAssets.GenerateRandomItems.Level1,
+                UtilityAssets.GenerateRandomItems.Level1,
+                UtilityAssets.GenerateRandomItems.Level1,
+                UtilityAssets.GenerateRandomItems.Level1,
+                UtilityAssets.GenerateRandomItems.Level1,
+                UtilityAssets.GenerateRandomItems.Level1,
+                UtilityAssets.GenerateRandomItems.Level1,
+                UtilityAssets.GenerateRandomItems.Level1,
+                UtilityAssets.GenerateRandomItems.Level1,
+                UtilityAssets.GenerateRandomItems.Level1,
             ]
         },
         {

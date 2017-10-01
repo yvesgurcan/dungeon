@@ -90,6 +90,20 @@ export const StaticAssets = {
             image: "potion_mana",
             Weight: 0.5,
         },
+        StaminaPotion: {
+            level: 1,
+            type: "potion",
+            Name: "potion of vigor",
+            image: "potion_stamina",
+            Weight: 0.5,
+        },
+        CurePoisonPotion: {
+            level: 1,
+            type: "potion",
+            Name: "cure poison",
+            image: "potion_cure_poison",
+            Weight: 0.5,
+        },
         FireSword: {
             Name: "fire sword",
             Type: "weapon",

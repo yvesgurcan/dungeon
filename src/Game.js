@@ -975,7 +975,7 @@ class Map extends Component {
 
         }
 
-        // it's somethin else
+        // it's something else
         return <Block style={{textAlign: "center"}}>{MapObject}</Block>
 
       }
@@ -1420,7 +1420,7 @@ class Game extends Component {
         break
 
       case "t":
-        this.TakeAllLoot("")
+        this.TakeAllLoot()
         break
 
     }
@@ -2334,22 +2334,39 @@ class Game extends Component {
     // TODO: check if there is room in the inventory
 
     let loot = []
+    let LootCount = 0
+    let FreeSlots = Backpack.maxItems - Backpack.Items.length
 
     currentEvent.map(event => {
       if (event.eventType === "loot") {
         if (event.items) {
-          loot = loot.concat(event.items)
-          event.items = []
+          LootCount += event.items.length
         }
       }
       return null
     })
 
-    if (loot.length > 0) {
+    if (FreeSlots >= LootCount) {
+
+      currentEvent.map(event => {
+        if (event.eventType === "loot") {
+          if (event.items) {
+            loot = loot.concat(event.items)
+            event.items = []
+          }
+        }
+        return null
+      })
 
       Backpack.Items = Backpack.Items.concat(loot)
       this.RecalculateInventoryWeight(Backpack.Items)
       this.setState({Backpack: Backpack, Stationary: true})
+
+    }
+    else {
+
+      this.SetMessage("You can not take all the loot.")
+      this.ResetMessage()
 
     }
 
@@ -2361,7 +2378,7 @@ class Game extends Component {
 
     if (Player.Dead) return false
 
-    // TODO: check if there is room in the inventory
+    let FreeSlots = Backpack.maxItems - Backpack.Items.length
 
     let matchLootContainer = LootContainers.filter(lootContainer => {
       return lootContainer.Id === containerId
@@ -2370,10 +2387,20 @@ class Game extends Component {
 
     Backpack.Items.push(matchLootContainer.items[lootIndex])
 
-    this.setState({Backpack: Backpack}, function() {
-      matchLootContainer.items[lootIndex] = null
-      this.setState({currentEvent: this.state.currentEvent})
-    })
+    if (FreeSlots > 0 ) {
+
+      this.setState({Backpack: Backpack}, function() {
+        matchLootContainer.items[lootIndex] = null
+        this.setState({currentEvent: this.state.currentEvent})
+      })
+
+    }
+    else {
+
+      this.SetMessage("Your backpack is full.")
+      this.ResetMessage()
+
+    }
 
   }
 
