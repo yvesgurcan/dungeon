@@ -1359,31 +1359,6 @@ class Game extends Component {
     this.CalculateStyles()
   }
 
-  RandomDirection = (array) => {
-
-    array = array.filter(HorizontalLine => HorizontalLine.length > 0)
-
-    let randomY = Math.floor(Math.random() * (array.length))
-    let randomX = Math.floor(Math.random() * (array[randomY].length))
-    return array[randomY][randomX]
-  }
-
-  RandomIntegerFromRange = (min, max) => {
-    return Math.floor(Math.random() * (Math.floor(max) - Math.floor(min) + 1)) + Math.floor(min)
-  }
-
-  RandomInteger = (max = 100) => {
-    return Math.floor(Math.random() * Math.floor(max))
-  }
-
-  RollD20 = () => {
-    return this.RandomInteger(20)
-  }
-
-  GetUnlucky = (Luck) => {
-    return this.RandomInteger() + Luck <= 60
-  }
-
   ListenToKeyboard = (keypress) => {
 
     let {Player} = this.state
@@ -1988,6 +1963,31 @@ class Game extends Component {
 
     this.forceUpdate()
 
+  }
+
+  RandomDirection = (array) => {
+
+    array = array.filter(HorizontalLine => HorizontalLine.length > 0)
+
+    let randomY = Math.floor(Math.random() * (array.length))
+    let randomX = Math.floor(Math.random() * (array[randomY].length))
+    return array[randomY][randomX]
+  }
+
+  RandomIntegerFromRange = (min, max) => {
+    return Math.floor(Math.random() * (Math.floor(max) - Math.floor(min) + 1)) + Math.floor(min)
+  }
+
+  RandomInteger = (max = 100) => {
+    return Math.floor(Math.random() * Math.floor(max))
+  }
+
+  RollD20 = () => {
+    return this.RandomInteger(20)
+  }
+
+  GetUnlucky = (Luck) => {
+    return this.RandomInteger() + Luck <= 60
   }
 
   SetPermanentMessage = (Message) => {
