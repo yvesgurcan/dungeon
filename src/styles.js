@@ -1,36 +1,74 @@
+// screen sizes
+let MobileScreen = window.matchMedia( "(max-width: 376px)" ).matches
+let TabletScreen = window.matchMedia( "(max-width: 769px)" ).matches
 
-let SmallScreen = window.matchMedia( "(max-width: 768px)" ).matches
+console.log(
+    "MobileScreen", MobileScreen,
+    "TabletScreen", TabletScreen,
+)
 
+// grid rows
 let TitleRow = 1
 let MessageRow = 2
 let MainRow = 3
 let MapRow = MainRow
 let ControlRow = 4
+let ControlRow2 = 4
 let InventoryRow = 5
 
-if (SmallScreen) {
+if (MobileScreen) {
     TitleRow = 1
     MessageRow = 2
-    MainRow = 3
-    MapRow = 4
+    MainRow = 4
+    MapRow = 3
     ControlRow = 5
-    InventoryRow = 6
+    ControlRow2 = 6
+    InventoryRow = 7
 }
 
+// grid columns
 const FirstColumn = 1
 const LastColumn = 10
 
 let StoryStartColumn = FirstColumn
 let StoryEndColumn = 6
-let MapStartColumn = 6
+let MapStartColumn = StoryEndColumn
 let MapEndColumn = LastColumn
 
-if (SmallScreen) {
+let PlayerWeaponStartColumn = FirstColumn
+let PlayerWeaponStopColumn = 2
+let PlayerVitalStartColumn = PlayerWeaponStopColumn
+let PlayerVitalStopColumn = 3
+let DirectionalArrowStartColumn = PlayerVitalStopColumn
+let DirectionalArrowStopColumn = 4
+let PlayerActionStartColumn = DirectionalArrowStopColumn
+let PlayerActionStopColumn = 6
+let PlayerStatStartColumn = PlayerActionStopColumn
+let PlayerStatStopColumn = 7
+
+if (MobileScreen) {
     StoryStartColumn = FirstColumn
     StoryEndColumn = LastColumn
     MapStartColumn = FirstColumn
     MapEndColumn = LastColumn
+
+    PlayerWeaponStartColumn = FirstColumn
+    PlayerWeaponStopColumn = 4
+    PlayerVitalStartColumn = PlayerWeaponStopColumn
+    PlayerVitalStopColumn = 6
+    DirectionalArrowStartColumn = PlayerVitalStopColumn
+    DirectionalArrowStopColumn = 8
+
+    PlayerActionStartColumn = FirstColumn
+    PlayerActionStopColumn = 4
+    PlayerStatStartColumn = PlayerActionStopColumn
+    PlayerStatStopColumn = 10
+
 }
+
+// presets
+
+const px = "px"
 
 const HUDBlockPadding = "10px"
 const HUDBorder = "1px solid black"
@@ -63,37 +101,46 @@ const DoorColor = "lightsteelblue"
 const DoorLongSize = 7
 const DoorBoxLongSizeCentered = DoorLongSize-3
 
-const px = "px"
-
 const styles = {
     // Grid
     Game: {
         display: "grid",
         gridTemplateColumns:
-            // column1
-            "110px " +
-            // column2-4
-            "repeat(4, 95px) " +
-            // column5
-            "130px " +
-            // column 7
-            "25px " + 
-            // column7-10
-            "repeat(3, 76.8px)"
-
+            (
+                MobileScreen ?
+                // column-10
+                "repeat(10, 31px)"
+                :
+                TabletScreen ?
+                // column-10
+                "repeat(10, 74px)"
+                :
+                // column1
+                "110px " +
+                // column2-4
+                "repeat(4, 95px) " +
+                // column5
+                "130px " +
+                // column 7
+                "25px " + 
+                // column7-10
+                "repeat(3, 76.8px)"
+            )
         ,
         gridTemplateRows:
-            // row1
+            // title (row1)
             "auto " +
-            // row2
+            // message (row2)
             "25px " +
-            // row3
+            // story/map (row3)
             "245px " +
-            // row4
-            (SmallScreen ? "245px " : "") +
-            // row5
+            // story (row4)
+            (MobileScreen ? "245px " : "") +
+            // controls (row5)
             "auto " +
-            // row6
+            // controls2 (row5b)
+            (MobileScreen ? "auto " : "") +
+            // inventory
             "auto "
         ,
         gridGap: "10px",
@@ -325,36 +372,36 @@ const styles = {
     },
     // Player Stats
     PlayerStats0: {
-        gridColumnStart: FirstColumn,
-        gridColumnEnd: "2",
+        gridColumnStart: PlayerWeaponStartColumn,
+        gridColumnEnd: PlayerWeaponStopColumn,
         gridRowStart: ControlRow,
         padding: HUDBlockPadding,
         textAlign: "center",
     },
     PlayerStats1: {
-        gridColumnStart: "2",
-        gridColumnEnd: "3",
+        gridColumnStart: PlayerVitalStartColumn,
+        gridColumnEnd: PlayerVitalStopColumn,
         gridRowStart: ControlRow,
         padding: HUDBlockPadding,
     },
     ArrowContainer: {
-        gridColumnStart: "3",
-        gridColumnEnd: "4",
+        gridColumnStart: DirectionalArrowStartColumn,
+        gridColumnEnd: DirectionalArrowStopColumn,
         gridRowStart: ControlRow,
         textAlign: "center",
         padding: HUDBlockPadding,
         margin: "auto",
     },
     Actions: {
-        gridColumnStart: "4",
-        gridColumnEnd: "6",
-        gridRowStart: ControlRow,
+        gridColumnStart: PlayerActionStartColumn,
+        gridColumnEnd: PlayerActionStopColumn,
+        gridRowStart: ControlRow2,
         padding: HUDBlockPadding,
     },
     PlayerStats2: {
-        gridColumnStart: "6",
-        gridColumnEnd: "7",
-        gridRowStart: ControlRow,
+        gridColumnStart: PlayerStatStartColumn,
+        gridColumnEnd: PlayerStatStartColumn,
+        gridRowStart: ControlRow2,
         padding: HUDBlockPadding,
     },
     PlayerStat: {

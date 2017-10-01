@@ -1,15 +1,19 @@
 import StaticAssets from "./StaticAssets.js"
 import UtilityAssets from "./UtilityAssets.js"
 
+const Debug = true
+
 export const DynamicAssets = {
 
 
     // debug
-    ShowFullMap: false
+    Debug: Debug
     ,
-    NoClip: false
+    ShowFullMap: Debug || false
     ,
-    GodMode: false
+    NoClip: Debug || false
+    ,
+    GodMode: Debug || false
     ,
 
     currentMessage: ""
