@@ -48,9 +48,15 @@ let DirectionalArrowStartColumn = PlayerVitalStopColumn
 let DirectionalArrowStopColumn = 4
 let PlayerActionStartColumn = DirectionalArrowStopColumn
 let PlayerActionStopColumn = 6
-let PlayerStatStartColumn = PlayerActionStopColumn
+
+let PlayerStat2StartColumn = PlayerActionStopColumn
+let PlayerStat2StopColumn = 7
+
+let PlayerStatStartColumn = PlayerStat2StopColumn
 let PlayerStatBlockSeparation = PlayerStatStartColumn
 let PlayerStatStopColumn = LastColumn
+
+
 
 if (MobileScreen) {
 
@@ -83,7 +89,7 @@ else if (TabletScreen) {
     DirectionalArrowStopColumn = 5
     PlayerActionStartColumn = DirectionalArrowStopColumn
     PlayerActionStopColumn = 7
-    PlayerStatStartColumn = 8
+    PlayerStatStartColumn = PlayerActionStopColumn
     PlayerStatStopColumn = LastColumn
 }
 
@@ -143,7 +149,8 @@ const styles = {
                 // column2-4
                 "55px " +
                 "55px " +
-                "repeat(2, 65px) " +
+                "70px " +
+                "70px " +
                 // column5
                 "120px " +
                 // column 6
@@ -453,6 +460,12 @@ const styles = {
     PlayerStats2Block2: {
         gridColumnStart: PlayerStatBlockSeparation,
         gridColumnEnd: PlayerStatStopColumn,
+        gridRowStart: ControlRow2,
+        padding: HUDBlockPadding,
+    },
+    PlayerStats3: {
+        gridColumnStart: PlayerStat2StartColumn,
+        gridColumnEnd: PlayerStat2StopColumn,
         gridRowStart: ControlRow2,
         padding: HUDBlockPadding,
     },

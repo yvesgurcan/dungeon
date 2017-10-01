@@ -33,6 +33,7 @@ export const DynamicAssets = {
         x: 1,
         y: 2,
         Level: 1,
+        XP: 0,
         Health: 0,
         MaxHealth: 0,
         Mana: 0,
@@ -40,7 +41,7 @@ export const DynamicAssets = {
         Stamina: null,
         MaxStamina: null,
         MaxWeight: null,
-        Luck: null,
+        Luck: null, // deprecated
         Constitution: null,
         Strength: null,
         Dexterity: null,
