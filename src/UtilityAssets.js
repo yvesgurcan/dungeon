@@ -1,5 +1,11 @@
 export const UtilityAssets = {
 
+    // screen sizes
+    MobileScreen: window.matchMedia( "(max-width: 376px)" ).matches
+    ,
+    TabletScreen: window.matchMedia( "(max-width: 769px)" ).matches
+    ,
+
     WallMapVisibleRange: {
         x: 10,
         y: 7,

@@ -1,6 +1,6 @@
-// screen sizes
-let MobileScreen = window.matchMedia( "(max-width: 376px)" ).matches
-let TabletScreen = window.matchMedia( "(max-width: 769px)" ).matches
+import UtilityAssets from "./UtilityAssets.js"
+
+let {MobileScreen, TabletScreen} = UtilityAssets
 
 console.log(
     "MobileScreen", MobileScreen,
@@ -10,6 +10,7 @@ console.log(
 // grid rows
 let TitleRow = 1
 let MessageRow = 2
+let ContactRow = 2
 let MainRow = 3
 let MapRow = MainRow
 let ControlRow = 4
@@ -18,12 +19,13 @@ let InventoryRow = 5
 
 if (MobileScreen) {
     TitleRow = 1
-    MessageRow = 2
+    ContactRow = 2
+    MessageRow = 3
     MainRow = 4
-    MapRow = 3
-    ControlRow = 5
-    ControlRow2 = 6
-    InventoryRow = 7
+    MapRow = 5
+    ControlRow = 6
+    ControlRow2 = 7
+    InventoryRow = 8
 }
 
 // grid columns
@@ -35,6 +37,9 @@ let StoryEndColumn = 6
 let MapStartColumn = StoryEndColumn
 let MapEndColumn = LastColumn
 
+let ContactColumnStart = 7
+let ContactColumnStop = LastColumn
+
 let PlayerWeaponStartColumn = FirstColumn
 let PlayerWeaponStopColumn = 2
 let PlayerVitalStartColumn = PlayerWeaponStopColumn
@@ -44,27 +49,44 @@ let DirectionalArrowStopColumn = 4
 let PlayerActionStartColumn = DirectionalArrowStopColumn
 let PlayerActionStopColumn = 6
 let PlayerStatStartColumn = PlayerActionStopColumn
-let PlayerStatStopColumn = 7
+let PlayerStatBlockSeparation = PlayerStatStartColumn
+let PlayerStatStopColumn = LastColumn
 
 if (MobileScreen) {
+
     StoryStartColumn = FirstColumn
     StoryEndColumn = LastColumn
     MapStartColumn = FirstColumn
     MapEndColumn = LastColumn
 
+    ContactColumnStart = FirstColumn
+    ContactColumnStop = LastColumn
+
     PlayerWeaponStartColumn = FirstColumn
     PlayerWeaponStopColumn = 4
     PlayerVitalStartColumn = PlayerWeaponStopColumn
-    PlayerVitalStopColumn = 6
+    PlayerVitalStopColumn = 7
     DirectionalArrowStartColumn = PlayerVitalStopColumn
-    DirectionalArrowStopColumn = 8
+    DirectionalArrowStopColumn = 9
 
     PlayerActionStartColumn = FirstColumn
     PlayerActionStopColumn = 4
     PlayerStatStartColumn = PlayerActionStopColumn
+    PlayerStatBlockSeparation = 7
     PlayerStatStopColumn = 10
 
 }
+else if (TabletScreen) {
+    PlayerVitalStartColumn = PlayerWeaponStopColumn
+    PlayerVitalStopColumn = 4
+    DirectionalArrowStartColumn = PlayerVitalStopColumn
+    DirectionalArrowStopColumn = 5
+    PlayerActionStartColumn = DirectionalArrowStopColumn
+    PlayerActionStopColumn = 7
+    PlayerStatStartColumn = 8
+    PlayerStatStopColumn = LastColumn
+}
+
 
 // presets
 
@@ -102,6 +124,10 @@ const DoorLongSize = 7
 const DoorBoxLongSizeCentered = DoorLongSize-3
 
 const styles = {
+    // 
+    Hidden: {
+        display: "none",
+    },
     // Grid
     Game: {
         display: "grid",
@@ -112,8 +138,18 @@ const styles = {
                 "repeat(10, 31px)"
                 :
                 TabletScreen ?
-                // column-10
-                "repeat(10, 74px)"
+                // column1
+                "110px " +
+                // column2-4
+                "55px " +
+                "55px " +
+                "repeat(2, 65px) " +
+                // column5
+                "120px " +
+                // column 6
+                "35px " + 
+                // column7-10
+                "repeat(3, 76.8px)"
                 :
                 // column1
                 "110px " +
@@ -121,7 +157,7 @@ const styles = {
                 "repeat(4, 95px) " +
                 // column5
                 "130px " +
-                // column 7
+                // column 6
                 "25px " + 
                 // column7-10
                 "repeat(3, 76.8px)"
@@ -131,6 +167,7 @@ const styles = {
             // title (row1)
             "auto " +
             // message (row2)
+            (MobileScreen ? "25px " : "") +
             "25px " +
             // story/map (row3)
             "245px " +
@@ -170,25 +207,26 @@ const styles = {
         color: "inherit",
         textDecoration: "none",
     },
+    // Top-screen Message
+    Message: {
+        gridColumnStart: FirstColumn,
+        gridColumnEnd: ContactColumnStop,
+        gridRowStart: MessageRow,
+        minHeight: "25px",
+        fontWeight: "bold",
+    },
     // Contact info
     Contact: {
-        gridColumnStart: "7",
+        gridColumnStart: ContactColumnStart,
         gridColumnEnd: LastColumn,
-        gridRowStart: MessageRow,
-        textAlign: "right",
+        gridRowStart: ContactRow,
+        textAlign: (MobileScreen ? "center" : "right"),
+        paddingLeft: (MobileScreen ? "30px" : null),
     },
     GitHubLogo: {
         height: "30px",
         verticalAlign: "middle",
         marginLeft: "2px",
-    },
-    // Top-screen Message
-    Message: {
-        gridColumnStart: FirstColumn,
-        gridColumnEnd: "7",
-        gridRowStart: MessageRow,
-        minHeight: "25px",
-        fontWeight: "bold",
     },
     // Story
     StoryBlock: {
@@ -251,6 +289,12 @@ const styles = {
         borderRadius: "50%",
     },
     Wall: {
+        // debug
+        Placeholder: {
+            background: "red",
+            width: WallBoxWidth + px,
+            height: WallBoxHeight + px,
+        },
         Pillar: {
             boxSizing: "border-box",
             marginTop: (WallBoxHeight - PillarBoxHeight)/2 + px,
@@ -260,11 +304,6 @@ const styles = {
             width: PillarBoxWidth + px,
             height: PillarBoxHeight + px,
             background: "black",
-        },
-        Placeholder: {
-            background: "red",
-            width: WallBoxWidth + px,
-            height: WallBoxHeight + px,
         },
         // Continous Walls
         NorthToSouth: {
@@ -368,6 +407,7 @@ const styles = {
         gridColumnStart: FirstColumn,
         gridColumnEnd: LastColumn,
         gridRowStart: ControlRow,
+        gridRowEnd: InventoryRow,
         border: HUDBorder,
     },
     // Player Stats
@@ -400,7 +440,19 @@ const styles = {
     },
     PlayerStats2: {
         gridColumnStart: PlayerStatStartColumn,
-        gridColumnEnd: PlayerStatStartColumn,
+        gridColumnEnd: PlayerStatStopColumn,
+        gridRowStart: ControlRow2,
+        padding: HUDBlockPadding,
+    },
+    PlayerStats2Block1: {
+        gridColumnStart: PlayerStatStartColumn,
+        gridColumnEnd: PlayerStatBlockSeparation,
+        gridRowStart: ControlRow2,
+        padding: HUDBlockPadding,
+    },
+    PlayerStats2Block2: {
+        gridColumnStart: PlayerStatBlockSeparation,
+        gridColumnEnd: PlayerStatStopColumn,
         gridRowStart: ControlRow2,
         padding: HUDBlockPadding,
     },

@@ -12,6 +12,7 @@ const gitHubLogo = "/graphics/misc/Octocat.png"
 const itemPath = "/graphics/items/"
 const imgExt = ".png"
 
+const {MobileScreen, TabletScreen} = UtilityAssets
 const {North, South, West, East} = UtilityAssets.Directions
 const {Wall, Door, LootContainer, Undiscovered, Empty} = UtilityAssets.MapObjects
 
@@ -567,21 +568,56 @@ class PlayerStats2 extends Component {
   render() {
     let {Player} = this.props
     return (
-      <View style={Styles.PlayerStats2}>
+      <View style={MobileScreen ? Styles.Hidden : Styles.PlayerStats2}>
         <Block style={Styles.PlayerStat}>
-          Luck: {Player.Luck}
+          {MobileScreen ? <Text>LUCK</Text> : <Text>Luck</Text>}: {Player.Luck}
         </Block>
         <Block style={Styles.PlayerStat}>
-          Constitution: {Player.Constitution}
+          {MobileScreen ? <Text>CON</Text> : <Text>Constitution</Text>}: {Player.Constitution}
         </Block>
         <Block style={Styles.PlayerStat}>
-          Strength: {Player.Strength}
+          {MobileScreen ? <Text>STR</Text> : <Text>Strength</Text>}: {Player.Strength}
         </Block>
         <Block style={Styles.PlayerStat}>
-          Dexterity: {Player.Dexterity}
+          {MobileScreen ? <Text>DEX</Text> : <Text>Dexterity</Text>}: {Player.Dexterity}
         </Block>
         <Block style={Styles.PlayerStat}>
-          Intelligence: {Player.Intelligence}
+          {MobileScreen ? <Text>INT</Text> : <Text>Intelligence</Text>}: {Player.Intelligence}
+        </Block>
+      </View>
+    )
+  }
+}
+
+class PlayerStats2Block1 extends Component {
+  render() {
+    let {Player} = this.props
+    return (
+      <View style={MobileScreen ? Styles.PlayerStats2Block1 : Styles.Hidden}>
+        <Block style={Styles.PlayerStat}>
+          {MobileScreen ? <Text>LUCK</Text> : <Text>Luck</Text>}: {Player.Luck}
+        </Block>
+        <Block style={Styles.PlayerStat}>
+          {MobileScreen ? <Text>CON</Text> : <Text>Constitution</Text>}: {Player.Constitution}
+        </Block>
+        <Block style={Styles.PlayerStat}>
+          {MobileScreen ? <Text>STR</Text> : <Text>Strength</Text>}: {Player.Strength}
+        </Block>
+      </View>
+    )
+  }
+}
+
+class PlayerStats2Block2 extends Component {
+  render() {
+    let {Player} = this.props
+    return (
+      <View style={MobileScreen ? Styles.PlayerStats2Block2 : Styles.Hidden}>
+        <Block style={Styles.PlayerStat}>
+          {MobileScreen ? <Text>DEX</Text> : <Text>Dexterity</Text>}: {Player.Dexterity}
+        </Block>
+        <Block style={Styles.PlayerStat}>
+        {MobileScreen ? <Text>INT</Text> : <Text>Intelligence</Text>}: {Player.Intelligence}
         </Block>
       </View>
     )
@@ -1175,7 +1211,7 @@ class Header extends Component {
     return (
       <View style={Styles.Header}>
         <PageTitle>Dungeon!</PageTitle>
-        <PageSubtitle>a D&amp;D-inspired game written with ReactJS</PageSubtitle>
+        <PageSubtitle>a D&amp;D-inspired game in React</PageSubtitle>
         <Version>pre-alpha</Version>
       </View>
     )
@@ -2040,6 +2076,8 @@ class Game extends Component {
         <Arrows {... this} {... this.state} />
         <Actions/>
         <PlayerStats2 {... this.state} />
+        <PlayerStats2Block1 {... this.state} />
+        <PlayerStats2Block2 {... this.state} />
         <Inventory {... this.state} />
       </View>
     )
