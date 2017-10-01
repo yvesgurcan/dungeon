@@ -1308,10 +1308,10 @@ class Game extends Component {
 
     Object.keys(initState.Items).map(itemObjectName => {
       let item = initState.Items[itemObjectName]
-      if (initState.RandomItems["Level" + item.level] === undefined) {
-        initState.RandomItems["Level" + item.level] = []
+      if (initState.RandomItems["Level" + item.Level] === undefined) {
+        initState.RandomItems["Level" + item.Level] = []
       }
-      initState.RandomItems["Level" + item.level].push(item)
+      initState.RandomItems["Level" + item.Level].push(item)
       return null
     })
 
@@ -2040,33 +2040,33 @@ class Game extends Component {
   CalculateMaxWeight = (Player) => {
     // level up
     if (Player.MaxWeight) {
-      return Math.ceil((Player.Constitution * 1.25) + (Player.Strength * 1.75))
+      return Math.ceil(Player.Strength * 1.75)
     }
     // new player
     else {
-      return Math.ceil((Player.Constitution * 1.25) + (Player.Strength * 1.75))
+      return Math.ceil(Player.Strength * 1.75)
     }
   }
 
   CalculateMaxHealth = (Player) => {
     // level up
     if (Player.MaxHealth) {
-      return Math.ceil((Player.MaxHealth * 1.1) + Player.Luck/6)
+      return Math.ceil((Player.MaxHealth * 1.1))
     }
     // new player
     else {
-      return Math.ceil((Player.Constitution * 2.25) + (Player.Strength/3) + this.RandomIntegerFromRange(-3, Player.Luck/3))
+      return Math.ceil((Player.Constitution * 2.25) + (Player.Strength/3) + this.RandomIntegerFromRange(-3, 5))
     }
   }
 
   CalculateMaxMana = (Player) => {
     // level up
     if (Player.MaxMana) {
-      return Math.ceil((Player.MaxMana * 1.1) + Player.Luck/4)
+      return Math.ceil(Player.MaxMana * 1.1)
     }
     // new player
     else {
-     return Math.ceil((Player.Intelligence) * 1.45) + this.RandomIntegerFromRange(-4, Player.Luck/4)
+     return Math.ceil((Player.Intelligence) * 1.45) + this.RandomIntegerFromRange(-4, 3)
     }
   }
 
@@ -2077,7 +2077,7 @@ class Game extends Component {
     }
     // new player
     else {
-     return Math.ceil((Player.Strength) * 5) + this.RandomIntegerFromRange(-5, Player.Luck/2)
+     return Math.ceil((Player.Strength) * 5) + this.RandomIntegerFromRange(-5, 15)
     }
   }
 
@@ -2316,7 +2316,7 @@ class Game extends Component {
     let { RandomItems } = this.state
     if (item && item.random) {
       if (!this.GetUnlucky(10)) {
-        item = RandomItems["Level" + item.level][this.RandomIntegerFromRange(0, RandomItems["Level" + item.level].length - 1)]
+        item = RandomItems["Level" + item.Level][this.RandomIntegerFromRange(0, RandomItems["Level" + item.Level].length - 1)]
       }
       else {
         return null
@@ -2393,6 +2393,8 @@ class Game extends Component {
         matchLootContainer.items[lootIndex] = null
         this.setState({currentEvent: this.state.currentEvent})
       })
+
+      this.RecalculateInventoryWeight(Backpack.Items)
 
     }
     else {

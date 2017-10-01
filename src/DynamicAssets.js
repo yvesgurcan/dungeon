@@ -1,5 +1,6 @@
 import StaticAssets from "./StaticAssets.js"
 import UtilityAssets from "./UtilityAssets.js"
+import Functions from "./Functions.js"
 
 const Debug = true
 
@@ -30,8 +31,8 @@ export const DynamicAssets = {
         StaticAssets.WallMap.map(HorizontalLine => HorizontalLine.map(x => " ")),
 
     Player: {
-        x: 1,
-        y: 2,
+        x: 2,
+        y: 3,
         Level: 1,
         XP: 0,
         Health: 0,
@@ -52,7 +53,7 @@ export const DynamicAssets = {
     Gear: {
         LeftHand: null,
         RightHand: StaticAssets.Items.FireSword,
-        PreparedSpell1: StaticAssets.Items.Fireball,
+        PreparedSpell1: StaticAssets.Items.FireballSpell,
         PreparedSpell2: null,
     },
 
@@ -78,20 +79,8 @@ export const DynamicAssets = {
             y: 4,
             Name: "chest",
             items: [
+                {... StaticAssets.Items.Rock, Weight: Functions.RandomFloatFromRange(5,50)},
                 StaticAssets.UniqueItems.IronKey,
-                UtilityAssets.GenerateRandomItems.Level1,
-                UtilityAssets.GenerateRandomItems.Level1,
-                UtilityAssets.GenerateRandomItems.Level1,
-                UtilityAssets.GenerateRandomItems.Level1,
-                UtilityAssets.GenerateRandomItems.Level1,
-                UtilityAssets.GenerateRandomItems.Level1,
-                UtilityAssets.GenerateRandomItems.Level1,
-                UtilityAssets.GenerateRandomItems.Level1,
-                UtilityAssets.GenerateRandomItems.Level1,
-                UtilityAssets.GenerateRandomItems.Level1,
-                UtilityAssets.GenerateRandomItems.Level1,
-                UtilityAssets.GenerateRandomItems.Level1,
-                UtilityAssets.GenerateRandomItems.Level1,
                 UtilityAssets.GenerateRandomItems.Level1,
                 UtilityAssets.GenerateRandomItems.Level1,
                 UtilityAssets.GenerateRandomItems.Level1,

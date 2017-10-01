@@ -66,6 +66,7 @@ export const StaticAssets = {
     ],
 
     UniqueItems: {
+        // Keys
         IronKey: {
             type: "key",
             Name: "iron key",
@@ -76,52 +77,68 @@ export const StaticAssets = {
     },
 
     Items: {
+        // Miscellani
+        Rock: {
+            Level: 1,
+            Type: "misc",
+            Name: "Rock",
+            image: "rock",
+            Weight: 30,
+        },
+        // Potions
         HealthPotion: {
-            level: 1,
-            type: "potion",
+            Level: 1,
+            Type: "potion",
             Name: "health potion",
             image: "potion_health",
             Weight: 0.5,
         },
         ManaPotion: {
-            level: 1,
-            type: "potion",
+            Level: 1,
+            Type: "potion",
             Name: "mana potion",
             image: "potion_mana",
             Weight: 0.5,
         },
         StaminaPotion: {
             level: 1,
-            type: "potion",
+            Type: "potion",
             Name: "potion of vigor",
             image: "potion_stamina",
             Weight: 0.5,
         },
         CurePoisonPotion: {
-            level: 1,
-            type: "potion",
+            Level: 1,
+            Type: "potion",
             Name: "cure poison",
             image: "potion_cure_poison",
             Weight: 0.5,
         },
+        // Swords
         FireSword: {
+            Level: 2,
             Name: "fire sword",
             Type: "weapon",
+            Weight: 3,
         },
-        Fireball: {
+        // Spells
+        FireballSpell: {
+            Level: 1,
             Name: "fireball",
             Type: "spell",
+            Weight: 0.1,
         },
     },
 
     Bestiary: {
+        // Undead
         Imp: {
             Name: "imp",
             Level: 1,
             Health: 14,
             Damage: {Min: 2, Max: 5},
         },
-        // green skin
+        // Green Skins
         Goblin: {
             Name: "goblin",
             Type: UtilityAssets.GreenSkin,
