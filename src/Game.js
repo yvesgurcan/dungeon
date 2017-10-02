@@ -2586,7 +2586,7 @@ class Game extends Component {
     let HorizontalDistance = PlayerNewCoordinates.x - Monster.x
     let VerticalDistance = PlayerNewCoordinates.y - Monster.y
 
-    // player is north of the monster: go north
+    // player is north of the monster
     if (
       VerticalDistance < 0
       && WallMap[Monster.y-1][Monster.x] === Empty
@@ -2594,7 +2594,7 @@ class Game extends Component {
     ) {
       Monster.y -= 1
     }
-    // player is south of the monster: go south
+    // player is south of the monster
     else if (
       VerticalDistance > 0
       && WallMap[Monster.y+1][Monster.x] === Empty
@@ -2602,7 +2602,7 @@ class Game extends Component {
     ) {
       Monster.y += 1
     }
-    // player is west of the monster: go west
+    // player is west of the monster
     else if (
       HorizontalDistance < 0
       && WallMap[Monster.y][Monster.x-1] === Empty
@@ -2611,14 +2611,14 @@ class Game extends Component {
       Monster.x -= 1
     }
     else if (
-      // player is east of the monster: go east
+      // player is east of the monster
       HorizontalDistance > 0
       && WallMap[Monster.y][Monster.x+1] === Empty
       && Monster.x+1 !== PlayerNewCoordinates.x
     ) {
       Monster.x += 1
     }
-    // player is north-west of the monster: go north
+    // player is north-west of the monster and north is not blocked
     else if (
       VerticalDistance < 0 && HorizontalDistance < 0
       && WallMap[Monster.y-1][Monster.x] === Empty
@@ -2628,15 +2628,75 @@ class Game extends Component {
     ) {
       Monster.y -= 1
     }
-    // player is north-west of the monster: go west
+    // player is north-west of the monster and west is not blocked
     else if (
       VerticalDistance < 0 && HorizontalDistance < 0
-      && WallMap[Monster.y-1][Monster.x] === Empty
+      && WallMap[Monster.y][Monster.x-1] === Empty
       && (Monster.x-1 !== PlayerNewCoordinates.x
         || (Monster.x-1 === PlayerNewCoordinates.x
         && Monster.y !== PlayerNewCoordinates.y))
     ) {
+      Monster.x -= 1
+    }
+    // player is north-east of the monster and north is not blocked
+    else if (
+      VerticalDistance < 0 && HorizontalDistance > 0
+      && WallMap[Monster.y-1][Monster.x] === Empty
+      && (Monster.y-1 !== PlayerNewCoordinates.y
+        || (Monster.y-1 === PlayerNewCoordinates.y
+        && Monster.x !== PlayerNewCoordinates.x))
+    ) {
       Monster.y -= 1
+    }
+    // player is north-east of the monster and east is not blocked
+    else if (
+      VerticalDistance < 0 && HorizontalDistance > 0
+      && WallMap[Monster.y][Monster.x+1] === Empty
+      && (Monster.x+1 !== PlayerNewCoordinates.x
+        || (Monster.x+1 === PlayerNewCoordinates.x
+        && Monster.y !== PlayerNewCoordinates.y))
+    ) {
+      Monster.x += 1
+    }
+    // player is south-west of the monster and south is not blocked
+    else if (
+      VerticalDistance > 0 && HorizontalDistance < 0
+      && WallMap[Monster.y+1][Monster.x] === Empty
+      && (Monster.y+1 !== PlayerNewCoordinates.y
+        || (Monster.y+1 === PlayerNewCoordinates.y
+        && Monster.x !== PlayerNewCoordinates.x))
+    ) {
+      Monster.y += 1
+    }
+    // player is south-west of the monster and west is not blocked
+    else if (
+      VerticalDistance > 0 && HorizontalDistance < 0
+      && WallMap[Monster.y][Monster.x-1] === Empty
+      && (Monster.x-1 !== PlayerNewCoordinates.x
+        || (Monster.x-1 === PlayerNewCoordinates.x
+        && Monster.y !== PlayerNewCoordinates.y))
+    ) {
+      Monster.x -= 1
+    }
+    // player is south-east of the monster and south is not blocked
+    else if (
+      VerticalDistance > 0 && HorizontalDistance > 0
+      && WallMap[Monster.y+1][Monster.x] === Empty
+      && (Monster.y+1 !== PlayerNewCoordinates.y
+        || (Monster.y+1 === PlayerNewCoordinates.y
+        && Monster.x !== PlayerNewCoordinates.x))
+    ) {
+      Monster.y += 1
+    }
+    // player is south-east of the monster and east is not blocked
+    else if (
+      VerticalDistance > 0 && HorizontalDistance > 0
+      && WallMap[Monster.y][Monster.x+1] === Empty
+      && (Monster.x+1 !== PlayerNewCoordinates.x
+        || (Monster.x+1 === PlayerNewCoordinates.x
+        && Monster.y !== PlayerNewCoordinates.y))
+    ) {
+      Monster.x += 1
     }
     else {
       // the monster has lost interest in the player
@@ -2644,7 +2704,7 @@ class Game extends Component {
         Monster.ChasePlayer = false
       }
       else {
-        console.log("where do I go?",WallMap[Monster.y-1][Monster.x],Monster.x,Monster.y,PlayerNewCoordinates, HorizontalDistance,VerticalDistance)
+        console.log("where do I go?","monster",{x:Monster.x,y:Monster.y},"player",PlayerNewCoordinates, {horizontal: HorizontalDistance,vertical: VerticalDistance})
       }
     }
 
