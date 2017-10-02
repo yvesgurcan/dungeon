@@ -1316,8 +1316,11 @@ class Game extends Component {
       return null
     })
 
+    // create wall map revealed
+    initState.WallMapRevealed = DynamicAssets.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))
+
     // create discovery map, given player start position
-    initState.DiscoveryMap = JSON.parse(JSON.stringify(StaticAssets.WallMap.map((HorizontalLine, y) => HorizontalLine.map((MapObject, x) => {
+    initState.DiscoveryMap = JSON.parse(JSON.stringify(DynamicAssets.WallMap.map((HorizontalLine, y) => HorizontalLine.map((MapObject, x) => {
         if ((x >= DynamicAssets.Player.x - 1 && x <= DynamicAssets.Player.x + 1) && (y >= DynamicAssets.Player.y - 1 && y <= DynamicAssets.Player.y + 1)) {
           return Empty
         }
@@ -1328,22 +1331,28 @@ class Game extends Component {
     ))
 
     // create the map of loot containers
-    let LootMap = JSON.parse(JSON.stringify(StaticAssets.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))))
+    let LootMap = JSON.parse(JSON.stringify(DynamicAssets.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))))
 
-    DynamicAssets.LootContainers.map(Container => {
-      LootMap[Container.y][Container.x] = LootContainer
-      return null
-    })
+    if (DynamicAssets.LootContainers) {
+      DynamicAssets.LootContainers.map(Container => {
+        LootMap[Container.y][Container.x] = LootContainer
+        return null
+      })
+    }
 
     initState.LootMap = LootMap
 
     // create the map of monster locations
-    let MonsterMap = JSON.parse(JSON.stringify(StaticAssets.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))))
+    let MonsterMap = JSON.parse(JSON.stringify(DynamicAssets.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))))
 
-    DynamicAssets.Monsters.map(Monster => {
-      MonsterMap[Monster.y][Monster.x] = Monster.Id
-      return null
-    })
+    if (DynamicAssets.Monsters) {
+
+      DynamicAssets.Monsters.map(Monster => {
+        MonsterMap[Monster.y][Monster.x] = Monster.Id
+        return null
+      })
+
+    }
 
     initState.MonsterMap = MonsterMap
 
@@ -2024,7 +2033,6 @@ class Game extends Component {
 
   GeneratePlayerStats = (Player) => {
 
-    Player.Luck = this.RandomIntegerFromRange(10,20)
     Player.Constitution = this.RandomIntegerFromRange(10,20)
     Player.Strength = this.RandomIntegerFromRange(10,20)
     Player.Dexterity = this.RandomIntegerFromRange(10,20)
@@ -2262,15 +2270,24 @@ class Game extends Component {
 
   CheckLockedDoors = ({ x, y }) => {
 
-    let { LockedDoors } = this.state
+    let {LockedDoors} = this.state
 
-    let matchLockedDoor = LockedDoors.filter((object) => {
-      return object.x === x && object.y === y && !object.Unlocked
-    })
+    if (LockedDoors) {
+
+      let matchLockedDoor = LockedDoors.filter((object) => {
+        return object.x === x && object.y === y && !object.Unlocked
+      })
+
+      return {
+        Locked: matchLockedDoor.length > 0,
+        Object: matchLockedDoor.length > 0 ? matchLockedDoor[0] : null
+      }
+
+    }
 
     return {
-      Locked: matchLockedDoor.length > 0,
-      Object: matchLockedDoor.length > 0 ? matchLockedDoor[0] : null
+      Locked: false,
+      Object: null
     }
 
   }
@@ -2296,23 +2313,28 @@ class Game extends Component {
 
   CheckLootContainers = ({ x, y }) => {
 
-    let { LootContainers } = this.state
+    let {LootContainers} = this.state
 
-    let matchLootContainer = LootContainers.filter(object => {
-      if (object.items) {
-        object.items = object.items.map(item => {
-          return this.GenerateRandomLoot(item)
-        }).filter(item => { return item !== null })
-      }
-      return object.x === x && object.y === y
-    })
+    if (LootContainers) {
 
-    matchLootContainer = matchLootContainer.map(loot => {
-      loot.eventType = "loot"
-      return loot
-    })
+      let matchLootContainer = LootContainers.filter(object => {
+        if (object.items) {
+          object.items = object.items.map(item => {
+            return this.GenerateRandomLoot(item)
+          }).filter(item => { return item !== null })
+        }
+        return object.x === x && object.y === y
+      })
 
-    return matchLootContainer
+      matchLootContainer = matchLootContainer.map(loot => {
+        loot.eventType = "loot"
+        return loot
+      })
+
+      return matchLootContainer
+    }
+
+    return []
 
   }
 
@@ -2469,36 +2491,44 @@ class Game extends Component {
     
     let {Monsters} = this.state
 
-    let MonsterAwake = Monsters.filter(Monster => {
-      return Monster.x >= x-1 && Monster.x <= x+1 && Monster.y >= y-1 && Monster.y <= y+1 && !Monster.ChasePlayer
-    })
+    if (Monsters) {
 
-    if (MonsterAwake.length === 0) return null
-    else MonsterAwake = MonsterAwake[0]
+      let MonsterAwake = Monsters.filter(Monster => {
+        return Monster.x >= x-1 && Monster.x <= x+1 && Monster.y >= y-1 && Monster.y <= y+1 && !Monster.ChasePlayer
+      })
 
-    MonsterAwake.ChasePlayer = true
-    MonsterAwake.Stationary = false
+      if (MonsterAwake.length === 0) return null
+      else MonsterAwake = MonsterAwake[0]
 
-    this.ResetMessage()
+      MonsterAwake.ChasePlayer = true
+      MonsterAwake.Stationary = false
+
+      this.SetText(Functions.IndefiniteArticle(MonsterAwake.Name, true) + " " + MonsterAwake.Name + StaticAssets.PartialMessages.MonsterNoticed)
+
+    }
 
   }
 
   MoveMonsters = (PlayerNewCoordinates) => {
     let {Monsters, Player} = this.state
 
-    let MovingMonsters = Monsters.filter(Monster => {
-      return !Monster.Dead && (Monster.ChasePlayer || !Monster.Stationary)
-    })
+    if (Monsters) {
 
-    MovingMonsters.map(Monster => {
-      if (Monster.ChasePlayer) {
-        return this.ChasePlayer(Monster, PlayerNewCoordinates)
-      }
-      else {
-        return this.Patrol(Monster)
-      }
-      return null
-    })
+      let MovingMonsters = Monsters.filter(Monster => {
+        return !Monster.Dead && (Monster.ChasePlayer || !Monster.Stationary)
+      })
+
+      MovingMonsters.map(Monster => {
+        if (Monster.ChasePlayer) {
+          return this.ChasePlayer(Monster, PlayerNewCoordinates)
+        }
+        else {
+          return this.Patrol(Monster)
+        }
+        return null
+      })
+
+    }
 
   }
 
@@ -2556,42 +2586,65 @@ class Game extends Component {
     let HorizontalDistance = PlayerNewCoordinates.x - Monster.x
     let VerticalDistance = PlayerNewCoordinates.y - Monster.y
 
+    // player is north of the monster: go north
     if (
-      HorizontalDistance > 0
-      && WallMap[Monster.y][Monster.x+1] !== Wall
-      && WallMap[Monster.y][Monster.x+1] !== Door
-      && Monster.x+1 !== PlayerNewCoordinates.x
+      VerticalDistance < 0
+      && WallMap[Monster.y-1][Monster.x] === Empty
+      && Monster.y-1 !== PlayerNewCoordinates.y
     ) {
-      Monster.x += 1
+      Monster.y -= 1
     }
+    // player is south of the monster: go south
+    else if (
+      VerticalDistance > 0
+      && WallMap[Monster.y+1][Monster.x] === Empty
+      && Monster.y+1 !== PlayerNewCoordinates.y
+    ) {
+      Monster.y += 1
+    }
+    // player is west of the monster: go west
     else if (
       HorizontalDistance < 0
-      && WallMap[Monster.y][Monster.x-1] !== Wall
-      && WallMap[Monster.y][Monster.x-1] !== Door
+      && WallMap[Monster.y][Monster.x-1] === Empty
       && Monster.x-1 !== PlayerNewCoordinates.x
     ) {
       Monster.x -= 1
     }
     else if (
-      VerticalDistance > 0
-      && WallMap[Monster.y+1][Monster.x] !== Wall
-      && WallMap[Monster.y+1][Monster.x] !== Door
-      && Monster.y+1 !== PlayerNewCoordinates.y
+      // player is east of the monster: go east
+      HorizontalDistance > 0
+      && WallMap[Monster.y][Monster.x+1] === Empty
+      && Monster.x+1 !== PlayerNewCoordinates.x
     ) {
-      Monster.y += 1
+      Monster.x += 1
     }
+    // player is north-west of the monster: go north
     else if (
-      VerticalDistance < 0
-      && WallMap[Monster.y-1][Monster.x] !== Wall
-      && WallMap[Monster.y-1][Monster.x] !== Door
-      && Monster.y-1 !== PlayerNewCoordinates.y
+      VerticalDistance < 0 && HorizontalDistance < 0
+      && WallMap[Monster.y-1][Monster.x] === Empty
+      && (Monster.y-1 !== PlayerNewCoordinates.y
+        || (Monster.y-1 === PlayerNewCoordinates.y
+        && Monster.x !== PlayerNewCoordinates.x))
+    ) {
+      Monster.y -= 1
+    }
+    // player is north-west of the monster: go west
+    else if (
+      VerticalDistance < 0 && HorizontalDistance < 0
+      && WallMap[Monster.y-1][Monster.x] === Empty
+      && (Monster.x-1 !== PlayerNewCoordinates.x
+        || (Monster.x-1 === PlayerNewCoordinates.x
+        && Monster.y !== PlayerNewCoordinates.y))
     ) {
       Monster.y -= 1
     }
     else {
       // the monster has lost interest in the player
-      if (this.RandomInteger(100) <= 1 + Player.Luck/5) {
+      if (this.RandomInteger(100) <= 5) {
         Monster.ChasePlayer = false
+      }
+      else {
+        console.log("where do I go?",WallMap[Monster.y-1][Monster.x],Monster.x,Monster.y,PlayerNewCoordinates, HorizontalDistance,VerticalDistance)
       }
     }
 
@@ -2620,7 +2673,7 @@ class Game extends Component {
 
     let {Player} = this.state
 
-    if (this.RandomInteger(100) >= (Player.Dexterity + Player.Luck/3)) {
+    if (this.RandomInteger(100) >= Player.Dexterity) {
 
       let Damage = this.RandomIntegerFromRange(Monster.Damage.Min,Monster.Damage.Max)
 
@@ -2640,7 +2693,7 @@ class Game extends Component {
 
     let {Player, Monsters} = this.state
 
-    if (this.RandomInteger(100) >= (Player.Dexterity + Player.Luck/3)) {
+    if (this.RandomInteger(100) >= Player.Dexterity) {
       
       let Monster = Monsters.filter(Enemy => {
         return Enemy.x === MonsterCoordinates.x && Enemy.y === MonsterCoordinates.y
@@ -2650,7 +2703,7 @@ class Game extends Component {
 
         Monster = Monster[0]
 
-        let Damage = this.RandomIntegerFromRange(1, Player.Strength / 2 + Player.Luck / 8)
+        let Damage = this.RandomIntegerFromRange(1, Player.Strength / 2)
 
         if (this.MonsterTakeDamage(Monster, Damage)) {
           this.SetText(StaticAssets.PartialMessages.PlayerHit + Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + StaticAssets.PartialMessages.Period)
@@ -2739,24 +2792,27 @@ class Game extends Component {
 
     let matchTextAccessPoint = false
 
-    State.Text.map((text, index) => {
-      if (text.Used) return null
-      return !text.accessPoints ? null : text.accessPoints.filter(accessPoint => {
-        if (accessPoint.x === x && accessPoint.y === y) {
-          matchTextAccessPoint = true
-          State.currentText = text.text
-          State.Text[index].Used = true
-          return true
-        }
-        else {
-          return false
-        }
+    if (State.Text) {
+
+      State.Text.map((text, index) => {
+        if (text.Used) return null
+        return !text.accessPoints ? null : text.accessPoints.filter(accessPoint => {
+          if (accessPoint.x === x && accessPoint.y === y) {
+            matchTextAccessPoint = true
+            State.currentText = text.text
+            State.Text[index].Used = true
+            return true
+          }
+          else {
+            return false
+          }
+        })
+
       })
 
-    })
+      this.setState(State)
 
-
-    this.setState(State)
+    }
 
     return matchTextAccessPoint
   }
