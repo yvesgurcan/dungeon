@@ -8,7 +8,6 @@ import Functions from "./Functions.js"
 
 const {North, South, West, East} = UtilityAssets.Directions
 const {Wall, Door, LootContainer, Undiscovered, Empty} = UtilityAssets.MapObjects
-const {ScreenBreakpoints} = UtilityAssets
 
 let MobileScreen = UtilityAssets.ScreenSize.MobileScreen()
 let TabletScreen = UtilityAssets.ScreenSize.TabletScreen()
@@ -463,7 +462,7 @@ class StatBar extends Component {
 
 class StaminaBar extends Component {
   render() {
-    let style = {... Styles.StaminaBar, width: Math.min(100, Math.ceil(this.props.current/this.props.max * 100)) + "%"}
+    let style = {...Styles.StaminaBar, width: Math.min(100, Math.ceil(this.props.current/this.props.max * 100)) + "%"}
     return (
       <View>
         <StatBar style={style} ratio={style.width}/>
@@ -474,7 +473,7 @@ class StaminaBar extends Component {
 
 class ManaBar extends Component {
   render() {
-    let style = {... Styles.ManaBar, width: Math.min(100, this.props.current/this.props.max * 100) + "%"}
+    let style = {...Styles.ManaBar, width: Math.min(100, this.props.current/this.props.max * 100) + "%"}
     return (
       <View>
         <StatBar style={style} max={this.props.max} current={this.props.current}/>
@@ -485,7 +484,7 @@ class ManaBar extends Component {
 
 class HealthBar extends Component {
   render() {
-    let style = {... Styles.HealthBar, width: Math.min(100, this.props.current/this.props.max * 100) + "%"}
+    let style = {...Styles.HealthBar, width: Math.min(100, this.props.current/this.props.max * 100) + "%"}
     return (
       <View>
         <StatBar style={style} max={this.props.max} current={this.props.current}/>
@@ -908,7 +907,13 @@ class Map extends Component {
 
     let {Player, MonsterMap, ShowFullMap} = this.props
 
-    if (ShowFullMap || x >= Player.x - 1 && x <= Player.x + 1 && y >= Player.y - 1 && y <= Player.y + 1) {
+    if (
+      ShowFullMap
+      || (x >= Player.x - 1
+        && x <= Player.x + 1
+        && y >= Player.y - 1
+        && y <= Player.y + 1)
+    ) {
       if (MonsterMap[y][x] !== Empty) {
         if (x === Player.x && y === Player.y) {
           return null
@@ -921,7 +926,7 @@ class Map extends Component {
 
   DrawMapObject = (MapObject, MapObjectRevealed, x, y) => {
 
-    let {Player, ShowFullMap, WallMap, WallMapRevealed, DiscoveryMap, LootMap, MonsterMap} = this.props
+    let {Player, ShowFullMap, WallMap, WallMapRevealed, DiscoveryMap, LootMap} = this.props
 
     // player marker
     if (x === Player.x && y === Player.y) {
@@ -1049,7 +1054,9 @@ class Map extends Component {
         if (MapObj === Empty) {
           EmptySurrounding++
         }
+        return null
       })
+      return null
     })
 
     // Pillar
@@ -2092,7 +2099,7 @@ class Game extends Component {
 
   MovePlayer = (Direction) => {
 
-    let {Player, WallMap, DiscoveryMap, MonsterMap, currentEvent, Stationary, NoClip} = this.state
+    let {Player, WallMap, MonsterMap, NoClip} = this.state
     let UpdateState = true
 
     if (Player.Dead) return false
@@ -2294,7 +2301,7 @@ class Game extends Component {
 
   UnlockDoor = (Door) => {
 
-    let {Backpack, WallMap} = this.state
+    let {Backpack} = this.state
 
     let matchKey = Backpack.Items.filter(Item => {
       return Item.DoorId === Door.Id
@@ -2510,7 +2517,7 @@ class Game extends Component {
   }
 
   MoveMonsters = (PlayerNewCoordinates) => {
-    let {Monsters, Player} = this.state
+    let {Monsters} = this.state
 
     if (Monsters) {
 
@@ -2525,7 +2532,6 @@ class Game extends Component {
         else {
           return this.Patrol(Monster)
         }
-        return null
       })
 
     }
@@ -2580,7 +2586,7 @@ class Game extends Component {
 
   ChasePlayer = (Monster, PlayerNewCoordinates) => {
 
-    let {Player, MonsterMap, WallMap} = this.state
+    let {MonsterMap, WallMap} = this.state
 
     let originalMonsterCoordinates = {x: Monster.x, y: Monster.y}
     let HorizontalDistance = PlayerNewCoordinates.x - Monster.x
@@ -2781,7 +2787,7 @@ class Game extends Component {
 
   PlayerTakeDamage = (Damage) => {
 
-    let {Player, currentMessage, GodMode} = this.state
+    let {Player, GodMode} = this.state
 
     if (!GodMode) {
 
@@ -2802,7 +2808,7 @@ class Game extends Component {
 
   MonsterTakeDamage = (Monster, Damage) => {
 
-    let {Player, MonsterMap, currentMessage} = this.state
+    let {MonsterMap} = this.state
 
     Monster.Health = Math.max(0,Monster.Health - Damage)
 

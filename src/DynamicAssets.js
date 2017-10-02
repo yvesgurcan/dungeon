@@ -1,6 +1,4 @@
 import StaticAssets from "./StaticAssets.js"
-import UtilityAssets from "./UtilityAssets.js"
-import Functions from "./Functions.js"
 
 const Debug = true
 
