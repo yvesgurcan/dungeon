@@ -2184,6 +2184,7 @@ class Game extends Component {
       // save the new coordinates
       State.Player.x = targetCoordinates.x
       State.Player.y = targetCoordinates.y
+      State.Player.Facing = Direction
       State.Stationary = false
 
       // update player stats
