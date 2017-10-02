@@ -1,36 +1,6 @@
-/*
-    " ",
-    "X",
-    "D",
-    [" "," "," "," "," "," "," "," "," "," ",],
-    ["X","X","X","X","X","X","X"],
-*/
-
 import UtilityAssets from "./UtilityAssets.js"
 
 export const StaticAssets = {
-
-    WallMap: [
-        [" "," "," ","X","D","X"," "," "," "," "," "," "," "," ","X"," ","X"," "," "," "," "," "," ",],
-        ["X","X","X","X"," ","X","X","X"," "," "," "," "," "," ","X"," ","X","X"," "," "," "," "," ",],
-        ["X"," "," ","D"," "," "," ","X"," "," "," "," "," "," ","X"," "," ","X"," "," "," "," "," ",],
-        ["X"," "," ","X","X","X"," ","X"," "," "," "," "," "," ","X"," ","X","X"," "," "," "," "," ",],
-        ["X","X"," ","X"," ","X"," ","X","X","X"," "," "," "," ","X","D","X"," "," "," "," "," "," ",],
-        [" ","X","X","X"," ","X"," "," "," ","X","X"," ","X","X","X"," ","X","X","X"," "," "," "," ",],
-        [" "," "," "," "," ","X","X"," "," "," ","X"," ","X"," "," "," "," "," ","X"," "," "," "," ",],
-        [" "," ","X","X","X","X","X"," "," "," ","X","X","X"," ","X"," ","X"," ","X","X","X"," "," ",],
-        [" "," ","X"," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ","X"," "," ",],
-        [" "," ","X","X","X"," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ","X"," "," ",],
-        [" "," "," "," ","X"," "," "," "," "," ","X","X","X"," ","X"," ","X"," ","X","X","X"," "," ",],
-        [" "," "," "," ","X","X"," "," "," ","X","X"," ","X"," "," "," "," "," ","X"," "," "," "," ",],
-        [" "," "," "," "," ","X","X"," ","X","X"," "," ","X","X","X"," ","X","X","X"," "," ","X","X",],
-        [" "," "," "," "," "," ","X"," ","X"," "," "," "," "," ","X"," ","X"," "," "," ","X","X"," ",],
-        [" "," "," "," "," ","X","X"," ","X"," "," "," "," "," ","X"," ","X","X","X","X","X"," "," ",],
-        [" "," "," "," "," ","X"," "," ","X"," "," "," "," "," ","X"," "," "," "," "," ","D"," "," ",],
-        [" "," "," "," "," ","X"," "," ","X"," "," "," "," "," ","X","X","X","X","X","X","X"," "," ",],
-        [" "," "," "," "," ","X","X","X","X"," "," "," "," "," "," "," "," "," "," "," ","X"," "," ",],
-        [" "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ","X","X"," ",],
-    ],
 
     Messages: {
         Collision: "You can't go there.",
@@ -42,33 +12,12 @@ export const StaticAssets = {
     PartialMessages: {
         Period: ".",
         UnlockDoor: "You unlocked the door with the ",
+        MonsterNoticed: " noticed your presence.",
         MonsterAttacking: " is attacking you.",
         MonsterMissed: " tried to attack you and missed their target.",
         MonsterKilled: "You killed ",
         PlayerHit: "You hit ",
     },
-
-    Text: [
-        {
-            text: "You landed in a very dark room. It is very hard to see what is surrouding you."
-        },
-        {
-            accessPoints: [{x: 4, y: 2}],
-            text: "You hear strange noises and unfamiliar voices coming from a distance..."
-        },
-        {
-            accessPoints: [{x: 7, y:5}, {x: 7, y: 14}, {x: 10, y: 8}, {x: 10, y: 9}],
-            text: "You notice a table in the middle of the room and various shelves with books on the walls. This must be some sort of living quarters."
-        },
-        {
-            accessPoints: [{x: 15, y: 3}],
-            text: "This corridor looks filthy!"
-        },
-        {
-            accessPoints: [{x: 7, y: 15}],
-            text: "This alcove seems to be a storage area of some sort, but it is empty. Nothing interesting here!"
-        },
-    ],
 
     UniqueItems: {
         // Keys
