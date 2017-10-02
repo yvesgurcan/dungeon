@@ -723,9 +723,10 @@ class Message extends Component {
 // a descriptive paragraph about the surroundings of the user, to set the mood :)
 class Story extends Component {
   render() {
+    let {currentText, currentEvent} = this.props
     return (
-      <View style={Styles.Story}>
-        {this.props.currentText}
+      <View style={Styles.Story} hidden={currentEvent.length > 0}>
+        {currentText}
       </View>
     )
   }
@@ -781,7 +782,7 @@ class Event extends Component {
 
   GenerateEventText = () => {
 
-    let { currentEvent, Stationary } = this.props
+    let {currentEvent, Stationary} = this.props
     let loot = false
     let lootIsEmpty = true
 
@@ -1990,10 +1991,6 @@ class Game extends Component {
     return this.RandomInteger() + Luck <= 60
   }
 
-  SetPermanentMessage = (Message) => {
-    this.setState({ permanentMessage: Message})
-  }
-
   SetMessage = (Message) => {
     this.setState({ currentMessage: Message})
   }
@@ -2004,6 +2001,10 @@ class Game extends Component {
         this.setState({ currentMessage: "" })
       }
     }.bind(this), 2000)
+  }
+
+  SetText = (Message) => {
+    this.setState({ currentText: Message})
   }
 
   onClickArrow = (key) => {
@@ -2110,14 +2111,12 @@ class Game extends Component {
           StaticAssets.PartialMessages.UnlockDoor  + 
           LockedDoor.Key +
           StaticAssets.PartialMessages.Period
-        this.setState({ currentMessage: UnlockMessage})
-        this.ResetMessage()
+        this.setState({ currentText: UnlockMessage})
       }
       else {
         this.setState({
-          currentMessage: StaticAssets.Messages.LockedDoor
+          currentText: StaticAssets.Messages.LockedDoor
         })
-        this.ResetMessage()
         return
       }
     }
@@ -2159,6 +2158,14 @@ class Game extends Component {
       // add containers to the list of events
       State.currentEvent = this.CheckLootContainers(targetCoordinates)
 
+      if (State.currentEvent.length > 0) {
+        State.currentText = ""
+      }
+      else {
+        // check if the text needs to be updated
+        this.UpdateText(targetCoordinates)
+      }
+
       // save the new coordinates
       State.Player.x = targetCoordinates.x
       State.Player.y = targetCoordinates.y
@@ -2166,9 +2173,6 @@ class Game extends Component {
 
       // update player stats
       State.Player.Stamina = State.Player.Stamina - 1
-
-      // check if the text needs to be updated
-      this.UpdateText(targetCoordinates)
 
       this.setState(State)
 
@@ -2346,21 +2350,38 @@ class Game extends Component {
       return null
     })
 
+    currentEvent.map(event => {
+      if (event.eventType === "loot") {
+        if (event.items) {
+          loot = loot.concat(event.items)
+        }
+      }
+      return null
+    })
+
     if (FreeSlots >= LootCount) {
 
-      currentEvent.map(event => {
-        if (event.eventType === "loot") {
-          if (event.items) {
-            loot = loot.concat(event.items)
-            event.items = []
-          }
-        }
-        return null
-      })
+      if (this.CheckInventoryWeight(loot)) {
 
-      Backpack.Items = Backpack.Items.concat(loot)
-      this.RecalculateInventoryWeight(Backpack.Items)
-      this.setState({Backpack: Backpack, Stationary: true})
+        currentEvent.map(event => {
+          if (event.eventType === "loot") {
+            if (event.items) {
+              event.items = []
+            }
+          }
+          return null
+        })
+
+        Backpack.Items = Backpack.Items.concat(loot)        
+        this.setState({Backpack: Backpack, Stationary: true})
+             
+      }
+      else {
+
+        this.SetMessage("The loot is too heavy.")
+        this.ResetMessage()
+          
+      }
 
     }
     else {
@@ -2384,17 +2405,24 @@ class Game extends Component {
       return lootContainer.Id === containerId
     })[0]
 
-
-    Backpack.Items.push(matchLootContainer.items[lootIndex])
-
     if (FreeSlots > 0 ) {
 
-      this.setState({Backpack: Backpack}, function() {
-        matchLootContainer.items[lootIndex] = null
-        this.setState({currentEvent: this.state.currentEvent})
-      })
+      if (this.CheckInventoryWeight([matchLootContainer.items[lootIndex]])) {
 
-      this.RecalculateInventoryWeight(Backpack.Items)
+          Backpack.Items.push(matchLootContainer.items[lootIndex])      
+
+          this.setState({Backpack: Backpack}, function() {
+            matchLootContainer.items.splice(lootIndex,1)
+            this.setState({currentEvent: this.state.currentEvent, Stationary: true})
+          })
+
+      }
+      else {
+
+        this.SetMessage("This item is too heavy.")
+        this.ResetMessage()
+
+      }
 
     }
     else {
@@ -2406,18 +2434,34 @@ class Game extends Component {
 
   }
 
-  RecalculateInventoryWeight = (Items) => {
+  CheckInventoryWeight = (Loot) => {
 
-    let {Backpack} = this.state
+    let {Backpack, Player} = this.state
 
-    if (Items) {
-      Backpack.Weight = Items.map(Item => {return Item.Weight}).reduce((sum, val) => sum + val)
+    let BackpackWeight = 0
+
+    if (Backpack.Items.length > 0) {
+      BackpackWeight = Backpack.Items.map(Item => {
+        return Item !== null ? Item.Weight : 0
+      }).reduce((sum, val) => sum + val)
     }
     else {
-      Backpack.Weight = Backpack.Items.map(Item => {return Item.Weight}).reduce((sum, val) => sum + val)
+      BackpackWeight = 0
     }
 
-    this.setState({Backpack: Backpack})
+    let LootWeight = Loot.map(Item => {
+      return Item !== null ? Item.Weight : 0
+    }).reduce((sum, val) => sum + val)
+
+    BackpackWeight += LootWeight
+
+    if (BackpackWeight <= Player.MaxWeight) {
+      Backpack.Weight = BackpackWeight
+      this.setState({Backpack: Backpack})
+      return true
+    }
+
+    return false
     
   }
 
@@ -2581,14 +2625,12 @@ class Game extends Component {
       let Damage = this.RandomIntegerFromRange(Monster.Damage.Min,Monster.Damage.Max)
 
       if (this.PlayerTakeDamage(Damage)) {
-        this.SetMessage(Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + " is attacking you.")
-        this.ResetMessage()
+        this.SetText(Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + StaticAssets.PartialMessages.MonsterAttacking)
       }
     }
     else {
 
-      this.SetMessage(Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + " tried to attack you and missed their target.")
-      this.ResetMessage()
+      this.SetText(Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + StaticAssets.PartialMessages.MonsterMissed)
 
     }
 
@@ -2610,19 +2652,15 @@ class Game extends Component {
 
         let Damage = this.RandomIntegerFromRange(1, Player.Strength / 2 + Player.Luck / 8)
 
-        console.log("Damage inflicted to monster:",Damage)
-
         if (this.MonsterTakeDamage(Monster, Damage)) {
-          this.SetMessage("You hit your target!")
-          this.ResetMessage()
+          this.SetText(StaticAssets.PartialMessages.PlayerHit + Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + StaticAssets.PartialMessages.Period)
         }
 
       }
 
     }
     else {
-      this.SetMessage("You missed your target!")
-      this.ResetMessage()
+      this.SetText(StaticAssets.Messages.PlayerMissed)
 
     }
 
@@ -2638,7 +2676,7 @@ class Game extends Component {
 
       if (Player.Health <= 0) {
         Player.Dead = true
-        this.SetPermanentMessage("You are dead.")
+        this.SetText(StaticAssets.Messages.PlayerDead)
         return false
       }
 
@@ -2658,7 +2696,7 @@ class Game extends Component {
     if (Monster.Health <= 0) {
       Monster.Dead = true
       MonsterMap[Monster.y][Monster.x] = Empty
-      this.SetMessage("You killed " + Functions.IndefiniteArticle(Monster.Name) + " " + Monster.Name + ".")
+      this.SetText(StaticAssets.PartialMessages.MonsterKilled + Functions.IndefiniteArticle(Monster.Name) + " " + Monster.Name + StaticAssets.PartialMessages.Period)
       return false
     }
 
@@ -2701,12 +2739,13 @@ class Game extends Component {
 
     let matchTextAccessPoint = false
 
-    State.Text.map((text) => {
-      return text.accessPoints.filter(accessPoint => {
+    State.Text.map((text, index) => {
+      if (text.Used) return null
+      return !text.accessPoints ? null : text.accessPoints.filter(accessPoint => {
         if (accessPoint.x === x && accessPoint.y === y) {
           matchTextAccessPoint = true
           State.currentText = text.text
-          this.setState(State)
+          State.Text[index].Used = true
           return true
         }
         else {
@@ -2715,6 +2754,9 @@ class Game extends Component {
       })
 
     })
+
+
+    this.setState(State)
 
     return matchTextAccessPoint
   }

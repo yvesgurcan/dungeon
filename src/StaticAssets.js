@@ -34,17 +34,22 @@ export const StaticAssets = {
 
     Messages: {
         Collision: "You can't go there.",
-        LockedDoor: "The door is locked.",
+        LockedDoor: "You try to open the door... it's locked.",
+        PlayerMissed: "You missed your target!",
+        PlayerDead: "Ouch! You are dead.",
     },
 
     PartialMessages: {
-        UnlockDoor: "You unlocked the door with the ",
         Period: ".",
+        UnlockDoor: "You unlocked the door with the ",
+        MonsterAttacking: " is attacking you.",
+        MonsterMissed: " tried to attack you and missed their target.",
+        MonsterKilled: "You killed ",
+        PlayerHit: "You hit ",
     },
 
     Text: [
         {
-            accessPoints: [{x: 2, y: 1}],
             text: "You landed in a very dark room. It is very hard to see what is surrouding you."
         },
         {
@@ -83,7 +88,7 @@ export const StaticAssets = {
             Type: "misc",
             Name: "Rock",
             image: "rock",
-            Weight: 30,
+            Weight: 2,
         },
         // Potions
         HealthPotion: {
@@ -101,7 +106,7 @@ export const StaticAssets = {
             Weight: 0.5,
         },
         StaminaPotion: {
-            level: 1,
+            Level: 1,
             Type: "potion",
             Name: "potion of vigor",
             image: "potion_stamina",
@@ -121,6 +126,18 @@ export const StaticAssets = {
             Type: "weapon",
             Weight: 3,
         },
+        // Scrolls
+        FireballScroll: {
+            Level: 1,
+            Name: "fireball scroll",
+            Type: "scroll",
+            Spell: "FireballSpell",
+            image: "spell_fireball",
+            Weight: 0.1,
+        },
+    },
+
+    Spells: {
         // Spells
         FireballSpell: {
             Level: 1,

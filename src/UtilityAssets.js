@@ -52,7 +52,7 @@ export const UtilityAssets = {
 
     GenerateRandomItems: {
         Level1: {
-            level: 1,
+            Level: 1,
             random: true,
         }
     },

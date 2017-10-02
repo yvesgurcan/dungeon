@@ -2,7 +2,7 @@ import StaticAssets from "./StaticAssets.js"
 import UtilityAssets from "./UtilityAssets.js"
 import Functions from "./Functions.js"
 
-const Debug = true
+const Debug = false
 
 export const DynamicAssets = {
 
@@ -12,7 +12,7 @@ export const DynamicAssets = {
     ,
     ShowFullMap: Debug || false
     ,
-    NoClip: Debug || false
+    NoClip: Debug || true
     ,
     GodMode: Debug || false
     ,
@@ -58,7 +58,7 @@ export const DynamicAssets = {
     },
 
     Backpack: {
-        maxItems: 5,
+        maxItems: 2,
         Weight: 0,
         Items: [],
     },
@@ -79,10 +79,7 @@ export const DynamicAssets = {
             y: 4,
             Name: "chest",
             items: [
-                {... StaticAssets.Items.Rock, Weight: Functions.RandomFloatFromRange(5,50)},
                 StaticAssets.UniqueItems.IronKey,
-                UtilityAssets.GenerateRandomItems.Level1,
-                UtilityAssets.GenerateRandomItems.Level1,
                 UtilityAssets.GenerateRandomItems.Level1,
             ]
         },
