@@ -1,6 +1,4 @@
 import StaticAssets from "./StaticAssets.js"
-import UtilityAssets from "./UtilityAssets.js"
-import Functions from "./Functions.js"
 
 const Debug = true
 
@@ -23,6 +21,7 @@ export const DynamicAssets = {
     Player: {
         x: 10,
         y: 14,
+        Facing: "East",
         Level: 1,
         XP: 0,
         Health: 0,
