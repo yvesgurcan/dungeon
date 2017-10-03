@@ -46,6 +46,10 @@ export const StaticAssets = {
         }
     },
 
+    Backpacks: {
+        BagOfHolding: {}
+    },
+
     Items: {
         // Miscellani
         Rock: {
