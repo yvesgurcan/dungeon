@@ -92,6 +92,7 @@ export const DynamicAssets = {
         },
         {
             accessPoints: [{x: 10, y: 13}],
+            image: "bones",
             text:
                 `As you take a few steps ahead of you, you stumble on something on the ground.
 

@@ -19,6 +19,7 @@ const contactTemplate = "mailto:" + authorEmail +"?subject=Dungeon!"
 const repository = "https://github.com/yvesgurcan/dungeon"
 const gitHubLogo = "/graphics/misc/Octocat.png"
 const itemPath = "/graphics/items/"
+const storyPath = "/graphics/story/"
 const imgExt = ".png"
 
 /* css */
@@ -750,14 +751,15 @@ class Message extends Component {
 // a descriptive paragraph about the surroundings of the user, to set the mood :)
 class Story extends Component {
   render() {
-    let {currentText, currentEvent} = this.props
+    let {currentText, currentTextImage, currentEvent} = this.props
     return (
       <View style={Styles.Story} hidden={currentEvent.length > 0 && currentText === ""}>
-        <Block>
+        <Block style={Styles.Paragraph}>
           {currentText.split("\n").map((paragraph, index) => {
             return <Text key={index}>{paragraph}<LineBreak/></Text>
           })}
         </Block>
+        <Image src={storyPath + currentTextImage + imgExt} hidden={!currentTextImage} style={Styles.Paragraph}/>
       </View>
     )
   }
@@ -836,7 +838,7 @@ class Event extends Component {
 
         if (Stationary && event.items.length === 0) {
           return (
-            <Text key={index} style={Styles.Paragraph}>
+            <Text key={index}>
               <Text>The  </Text>
               <Text>{event.Name.replace("empty","")}</Text>
               <Text> is empty.</Text>
@@ -847,7 +849,7 @@ class Event extends Component {
         else {
           lootCount += event.items.length
           return (
-            <Text key={index} style={Styles.Paragraph}>
+            <Text key={index}>
               <Text>You found </Text>
               <Text>{Functions.IndefiniteArticle(event.Name)}</Text>
               <Text> </Text>
@@ -1566,7 +1568,7 @@ class Game extends Component {
       },
       Paragraph: {
         display: "block",
-        paddingTop: "13px",
+        paddingBottom: "13px",
       },
       // Grid
       Game: {
@@ -2171,6 +2173,7 @@ class Game extends Component {
           if (accessPoint.x === x && accessPoint.y === y) {
             matchTextAccessPoint = true
             State.currentText = text.text
+            State.currentTextImage = text.image || null
             State.Text[index].Used = true
             return true
           }
@@ -2217,11 +2220,11 @@ class Game extends Component {
           StaticAssets.PartialMessages.UnlockDoor  + 
           LockedDoor.Key +
           StaticAssets.PartialMessages.Period
-        this.setState({ currentText: UnlockMessage})
+        this.setState({currentText: UnlockMessage, currentTextImage: null})
       }
       else {
         this.setState({
-          currentText: StaticAssets.Messages.LockedDoor
+          currentText: StaticAssets.Messages.LockedDoor, currentTextImage: null
         })
         return
       }
@@ -2266,6 +2269,7 @@ class Game extends Component {
 
       if (State.currentEvent.length > 0) {
         State.currentText = ""
+        State.currentTextImage = null
       }
 
       // save the new coordinates
