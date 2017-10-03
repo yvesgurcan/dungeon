@@ -7,6 +7,22 @@ export const StaticAssets = {
         LockedDoor: "You try to open the door... it's locked.",
         PlayerMissed: "You missed your target!",
         PlayerDead: "Ouch! You are dead.",
+        Potion: {
+            NoEffect: "The potion had no effect.",
+            // Health
+            Health1: "You feel a little better.",
+            Health2: "Your body regenerates quickly.",
+            Health3: "This potion was much needed.",
+            // Stamina
+            Stamina1: "The potion gave you a small boost of energy.",
+            Stamina2: "You're in better shape now.",
+            Stamina3: "You feel invigorated.",
+            // Mana
+            Mana1: "As you drink the potion, a tiny sparkle lights up in your chest.",
+            Mana2: "You feel the power of magic.",
+            Mana3: "Nice!",
+        }
+
     },
 
     PartialMessages: {
@@ -45,6 +61,9 @@ export const StaticAssets = {
             Type: "potion",
             Name: "health potion",
             image: "potion_health",
+            Heal: "Health",
+            Strength: 12,
+            Action: "DrinkPotion",
             Weight: 0.5,
         },
         ManaPotion: {
@@ -52,6 +71,9 @@ export const StaticAssets = {
             Type: "potion",
             Name: "mana potion",
             image: "potion_mana",
+            Heal: "Mana",
+            Strength: 8,
+            Action: "DrinkPotion",
             Weight: 0.5,
         },
         StaminaPotion: {
@@ -59,13 +81,19 @@ export const StaticAssets = {
             Type: "potion",
             Name: "potion of vigor",
             image: "potion_stamina",
+            Heal: "Stamina",
+            Strength: 30,
+            Action: "DrinkPotion",
             Weight: 0.5,
         },
-        CurePoisonPotion: {
+        AntidotePotion: {
             Level: 1,
             Type: "potion",
-            Name: "cure poison",
-            image: "potion_cure_poison",
+            Name: "antidote",
+            image: "potion_antidote",
+            Heal: "Poison",
+            Strength: 70,
+            Action: "DrinkPotion",
             Weight: 0.5,
         },
         // Swords

@@ -30,11 +30,15 @@ let Styles = null
 const FirstColumn = 1
 const LastColumn = 10
 
+// grid rows
+const StoryRowHeight = 245
+
 // presets
 
 const px = "px"
 
-const HUDBlockPadding = "10px"
+const HUDPadding = 10
+const HUDBlockPadding = HUDPadding + px
 const HUDBorder = "1px solid black"
 const HUDStatBarHeight = "10px"
 
@@ -73,6 +77,13 @@ class URL extends Component {
     return (
       <a {... this.props} children={this.props.children}/>
     )
+  }
+}
+
+// br
+class LineBreak extends Component {
+  render() {
+    return <br/>
   }
 }
 
@@ -202,11 +213,14 @@ class ItemImagePlaceholder extends Component {
 }
 
 class ItemImage extends Component {
+  onClick = () => {
+    this.props.onClick(this.props.item)
+  }
   render() {
     return (
       <Text>
         <Graphics
-          onClick={this.props.onClick}
+          onClick={this.onClick}
           src={this.props.image ? itemPath + this.props.image + imgExt : null}
           style={Styles.ItemImage}
           title={this.props.name} />
@@ -248,7 +262,9 @@ class Inventory extends Component {
         <ItemImageBlock
           key={index}
           image={(item && item.image) || null}
-          name={(item && item.Name) || null}/>
+          name={(item && item.Name) || null}
+          item={item}
+          onClick={this.props.UseItem} />
       )
     })
 
@@ -388,6 +404,16 @@ class LongRest extends Component {
   }
 }
 
+class Take extends Component {
+  render() {
+    return (
+      <ActionButton {... this.props}>
+        Take
+      </ActionButton>
+    )
+  }
+}
+
 class TakeAll extends Component {
   render() {
     return (
@@ -515,6 +541,7 @@ class WeaponReady extends Component {
           onClick={this.onClick}
           image={(Item && Item.image) || null}
           name={Item && Item.Name ? Slot + ": " + Item.Name : null}
+          item={Item}
           {... this.props}/>
         </View>
       )
@@ -553,6 +580,7 @@ class PreparedSpell extends Component {
           onClick={this.onClick}
           image={(Item && Item.image) || null}
           name={Item && Item.Name ? "Prepared spell: " + Item.Name : null}
+          item={Item}
           {... this.props}/>
         </View>
       )
@@ -725,8 +753,12 @@ class Story extends Component {
   render() {
     let {currentText, currentEvent} = this.props
     return (
-      <View style={Styles.Story} hidden={currentEvent.length > 0}>
-        {currentText}
+      <View style={Styles.Story} hidden={currentEvent.length > 0 && currentText === ""}>
+        <Block>
+          {currentText.split("\n").map((paragraph, index) => {
+            return <Text key={index}>{paragraph}<LineBreak/></Text>
+          })}
+        </Block>
       </View>
     )
   }
@@ -746,6 +778,7 @@ class Loot extends Component {
         onClick={this.onClick}
         image={(item && item.image) || null}
         name={(item && item.Name) || null}
+        item={item}
         {... this.props}/>      
     )
   }
@@ -785,6 +818,7 @@ class Event extends Component {
     let {currentEvent, Stationary} = this.props
     let loot = false
     let lootIsEmpty = true
+    let lootCount = 0
 
     let eventText = currentEvent.map((event, index) => {
 
@@ -803,7 +837,7 @@ class Event extends Component {
 
         if (Stationary && event.items.length === 0) {
           return (
-            <Text key={index}>
+            <Text key={index} style={Styles.Paragraph}>
               <Text>The  </Text>
               <Text>{event.Name.replace("empty","")}</Text>
               <Text> is empty.</Text>
@@ -812,8 +846,9 @@ class Event extends Component {
           )
         }
         else {
+          lootCount += event.items.length
           return (
-            <Text key={index}>
+            <Text key={index} style={Styles.Paragraph}>
               <Text>You found </Text>
               <Text>{Functions.IndefiniteArticle(event.Name)}</Text>
               <Text> </Text>
@@ -832,12 +867,22 @@ class Event extends Component {
     })
 
     if (loot && !lootIsEmpty) {
-      eventText.push(
-        <Block key="TakeAll">
-          <TakeAll
-            onClick={this.props.TakeAllLoot}/>
-        </Block>
-      )
+      if (lootCount === 1) {
+        eventText.push(
+          <Block key="Take">
+            <Take
+              onClick={this.props.TakeAllLoot}/>
+          </Block>
+        )
+      }
+      else {
+        eventText.push(
+          <Block key="TakeAll">
+            <TakeAll
+              onClick={this.props.TakeAllLoot}/>
+          </Block>
+        )
+      }
     }
 
     return eventText
@@ -857,7 +902,9 @@ class StoryBlock extends Component {
   render() {
     return (
       <View style={Styles.StoryBlock}>
-        {this.props.children}
+        <Block style={Styles.StoryContainer}>
+          {this.props.children}
+        </Block>
       </View>
     )
   }
@@ -1335,7 +1382,9 @@ class Game extends Component {
 
     if (DynamicAssets.LootContainers) {
       DynamicAssets.LootContainers.map(Container => {
-        LootMap[Container.y][Container.x] = LootContainer
+        if (Container.x && Container.y) {
+          LootMap[Container.y][Container.x] = LootContainer
+        }
         return null
       })
     }
@@ -1359,6 +1408,8 @@ class Game extends Component {
     // give the player first randomly generated stats
     initState.Player = this.GeneratePlayerStats(initState.Player)
     
+    initState.Player.Health = 11
+
     this.state = initState
     
   }
@@ -1506,6 +1557,10 @@ class Game extends Component {
       Hidden: {
           display: "none",
       },
+      Paragraph: {
+        display: "block",
+        paddingTop: "13px",
+      },
       // Grid
       Game: {
         display: "grid",
@@ -1549,9 +1604,9 @@ class Game extends Component {
           (MobileScreen ? "25px " : "") +
           "25px " +
           // story/map (row3)
-          "245px " +
+          StoryRowHeight + px + " " +
           // story (row4)
-          (MobileScreen ? "245px " : "") +
+          (MobileScreen ? StoryRowHeight + px + " " : "") +
           // controls (row5)
           "auto " +
           // controls2 (row5b)
@@ -1616,14 +1671,16 @@ class Game extends Component {
         border: HUDBorder,
         padding: HUDBlockPadding,
       },
+      StoryContainer: {
+        maxHeight: StoryRowHeight - HUDPadding * 2 + px,
+        overflow: "auto",
+      },
       Story: {
         userSelect: "text",
-        minHeight: "25px",
       },
   
       Event: {
         userSelect: "text",
-        minHeight: "25px",
       },
       // Map
       Map: {
@@ -2001,7 +2058,9 @@ class Game extends Component {
   }
 
   SetMessage = (Message) => {
-    this.setState({ currentMessage: Message})
+    if (Message) {
+      this.setState({ currentMessage: Message})      
+    }
   }
 
   ResetMessage = () => {
@@ -2013,7 +2072,9 @@ class Game extends Component {
   }
 
   SetText = (Message) => {
-    this.setState({ currentText: Message})
+    if (Message) {
+      this.setState({ currentText: Message})
+    }
   }
 
   onClickArrow = (key) => {
@@ -2088,6 +2149,36 @@ class Game extends Component {
     else {
      return Math.ceil((Player.Strength) * 5) + this.RandomIntegerFromRange(-5, 15)
     }
+  }
+
+  UpdateText = ({ x, y }) => {
+    let State = this.state
+
+    let matchTextAccessPoint = false
+
+    if (State.Text) {
+
+      State.Text.map((text, index) => {
+        if (text.Used) return null
+        return !text.accessPoints ? null : text.accessPoints.filter(accessPoint => {
+          if (accessPoint.x === x && accessPoint.y === y) {
+            matchTextAccessPoint = true
+            State.currentText = text.text
+            State.Text[index].Used = true
+            return true
+          }
+          else {
+            return false
+          }
+        })
+
+      })
+
+      this.setState(State)
+
+    }
+
+    return matchTextAccessPoint
   }
 
   MovePlayer = (Direction) => {
@@ -2169,10 +2260,6 @@ class Game extends Component {
       if (State.currentEvent.length > 0) {
         State.currentText = ""
       }
-      else {
-        // check if the text needs to be updated
-        this.UpdateText(targetCoordinates)
-      }
 
       // save the new coordinates
       State.Player.x = targetCoordinates.x
@@ -2183,6 +2270,9 @@ class Game extends Component {
       State.Player.Stamina = State.Player.Stamina - 1
 
       this.setState(State)
+      
+      this.UpdateText(targetCoordinates)
+
 
     }
     
@@ -2357,8 +2447,6 @@ class Game extends Component {
 
     if (Player.Dead) return false
 
-    // TODO: check if there is room in the inventory
-
     let loot = []
     let LootCount = 0
     let FreeSlots = Backpack.maxItems - Backpack.Items.length
@@ -2396,20 +2484,20 @@ class Game extends Component {
 
         Backpack.Items = Backpack.Items.concat(loot)        
         this.setState({Backpack: Backpack, Stationary: true})
+
+        this.SetText("You gathered all the loot in your backpack.")
              
       }
       else {
 
-        this.SetMessage("The loot is too heavy.")
-        this.ResetMessage()
+        this.SetText("The loot is too heavy.")
           
       }
 
     }
     else {
 
-      this.SetMessage("You can not take all the loot.")
-      this.ResetMessage()
+      this.SetText("You can not take all the loot.")
 
     }
 
@@ -2847,34 +2935,53 @@ class Game extends Component {
 
   }
 
-  UpdateText = ({ x, y }) => {
-    let State = this.state
+  UseItem = (Item) => {
 
-    let matchTextAccessPoint = false
+    if (this[Item.Action]) {
+      this[Item.Action](Item)
+    }
 
-    if (State.Text) {
+  }
 
-      State.Text.map((text, index) => {
-        if (text.Used) return null
-        return !text.accessPoints ? null : text.accessPoints.filter(accessPoint => {
-          if (accessPoint.x === x && accessPoint.y === y) {
-            matchTextAccessPoint = true
-            State.currentText = text.text
-            State.Text[index].Used = true
-            return true
-          }
-          else {
-            return false
-          }
-        })
+  DrinkPotion = (Item) => {
 
-      })
+    let {Player, Backpack} = this.state
 
-      this.setState(State)
+    // Healing potion
+    if (Player[Item.Heal]) {
+      let NewHealedProperty = Math.min(Player["Max" + Item.Heal], Player[Item.Heal] + Item.Strength + Functions.RandomIntegerFromRange(-2,3))
+      
+      let Message = null
+
+      if (NewHealedProperty - Player[Item.Heal] === 0) {
+        Message = StaticAssets.Messages.Potion.NoEffect
+      }
+      else if (NewHealedProperty - Player[Item.Heal] <= 5) {
+        Message = StaticAssets.Messages.Potion[Item.Heal + "1"]
+      }
+      else if (NewHealedProperty - Player[Item.Heal] <= 10) {
+        Message = StaticAssets.Messages.Potion[Item.Heal + "2"]
+      }
+      else {
+        Message = StaticAssets.Messages.Potion[Item.Heal + "3"]
+      }
+
+      this.SetText(Message)
+
+      Player[Item.Heal] = NewHealedProperty
 
     }
 
-    return matchTextAccessPoint
+    // remove item from inventory
+    Backpack.Items.map((BackpackItem, index) => {
+      if (BackpackItem.Id === Item.Id) {
+        Backpack.Items.splice(index, 1)
+      }
+      return null
+    })
+
+    this.setState({Player: Player, Backpack: Backpack})
+
   }
 
   render() {
@@ -2902,7 +3009,7 @@ class Game extends Component {
         <PlayerStats2 {... this.state} />
         <PlayerStats2Block1 {... this.state} />
         <PlayerStats2Block2 {... this.state} />
-        <Inventory {... this.state} />
+        <Inventory {... this}  {... this.state} />
       </View>
     )
   }
