@@ -364,26 +364,6 @@ class Arrows extends Component {
 
 /* player actions */
 
-class ShortRest extends Component {
-  render() {
-    return (
-      <ActionButton {... this.props}>
-        Short Rest
-      </ActionButton>
-    )
-  }
-}
-
-class LongRest extends Component {
-  render() {
-    return (
-      <ActionButton {... this.props}>
-        Long Rest
-      </ActionButton>
-    )
-  }
-}
-
 class Take extends Component {
   render() {
     return (
@@ -399,6 +379,26 @@ class TakeAll extends Component {
     return (
       <ActionButton {... this.props}>
         Take All
+      </ActionButton>
+    )
+  }
+}
+
+class ShortRest extends Component {
+  render() {
+    return (
+      <ActionButton {... this.props}>
+        Short Rest
+      </ActionButton>
+    )
+  }
+}
+
+class LongRest extends Component {
+  render() {
+    return (
+      <ActionButton {... this.props}>
+        Long Rest
       </ActionButton>
     )
   }
@@ -438,10 +438,10 @@ class ActionButton extends Component {
   }
 }
 
-class Actions extends Component {
+class Rest extends Component {
   render() {
     return (
-      <View style={Styles.Actions}>
+      <View style={Styles.Rest}>
         {/* todo */}
         <ShortRest />
         <LongRest />
@@ -568,11 +568,11 @@ class PreparedSpell extends Component {
   }
 }
 
-class PreparedSpellBlock extends Component {
+class PreparedSpells extends Component {
   render() {
     let {Gear} = this.props
     return (
-      <View>
+      <View style={Styles.PreparedSpells}>
         <PreparedSpell Item={Gear.PreparedSpell1} />
         <PreparedSpell Item={Gear.PreparedSpell2} />
       </View>
@@ -592,18 +592,17 @@ class PlayerStats0 extends Component {
         </Block>
         <Block style={Styles.ReadyItemBlock}>
           <WeaponReadyBlock {... this.props} />
-          <PreparedSpellBlock {... this.props} />
         </Block>
       </View>
     )
   }
 }
 
-class PlayerStats1 extends Component {
+class PlayerVitals extends Component {
   render() {
     let {Player} = this.props
     return (
-      <View style={Styles.PlayerStats1}>
+      <View style={Styles.PlayerVitals}>
         <Block style={Styles.PlayerStat}>
           Health
           <HealthBar current={Player.Health} max={Player.MaxHealth}/>
@@ -621,11 +620,11 @@ class PlayerStats1 extends Component {
   }
 }
 
-class PlayerStats2 extends Component {
+class PlayerAttributesStacked extends Component {
   render() {
     let {Player} = this.props
     return (
-      <View style={MobileScreen ? Styles.Hidden : Styles.PlayerStats2}>
+      <View style={MobileScreen ? Styles.Hidden : Styles.PlayerAttributesStacked}>
         <Block style={Styles.PlayerStat} hidden={!TabletScreen}>
           <Text>Level: </Text><Text>{Player.Level}</Text>
         </Block>
@@ -1513,10 +1512,11 @@ class Game extends Component {
     let MapRow = MainRow
     let ControlRow = 4
     let ControlRow2 = 4
-    let InventoryRow = 5
-    let SpellBookRow = 6
-    let AccessoriesStartRow = 5
-    let AccessoriesStopRow = 7
+    let PreparedSpellsRow = 5
+    let InventoryRow = 6
+    let SpellBookRow = 7
+    let AccessoriesStartRow = 6
+    let AccessoriesStopRow = 8
 
     if (MobileScreen) {
 
@@ -1527,10 +1527,11 @@ class Game extends Component {
       MapRow = 5
       ControlRow = 6
       ControlRow2 = 7
-      InventoryRow = 8
-      SpellBookRow = 8
-      AccessoriesStartRow = 8
-      AccessoriesStopRow = 10
+      PreparedSpellsRow = 8
+      InventoryRow = 9
+      SpellBookRow = 9
+      AccessoriesStartRow = 9
+      AccessoriesStopRow = 11
 
     }
 
@@ -1545,9 +1546,9 @@ class Game extends Component {
 
     let PlayerWeaponStartColumn = FirstColumn
     let PlayerWeaponStopColumn = 2
-    let PlayerVitalStartColumn = PlayerWeaponStopColumn
-    let PlayerVitalStopColumn = 3
-    let DirectionalArrowStartColumn = PlayerVitalStopColumn
+    let PlayerVitalsStartColumn = PlayerWeaponStopColumn
+    let PlayerVitalsStopColumn = 3
+    let DirectionalArrowStartColumn = PlayerVitalsStopColumn
     let DirectionalArrowStopColumn = 4
     let PlayerActionStartColumn = DirectionalArrowStopColumn
     let PlayerActionStopColumn = 6
@@ -1555,9 +1556,9 @@ class Game extends Component {
     let PlayerStat2StartColumn = PlayerActionStopColumn
     let PlayerStat2StopColumn = 7
 
-    let PlayerStatStartColumn = PlayerStat2StopColumn
-    let PlayerStatBlockSeparation = PlayerStatStartColumn
-    let PlayerStatStopColumn = LastColumn
+    let PlayerAttributesStartColumn = PlayerStat2StopColumn
+    let PlayerAttributesBlockSeparation = PlayerAttributesStartColumn
+    let PlayerAttributesStopColumn = LastColumn
 
     let InventoryStartColumn = FirstColumn
     let InventoryStopColumn = 7
@@ -1580,16 +1581,16 @@ class Game extends Component {
 
       PlayerWeaponStartColumn = FirstColumn
       PlayerWeaponStopColumn = 4
-      PlayerVitalStartColumn = PlayerWeaponStopColumn
-      PlayerVitalStopColumn = 7
-      DirectionalArrowStartColumn = PlayerVitalStopColumn
+      PlayerVitalsStartColumn = PlayerWeaponStopColumn
+      PlayerVitalsStopColumn = 7
+      DirectionalArrowStartColumn = PlayerVitalsStopColumn
       DirectionalArrowStopColumn = 9
 
       PlayerActionStartColumn = FirstColumn
-      PlayerActionStopColumn = 4
-      PlayerStatStartColumn = PlayerActionStopColumn
-      PlayerStatBlockSeparation = 7
-      PlayerStatStopColumn = 10
+      PlayerAttributesStopColumn = 4
+      PlayerAttributesStartColumn = PlayerAttributesStopColumn
+      PlayerAttributesBlockSeparation = 7
+      PlayerAttributesStopColumn = 10
 
       InventoryStartColumn = FirstColumn
       InventoryStopColumn = LastColumn
@@ -1603,14 +1604,14 @@ class Game extends Component {
     }
     else if (TabletScreen) {
 
-      PlayerVitalStartColumn = PlayerWeaponStopColumn
-      PlayerVitalStopColumn = 4
-      DirectionalArrowStartColumn = PlayerVitalStopColumn
+      PlayerVitalsStartColumn = PlayerWeaponStopColumn
+      PlayerVitalsStopColumn = 4
+      DirectionalArrowStartColumn = PlayerVitalsStopColumn
       DirectionalArrowStopColumn = 5
       PlayerActionStartColumn = DirectionalArrowStopColumn
       PlayerActionStopColumn = 7
-      PlayerStatStartColumn = PlayerActionStopColumn
-      PlayerStatStopColumn = LastColumn
+      PlayerAttributesStartColumn = PlayerActionStopColumn
+      PlayerAttributesStopColumn = LastColumn
 
     }
 
@@ -1623,6 +1624,12 @@ class Game extends Component {
       Paragraph: {
         display: "block",
         paddingBottom: "13px",
+      },
+      // debug
+      Placeholder: {
+        background: "red",
+        width: WallBoxWidth + px,
+        height: WallBoxHeight + px,
       },
       // Grid
       Game: {
@@ -1674,6 +1681,8 @@ class Game extends Component {
           "auto " +
           // controls2 (row5b)
           (MobileScreen ? "auto " : "") +
+          // prepared spells
+          "auto " +
           // inventory
           "130px " +
           // spell book 
@@ -1790,12 +1799,6 @@ class Game extends Component {
         borderRadius: "50%",
       },
       Wall: {
-        // debug
-        Placeholder: {
-          background: "red",
-          width: WallBoxWidth + px,
-          height: WallBoxHeight + px,
-        },
         Pillar: {
           boxSizing: "border-box",
           marginTop: (WallBoxHeight - PillarBoxHeight)/2 + px,
@@ -1908,10 +1911,9 @@ class Game extends Component {
         gridColumnStart: FirstColumn,
         gridColumnEnd: LastColumn,
         gridRowStart: ControlRow,
-        gridRowEnd: InventoryRow,
         border: HUDBorder,
       },
-      // Player Stats
+      // Name and Ready Weapons
       PlayerStats0: {
         gridColumnStart: PlayerWeaponStartColumn,
         gridColumnEnd: PlayerWeaponStopColumn,
@@ -1919,12 +1921,14 @@ class Game extends Component {
         padding: HUDBlockPadding,
         textAlign: "center",
       },
-      PlayerStats1: {
-        gridColumnStart: PlayerVitalStartColumn,
-        gridColumnEnd: PlayerVitalStopColumn,
+      // Player Vital Stats
+      PlayerVitals: {
+        gridColumnStart: PlayerVitalsStartColumn,
+        gridColumnEnd: PlayerVitalsStopColumn,
         gridRowStart: ControlRow,
         padding: HUDBlockPadding,
       },
+      // Directional Arrows
       ArrowContainer: {
         gridColumnStart: DirectionalArrowStartColumn,
         gridColumnEnd: DirectionalArrowStopColumn,
@@ -1933,27 +1937,27 @@ class Game extends Component {
         padding: HUDBlockPadding,
         margin: "auto",
       },
-      Actions: {
+      Rest: {
         gridColumnStart: PlayerActionStartColumn,
         gridColumnEnd: PlayerActionStopColumn,
         gridRowStart: ControlRow2,
         padding: HUDBlockPadding,
       },
-      PlayerStats2: {
-        gridColumnStart: PlayerStatStartColumn,
-        gridColumnEnd: PlayerStatStopColumn,
+      PlayerAttributesStacked: {
+        gridColumnStart: PlayerAttributesStartColumn,
+        gridColumnEnd: PlayerAttributesStopColumn,
         gridRowStart: ControlRow2,
         padding: HUDBlockPadding,
       },
       PlayerStats2Block1: {
-        gridColumnStart: PlayerStatStartColumn,
-        gridColumnEnd: PlayerStatBlockSeparation,
+        gridColumnStart: PlayerAttributesStartColumn,
+        gridColumnEnd: PlayerAttributesBlockSeparation,
         gridRowStart: ControlRow2,
         padding: HUDBlockPadding,
       },
       PlayerStats2Block2: {
-        gridColumnStart: PlayerStatBlockSeparation,
-        gridColumnEnd: PlayerStatStopColumn,
+        gridColumnStart: PlayerAttributesBlockSeparation,
+        gridColumnEnd: PlayerAttributesStopColumn,
         gridRowStart: ControlRow2,
         padding: HUDBlockPadding,
       },
@@ -2055,6 +2059,13 @@ class Game extends Component {
         margin: "1px",
         userSelect: "none",
         background: ButtonClickBackground,
+      },
+      // Prepared Spells
+      PreparedSpells: {
+        gridColumnStart: FirstColumn,
+        gridColumnEnd: LastColumn,
+        gridRowStart: PreparedSpellsRow,
+        border: HUDBorder,
       },
       // Inventory
       Inventory: {
@@ -3087,11 +3098,12 @@ class Game extends Component {
         {/* row 4 */}
         <Controls />
         <PlayerStats0 {... this.state} />
-        <PlayerStats1 {... this.state} />
+        <PlayerVitals {... this.state} />
         <Arrows {... this} {... this.state} />
-        <Actions/>
+        <Rest/>
+        <PreparedSpells {... this} {... this.state} />
         <PlayerStats3 {... this.state} />
-        <PlayerStats2 {... this.state} />
+        <PlayerAttributesStacked {... this.state} />
         <PlayerStats2Block1 {... this.state} />
         <PlayerStats2Block2 {... this.state} />
         <Inventory {... this} {... this.state} />
