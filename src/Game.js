@@ -2802,9 +2802,6 @@ class Game extends Component {
       if (this.RandomInteger(100) <= 5) {
         Monster.ChasePlayer = false
       }
-      else {
-        console.log("where do I go?","monster",{x:Monster.x,y:Monster.y},"player",PlayerNewCoordinates, {horizontal: HorizontalDistance,vertical: VerticalDistance})
-      }
     }
 
     // recalculate distance for attack after move
@@ -2850,7 +2847,7 @@ class Game extends Component {
 
   AttackMonster = (MonsterCoordinates) => {
 
-    let {Player, Monsters} = this.state
+    let {Player, Gear, Monsters} = this.state
 
     if (this.RandomInteger(100) >= Player.Dexterity) {
       
@@ -2862,7 +2859,10 @@ class Game extends Component {
 
         Monster = Monster[0]
 
-        let Damage = this.RandomIntegerFromRange(1, Player.Strength / 2)
+        let Damage = this.RandomIntegerFromRange(Gear.LeftHand.Damage.Min + (Gear.LeftHand.Damage.Min * Player.Strength/20), Gear.LeftHand.Damage.Max + (Gear.LeftHand.Damage.Min * Player.Strength/20))
+
+        console.log(Gear.LeftHand.Damage.Min + (Gear.LeftHand.Damage.Min * Player.Strength/20), Gear.LeftHand.Damage.Max + (Gear.LeftHand.Damage.Min * Player.Strength/20))
+        console.log(Damage)
 
         if (this.MonsterTakeDamage(Monster, Damage)) {
           this.SetText(StaticAssets.PartialMessages.PlayerHit + Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + StaticAssets.PartialMessages.Period)

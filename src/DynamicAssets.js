@@ -39,8 +39,8 @@ export const DynamicAssets = {
     },
 
     Gear: {
-        LeftHand: null,
-        RightHand: StaticAssets.Items.FireSword,
+        LeftHand: StaticAssets.Items.Dagger,
+        RightHand: null,
         PreparedSpell1: StaticAssets.Items.FireballSpell,
         PreparedSpell2: null,
     },
@@ -59,14 +59,13 @@ export const DynamicAssets = {
             Name: "skeleton",
             items: [
                 // StaticAssets.UniqueItems.IronKey,
-                {... StaticAssets.Items.HealthPotion, Id: 2}
+                {...StaticAssets.Items.HealthPotion, Id: 2}
             ]
         },
     ],
 
     Monsters: [
-        {...
-            StaticAssets.Bestiary.Orc,
+        {...StaticAssets.Bestiary.Orc,
             x: 12,
             y: 14,
             Id: 1,

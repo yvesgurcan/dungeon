@@ -101,10 +101,11 @@ export const StaticAssets = {
             Weight: 0.5,
         },
         // Swords
-        FireSword: {
+        Dagger: {
             Level: 2,
-            Name: "fire sword",
+            Name: "dagger",
             Type: "weapon",
+            Damage: {Min: 1, Max: 3},
             Weight: 3,
         },
         // Scrolls
