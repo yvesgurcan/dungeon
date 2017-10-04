@@ -46,7 +46,7 @@ export const DynamicAssets = {
     },
 
     Backpack: {
-        maxItems: 5,
+        maxItems: 28,
         Weight: 0,
         Items: [],
     },
