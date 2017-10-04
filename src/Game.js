@@ -739,7 +739,9 @@ class Story extends Component {
             return <Text key={index}>{paragraph}<LineBreak/></Text>
           })}
         </Block>
-        <Image src={storyPath + currentTextImage + imgExt} hidden={!currentTextImage} style={Styles.Paragraph}/>
+        <Block hidden={!currentTextImage}>
+          <Image src={storyPath + currentTextImage + imgExt} style={Styles.Paragraph}/>
+        </Block>
       </View>
     )
   }
