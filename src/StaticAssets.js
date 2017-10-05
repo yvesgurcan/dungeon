@@ -125,6 +125,12 @@ export const StaticAssets = {
             Type: "weapon",
             image: "staff",
         },
+        // Shield
+        Shield: {
+            Name: "simple staff",
+            Type: "shield",
+            image: "shield",
+        },
         // Necklaces
         AmuletOfMagic: {
             Name: "amulet of magic",
