@@ -1688,7 +1688,7 @@ class Game extends Component {
           // spell book 
           "108px "
         ,
-        gridGap: "10px",
+          gridGap: "10px",
         userSelect: "none",
         cursor: "pointer",
       },
@@ -2103,7 +2103,8 @@ class Game extends Component {
       },
       ItemImage: {
         maxHeight: "30px",
-        maxWidth: "30px",
+        // maxWidth: "30px",
+        width: "30px",
         padding: "1px",
         // placeholder style when asset is missing
         overflow: "hidden",

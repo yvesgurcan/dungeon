@@ -41,14 +41,25 @@ export const DynamicAssets = {
     Gear: {
         LeftHand: StaticAssets.Items.Dagger,
         RightHand: null,
-        PreparedSpell1: StaticAssets.Items.FireballSpell,
+        PreparedSpell1: null,
         PreparedSpell2: null,
     },
 
     Backpack: {
         maxItems: 28,
         Weight: 0,
-        Items: [],
+        Items: [
+            StaticAssets.Items.Bow,
+            StaticAssets.UniqueItems.IronKey,
+            StaticAssets.Items.AmuletOfMagic,
+            StaticAssets.Items.SkullAmulet,
+            StaticAssets.Items.Sword,
+            StaticAssets.Items.SimpleStaff,
+            StaticAssets.Items.FireballScroll,
+            StaticAssets.Items.Apple,
+            StaticAssets.Items.Sausage,
+            StaticAssets.Items.Rock,
+        ],
     },
 
     LootContainers: [

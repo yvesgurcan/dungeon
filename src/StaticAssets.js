@@ -41,9 +41,9 @@ export const StaticAssets = {
             type: "key",
             Name: "iron key",
             DoorId: 1,
-            image: "key",
+            image: "iron_key",
             Weight: 0.1
-        }
+        },
     },
 
     Backpacks: {
@@ -108,13 +108,52 @@ export const StaticAssets = {
             Damage: {Min: 1, Max: 3},
             Weight: 3,
         },
+        Sword: {
+            Name: "sword",
+            Type: "weapon",
+            image: "sword"
+        },
+        // Bows
+        Bow: {
+            Type: "weapon",
+            Name: "bow",
+            image: "bow",
+        },
+        // Staff
+        SimpleStaff: {
+            Name: "simple staff",
+            Type: "weapon",
+            image: "staff",
+        },
+        // Necklaces
+        AmuletOfMagic: {
+            Name: "amulet of magic",
+            Type: "necklace",
+            image: "amulet_magic",
+        },
+        SkullAmulet: {
+            Name: "skull amulet",
+            Type: "necklace",
+            image: "amulet_skull",
+        },
+        // Food
+        Apple: {
+            Name: "apple",
+            Type: "food",
+            image: "apple",
+        },
+        Sausage: {
+            Name: "sausage",
+            Type: "food",
+            image: "sausage",
+        },
         // Scrolls
         FireballScroll: {
             Level: 1,
             Name: "fireball scroll",
             Type: "scroll",
             Spell: "FireballSpell",
-            image: "spell_fireball",
+            image: "scroll",
             Weight: 0.1,
         },
     },
