@@ -41,8 +41,18 @@ export const StaticAssets = {
             type: "key",
             Name: "iron key",
             DoorId: 1,
-            image: "iron_key",
+            image: "key_iron",
             Weight: 0.1
+        },
+        BrassKey: {
+            type: "key",
+            Name: "brass key",
+            image: "key_brass",
+        },
+        OrnateKey: {
+            type: "key",
+            Name: "ornate key",
+            image: "key_ornate",
         },
     },
 
@@ -146,7 +156,7 @@ export const StaticAssets = {
         Apple: {
             Name: "apple",
             Type: "food",
-            image: "apple",
+            image: "food_apple",
         },
         Sausage: {
             Name: "sausage",

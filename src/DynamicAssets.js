@@ -52,6 +52,11 @@ export const DynamicAssets = {
         Items: [
             StaticAssets.Items.Bow,
             StaticAssets.UniqueItems.IronKey,
+            StaticAssets.UniqueItems.BrassKey,
+            StaticAssets.UniqueItems.OrnateKey,
+            StaticAssets.Items.HealthPotion,
+            StaticAssets.Items.ManaPotion,
+            StaticAssets.Items.StaminaPotion,
             StaticAssets.Items.AmuletOfMagic,
             StaticAssets.Items.SkullAmulet,
             StaticAssets.Items.Sword,
