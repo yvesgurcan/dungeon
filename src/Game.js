@@ -624,7 +624,7 @@ class PlayerAttributesStacked extends Component {
   render() {
     let {Player} = this.props
     return (
-      <View style={MobileScreen ? Styles.Hidden : Styles.PlayerAttributesStacked}>
+      <View style={MobileScreen || TabletScreen ? Styles.Hidden : Styles.PlayerAttributesStacked}>
         <Block style={Styles.PlayerStat} hidden={!TabletScreen}>
           <Text>Level: </Text><Text>{Player.Level}</Text>
         </Block>
@@ -652,15 +652,15 @@ class PlayerStats2Block1 extends Component {
   render() {
     let {Player} = this.props
     return (
-      <View style={MobileScreen ? Styles.PlayerStats2Block1 : Styles.Hidden}>
+      <View style={MobileScreen || TabletScreen ? Styles.PlayerStats2Block1 : Styles.Hidden}>
         <Block style={Styles.PlayerStat}>
-          <Text>LVL: </Text><Text>{Player.Level}</Text>
+          <Text>{MobileScreen ? <Text>LVL</Text> : <Text>Level</Text>}: </Text><Text>{Player.Level}</Text>
         </Block>
         <Block style={Styles.PlayerStat}>
-          <Text>STR: </Text><Text>{Player.Strength}</Text>
+          <Text>XP: </Text><Text>{Player.XP}</Text>
         </Block>
         <Block style={Styles.PlayerStat}>
-          <Text>CON: </Text><Text>{Player.Constitution}</Text>
+          <Text>AC: </Text><Text>{Player.ArmorClass}</Text>
         </Block>
       </View>
     )
@@ -671,15 +671,18 @@ class PlayerStats2Block2 extends Component {
   render() {
     let {Player} = this.props
     return (
-      <View style={MobileScreen ? Styles.PlayerStats2Block2 : Styles.Hidden}>
+      <View style={MobileScreen || TabletScreen ? Styles.PlayerStats2Block2 : Styles.Hidden}>
         <Block style={Styles.PlayerStat}>
-          <Text>XP: </Text><Text>{Player.XP}</Text>
+          <Text>{MobileScreen ? <Text>STR</Text> : <Text>Strength</Text>}: </Text><Text>{Player.Strength}</Text>
         </Block>
         <Block style={Styles.PlayerStat}>
-          <Text>DEX: </Text><Text>{Player.Dexterity}</Text>
+          <Text>{MobileScreen ? <Text>CON</Text> : <Text>Constitution</Text>}: </Text><Text>{Player.Constitution}</Text>
         </Block>
         <Block style={Styles.PlayerStat}>
-          <Text>INT: </Text><Text>{Player.Intelligence}</Text>
+          <Text>{MobileScreen ? <Text>DEX</Text> : <Text>Dexterity</Text>}: </Text><Text>{Player.Dexterity}</Text>
+        </Block>
+        <Block style={Styles.PlayerStat}>
+          <Text>{MobileScreen ? <Text>INT</Text> : <Text>Intelligence</Text>}: </Text><Text>{Player.Intelligence}</Text>
         </Block>
       </View>
     )
@@ -696,6 +699,9 @@ class PlayerStats3 extends Component {
         </Block>
         <Block style={Styles.PlayerStat}>
           <Text>XP: </Text><Text>{Player.XP}</Text>
+        </Block>
+        <Block style={Styles.PlayerStat}>
+          <Text>Armor Class: </Text><Text>{Player.ArmorClass}</Text>
         </Block>
       </View>
     )
@@ -1587,10 +1593,11 @@ class Game extends Component {
       DirectionalArrowStopColumn = 9
 
       PlayerActionStartColumn = FirstColumn
+      PlayerActionStopColumn = 4
+      PlayerAttributesStartColumn = PlayerActionStopColumn
       PlayerAttributesStopColumn = 4
-      PlayerAttributesStartColumn = PlayerAttributesStopColumn
       PlayerAttributesBlockSeparation = 7
-      PlayerAttributesStopColumn = 10
+      PlayerAttributesStopColumn = LastColumn
 
       InventoryStartColumn = FirstColumn
       InventoryStopColumn = LastColumn
@@ -1609,8 +1616,9 @@ class Game extends Component {
       DirectionalArrowStartColumn = PlayerVitalsStopColumn
       DirectionalArrowStopColumn = 5
       PlayerActionStartColumn = DirectionalArrowStopColumn
-      PlayerActionStopColumn = 7
+      PlayerActionStopColumn = 6
       PlayerAttributesStartColumn = PlayerActionStopColumn
+      PlayerAttributesBlockSeparation = 7
       PlayerAttributesStopColumn = LastColumn
 
     }
@@ -1911,6 +1919,7 @@ class Game extends Component {
         gridColumnStart: FirstColumn,
         gridColumnEnd: LastColumn,
         gridRowStart: ControlRow,
+        gridRowEnd: ControlRow2+1,
         border: HUDBorder,
       },
       // Name and Ready Weapons
@@ -2145,7 +2154,64 @@ class Game extends Component {
   }
 
   RollD20 = () => {
-    return this.RandomInteger(20)
+    return this.RandomIntegerFromRange(1,20)
+  }
+
+  RollDice = (dice, sides) => {
+    let result = 0
+    for (let i = 1; i <= dice; i++) {
+      result += this.RandomIntegerFromRange(1,sides)
+    }
+    return result 
+  }
+
+  AbilityModifier = (Ability) => {
+    if (Ability <= 1) {
+      return -5
+    }
+    if (Ability <= 3) {
+      return -4
+    }
+    if (Ability <= 5) {
+      return -3
+    }
+    if (Ability <= 7) {
+      return -2
+    }
+    if (Ability <= 9) {
+      return -1
+    }
+    if (Ability <= 11) {
+      return 0
+    }
+    if (Ability <= 13) {
+      return 1
+    }
+    if (Ability <= 15) {
+      return 2
+    }
+    if (Ability <= 17) {
+      return 3
+    }
+    if (Ability <= 19) {
+      return 4
+    }
+    if (Ability <= 21) {
+      return 5
+    }
+    if (Ability <= 23) {
+      return 6
+    }
+    if (Ability <= 25) {
+      return 7
+    }
+    if (Ability <= 27) {
+      return 8
+    }
+    if (Ability <= 29) {
+      return 9
+    }
+    return 10
   }
 
   GetUnlucky = (Luck) => {
@@ -2189,14 +2255,18 @@ class Game extends Component {
 
   GeneratePlayerStats = (Player) => {
 
-    Player.Constitution = this.RandomIntegerFromRange(10,20)
-    Player.Strength = this.RandomIntegerFromRange(10,20)
-    Player.Dexterity = this.RandomIntegerFromRange(10,20)
-    Player.Intelligence = this.RandomIntegerFromRange(10,20)
-    Player.MaxWeight = this.CalculateMaxWeight(Player)
+    // Abilities
+    Player.Constitution = this.RollDice(4,6)
+    Player.Strength = this.RollDice(4,6)
+    Player.Dexterity = this.RollDice(4,6)
+    Player.Intelligence = this.RollDice(4,6)
+    Player.ArmorClass = 10 + this.AbilityModifier(Player.Dexterity)
+
+    // Vitals
     Player.MaxHealth = Player.Health = this.CalculateMaxHealth(Player)
     Player.MaxMana = Player.Mana = this.CalculateMaxMana(Player)
     Player.MaxStamina = Player.Stamina = this.CalculateMaxStamina(Player)
+    Player.MaxWeight = this.CalculateMaxWeight(Player)    
 
     return Player
 
@@ -2945,9 +3015,9 @@ class Game extends Component {
 
         Monster = Monster[0]
 
-        let Damage = this.RandomIntegerFromRange(Gear.LeftHand.Damage.Min + (Gear.LeftHand.Damage.Min * Player.Strength/20), Gear.LeftHand.Damage.Max + (Gear.LeftHand.Damage.Min * Player.Strength/20))
+        let Damage = this.RandomIntegerFromRange(Gear.LeftHand.Damage.Min + this.AbilityModifier(Player.Strength), Gear.LeftHand.Damage.Max + this.AbilityModifier(Player.Strength))
 
-        console.log(Gear.LeftHand.Damage.Min + (Gear.LeftHand.Damage.Min * Player.Strength/20), Gear.LeftHand.Damage.Max + (Gear.LeftHand.Damage.Min * Player.Strength/20))
+        console.log(Gear.LeftHand.Damage.Min + this.AbilityModifier(Player.Strength), Gear.LeftHand.Damage.Max + this.AbilityModifier(Player.Strength))
         console.log(Damage)
 
         if (this.MonsterTakeDamage(Monster, Damage)) {

@@ -35,6 +35,7 @@ export const DynamicAssets = {
         Strength: null,
         Dexterity: null,
         Intelligence: null,
+        ArmorClass: null,
         Name: "Leto Seldon",
     },
 
