@@ -22,52 +22,7 @@ const itemPath = "/graphics/items/"
 const storyPath = "/graphics/story/"
 const imgExt = ".png"
 
-/* css */
-
 let Styles = null
-
-// grid columns
-const FirstColumn = 1
-const LastColumn = 10
-
-// grid rows
-const StoryRowHeight = 245
-
-// presets
-
-const px = "px"
-
-const HUDPadding = 10
-const HUDBlockPadding = HUDPadding + px
-const HUDBorder = "1px solid black"
-const HUDStatBarHeight = "10px"
-
-const ButtonNormalBackground = "lightgray"
-const ButtonHoverBackground = "darkgray"
-const ButtonClickBackground = "gray"
-
-const MapBackgroundColor = "white"
-
-const BorderThickness = 1.5
-const BorderColor = "black"
-const WallLine = BorderThickness + "px solid " + BorderColor
-
-const WallBoxWidth = 15
-const WallBoxHeight = 15
-
-const WallBoxWidthWithBorder = WallBoxWidth - BorderThickness
-const WallBoxHeightWithBorder = WallBoxHeight - BorderThickness
-
-const PillarBoxWidth = WallBoxWidth - 5
-const PillarBoxHeight = WallBoxHeight - 5
-
-const WallBoxWidthCentered = WallBoxWidthWithBorder/2
-const WallBoxHeightCentered = WallBoxHeightWithBorder/2
-
-const DoorLine = Math.max(1,BorderThickness-BorderThickness/2) + "px solid " + BorderColor
-const DoorColor = "lightsteelblue"
-const DoorLongSize = 7
-const DoorBoxLongSizeCentered = DoorLongSize-3
 
 /* web components */
 
@@ -239,6 +194,30 @@ class ItemImageBlock extends Component {
   }
 }
 
+/* accessories */
+
+class Accessories extends Component {
+  render() {
+    return (
+      <View style={Styles.Accessories}>
+
+      </View>
+    )
+  }
+}
+
+/* spell books */
+
+class SpellBook extends Component {
+  render() {
+    return (
+      <View style={Styles.SpellBook}>
+        <Block>Spellbook</Block>
+      </View>
+    )
+  }
+}
+
 /* inventory */
 
 class Inventory extends Component {
@@ -275,6 +254,7 @@ class Inventory extends Component {
     let {Player, Backpack} = this.props
     return (
       <View style={Styles.Inventory}>
+        <Block>Backpack</Block>
         {this.DisplayInventory()}
         <ClearFloat/>
         <Text>
@@ -384,26 +364,6 @@ class Arrows extends Component {
 
 /* player actions */
 
-class ShortRest extends Component {
-  render() {
-    return (
-      <ActionButton {... this.props}>
-        Short Rest
-      </ActionButton>
-    )
-  }
-}
-
-class LongRest extends Component {
-  render() {
-    return (
-      <ActionButton {... this.props}>
-        Long Rest
-      </ActionButton>
-    )
-  }
-}
-
 class Take extends Component {
   render() {
     return (
@@ -419,6 +379,26 @@ class TakeAll extends Component {
     return (
       <ActionButton {... this.props}>
         Take All
+      </ActionButton>
+    )
+  }
+}
+
+class ShortRest extends Component {
+  render() {
+    return (
+      <ActionButton {... this.props}>
+        Short Rest
+      </ActionButton>
+    )
+  }
+}
+
+class LongRest extends Component {
+  render() {
+    return (
+      <ActionButton {... this.props}>
+        Long Rest
       </ActionButton>
     )
   }
@@ -458,10 +438,10 @@ class ActionButton extends Component {
   }
 }
 
-class Actions extends Component {
+class Rest extends Component {
   render() {
     return (
-      <View style={Styles.Actions}>
+      <View style={Styles.Rest}>
         {/* todo */}
         <ShortRest />
         <LongRest />
@@ -588,11 +568,11 @@ class PreparedSpell extends Component {
   }
 }
 
-class PreparedSpellBlock extends Component {
+class PreparedSpells extends Component {
   render() {
     let {Gear} = this.props
     return (
-      <View>
+      <View style={Styles.PreparedSpells}>
         <PreparedSpell Item={Gear.PreparedSpell1} />
         <PreparedSpell Item={Gear.PreparedSpell2} />
       </View>
@@ -612,18 +592,17 @@ class PlayerStats0 extends Component {
         </Block>
         <Block style={Styles.ReadyItemBlock}>
           <WeaponReadyBlock {... this.props} />
-          <PreparedSpellBlock {... this.props} />
         </Block>
       </View>
     )
   }
 }
 
-class PlayerStats1 extends Component {
+class PlayerVitals extends Component {
   render() {
     let {Player} = this.props
     return (
-      <View style={Styles.PlayerStats1}>
+      <View style={Styles.PlayerVitals}>
         <Block style={Styles.PlayerStat}>
           Health
           <HealthBar current={Player.Health} max={Player.MaxHealth}/>
@@ -641,16 +620,16 @@ class PlayerStats1 extends Component {
   }
 }
 
-class PlayerStats2 extends Component {
+class PlayerAttributesStacked extends Component {
   render() {
     let {Player} = this.props
     return (
-      <View style={MobileScreen ? Styles.Hidden : Styles.PlayerStats2}>
+      <View style={MobileScreen ? Styles.Hidden : Styles.PlayerAttributesStacked}>
         <Block style={Styles.PlayerStat} hidden={!TabletScreen}>
           <Text>Level: </Text><Text>{Player.Level}</Text>
         </Block>
         <Block style={Styles.PlayerStat} hidden={!TabletScreen}>
-          <Text>Experience: </Text><Text>{Player.XP}</Text>
+          <Text>XP: </Text><Text>{Player.XP}</Text>
         </Block>
         <Block style={Styles.PlayerStat}>
           <Text>Strength: </Text><Text>{Player.Strength}</Text>
@@ -694,7 +673,7 @@ class PlayerStats2Block2 extends Component {
     return (
       <View style={MobileScreen ? Styles.PlayerStats2Block2 : Styles.Hidden}>
         <Block style={Styles.PlayerStat}>
-          <Text>EXP: </Text><Text>{Player.XP}</Text>
+          <Text>XP: </Text><Text>{Player.XP}</Text>
         </Block>
         <Block style={Styles.PlayerStat}>
           <Text>DEX: </Text><Text>{Player.Dexterity}</Text>
@@ -716,7 +695,7 @@ class PlayerStats3 extends Component {
           <Text>Level: </Text><Text>{Player.Level}</Text>
         </Block>
         <Block style={Styles.PlayerStat}>
-          <Text>Experience: </Text><Text>{Player.XP}</Text>
+          <Text>XP: </Text><Text>{Player.XP}</Text>
         </Block>
       </View>
     )
@@ -759,7 +738,9 @@ class Story extends Component {
             return <Text key={index}>{paragraph}<LineBreak/></Text>
           })}
         </Block>
-        <Image src={storyPath + currentTextImage + imgExt} hidden={!currentTextImage} style={Styles.Paragraph}/>
+        <Block hidden={!currentTextImage}>
+          <Image src={storyPath + currentTextImage + imgExt} style={Styles.Paragraph}/>
+        </Block>
       </View>
     )
   }
@@ -1477,6 +1458,52 @@ class Game extends Component {
     MobileScreen = UtilityAssets.ScreenSize.MobileScreen()
     TabletScreen = UtilityAssets.ScreenSize.TabletScreen()
     
+    /* presets */
+
+    // grid columns
+    const FirstColumn = 1
+    const LastColumn = 10
+
+    // grid rows
+    const StoryRowHeight = 245
+
+    // various
+    const px = "px"
+
+    const HUDPadding = 10
+    const HUDBlockPadding = HUDPadding + px
+    const HUDBorder = "1px solid black"
+    const HUDStatBarHeight = "10px"
+
+    const ButtonNormalBackground = "lightgray"
+    const ButtonHoverBackground = "darkgray"
+    const ButtonClickBackground = "gray"
+
+    const MapBackgroundColor = "white"
+
+    const BorderThickness = 1.5
+    const BorderColor = "black"
+    const WallLine = BorderThickness + "px solid " + BorderColor
+
+    const WallBoxWidth = 15
+    const WallBoxHeight = 15
+
+    const WallBoxWidthWithBorder = WallBoxWidth - BorderThickness
+    const WallBoxHeightWithBorder = WallBoxHeight - BorderThickness
+
+    const PillarBoxWidth = WallBoxWidth - 5
+    const PillarBoxHeight = WallBoxHeight - 5
+
+    const WallBoxWidthCentered = WallBoxWidthWithBorder/2
+    const WallBoxHeightCentered = WallBoxHeightWithBorder/2
+
+    const DoorLine = Math.max(1,BorderThickness-BorderThickness/2) + "px solid " + BorderColor
+    const DoorColor = "lightsteelblue"
+    const DoorLongSize = 7
+    const DoorBoxLongSizeCentered = DoorLongSize-3
+
+    /* responsiveness */
+
     // grid rows
     let TitleRow = 1
     let MessageRow = 2
@@ -1485,7 +1512,11 @@ class Game extends Component {
     let MapRow = MainRow
     let ControlRow = 4
     let ControlRow2 = 4
-    let InventoryRow = 5
+    let PreparedSpellsRow = 5
+    let InventoryRow = 6
+    let SpellBookRow = 7
+    let AccessoriesStartRow = 6
+    let AccessoriesStopRow = 8
 
     if (MobileScreen) {
 
@@ -1496,10 +1527,15 @@ class Game extends Component {
       MapRow = 5
       ControlRow = 6
       ControlRow2 = 7
-      InventoryRow = 8
+      PreparedSpellsRow = 8
+      InventoryRow = 9
+      SpellBookRow = 9
+      AccessoriesStartRow = 9
+      AccessoriesStopRow = 11
 
     }
 
+    // grid columns
     let StoryStartColumn = FirstColumn
     let StoryEndColumn = 6
     let MapStartColumn = StoryEndColumn
@@ -1510,9 +1546,9 @@ class Game extends Component {
 
     let PlayerWeaponStartColumn = FirstColumn
     let PlayerWeaponStopColumn = 2
-    let PlayerVitalStartColumn = PlayerWeaponStopColumn
-    let PlayerVitalStopColumn = 3
-    let DirectionalArrowStartColumn = PlayerVitalStopColumn
+    let PlayerVitalsStartColumn = PlayerWeaponStopColumn
+    let PlayerVitalsStopColumn = 3
+    let DirectionalArrowStartColumn = PlayerVitalsStopColumn
     let DirectionalArrowStopColumn = 4
     let PlayerActionStartColumn = DirectionalArrowStopColumn
     let PlayerActionStopColumn = 6
@@ -1520,9 +1556,18 @@ class Game extends Component {
     let PlayerStat2StartColumn = PlayerActionStopColumn
     let PlayerStat2StopColumn = 7
 
-    let PlayerStatStartColumn = PlayerStat2StopColumn
-    let PlayerStatBlockSeparation = PlayerStatStartColumn
-    let PlayerStatStopColumn = LastColumn
+    let PlayerAttributesStartColumn = PlayerStat2StopColumn
+    let PlayerAttributesBlockSeparation = PlayerAttributesStartColumn
+    let PlayerAttributesStopColumn = LastColumn
+
+    let InventoryStartColumn = FirstColumn
+    let InventoryStopColumn = 7
+
+    let SpellBookStartColumn = FirstColumn
+    let SpellBookStopColumn = 7
+
+    let AccessoriesStartColumn = 7
+    let AccessoriesStopColumn = LastColumn
 
     if (MobileScreen) {
 
@@ -1536,39 +1581,55 @@ class Game extends Component {
 
       PlayerWeaponStartColumn = FirstColumn
       PlayerWeaponStopColumn = 4
-      PlayerVitalStartColumn = PlayerWeaponStopColumn
-      PlayerVitalStopColumn = 7
-      DirectionalArrowStartColumn = PlayerVitalStopColumn
+      PlayerVitalsStartColumn = PlayerWeaponStopColumn
+      PlayerVitalsStopColumn = 7
+      DirectionalArrowStartColumn = PlayerVitalsStopColumn
       DirectionalArrowStopColumn = 9
 
       PlayerActionStartColumn = FirstColumn
-      PlayerActionStopColumn = 4
-      PlayerStatStartColumn = PlayerActionStopColumn
-      PlayerStatBlockSeparation = 7
-      PlayerStatStopColumn = 10
+      PlayerAttributesStopColumn = 4
+      PlayerAttributesStartColumn = PlayerAttributesStopColumn
+      PlayerAttributesBlockSeparation = 7
+      PlayerAttributesStopColumn = 10
+
+      InventoryStartColumn = FirstColumn
+      InventoryStopColumn = LastColumn
+
+      SpellBookStartColumn = FirstColumn
+      SpellBookStopColumn = LastColumn
+
+      AccessoriesStartColumn = FirstColumn
+      AccessoriesStopColumn = LastColumn
 
     }
     else if (TabletScreen) {
 
-      PlayerVitalStartColumn = PlayerWeaponStopColumn
-      PlayerVitalStopColumn = 4
-      DirectionalArrowStartColumn = PlayerVitalStopColumn
+      PlayerVitalsStartColumn = PlayerWeaponStopColumn
+      PlayerVitalsStopColumn = 4
+      DirectionalArrowStartColumn = PlayerVitalsStopColumn
       DirectionalArrowStopColumn = 5
       PlayerActionStartColumn = DirectionalArrowStopColumn
       PlayerActionStopColumn = 7
-      PlayerStatStartColumn = PlayerActionStopColumn
-      PlayerStatStopColumn = LastColumn
+      PlayerAttributesStartColumn = PlayerActionStopColumn
+      PlayerAttributesStopColumn = LastColumn
 
     }
 
+    /* style object */
+
     Styles = {
-      // 
       Hidden: {
           display: "none",
       },
       Paragraph: {
         display: "block",
         paddingBottom: "13px",
+      },
+      // debug
+      Placeholder: {
+        background: "red",
+        width: WallBoxWidth + px,
+        height: WallBoxHeight + px,
       },
       // Grid
       Game: {
@@ -1620,8 +1681,12 @@ class Game extends Component {
           "auto " +
           // controls2 (row5b)
           (MobileScreen ? "auto " : "") +
+          // prepared spells
+          "auto " +
           // inventory
-          "auto "
+          "130px " +
+          // spell book 
+          "108px "
         ,
         gridGap: "10px",
         userSelect: "none",
@@ -1734,12 +1799,6 @@ class Game extends Component {
         borderRadius: "50%",
       },
       Wall: {
-        // debug
-        Placeholder: {
-          background: "red",
-          width: WallBoxWidth + px,
-          height: WallBoxHeight + px,
-        },
         Pillar: {
           boxSizing: "border-box",
           marginTop: (WallBoxHeight - PillarBoxHeight)/2 + px,
@@ -1852,10 +1911,9 @@ class Game extends Component {
         gridColumnStart: FirstColumn,
         gridColumnEnd: LastColumn,
         gridRowStart: ControlRow,
-        gridRowEnd: InventoryRow,
         border: HUDBorder,
       },
-      // Player Stats
+      // Name and Ready Weapons
       PlayerStats0: {
         gridColumnStart: PlayerWeaponStartColumn,
         gridColumnEnd: PlayerWeaponStopColumn,
@@ -1863,12 +1921,14 @@ class Game extends Component {
         padding: HUDBlockPadding,
         textAlign: "center",
       },
-      PlayerStats1: {
-        gridColumnStart: PlayerVitalStartColumn,
-        gridColumnEnd: PlayerVitalStopColumn,
+      // Player Vital Stats
+      PlayerVitals: {
+        gridColumnStart: PlayerVitalsStartColumn,
+        gridColumnEnd: PlayerVitalsStopColumn,
         gridRowStart: ControlRow,
         padding: HUDBlockPadding,
       },
+      // Directional Arrows
       ArrowContainer: {
         gridColumnStart: DirectionalArrowStartColumn,
         gridColumnEnd: DirectionalArrowStopColumn,
@@ -1877,27 +1937,27 @@ class Game extends Component {
         padding: HUDBlockPadding,
         margin: "auto",
       },
-      Actions: {
+      Rest: {
         gridColumnStart: PlayerActionStartColumn,
         gridColumnEnd: PlayerActionStopColumn,
         gridRowStart: ControlRow2,
         padding: HUDBlockPadding,
       },
-      PlayerStats2: {
-        gridColumnStart: PlayerStatStartColumn,
-        gridColumnEnd: PlayerStatStopColumn,
+      PlayerAttributesStacked: {
+        gridColumnStart: PlayerAttributesStartColumn,
+        gridColumnEnd: PlayerAttributesStopColumn,
         gridRowStart: ControlRow2,
         padding: HUDBlockPadding,
       },
       PlayerStats2Block1: {
-        gridColumnStart: PlayerStatStartColumn,
-        gridColumnEnd: PlayerStatBlockSeparation,
+        gridColumnStart: PlayerAttributesStartColumn,
+        gridColumnEnd: PlayerAttributesBlockSeparation,
         gridRowStart: ControlRow2,
         padding: HUDBlockPadding,
       },
       PlayerStats2Block2: {
-        gridColumnStart: PlayerStatBlockSeparation,
-        gridColumnEnd: PlayerStatStopColumn,
+        gridColumnStart: PlayerAttributesBlockSeparation,
+        gridColumnEnd: PlayerAttributesStopColumn,
         gridRowStart: ControlRow2,
         padding: HUDBlockPadding,
       },
@@ -2000,11 +2060,36 @@ class Game extends Component {
         userSelect: "none",
         background: ButtonClickBackground,
       },
-      // Inventory
-      Inventory: {
+      // Prepared Spells
+      PreparedSpells: {
         gridColumnStart: FirstColumn,
         gridColumnEnd: LastColumn,
+        gridRowStart: PreparedSpellsRow,
+        border: HUDBorder,
+      },
+      // Inventory
+      Inventory: {
+        gridColumnStart: InventoryStartColumn,
+        gridColumnEnd: InventoryStopColumn,
         gridRowStart: InventoryRow,
+        padding: HUDBlockPadding,
+        border: HUDBorder,
+      },
+      // SpellBook
+      SpellBook: {
+        gridColumnStart: SpellBookStartColumn,
+        gridColumnEnd: SpellBookStopColumn,
+        gridRowStart: SpellBookRow,
+        padding: HUDBlockPadding,
+        border: HUDBorder,
+      },
+      // Accessories
+      Accessories: {
+        gridColumnStart: AccessoriesStartColumn,
+        gridColumnEnd: AccessoriesStopColumn,
+        gridRowStart: AccessoriesStartRow,
+        gridRowEnd: AccessoriesStopRow,
+        padding: HUDBlockPadding,
         border: HUDBorder,
       },
       // Item Image
@@ -3013,14 +3098,17 @@ class Game extends Component {
         {/* row 4 */}
         <Controls />
         <PlayerStats0 {... this.state} />
-        <PlayerStats1 {... this.state} />
+        <PlayerVitals {... this.state} />
         <Arrows {... this} {... this.state} />
-        <Actions/>
+        <Rest/>
+        <PreparedSpells {... this} {... this.state} />
         <PlayerStats3 {... this.state} />
-        <PlayerStats2 {... this.state} />
+        <PlayerAttributesStacked {... this.state} />
         <PlayerStats2Block1 {... this.state} />
         <PlayerStats2Block2 {... this.state} />
-        <Inventory {... this}  {... this.state} />
+        <Inventory {... this} {... this.state} />
+        <SpellBook {... this} {... this.state} />
+        <Accessories {... this} {... this.state} />
       </View>
     )
   }
