@@ -2,39 +2,6 @@ import UtilityAssets from "./UtilityAssets.js"
 
 export const StaticAssets = {
 
-    Messages: {
-        Collision: "You can't go there.",
-        LockedDoor: "You try to open the door... it's locked.",
-        PlayerMissed: "You missed your target!",
-        PlayerDead: "Ouch! You are dead.",
-        Potion: {
-            NoEffect: "The potion had no effect.",
-            // Health
-            Health1: "You feel a little better.",
-            Health2: "Your body regenerates quickly.",
-            Health3: "This potion was much needed.",
-            // Stamina
-            Stamina1: "The potion gave you a small boost of energy.",
-            Stamina2: "You're in better shape now.",
-            Stamina3: "You feel invigorated.",
-            // Mana
-            Mana1: "As you drink the potion, a tiny sparkle lights up in your chest.",
-            Mana2: "You feel the power of magic.",
-            Mana3: "Nice!",
-        }
-
-    },
-
-    PartialMessages: {
-        Period: ".",
-        UnlockDoor: "You unlocked the door with the ",
-        MonsterNoticed: " noticed your presence.",
-        MonsterAttacking: " is attacking you.",
-        MonsterMissed: " tried to attack you and missed their target.",
-        MonsterKilled: "You killed ",
-        PlayerHit: "You hit ",
-    },
-
     UniqueItems: {
         // Keys
         IronKey: {
@@ -56,11 +23,14 @@ export const StaticAssets = {
         },
     },
 
-    Backpacks: {
-        BagOfHolding: {}
-    },
-
     Items: {
+        // Backpacks  
+        BagOfHolding: {
+            Type: "backpack",
+        },
+        TravelerBag: {
+            Type: "backpack",
+        },
         // Miscellani
         Rock: {
             Level: 1,

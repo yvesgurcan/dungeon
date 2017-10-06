@@ -903,20 +903,20 @@ class StoryBlock extends Component {
 class Map extends Component {
 
   DrawMap = () => {
-    let {WallMap, WallMapRevealed, WallMapVisibleRange, Player} = this.props
+    let {WallMap, WallMapRevealed, Player} = this.props
     return WallMapRevealed.map((HorizontalLine, y) => {
       // make sure that the map object is in the max/min Y sight
       if (
-        Player.y + WallMapVisibleRange.y >= y &&
-        Player.y - WallMapVisibleRange.y <= y) {
+        Player.y + UtilityAssets.WallMapVisibleRange.y >= y &&
+        Player.y - UtilityAssets.WallMapVisibleRange.y <= y) {
         return (
           <View key={y} style={Styles.MapRow}>
             {HorizontalLine.map((MapObjectRevealed, x) => {
               let MapObject = WallMap[y][x]
               // make sure that the map object is in the max/min X sight
               if (
-                Player.x + WallMapVisibleRange.x >= x &&
-                Player.x - WallMapVisibleRange.x <= x
+                Player.x + UtilityAssets.WallMapVisibleRange.x >= x &&
+                Player.x - UtilityAssets.WallMapVisibleRange.x <= x
               ) {
                 return (
                   <Text key={x} style={Styles.MapObject} title={[x, y].join(",")}>
@@ -1344,7 +1344,6 @@ class Game extends Component {
     let initState = Object.assign(
       StaticAssets,
       DynamicAssets,
-      {WallMapVisibleRange: UtilityAssets.WallMapVisibleRange},
     )
 
     // create the list of random items to draw from when looting, grouped by level
@@ -2361,7 +2360,7 @@ class Game extends Component {
     // out of range
     if (targetCoordinates.y > WallMap.length - 1 || targetCoordinates.y < 0 || targetCoordinates.x > WallMap[targetCoordinates.y].length - 1 || targetCoordinates.x < 0) {
       this.setState({
-        currentMessage: StaticAssets.Messages.Collision
+        currentMessage: UtilityAssets.Messages.Collision
       })
       this.ResetMessage()
       return
@@ -2373,14 +2372,14 @@ class Game extends Component {
       let LockedDoor = this.UnlockDoor(Door.Object)
       if (LockedDoor.Unlocked) {
         let UnlockMessage =
-          StaticAssets.PartialMessages.UnlockDoor  + 
+          UtilityAssets.PartialMessages.UnlockDoor  + 
           LockedDoor.Key +
-          StaticAssets.PartialMessages.Period
+          UtilityAssets.PartialMessages.Period
         this.setState({currentText: UnlockMessage, currentTextImage: null})
       }
       else {
         this.setState({
-          currentText: StaticAssets.Messages.LockedDoor, currentTextImage: null
+          currentText: UtilityAssets.Messages.LockedDoor, currentTextImage: null
         })
         return
       }
@@ -2397,7 +2396,7 @@ class Game extends Component {
       // the player can not go there (there is a wall/door in the way)
       if (!this.DetectCollision(targetCoordinates)) {
         this.setState({
-          currentMessage: StaticAssets.Messages.Collision
+          currentMessage: UtilityAssets.Messages.Collision
         })
         this.ResetMessage()
         return
@@ -2759,7 +2758,7 @@ class Game extends Component {
       MonsterAwake.ChasePlayer = true
       MonsterAwake.Stationary = false
 
-      this.SetText(Functions.IndefiniteArticle(MonsterAwake.Name, true) + " " + MonsterAwake.Name + StaticAssets.PartialMessages.MonsterNoticed)
+      this.SetText(Functions.IndefiniteArticle(MonsterAwake.Name, true) + " " + MonsterAwake.Name + UtilityAssets.PartialMessages.MonsterNoticed)
 
     }
 
@@ -2990,12 +2989,12 @@ class Game extends Component {
       let Damage = this.RandomIntegerFromRange(Monster.Damage.Min,Monster.Damage.Max)
 
       if (this.PlayerTakeDamage(Damage)) {
-        this.SetText(Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + StaticAssets.PartialMessages.MonsterAttacking)
+        this.SetText(Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + UtilityAssets.PartialMessages.MonsterAttacking)
       }
     }
     else {
 
-      this.SetText(Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + StaticAssets.PartialMessages.MonsterMissed)
+      this.SetText(Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + UtilityAssets.PartialMessages.MonsterMissed)
 
     }
 
@@ -3021,14 +3020,14 @@ class Game extends Component {
         console.log(Damage)
 
         if (this.MonsterTakeDamage(Monster, Damage)) {
-          this.SetText(StaticAssets.PartialMessages.PlayerHit + Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + StaticAssets.PartialMessages.Period)
+          this.SetText(UtilityAssets.PartialMessages.PlayerHit + Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + UtilityAssets.PartialMessages.Period)
         }
 
       }
 
     }
     else {
-      this.SetText(StaticAssets.Messages.PlayerMissed)
+      this.SetText(UtilityAssets.Messages.PlayerMissed)
 
     }
 
@@ -3044,7 +3043,7 @@ class Game extends Component {
 
       if (Player.Health <= 0) {
         Player.Dead = true
-        this.SetText(StaticAssets.Messages.PlayerDead)
+        this.SetText(UtilityAssets.Messages.PlayerDead)
         return false
       }
 
@@ -3064,7 +3063,7 @@ class Game extends Component {
     if (Monster.Health <= 0) {
       Monster.Dead = true
       MonsterMap[Monster.y][Monster.x] = Empty
-      this.SetText(StaticAssets.PartialMessages.MonsterKilled + Functions.IndefiniteArticle(Monster.Name) + " " + Monster.Name + StaticAssets.PartialMessages.Period)
+      this.SetText(UtilityAssets.PartialMessages.MonsterKilled + Functions.IndefiniteArticle(Monster.Name) + " " + Monster.Name + UtilityAssets.PartialMessages.Period)
       return false
     }
 
@@ -3121,16 +3120,16 @@ class Game extends Component {
       let Message = null
 
       if (NewHealedProperty - Player[Item.Heal] === 0) {
-        Message = StaticAssets.Messages.Potion.NoEffect
+        Message = UtilityAssets.Messages.Potion.NoEffect
       }
       else if (NewHealedProperty - Player[Item.Heal] <= 5) {
-        Message = StaticAssets.Messages.Potion[Item.Heal + "1"]
+        Message = UtilityAssets.Messages.Potion[Item.Heal + "1"]
       }
       else if (NewHealedProperty - Player[Item.Heal] <= 10) {
-        Message = StaticAssets.Messages.Potion[Item.Heal + "2"]
+        Message = UtilityAssets.Messages.Potion[Item.Heal + "2"]
       }
       else {
-        Message = StaticAssets.Messages.Potion[Item.Heal + "3"]
+        Message = UtilityAssets.Messages.Potion[Item.Heal + "3"]
       }
 
       this.SetText(Message)

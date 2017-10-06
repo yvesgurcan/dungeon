@@ -6,8 +6,6 @@ export const DynamicAssets = {
 
 
     // debug
-    Debug: Debug
-    ,
     ShowFullMap: Debug || false
     ,
     NoClip: Debug || true
