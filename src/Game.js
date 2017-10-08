@@ -49,10 +49,46 @@ class Text extends Component {
   }
 }
 
+// input type=text
+class TextEdit extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {style: Styles.TextEdit}
+  }
+  onFocus = () => {
+    this.setState({style: Styles.TextEditFocus})
+  }
+  onBlur = () => {
+    this.setState({style: Styles.TextEdit})
+  }
+  onChange(input) {
+      this.props.onChange(input.target)  
+  }
+  render() {
+    return (
+      <input
+        name={this.props.name}
+        value={this.props.value}
+        type="text"
+        style={this.state.style}
+        onFocus={this.onFocus}
+        onBlur={this.onBlur}
+        onChange={input => this.onChange(input)} />
+      )
+  }
+}
+
 // div
 class Block extends Component {
   render() {
     return <div {...this.props} />
+  }
+}
+
+// h3
+class Heading extends Component {
+  render() {
+    return <h3 {...this.props} children={this.props.children} />
   }
 }
 
@@ -1292,6 +1328,39 @@ class Map extends Component {
   }
 }
 
+/* create player */
+
+class CreateCharacter extends Component {
+  render() {
+    let {Player} = this.props
+    return (
+      <View style={Styles.CharacterCreateView}>
+        <Block style={Styles.PropertyLabel}>
+          <Text>Name:</Text>
+        </Block>
+        <Block style={Styles.PropertyField}>
+          <TextEdit
+            name="Name"
+            value={Player.Name}
+            onChange={this.props.SaveCharacterProperty}
+          />
+        </Block>
+        <Text onClick={this.props.StartGame}>Let's play!</Text>
+      </View>
+    )
+  }
+}
+
+class CreateCharacterHeader extends Component {
+  render() {
+    return (
+      <View style={Styles.CharacterHeader}>
+        <Heading>Create Your Character</Heading>
+      </View>
+    )
+  }
+}
+
 /* top */
 
 class Contact extends Component {
@@ -1405,6 +1474,8 @@ class Game extends Component {
     
     initState.Player.Health = 11
 
+    initState.CreateCharacter = true
+
     this.state = initState
     
   }
@@ -1415,15 +1486,18 @@ class Game extends Component {
     this.CalculateStyles()
   }
 
+  StartGame = () => {
+    this.setState({CreateCharacter: false})
+  }
+
   ListenToKeyboard = (keypress) => {
 
-    let {Player} = this.state
-
-    // console.log(keypress)
-
-    keypress.preventDefault()
+    let {Player, CreateCharacter} = this.state
 
     if (Player.Dead) return false
+    if (CreateCharacter) return false
+
+    keypress.preventDefault()
 
     // in-game keyboard controls
     switch (keypress.key) {
@@ -1628,26 +1702,85 @@ class Game extends Component {
       Hidden: {
           display: "none",
       },
-      Paragraph: {
-        display: "block",
-        paddingBottom: "13px",
-      },
       // debug
       Placeholder: {
         background: "red",
         width: WallBoxWidth + px,
         height: WallBoxHeight + px,
       },
-      // Grid
+      // multi-use
+      Paragraph: {
+        display: "block",
+        paddingBottom: "13px",
+      },
+      // input fields
+      TextEdit: {
+        border: "none",
+        padding: "5px",
+      },
+      TextEditFocus: {
+        border: "none",
+        padding: "5px",
+        outline: "none",
+      },
+      // Create Player Grid
+      CreatePlayer: {
+        display: "grid",
+        gridGap: "10px",
+        gridTemplateColumns:
+          MobileScreen ?
+          // column1-10
+          "repeat(10, 31px)"
+          :
+          TabletScreen ?
+          "repeat(10, 74.3px)"
+          :
+          "repeat(10, 88.6px)"
+        ,
+        gridTemplateRows:
+        // title (row1)
+        "auto " +
+        // contact (row2)
+        "25px " + 
+        // header (row3)
+        "auto" +
+        // body (row4)
+        "auto"
+        ,
+      },
+      CharacterHeader: {
+        gridColumnStart: FirstColumn,
+        gridColumnEnd: LastColumn,
+        gridRowStart: 3,
+      },
+      CharacterCreateView: {
+        gridColumnStart: FirstColumn,
+        gridColumnEnd: LastColumn,
+        gridRowStart: 4,
+        display: "grid",
+      },
+      PropertyLabel: {
+        gridColumnStart: FirstColumn,
+        gridColumnEnd: 2,
+        paddingTop: "3px",
+        textAlign: "right",
+        marginRight: "10px",
+        
+      },
+      PropertyField: {
+        gridColumnStart: 2,
+        gridColumnEnd: LastColumn,
+      },
+      // In-Game Grid
       Game: {
         display: "grid",
+        gridGap: "10px",
         gridTemplateColumns:
-          (
-            MobileScreen ?
-            // column-10
+          MobileScreen ?
+            // column1-10
             "repeat(10, 31px)"
-            :
-            TabletScreen ?
+          :
+          TabletScreen ?
             // column1
             "110px " +
             // column2-4
@@ -1661,7 +1794,7 @@ class Game extends Component {
             "35px " + 
             // column7-10
             "repeat(3, 76.8px)"
-            :
+          :
             // column1
             "110px " +
             // column2-4
@@ -1672,7 +1805,6 @@ class Game extends Component {
             "25px " + 
             // column7-10
             "repeat(3, 76.8px)"
-          )
         ,
         gridTemplateRows:
           // title (row1)
@@ -1695,7 +1827,6 @@ class Game extends Component {
           // spell book 
           "108px "
         ,
-          gridGap: "10px",
         userSelect: "none",
         cursor: "pointer",
       },
@@ -2250,6 +2381,14 @@ class Game extends Component {
         this.setState({ arrowStyle: null })
       }.bind(this), 50)
     }
+  }
+
+  SaveCharacterProperty = (input) => {
+
+    let {Player} = this.state
+    Player[input.name] = input.value
+    this.setState({Player: Player})
+
   }
 
   GeneratePlayerStats = (Player) => {
@@ -3150,8 +3289,23 @@ class Game extends Component {
 
   }
 
-  render() {
-    // grid
+  render() { 
+    // create character mode
+    if (this.state.CreateCharacter) {
+      return (
+        <View style={Styles.CreatePlayer}>
+          {/* row 1 */}
+          <Header/>
+          {/* row 2 */}
+          <Contact/>
+          {/* row 3 */}
+          <CreateCharacterHeader/>
+          {/* row 4 */}
+          <CreateCharacter {... this} {... this.state}/>
+        </View>
+      )
+    }
+    // play mode
     return (
       <View style={Styles.Game}>
         {/* row 1 */}
