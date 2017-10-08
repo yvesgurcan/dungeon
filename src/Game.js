@@ -53,13 +53,13 @@ class Text extends Component {
 class TextEdit extends Component {
   constructor(props) {
     super(props)
-    this.state = {style: Styles.TextEdit}
+    this.state = {style: this.props.styleObject ? Styles[this.props.styleObject] : Styles.TextEdit}
   }
   onFocus = () => {
-    this.setState({style: Styles.TextEditFocus})
+    this.setState({style: this.props.styleObject ? Styles[this.props.styleObject + "Focus"] : Styles.TextEdit})
   }
   onBlur = () => {
-    this.setState({style: Styles.TextEdit})
+    this.setState({style: this.props.styleObject ? Styles[this.props.styleObject] : Styles.TextEdit})
   }
   onChange(input) {
       this.props.onChange(input.target)  
@@ -69,7 +69,6 @@ class TextEdit extends Component {
       <input
         name={this.props.name}
         value={this.props.value}
-        type="text"
         style={this.state.style}
         onFocus={this.onFocus}
         onBlur={this.onBlur}
@@ -85,10 +84,17 @@ class Block extends Component {
   }
 }
 
+// h4
+class SubHeading extends Component {
+  render() {
+    return <h4 {...this.props} style={Styles.H4} children={this.props.children} />
+  }
+}
+
 // h3
 class Heading extends Component {
   render() {
-    return <h3 {...this.props} children={this.props.children} />
+    return <h3 {...this.props} style={Styles.H3} children={this.props.children} />
   }
 }
 
@@ -440,6 +446,16 @@ class LongRest extends Component {
   }
 }
 
+class Roll extends Component {
+  render() {
+    return (
+      <ActionButton {... this.props}>
+      Long Rest
+    </ActionButton>
+    )
+  }
+}
+
 class ActionButton extends Component {
   constructor(props) {
     super(props)
@@ -479,8 +495,12 @@ class Rest extends Component {
     return (
       <View style={Styles.Rest}>
         {/* todo */}
-        <ShortRest />
-        <LongRest />
+        <ActionButton>
+          Short Rest
+        </ActionButton>
+        <ActionButton>
+          Long Rest
+        </ActionButton>
       </View>
     )
   }
@@ -498,28 +518,6 @@ class StatBar extends Component {
           <Block
             style={this.props.style}/>
         </Block>
-      </View>
-    )
-  }
-}
-
-class StaminaBar extends Component {
-  render() {
-    let style = {...Styles.StaminaBar, width: Math.min(100, Math.ceil(this.props.current/this.props.max * 100)) + "%"}
-    return (
-      <View>
-        <StatBar style={style} ratio={style.width}/>
-      </View>
-    )
-  }
-}
-
-class ManaBar extends Component {
-  render() {
-    let style = {...Styles.ManaBar, width: Math.min(100, this.props.current/this.props.max * 100) + "%"}
-    return (
-      <View>
-        <StatBar style={style} max={this.props.max} current={this.props.current}/>
       </View>
     )
   }
@@ -642,14 +640,6 @@ class PlayerVitals extends Component {
         <Block style={Styles.PlayerStat}>
           Health
           <HealthBar current={Player.Health} max={Player.MaxHealth}/>
-        </Block>
-        <Block style={Styles.PlayerStat}>
-          Mana:
-          <ManaBar current={Player.Mana} max={Player.MaxMana}/>
-        </Block>
-        <Block style={Styles.PlayerStat}>
-          Stamina:
-          <StaminaBar current={Player.Stamina} max={Player.MaxStamina}/>
         </Block>
       </View>
     )
@@ -894,16 +884,18 @@ class Event extends Component {
       if (lootCount === 1) {
         eventText.push(
           <Block key="Take">
-            <Take
-              onClick={this.props.TakeAllLoot}/>
+            <ActionButton onClick={this.props.TakeAllLoot}>
+              Take
+            </ActionButton>
           </Block>
         )
       }
       else {
         eventText.push(
           <Block key="TakeAll">
-            <TakeAll
-              onClick={this.props.TakeAllLoot}/>
+            <ActionButton onClick={this.props.TakeAllLoot}>
+              Take All
+            </ActionButton>
           </Block>
         )
       }
@@ -1330,22 +1322,76 @@ class Map extends Component {
 
 /* create player */
 
-class CreateCharacter extends Component {
+class StartGame extends Component {
+  render() {
+    return (
+      <View style={Styles.StartGame}>
+        <ActionButton onClick={this.props.StartGame}>
+        Let's play!
+        </ActionButton>
+      </View>
+    )
+  }
+}
+
+class CreateCharacterName extends Component {
+  render() {
+    let {Player} = this.props
+    return (
+      <View style={Styles.CharacterCreateName}>
+        <Block style={Styles.PropertyLabelForInput}>
+          <Text>Name:</Text>
+        </Block>
+        <Block style={Styles.PropertyFieldForInput}>
+          <TextEdit
+            styleObject="TextEditCharacterName"
+            name="Name"
+            value={Player.Name}
+            onChange={this.props.SavePlayerName}
+          />
+        </Block>
+      </View>
+    )
+  }
+}
+
+class CreateCharacterAbilities extends Component {
   render() {
     let {Player} = this.props
     return (
       <View style={Styles.CharacterCreateView}>
+        <SubHeading>Abilities</SubHeading>
         <Block style={Styles.PropertyLabel}>
-          <Text>Name:</Text>
+          <Text>Strength:</Text>
         </Block>
         <Block style={Styles.PropertyField}>
-          <TextEdit
-            name="Name"
-            value={Player.Name}
-            onChange={this.props.SaveCharacterProperty}
-          />
+          <Text>{Player.Strength}</Text>
         </Block>
-        <Text onClick={this.props.StartGame}>Let's play!</Text>
+        <Block style={Styles.PropertyLabel}>
+          <Text>Dexterity:</Text>
+        </Block>
+        <Block style={Styles.PropertyField}>
+          <Text>{Player.Dexterity}</Text>
+        </Block>
+        <Block style={Styles.PropertyLabel}>
+          <Text>Constitution:</Text>
+        </Block>
+        <Block style={Styles.PropertyField}>
+          <Text>{Player.Constitution}</Text>
+        </Block>
+        <Block style={Styles.PropertyLabel}>
+          <Text>Intelligence:</Text>
+        </Block>
+        <Block style={Styles.PropertyField}>
+          <Text>{Player.Intelligence}</Text>
+        </Block>
+        <Block />
+        <Block style={Styles.RollAbilities}>
+          <ActionButton onClick={this.props.GeneratePlayerStats}>
+            Roll Again
+          </ActionButton>
+        </Block>
+        <Block />
       </View>
     )
   }
@@ -1717,14 +1763,38 @@ class Game extends Component {
       TextEdit: {
         border: "none",
         padding: "5px",
+        fontFamily: "inherit",
+        fontSize: "inherit",
       },
       TextEditFocus: {
         border: "none",
         padding: "5px",
         outline: "none",
+        fontFamily: "inherit",
+        fontSize: "inherit",
+        textDecoration: "underline",
+      },
+      // input fields
+      TextEditCharacterName: {
+        border: "none",
+        padding: "5px",
+        fontFamily: "inherit",
+        fontSize: "inherit",
+        width: "120px",
+      },
+      TextEditCharacterNameFocus: {
+        border: "none",
+        padding: "5px",
+        outline: "none",
+        fontFamily: "inherit",
+        fontSize: "inherit",
+        textDecoration: "underline",
+        width: "120px",
       },
       // Create Player Grid
       CreatePlayer: {
+        userSelect: "none",
+        cursor: "pointer",
         display: "grid",
         gridGap: "10px",
         gridTemplateColumns:
@@ -1733,8 +1803,10 @@ class Game extends Component {
           "repeat(10, 31px)"
           :
           TabletScreen ?
+          // column1-10
           "repeat(10, 74.3px)"
           :
+          // column1-10
           "repeat(10, 88.6px)"
         ,
         gridTemplateRows:
@@ -1753,26 +1825,94 @@ class Game extends Component {
         gridColumnEnd: LastColumn,
         gridRowStart: 3,
       },
+      CharacterCreateName: {
+        gridRowStart: 4,
+        display: "grid",
+        // subgrid
+        gridTemplateColumns:
+        MobileScreen ?
+        // column1
+        "100px " +
+        "130px " +
+        // column2-10
+        "repeat(8, 31px)"
+        :
+        TabletScreen ?
+        // column1
+        "100px " +
+        "130px " +
+        // column2-10
+        "repeat(8, 74.3px)"
+        :
+        // column1
+        "100px " +
+        "130px " +
+        // column2-10
+        "repeat(8, 88.6px)"
+      ,
+      },
       CharacterCreateView: {
         gridColumnStart: FirstColumn,
         gridColumnEnd: LastColumn,
-        gridRowStart: 4,
+        gridRowStart: 5,
         display: "grid",
+        // subgrid
+        gridTemplateColumns:
+        MobileScreen ?
+        // column1
+        "100px " +
+        "130px " +
+        // column2-10
+        "repeat(8, 31px)"
+        :
+        TabletScreen ?
+        // column1
+        "100px " +
+        "130px " +
+        // column2-10
+        "repeat(8, 74.3px)"
+        :
+        // column1
+        "100px " +
+        "130px " +
+        // column2-10
+        "repeat(8, 88.6px)"
+      ,
       },
       PropertyLabel: {
         gridColumnStart: FirstColumn,
-        gridColumnEnd: 2,
-        paddingTop: "3px",
+        gridColumnEnd: FirstColumn,
+        padding: "2.5px",
         textAlign: "right",
         marginRight: "10px",
-        
+      },
+      PropertyLabelForInput: {
+        gridColumnStart: FirstColumn,
+        gridColumnEnd: FirstColumn,
+        paddingTop: "5px",
+        textAlign: "right",
+        marginRight: "10px",
       },
       PropertyField: {
         gridColumnStart: 2,
+        gridColumnEnd: 2,
+        padding: "2.5px",
+      },
+      PropertyFieldForInput: {
+        gridColumnStart: 2,
+        gridColumnEnd: 2,
+      },
+      RollAbilities: {
+        gridColumnStart: 2,
+      },
+      StartGame: {
+        gridColumnStart: FirstColumn,
         gridColumnEnd: LastColumn,
       },
       // In-Game Grid
       Game: {
+        userSelect: "none",
+        cursor: "pointer",
         display: "grid",
         gridGap: "10px",
         gridTemplateColumns:
@@ -1827,8 +1967,6 @@ class Game extends Component {
           // spell book 
           "108px "
         ,
-        userSelect: "none",
-        cursor: "pointer",
       },
       // page title
       Header: {
@@ -1843,6 +1981,12 @@ class Game extends Component {
   
       },
       H2: {
+        margin: "0px",
+      },
+      H3: {
+        margin: "0px",
+      },
+      H4: {
         margin: "0px",
       },
       // links
@@ -2129,14 +2273,6 @@ class Game extends Component {
         background: "red",
         height: HUDStatBarHeight,
       },
-      ManaBar: {
-        background: "blue",
-        height: HUDStatBarHeight,
-      },
-      StaminaBar: {
-        background: "green",
-        height: HUDStatBarHeight,
-      },
       // Directional Arrows
       ArrowRow: {
         width: "72px",
@@ -2383,8 +2519,7 @@ class Game extends Component {
     }
   }
 
-  SaveCharacterProperty = (input) => {
-
+  SavePlayerName = (input) => {
     let {Player} = this.state
     Player[input.name] = input.value
     this.setState({Player: Player})
@@ -2393,21 +2528,45 @@ class Game extends Component {
 
   GeneratePlayerStats = (Player) => {
 
+    let saveState = false
+
+    if (!Player) {
+      saveState = true
+      Player = this.state.Player
+    }
+
     // Abilities
-    Player.Constitution = this.RollDice(4,6)
-    Player.Strength = this.RollDice(4,6)
-    Player.Dexterity = this.RollDice(4,6)
-    Player.Intelligence = this.RollDice(4,6)
+    Player.Constitution = this.GeneratePlayerAbilityScore()
+    Player.Strength = this.GeneratePlayerAbilityScore()
+    Player.Dexterity = this.GeneratePlayerAbilityScore()
+    Player.Intelligence = this.GeneratePlayerAbilityScore()
     Player.ArmorClass = 10 + this.AbilityModifier(Player.Dexterity)
 
     // Vitals
     Player.MaxHealth = Player.Health = this.CalculateMaxHealth(Player)
-    Player.MaxMana = Player.Mana = this.CalculateMaxMana(Player)
-    Player.MaxStamina = Player.Stamina = this.CalculateMaxStamina(Player)
     Player.MaxWeight = this.CalculateMaxWeight(Player)    
+
+    if (saveState) {
+      this.setState({Player: Player})
+    }
 
     return Player
 
+  }
+
+  // takes the 3 best rolls out of 4d6
+  GeneratePlayerAbilityScore = () => {
+    let rolls = []
+    let score = 0
+    for (var i = 1; i <= 4; i++) {
+      let dieScore = this.RollDice(1,6)
+      rolls.push(dieScore)
+      score += dieScore
+    }
+
+    score -= Math.min.apply(null, rolls)
+
+    return score
   }
 
   CalculateMaxWeight = (Player) => {
@@ -2429,28 +2588,6 @@ class Game extends Component {
     // new player
     else {
       return Math.ceil((Player.Constitution * 2.25) + (Player.Strength/3) + this.RandomIntegerFromRange(-3, 5))
-    }
-  }
-
-  CalculateMaxMana = (Player) => {
-    // level up
-    if (Player.MaxMana) {
-      return Math.ceil(Player.MaxMana * 1.1)
-    }
-    // new player
-    else {
-     return Math.ceil((Player.Intelligence) * 1.45) + this.RandomIntegerFromRange(-4, 3)
-    }
-  }
-
-  CalculateMaxStamina = (Player) => {
-    // level up
-    if (Player.MaxStamina) {
-      return Math.ceil(Player.MaxStamina * 1.5)
-    }
-    // new player
-    else {
-     return Math.ceil((Player.Strength) * 5) + this.RandomIntegerFromRange(-5, 15)
     }
   }
 
@@ -3300,8 +3437,12 @@ class Game extends Component {
           <Contact/>
           {/* row 3 */}
           <CreateCharacterHeader/>
-          {/* row 4 */}
-          <CreateCharacter {... this} {... this.state}/>
+          {/* row 4*/}
+          <CreateCharacterName {... this} {... this.state} />
+          {/* row 5 */}
+          <CreateCharacterAbilities {... this} {... this.state}/>
+          {/* row 6 */}
+          <StartGame {... this} {... this.state} />
         </View>
       )
     }
