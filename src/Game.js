@@ -1381,6 +1381,34 @@ class CreateCharacterName extends Component {
             onChange={this.props.SavePlayerName}
           />
         </Block>
+        <Block style={Styles.PropertyLabel}>
+          <Text>Health:</Text>
+        </Block>
+        <Block style={Styles.PropertyField}>
+        <Text>{Player.MaxHealth}</Text>        
+        </Block>
+        <Block style={Styles.PropertyLabel}>
+          <Text>Mana:</Text>
+        </Block>
+        <Block style={Styles.PropertyField}>
+        <Text>{Player.MaxMana}</Text>        
+        </Block>
+        <Block style={Styles.PropertyLabel}>
+          <Text>Stamina:</Text>
+        </Block>
+        <Block style={Styles.PropertyField}>
+        <Text>{Player.MaxStamina}</Text>        
+        </Block>
+      </View>
+    )
+  }
+}
+
+class CreateCharacterBackground extends Component {
+  render() {
+    return (
+      <View style={Styles.CharacterCreateBackground}>
+        <SubHeading>Origins</SubHeading>
       </View>
     )
   }
@@ -1857,6 +1885,34 @@ class Game extends Component {
         gridRowStart: 3,
       },
       CharacterCreateName: {
+        gridRowStart: 4,
+        display: "grid",
+        // subgrid
+        gridTemplateColumns:
+        MobileScreen ?
+        // column1
+        "100px " +
+        "130px " +
+        // column2-10
+        "repeat(8, 31px)"
+        :
+        TabletScreen ?
+        // column1
+        "100px " +
+        "130px " +
+        // column2-10
+        "repeat(8, 74.3px)"
+        :
+        // column1
+        "100px " +
+        "130px " +
+        // column2-10
+        "repeat(8, 88.6px)"
+      ,
+      },
+      CharacterCreateBackground: {
+        gridColumnStart: 4,
+        gridColumnEnd: LastColumn,
         gridRowStart: 4,
         display: "grid",
         // subgrid
@@ -3500,8 +3556,9 @@ class Game extends Component {
           <Contact/>
           {/* row 3 */}
           <CreateCharacterHeader/>
-          {/* row 4*/}
+          {/* row 4 */}
           <CreateCharacterName {... this} {... this.state} />
+          <CreateCharacterBackground {... this} {... this.state} />
           {/* row 5 */}
           <CreateCharacterAbilities {... this} {... this.state}/>
           {/* row 6 */}

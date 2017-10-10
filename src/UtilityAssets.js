@@ -450,7 +450,7 @@ export const UtilityAssets = {
         }
     },
 
-    // idiosyncarcies of each race and subrace
+    // idiosyncarcies of each race
     Races: {
         Dwarf: {
             Name: "dwarf",
@@ -460,126 +460,34 @@ export const UtilityAssets = {
             Name: "elf",
             AbilityBoost: {Dexterity: 2},
         },
-        Halfling: {
-            Name: "halfling",
-            AbilityBoost: {Dexterity: 2},
-        },
         Human: {
             Name: "human",
             AbilityBoost: {
                 Constitution: 1,
                 Strength: 1,
-                Dexterity: 1,
                 Intelligence: 1,
             },
-        },
-        Dragonborn: {
-            Name: "dragonborn",
-            AbilityBoost: {Strength: 2 /* Charisma: 1 // choose ability? */},
         },
         Gnome: {
             Name: "gnome",
             AbilityBoost: {Intelligence: 2},
         },
-        HalfElf: {
-            Name: "half-elf",
-            AbilityBoost: {/* Charisma: 2, ChooseAbility1: 1, ChooseAbility2: 1 */},
-        },
-        HalfOrc: {
-            Name: "half-orc",
-            AbilityBoost: {Strength: 2, Constitution: 1},
-        },
-        Tiefling: {
-            Name: "tiefling",
-            AbilityBoost: {Intelligence: 1 /* Charisma: 2 // choose ability? */},
-        },
 
-    },
-    SubRaces: {
-        Dwarf: {
-            // the health bonus is added to the player's max health when the character is created and also every time they level up
-            HillDwarf: {
-                Name: "hill dwarf",
-                AbilityBoost: {/* Wisdom: 1 // intelligence? */},
-                HealthBonus: 1,
-            },
-            MountainDwarf: {
-                Name: "mountain dwarf",
-                AbilityBoost: {Strength: 2}, 
-            },
-        },
-        Elf: {
-            // the player can choose the extra cantrip
-            HighElf: {
-                Name: "high elf",
-                AbilityBoost: {Intelligence: 1},
-                ExtraCantripKnown: 1,
-            },
-            WoodElf: {
-                Name: "wood elf",
-                AbilityBoost: {/* Wisdom: 1 // intelligence? */},
-            },
-            // the player starts with the dancing lights cantrip plus faerie fire at level 3, and darkness at level 5
-            DarkElf: {
-                Name: "dark elf",
-                AbilityBoost: {/* Charisma: 1 // choose ability? */},
-                ExtraCantrip: [/* DancingLights */],
-            },
-        },
-        Halfling: {
-            Lightfoot: {
-                Name: "light foot",
-                AbilityBoost: {/* Charisma: 1 // choose ability? */},
-            },
-            Stout: {
-                Name: "stout",
-                AbilityBoost: {Constitution: 1},
-            },
-        },
-        Gnome: {
-            ForestGnome: {
-                Name: "forest gnome",
-                AbilityBoost: {Dexterity: 1},
-                ExtraCantrip: [/* MinorIllusion */],
-            },
-            RockGnome: {
-                Name: "rock gnome",
-                AbilityBoost: {Constitution: 1},
-            },
-        },
     },
     
     // idiosyncracies of each class
-    /*
-        Notes:
-            Initial health (at level 1) is equal to the max health boost minus the constitution modifier of the plyaer.
-            The health boost granted at each level is a range between 1 and the max health boost below minus the constitution modifier of the player.
-            Hit Dice (i.e., the amount of health that is regenerated when the player takes a rest) is a range between 1 and the max health boost.
-    */
     Classes: {
         Barbarian: {
             Name: "barbarian",
             MaxHealthBoost: 12,
         },
-        Bard: {
-            Name: "bard",
-            MaxHealthBoost: 8,
-        },
         Cleric: {
             Name: "cleric",
-            MaxHealthBoost: 8,
-        },
-        Druid: {
-            Name: "druid",
             MaxHealthBoost: 8,
         },
         Fighter: {
             Name: "fighter",
             MaxHealthBoost: 10,
-        },
-        Monk: {
-            Name: "monk",
-            MaxHealthBoost: 8,
         },
         Paladin: {
             Name: "paladin",
@@ -588,18 +496,6 @@ export const UtilityAssets = {
         Ranger: {
             Name: "ranger",
             MaxHealthBoost: 10,
-        },
-        Rogue: {
-            Name: "rogue",
-            MaxHealthBoost: 8,
-        },
-        Sorcerer: {
-            Name: "sorcerer",
-            MaxHealthBoost: 6,
-        },
-        Warlock: {
-            Name: "warlock",
-            MaxHealthBoost: 8,
         },
         Wizard: {
             Name: "wizard",
@@ -658,12 +554,9 @@ export const UtilityAssets = {
 
 // Major spell casters
 UtilityAssets.Classes.Cleric.SpellCaster = UtilityAssets.SpellCasterProfiles.MajorSpellCaster
-UtilityAssets.Classes.Druid.SpellCaster = UtilityAssets.SpellCasterProfiles.MajorSpellCaster
-UtilityAssets.Classes.Sorcerer.SpellCaster = UtilityAssets.SpellCasterProfiles.MajorSpellCaster
 UtilityAssets.Classes.Wizard.SpellCaster = UtilityAssets.SpellCasterProfiles.MajorSpellCaster // note: number of cantrips actually differ from template
 // Minor spell casters
 UtilityAssets.Classes.Paladin.SpellCaster = UtilityAssets.SpellCasterProfiles.MinorSpellCaster
 UtilityAssets.Classes.Ranger.SpellCaster = UtilityAssets.SpellCasterProfiles.MinorSpellCaster
-UtilityAssets.Classes.Bard.SpellCaster = UtilityAssets.SpellCasterProfiles.MajorSpellCaster
 
 export default UtilityAssets
