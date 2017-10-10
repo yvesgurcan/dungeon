@@ -534,6 +534,29 @@ class HealthBar extends Component {
   }
 }
 
+class StaminaBar extends Component {
+  render() {
+    let style = {...Styles.StaminaBar, width: Math.min(100, Math.ceil(this.props.current/this.props.max * 100)) + "%"}
+    return (
+      <View>
+        <StatBar style={style} ratio={style.width}/>
+      </View>
+    )
+  }
+}
+
+class ManaBar extends Component {
+  render() {
+    let style = {...Styles.ManaBar, width: Math.min(100, this.props.current/this.props.max * 100) + "%"}
+    return (
+      <View>
+        <StatBar style={style} max={this.props.max} current={this.props.current}/>
+      </View>
+    )
+  }
+}
+
+
 /* weapons at hand and prepared spells */
 
 class WeaponReady extends Component {
@@ -640,6 +663,14 @@ class PlayerVitals extends Component {
         <Block style={Styles.PlayerStat}>
           Health
           <HealthBar current={Player.Health} max={Player.MaxHealth}/>
+        </Block>
+        <Block style={Styles.PlayerStat}>
+          Mana:
+          <ManaBar current={Player.Mana} max={Player.MaxMana}/>
+        </Block>
+        <Block style={Styles.PlayerStat}>
+          Stamina:
+          <StaminaBar current={Player.Stamina} max={Player.MaxStamina}/>
         </Block>
       </View>
     )
@@ -2273,6 +2304,14 @@ class Game extends Component {
         background: "red",
         height: HUDStatBarHeight,
       },
+      ManaBar: {
+        background: "blue",
+        height: HUDStatBarHeight,
+      },
+      StaminaBar: {
+        background: "green",
+        height: HUDStatBarHeight,
+      },
       // Directional Arrows
       ArrowRow: {
         width: "72px",
@@ -2544,6 +2583,8 @@ class Game extends Component {
 
     // Vitals
     Player.MaxHealth = Player.Health = this.CalculateMaxHealth(Player)
+    Player.MaxMana = Player.Mana = this.CalculateMaxMana(Player)
+    Player.MaxStamina = Player.Stamina = this.CalculateMaxStamina(Player)
     Player.MaxWeight = this.CalculateMaxWeight(Player)    
 
     if (saveState) {
@@ -2588,6 +2629,28 @@ class Game extends Component {
     // new player
     else {
       return Math.ceil((Player.Constitution * 2.25) + (Player.Strength/3) + this.RandomIntegerFromRange(-3, 5))
+    }
+  }
+
+  CalculateMaxMana = (Player) => {
+    // level up
+    if (Player.MaxMana) {
+      return Math.ceil(Player.MaxMana * 1.1)
+    }
+    // new player
+    else {
+     return Math.ceil((Player.Intelligence) * 1.45) + this.RandomIntegerFromRange(-4, 3)
+    }
+  }
+
+  CalculateMaxStamina = (Player) => {
+    // level up
+    if (Player.MaxStamina) {
+      return Math.ceil(Player.MaxStamina * 1.5)
+    }
+    // new player
+    else {
+     return Math.ceil((Player.Strength) * 5) + this.RandomIntegerFromRange(-5, 15)
     }
   }
 
