@@ -1,59 +1,43 @@
-// New
-Detect Monster x
-Acuity (dexterity boost) x
-
 // Heal
 First Aid x
 Heal Wounds x
-Regenerate
+Regenerate (3 turns)
 
 // Protection
-Barkskin (armor boost)
-Bless (max damage)
-Stoneskin (armor boost)
-Fire shield (armor boost + damage)
+Barkskin (armor boost, 10 turns)
+Bless (max damage, 8 turns)
+Stoneskin (armor boost superior, 15 turns)
+Fire shield (armor boost + damage, 5 turns)
 Globe of Invulnerability (god mode)
-Mirror Shield (reflects damage) x
-
-// Boost
+Mirror Shield (reflects 20% damage, 5 turns) x
+Blur (monster does minimum damage)
 
 // Attack
-Acid Arrow
-Acid Splash
-Burning Hands
-Chain lightning
-Circle of death
-Finger of death
-Fire storm
+Acid Arrow (3 turns)
+Burning Hands (2 turns)
+Chain lightning (3 monsters)
+Circle of death (all nearby monsters)
 Fireball
-Fire bolt
-Moonbeam
-Harm
-Ice storm
-Sunburst
-Vampiric Touch
+Moonbeam (5 monsters nearby, 2 turns)
+Vampiric Touch (heals 10% of damage)
+Shocking Grasp (monster do not move next turn)
+True Strike (damage bonus 15%)
+
+// Stoppers
+Confusion (monster moves in a random direction for 2 turns)
+Earthquake (monsters nearby do not move for 3 turns)
+Entangle (monster can not move for 5 turns)
 
 // Other
+Invisibility (monsters stop and will not chase you, 15 turns)
+Misty Step (teleport a few steps away)
 Arcane Sword
 Bane
 Bestow Curse
 Blight
-Blur
+Detect Monster x
+Acuity (dexterity boost) x
 Branding Smite
-Color Spray
-Cone of cold
-Confusion
 Create Food
-Cure wounds
 Dispel magic
-Earthquake
-Enhance ability
-Entangle
-Fear
 Find traps
-Invisibility
-Misty Step
-Shocking Grasp
-Sleep
-True Strike
-Vicious Mockery
