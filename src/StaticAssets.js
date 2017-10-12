@@ -158,6 +158,7 @@ export const StaticAssets = {
         // Heal
         FirstAid: {
             Name: "first aid",
+            Image: "spell_first_aid",
             Level: 1,
             Type: Heal,
             // Cumulated Health Restored Range: 4-9
@@ -169,7 +170,8 @@ export const StaticAssets = {
             Duration: 1,
         },
         Alertness: {
-            Name: "regenerate",
+            Name: "alertness",
+            Image: "spell_alertness",
             Level: 3,
             Type: Heal,
             // Cumulated Stamina Restored Range: 24-48
@@ -182,6 +184,7 @@ export const StaticAssets = {
         },
         HealWounds: {
             Name: "heal wounds",
+            Image: "spell_heal_wounds",
             Level: 6,
             Type: Heal,
             // Cumulated Health Restored Range: 6-15
@@ -194,6 +197,7 @@ export const StaticAssets = {
         },
         Regenerate: {
             Name: "regenerate",
+            Image: "spell_regenerate",
             Type: Heal,
             Level: 11,
             // Cumulated Health Restored Range: 18-33
@@ -208,6 +212,7 @@ export const StaticAssets = {
         // Attack
         MagicArrow: {
             Name: "magic arrow",
+            Image: "spell_magic_arrow",
             Level: 1,
             Type: Attack,
             // Cumulated Damage Range: 1-5
@@ -216,6 +221,7 @@ export const StaticAssets = {
         },
         ColdTouch: {
             Name: "cold touch",
+            Image: "spell_cold_touch",
             Level: 3,
             Type: Attack,
             // Cumulated Damage Range: 4-8
@@ -224,6 +230,7 @@ export const StaticAssets = {
         },
         Fireball: {
             Name: "fireball",
+            Image: "spell_fireball",
             Level: 5,
             Type: Attack,
             // Cumulated Damage Range: 6-12
@@ -233,6 +240,7 @@ export const StaticAssets = {
         VampiricTouch: {
             Level: 8,
             Name: "vampiric touch",
+            Image: "spell_vampiric_touch",
             Type: Attack,
             // Cumulated Damage Range: 4-10
             Damage: {Min: 4, Max: 10},
@@ -249,6 +257,7 @@ export const StaticAssets = {
         ChainLightning: {
             Level: 12,
             Name: "chain lightning",
+            Image: "spell_chain_lightning",
             Type: Attack,
             // Cumulated Damage Range: 3-45 (1-15 * 3)
             Damage: {Min: 1, Max: 15},
@@ -258,7 +267,8 @@ export const StaticAssets = {
         },
         CircleOfDeath: {
             Level: 16,
-            Nanme: "circle of death",
+            Name: "circle of death",
+            Image: "spell_circle_of_death",
             Type: Attack,
             // Cumulated Damage Range: 40-80 (5-10 * 8)
             Danage: {Min: 5, Max: 10},
@@ -268,6 +278,7 @@ export const StaticAssets = {
         Moonbeam: {
             Level: 19,
             Name: "moonbeam",
+            Image: "spell_moonbeam",
             Type: Attack,
             // Cumulated Damage Range: 30-120 (6-24 * 5)
             Damage: {Min: 3, Max: 12},
@@ -280,6 +291,7 @@ export const StaticAssets = {
         TrueStrike: {
             Level: 4,
             Name: "true strike",
+            Image: "spell_true_strike",
             Type: Bonus,
             Boost: {
                 Property: "Damage",
@@ -291,6 +303,7 @@ export const StaticAssets = {
         BarkSkin: {
             Level: 2,
             Name: "bark skin",
+            Image: "spell_bark_skin",
             Type: Bonus,
             Boost: {
                 Property: "Armor",
@@ -302,6 +315,7 @@ export const StaticAssets = {
         StoneSkin: {
             Level: 5,
             Name: "stone skin",
+            Image: "spell_stone_skin",
             Type: Bonus,
             Boost: {
                 Property: "Armor",
@@ -313,6 +327,7 @@ export const StaticAssets = {
         Bless: {
             Level: 3,
             Name: "bless",
+            Image: "spell_bless",
             Type: Bonus,
             Boost: {
                 Property: "Damage",
@@ -323,6 +338,7 @@ export const StaticAssets = {
         Blur: {
             Level: 6,
             Name: "blur",
+            Image: "spell_blur",
             Type: Bonus,
             Boost: {
                 Property: "Damage",
@@ -334,6 +350,7 @@ export const StaticAssets = {
         MirrorShield: {
             Level: 10,
             Name: "mirror shield",
+            Image: "spell_mirror_shield",
             Type: Bonus,
             Damage: {
                 Type: "Percentage",
@@ -342,11 +359,24 @@ export const StaticAssets = {
             Target: Surrounding,
             Duration: 5, 
         },
+        Berserk: {
+            Level: 14,
+            Name: "berserk",
+            Image: "spell_berserk",
+            Type: Bonus,
+            Boost: {
+                Property: "Strength",
+                Type: "Absolute",
+                Amount: 10,
+            },
+            Duration: 5, 
+        },
 
         // Motion Modifiers
         Confusion: {
             Level: 5,
             Name: "confusion",
+            Image: "spell_confusion",
             Type: Motion,
             Effect: "Random",
             Duration: 3, 
@@ -354,6 +384,7 @@ export const StaticAssets = {
         Entangle: {
             Level: 9,
             Name: "entangle",
+            Image: "spell_entangle",
             Type: Motion,
             Effect: "Immobilize",
             Duration: 5, 
@@ -361,6 +392,7 @@ export const StaticAssets = {
         ShockingGrasp: {
             Level: 13,
             Name: "shocking grasp",
+            Image: "spell_shocking_grasp",
             Type: Motion,
             Effect: "Immobilize",
             Damage: {Min: 3, max: 5},
@@ -369,6 +401,7 @@ export const StaticAssets = {
         Earthquake: {
             Level: 16,
             Name: "earthquake",
+            Image: "spell_earthquake",
             Type: Motion,
             Effect: "Immobilize",
             Target: Surrounding,
@@ -379,32 +412,38 @@ export const StaticAssets = {
         CreateFood: {
             Level: 3,
             Name: "create food",
+            Image: "spell_create_food",
             Effect: "CreateFood",
         },
         DetectMonster: {
             Level: 4,
             Name: "detect monster",
+            Image: "spell_detect_monster",
             Effect: "DetectMonster",
         },
         FindTraps: {
             Level: 6,
             Name: "Find traps",
+            Image: "spell_find_traps",
             Effect: "FindTraps",
         },
         MistyStep: {
             Level: 11,
             Name: "misty step",
+            Image: "spell_misty_step",
             Effect: "MistyStep",
         },
         Invisibility: {
             Level: 13,
             Name: "invisibility",
+            Image: "spell_invisibility",
             Effect: "Invisibility",
             Duration: 12,
         },
         GlobeOfInvulnerability: {
             Level: 17,
             Name: "globe of invulnerability",
+            Image: "spell_globe_of_invulnerability",
             Effect: "Invulnerability",
             Duration: 5,
         },

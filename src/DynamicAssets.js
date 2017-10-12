@@ -28,6 +28,10 @@ export const DynamicAssets = {
         Intelligence: null,
         ArmorClass: null,
         Name: "Leto Seldon",
+        SpellBook: {
+            MaxSpells: 1,
+            Spells: StaticAssets.Spells,
+        }
     },
 
     Gear: {

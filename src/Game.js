@@ -251,10 +251,38 @@ class Accessories extends Component {
 /* spell books */
 
 class SpellBook extends Component {
+
+  DisplaySpellBook = () => {
+
+    let {Player} = this.props
+
+    let List = Object.keys(Player.SpellBook.Spells).map(SpellObjectName => {
+      return Player.SpellBook.Spells[SpellObjectName]
+    })
+
+    let SpellImages = List.map((Spell, Index) => {
+      return (
+        <ItemImageBlock
+          key={Index}
+          image={(Spell && Spell.Image) || null}
+          name={(Spell && Spell.Name) || null}
+          item={Spell}
+          onClick={this.props.CastSpell} />
+      )
+    })
+
+    return SpellImages
+  }
+
   render() {
+    let {Player} = this.props
+    if (Player.SpellBook.MaxSpells === 0) {
+      return null
+    }
     return (
       <View style={Styles.SpellBook}>
-        <Block>Spellbook</Block>
+        <Block style={Styles.SpellBookLabel}>Spellbook</Block>
+        {this.DisplaySpellBook()}
       </View>
     )
   }
@@ -296,7 +324,7 @@ class Inventory extends Component {
     let {Player, Backpack} = this.props
     return (
       <View style={Styles.Inventory}>
-        <Block>Backpack</Block>
+        <Block style={Styles.InventoryLabel}>Backpack</Block>
         {this.DisplayInventory()}
         <ClearFloat/>
         <Text>
@@ -1654,8 +1682,9 @@ class Game extends Component {
     // various
     const px = "px"
 
-    const HUDPadding = 10
+    const HUDPadding = 5
     const HUDBlockPadding = HUDPadding + px
+    const HUDBlockPadding2 = HUDPadding/2.5 + px
     const HUDBorder = "1px solid black"
     const HUDStatBarHeight = "10px"
 
@@ -2011,8 +2040,8 @@ class Game extends Component {
             // column1
             "110px " +
             // column2-4
-            "55px " +
-            "55px " +
+            "40px " +
+            "50px " +
             "70px " +
             "70px " +
             // column5
@@ -2050,9 +2079,9 @@ class Game extends Component {
           // prepared spells
           "auto " +
           // inventory
-          "130px " +
+          "auto " +
           // spell book 
-          "108px "
+          "auto "
         ,
       },
       // page title
@@ -2442,16 +2471,23 @@ class Game extends Component {
         gridColumnStart: InventoryStartColumn,
         gridColumnEnd: InventoryStopColumn,
         gridRowStart: InventoryRow,
-        padding: HUDBlockPadding,
+        padding: HUDBlockPadding2,
         border: HUDBorder,
+      },
+
+      InventoryLabel: {
+        marginBottom: HUDBlockPadding2,
       },
       // SpellBook
       SpellBook: {
         gridColumnStart: SpellBookStartColumn,
         gridColumnEnd: SpellBookStopColumn,
         gridRowStart: SpellBookRow,
-        padding: HUDBlockPadding,
+        padding: HUDBlockPadding2,
         border: HUDBorder,
+      },
+      SpellBookLabel: {
+        marginBottom: HUDBlockPadding2,
       },
       // Accessories
       Accessories: {
