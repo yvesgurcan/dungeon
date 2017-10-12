@@ -89,29 +89,30 @@ export const StaticAssets = {
             Weight: 0.5,
         },
         // Swords
-        Dagger: {
+        EmeraldDagger: {
             Level: 2,
-            Name: "dagger",
+            Name: "emerald dagger",
             Type: "weapon",
-            Damage: {Min: 1, Max: 3},
+            image: "weapon_dagger_emerald",
+            Damage: {Min: 3, Max: 7},
             Weight: 3,
         },
         Sword: {
             Name: "sword",
             Type: "weapon",
-            image: "sword"
+            image: "weapon_sword"
         },
         // Bows
         Bow: {
             Type: "weapon",
             Name: "bow",
-            image: "bow",
+            image: "weapon_bow",
         },
         // Staff
         SimpleStaff: {
             Name: "simple staff",
             Type: "weapon",
-            image: "staff",
+            image: "weapon_staff",
         },
         // Shield
         Shield: {
@@ -139,7 +140,7 @@ export const StaticAssets = {
         Sausage: {
             Name: "sausage",
             Type: "food",
-            image: "sausage",
+            image: "food_sausage",
         },
         // Scrolls
         FireballScroll: {

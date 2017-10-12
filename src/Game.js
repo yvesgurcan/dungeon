@@ -211,6 +211,12 @@ class ItemImagePlaceholder extends Component {
 
 class ItemImage extends Component {
   onClick = () => {
+
+    if (!this.props.onClick) {
+      console.warn("This feature is not ready yet :)")
+      return null
+    }
+
     this.props.onClick(this.props.item)
   }
   render() {
@@ -434,56 +440,6 @@ class Arrows extends Component {
 
 /* player actions */
 
-class Take extends Component {
-  render() {
-    return (
-      <ActionButton {... this.props}>
-        Take
-      </ActionButton>
-    )
-  }
-}
-
-class TakeAll extends Component {
-  render() {
-    return (
-      <ActionButton {... this.props}>
-        Take All
-      </ActionButton>
-    )
-  }
-}
-
-class ShortRest extends Component {
-  render() {
-    return (
-      <ActionButton {... this.props}>
-        Short Rest
-      </ActionButton>
-    )
-  }
-}
-
-class LongRest extends Component {
-  render() {
-    return (
-      <ActionButton {... this.props}>
-        Long Rest
-      </ActionButton>
-    )
-  }
-}
-
-class Roll extends Component {
-  render() {
-    return (
-      <ActionButton {... this.props}>
-      Long Rest
-    </ActionButton>
-    )
-  }
-}
-
 class ActionButton extends Component {
   constructor(props) {
     super(props)
@@ -496,6 +452,12 @@ class ActionButton extends Component {
     this.setState({ style: Styles.ActionButtonHover })
   }
   onClick = () => {
+
+    if (!this.props.onClick) {
+      console.warn("This feature is not ready yet :)")
+      return null
+    }
+
     this.props.onClick()
     this.setState({ style: Styles.ActionButtonClick })
     let that = this
@@ -524,10 +486,9 @@ class Rest extends Component {
       <View style={Styles.Rest}>
         {/* todo */}
         <ActionButton>
-          Short Rest
-        </ActionButton>
-        <ActionButton>
-          Long Rest
+          <View style={Styles.RestButton}>
+              Rest
+          </View>
         </ActionButton>
       </View>
     )
@@ -585,7 +546,7 @@ class ManaBar extends Component {
 }
 
 
-/* weapons at hand and prepared spells */
+/* weapons at hand */
 
 class WeaponReady extends Component {
   render() {
@@ -621,45 +582,6 @@ class WeaponReadyBlock extends Component {
       <View>
         <WeaponReady Slot="Left hand" Item={Gear.LeftHand} />
         <WeaponReady Slot="Right hand" Item={Gear.RightHand} />
-      </View>
-    )
-  }
-}
-
-class PreparedSpell extends Component {
-  render() {
-    let {Item} = this.props
-    if (!Item) {
-      return (
-        <View style={Styles.ReadyItem}>
-          <ItemImagePlaceholder
-            image={null}
-            name={"Prepared spell: none"}/>
-        </View>
-      )
-    }
-    else {
-      return (
-        <View style={Styles.ReadyItem}>
-          <ItemImageBlock
-          onClick={this.onClick}
-          image={(Item && Item.image) || null}
-          name={Item && Item.Name ? "Prepared spell: " + Item.Name : null}
-          item={Item}
-          {... this.props}/>
-        </View>
-      )
-    }
-  }
-}
-
-class PreparedSpells extends Component {
-  render() {
-    let {Gear} = this.props
-    return (
-      <View style={Styles.PreparedSpells}>
-        <PreparedSpell Item={Gear.PreparedSpell1} />
-        <PreparedSpell Item={Gear.PreparedSpell2} />
       </View>
     )
   }
@@ -1605,11 +1527,15 @@ class Game extends Component {
     // give the player first randomly generated stats
     initState.Player = this.GeneratePlayerStats(initState.Player)
     
-    initState.Player.Health = 11
+    initState.Player.Health = Math.min(19, initState.Player.MaxHealth)
 
     // initState.CreateCharacter = true
 
+    initState.Player.Backpack = 
+    this.CheckInventoryWeightAtStartUp(initState.Backpack)
+
     this.state = initState
+
     
   }
 
@@ -1725,11 +1651,10 @@ class Game extends Component {
     let MapRow = MainRow
     let ControlRow = 4
     let ControlRow2 = 4
-    let PreparedSpellsRow = 5
-    let InventoryRow = 6
-    let SpellBookRow = 7
-    let AccessoriesStartRow = 6
-    let AccessoriesStopRow = 8
+    let InventoryRow = 5
+    let SpellBookRow = 6
+    let AccessoriesStartRow = 5
+    let AccessoriesStopRow = 7
 
     if (MobileScreen) {
 
@@ -1740,10 +1665,9 @@ class Game extends Component {
       MapRow = 5
       ControlRow = 6
       ControlRow2 = 7
-      PreparedSpellsRow = 8
-      InventoryRow = 9
+      InventoryRow = 8
       SpellBookRow = 9
-      AccessoriesStartRow = 9
+      AccessoriesStartRow = 10
       AccessoriesStopRow = 11
 
     }
@@ -2034,7 +1958,7 @@ class Game extends Component {
         gridTemplateColumns:
           MobileScreen ?
             // column1-10
-            "repeat(10, 31px)"
+            "repeat(10, 28px)"
           :
           TabletScreen ?
             // column1
@@ -2053,14 +1977,14 @@ class Game extends Component {
           :
             // column1
             "110px " +
-            // column2-4
-            "repeat(4, 95px) " +
-            // column5
+            // column2-6
+            "repeat(4, 91px) " +
+            // column7
             "130px " +
-            // column 6
+            // column 8
             "25px " + 
-            // column7-10
-            "repeat(3, 76.8px)"
+            // column9-10
+            "repeat(2, 76.8px)"
         ,
         gridTemplateRows:
           // title (row1)
@@ -2076,8 +2000,6 @@ class Game extends Component {
           "auto " +
           // controls2 (row5b)
           (MobileScreen ? "auto " : "") +
-          // prepared spells
-          "auto " +
           // inventory
           "auto " +
           // spell book 
@@ -2341,6 +2263,11 @@ class Game extends Component {
         gridColumnEnd: PlayerActionStopColumn,
         gridRowStart: ControlRow2,
         padding: HUDBlockPadding,
+        margin: "auto",
+        marginTop: "25px",
+      },
+      RestButton: {
+        width: "60px",
       },
       PlayerAttributesStacked: {
         gridColumnStart: PlayerAttributesStartColumn,
@@ -2369,9 +2296,9 @@ class Game extends Component {
       PlayerStat: {
         paddingBottom: "5px",
       },
-      // Weapons At Hand and Prepared Spells
+      // Weapons At Hand
       ReadyItemBlock: {
-        paddingTop: "10px",
+        paddingTop: "8px",
         height: "calc(100% - 18px)",
       },
       ReadyItem: {
@@ -2458,13 +2385,6 @@ class Game extends Component {
         margin: "1px",
         userSelect: "none",
         background: ButtonClickBackground,
-      },
-      // Prepared Spells
-      PreparedSpells: {
-        gridColumnStart: FirstColumn,
-        gridColumnEnd: LastColumn,
-        gridRowStart: PreparedSpellsRow,
-        border: HUDBorder,
       },
       // Inventory
       Inventory: {
@@ -3087,7 +3007,6 @@ class Game extends Component {
              
       }
       else {
-
         this.SetText("The loot is too heavy.")
           
       }
@@ -3142,6 +3061,25 @@ class Game extends Component {
 
   }
 
+  CheckInventoryWeightAtStartUp = (Backpack) => {
+
+    let BackpackWeight = 0
+
+    if (Backpack.Items.length > 0) {
+      BackpackWeight = Backpack.Items.map(Item => {
+        return Item !== null ? Item.Weight || 0 : 0
+      }).reduce((sum, val) => sum + val)
+    }
+    else {
+      BackpackWeight = 0
+    }
+
+    Backpack.Weight = BackpackWeight
+
+    return Backpack
+
+  }
+
   CheckInventoryWeight = (Loot) => {
 
     let {Backpack, Player} = this.state
@@ -3150,18 +3088,22 @@ class Game extends Component {
 
     if (Backpack.Items.length > 0) {
       BackpackWeight = Backpack.Items.map(Item => {
-        return Item !== null ? Item.Weight : 0
+        return Item !== null ? Item.Weight || 0 : 0
       }).reduce((sum, val) => sum + val)
     }
     else {
       BackpackWeight = 0
     }
 
-    let LootWeight = Loot.map(Item => {
-      return Item !== null ? Item.Weight : 0
-    }).reduce((sum, val) => sum + val)
+    if (Loot) {
+      let LootWeight = Loot.map(Item => {
+        return Item !== null ? Item.Weight || 0 : 0
+      }).reduce((sum, val) => sum + val)
 
-    BackpackWeight += LootWeight
+      BackpackWeight += LootWeight
+    }
+
+    console.log(BackpackWeight, Player.MaxWeight)
 
     if (BackpackWeight <= Player.MaxWeight) {
       Backpack.Weight = BackpackWeight
@@ -3448,7 +3390,6 @@ class Game extends Component {
         let Damage = this.RandomIntegerFromRange(Gear.LeftHand.Damage.Min + this.AbilityModifier(Player.Strength), Gear.LeftHand.Damage.Max + this.AbilityModifier(Player.Strength))
 
         console.log(Gear.LeftHand.Damage.Min + this.AbilityModifier(Player.Strength), Gear.LeftHand.Damage.Max + this.AbilityModifier(Player.Strength))
-        console.log(Damage)
 
         if (this.MonsterTakeDamage(Monster, Damage)) {
           this.SetText(UtilityAssets.PartialMessages.PlayerHit + Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + UtilityAssets.PartialMessages.Period)
@@ -3570,12 +3511,16 @@ class Game extends Component {
     }
 
     // remove item from inventory
+    let UpdatedBackpackItems = []
+
     Backpack.Items.map((BackpackItem, index) => {
-      if (BackpackItem.Id === Item.Id) {
-        Backpack.Items.splice(index, 1)
+      if (BackpackItem.Id !== Item.Id || !BackpackItem.Id) {
+        UpdatedBackpackItems.push(BackpackItem)
       }
       return null
     })
+
+    Backpack.Items = UpdatedBackpackItems
 
     this.setState({Player: Player, Backpack: Backpack})
 
@@ -3622,7 +3567,6 @@ class Game extends Component {
         <PlayerVitals {... this.state} />
         <Arrows {... this} {... this.state} />
         <Rest/>
-        <PreparedSpells {... this} {... this.state} />
         <PlayerStats3 {... this.state} />
         <PlayerAttributesStacked {... this.state} />
         <PlayerStats2Block1 {... this.state} />

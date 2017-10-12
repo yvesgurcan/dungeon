@@ -1,6 +1,6 @@
 import StaticAssets from "./StaticAssets.js"
 
-const Debug = true
+const Debug = false
 
 export const DynamicAssets = {
 
@@ -8,7 +8,7 @@ export const DynamicAssets = {
     // debug
     ShowFullMap: Debug || false
     ,
-    NoClip: Debug || true
+    NoClip: Debug || false
     ,
     GodMode: Debug || false
     ,
@@ -35,7 +35,7 @@ export const DynamicAssets = {
     },
 
     Gear: {
-        LeftHand: StaticAssets.Items.Dagger,
+        LeftHand: StaticAssets.Items.EmeraldDagger,
         RightHand: null,
         PreparedSpell1: null,
         PreparedSpell2: null,
@@ -49,9 +49,9 @@ export const DynamicAssets = {
             StaticAssets.UniqueItems.IronKey,
             StaticAssets.UniqueItems.BrassKey,
             StaticAssets.UniqueItems.OrnateKey,
-            StaticAssets.Items.HealthPotion,
-            StaticAssets.Items.ManaPotion,
-            StaticAssets.Items.StaminaPotion,
+            {...StaticAssets.Items.HealthPotion, Id: 1},
+            {...StaticAssets.Items.ManaPotion, Id: 3},
+            {...StaticAssets.Items.StaminaPotion, Id: 4},
             StaticAssets.Items.AmuletOfMagic,
             StaticAssets.Items.SkullAmulet,
             StaticAssets.Items.Sword,
@@ -81,7 +81,8 @@ export const DynamicAssets = {
             x: 12,
             y: 14,
             Id: 1,
-            Name: "cell-keeper",
+            Name: "cell keeper",
+            Damage: {Min: 1, Max: 4},
             Stationary: true,
         },
     ],
@@ -114,7 +115,21 @@ export const DynamicAssets = {
         {
             accessPoints: [{x: 11, y: 13}, {x: 11, y: 14}, {x: 11, y: 15}, ],
             text:
-                `A huge noise.
+                `You're still trying to get your bearings but the darkness is too thick and too still.
+
+                Suddenly, you hear something. The sound resembles the jingle of a bunch of keys. Silence again. Then, a huge clang. You turn you head in the direction of the loud noise. A slit of bright light appears a few feet away. The tiny opening slowly becomes big and wide. The sound of rusty hinges turning on themselves, a deep and interminable complaint, makes you grind your teeth. Blinded by the intense brightness, you can only see a vague, dark shape in the middle of a rectangle of light.
+                
+                A guttural voice says 'Come with me.' You can hear a discernible accent. As your eyes start to catch sight of what's in front of you, you recognize the stout silhouette of a small orc. On his belt, a massive key ring.
+
+                Outside the cell, you hear torches crackling.
+
+                You can feel the orc staring at you. He lets a couple of menacing breaths out.
+
+                After some long seconds, you position your body towards the door, and take a step forward. The orc turns to let you out of this dingy, confined room.
+
+                Before the cellkeeper has time to set a safe distance between you and him, you run towards him and hit the creature in the face!
+
+
                 `
         },
     ],
