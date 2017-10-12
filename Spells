@@ -11,6 +11,7 @@ Fire shield (armor boost + damage, 5 turns)
 Globe of Invulnerability (god mode)
 Mirror Shield (reflects 20% damage, 5 turns) x
 Blur (monster does minimum damage)
+Curse (reducdes monster chances to hit / dexterity) x
 
 // Attack
 Acid Arrow (3 turns)
@@ -31,13 +32,8 @@ Entangle (monster can not move for 5 turns)
 // Other
 Invisibility (monsters stop and will not chase you, 15 turns)
 Misty Step (teleport a few steps away)
-Arcane Sword
-Bane
-Bestow Curse
-Blight
-Detect Monster x
+Detect Monster (shows surrounding monsters on the map, 10 turns) x
 Acuity (dexterity boost) x
-Branding Smite
 Create Food
 Dispel magic
-Find traps
+Find traps (show traps on the map, 20 turns)
