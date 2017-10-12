@@ -1579,7 +1579,7 @@ class Game extends Component {
     
     initState.Player.Health = 11
 
-    initState.CreateCharacter = true
+    // initState.CreateCharacter = true
 
     this.state = initState
     
