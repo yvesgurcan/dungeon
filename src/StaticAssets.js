@@ -158,9 +158,10 @@ export const StaticAssets = {
 
         // Heal
         FirstAid: {
+            Level: 1,
             Name: "first aid",
             Image: "spell_first_aid",
-            Level: 1,
+            ManaCost: 6,
             Type: Heal,
             // Cumulated Health Restored Range: 4-9
             Heal: {
@@ -171,9 +172,9 @@ export const StaticAssets = {
             Duration: 1,
         },
         Alertness: {
+            Level: 3,
             Name: "alertness",
             Image: "spell_alertness",
-            Level: 3,
             Type: Heal,
             // Cumulated Stamina Restored Range: 24-48
             Heal: {
@@ -184,9 +185,9 @@ export const StaticAssets = {
             Duration: 3,     
         },
         HealWounds: {
+            Level: 6,
             Name: "heal wounds",
             Image: "spell_heal_wounds",
-            Level: 6,
             Type: Heal,
             // Cumulated Health Restored Range: 6-15
             Heal: {
@@ -197,10 +198,10 @@ export const StaticAssets = {
             Duration: 1,
         },
         Regenerate: {
+            Level: 11,
             Name: "regenerate",
             Image: "spell_regenerate",
             Type: Heal,
-            Level: 11,
             // Cumulated Health Restored Range: 18-33
             Heal: {
                 Property: "Health",
@@ -212,27 +213,27 @@ export const StaticAssets = {
 
         // Attack
         MagicArrow: {
+            Level: 1,
             Name: "magic arrow",
             Image: "spell_magic_arrow",
-            Level: 1,
             Type: Attack,
             // Cumulated Damage Range: 1-5
             Damage: {Min: 1, Max: 5},
             Duration: 1,
         },
         ColdTouch: {
+            Level: 3,
             Name: "cold touch",
             Image: "spell_cold_touch",
-            Level: 3,
             Type: Attack,
             // Cumulated Damage Range: 4-8
             Damage: {Min: 2, Max: 4},
             Duration: 2,
         },
         Fireball: {
+            Level: 5,
             Name: "fireball",
             Image: "spell_fireball",
-            Level: 5,
             Type: Attack,
             // Cumulated Damage Range: 6-12
             Damage: {Min: 6, Max: 12},
@@ -443,6 +444,7 @@ export const StaticAssets = {
         },
         GlobeOfInvulnerability: {
             Level: 17,
+            ManaCost: 80,
             Name: "globe of invulnerability",
             Image: "spell_globe_of_invulnerability",
             Effect: "Invulnerability",

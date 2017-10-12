@@ -38,6 +38,13 @@ export const UtilityAssets = {
             Mana1: "As you drink the potion, a tiny sparkle lights up in your chest.",
             Mana2: "You feel the power of magic.",
             Mana3: "Nice!",
+        },
+        Spells: {
+            NotEnoughMana: [
+                "You fail to gather the energy necessary to cast this spell.",
+                "You can't concentrate enough to cast this spell.",
+                "You position your hands and get ready to cast the spell. Nothing happens."
+            ],
         }
 
     },

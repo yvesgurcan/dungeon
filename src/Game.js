@@ -2697,6 +2697,29 @@ class Game extends Component {
     return matchTextAccessPoint
   }
 
+  CastSpell = (Spell, Caster) => {
+
+    if (!Caster) {
+      let {Player} = this.state
+      Caster = Player    
+    }
+
+    console.log(Spell)
+
+    if (!Spell.ManaCost || Caster.Mana >= Spell.ManaCost) {
+      
+
+    }
+    else {
+      
+      this.SetText(UtilityAssets.Messages.Spells.NotEnoughMana[this.RandomInteger(UtilityAssets.Messages.Spells.NotEnoughMana.length)])
+
+    }
+
+    return false
+
+  }
+
   MovePlayer = (Direction) => {
 
     let {Player, WallMap, MonsterMap, NoClip} = this.state
@@ -3061,25 +3084,6 @@ class Game extends Component {
 
   }
 
-  CheckInventoryWeightAtStartUp = (Backpack) => {
-
-    let BackpackWeight = 0
-
-    if (Backpack.Items.length > 0) {
-      BackpackWeight = Backpack.Items.map(Item => {
-        return Item !== null ? Item.Weight || 0 : 0
-      }).reduce((sum, val) => sum + val)
-    }
-    else {
-      BackpackWeight = 0
-    }
-
-    Backpack.Weight = BackpackWeight
-
-    return Backpack
-
-  }
-
   CheckInventoryWeight = (Loot) => {
 
     let {Backpack, Player} = this.state
@@ -3113,6 +3117,25 @@ class Game extends Component {
 
     return false
     
+  }
+
+  CheckInventoryWeightAtStartUp = (Backpack) => {
+
+    let BackpackWeight = 0
+
+    if (Backpack.Items.length > 0) {
+      BackpackWeight = Backpack.Items.map(Item => {
+        return Item !== null ? Item.Weight || 0 : 0
+      }).reduce((sum, val) => sum + val)
+    }
+    else {
+      BackpackWeight = 0
+    }
+
+    Backpack.Weight = BackpackWeight
+
+    return Backpack
+
   }
 
   WakeUpMonster = ({x, y}) => {
@@ -3566,7 +3589,7 @@ class Game extends Component {
         <PlayerStats0 {... this.state} />
         <PlayerVitals {... this.state} />
         <Arrows {... this} {... this.state} />
-        <Rest/>
+        <Rest {... this} {... this.state}/>
         <PlayerStats3 {... this.state} />
         <PlayerAttributesStacked {... this.state} />
         <PlayerStats2Block1 {... this.state} />
