@@ -128,8 +128,6 @@ export const DynamicAssets = {
                 After some long seconds, you position your body towards the door, and take a step forward. The orc turns to let you out of this dingy, confined room.
 
                 Before the cellkeeper has time to set a safe distance between you and him, you run towards him and hit the creature in the face!
-
-
                 `
         },
     ],

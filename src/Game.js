@@ -1450,7 +1450,7 @@ class Header extends Component {
     return (
       <View style={Styles.Header}>
         <PageTitle>Dungeon!</PageTitle>
-        <PageSubtitle>a D&amp;D-inspired game in React</PageSubtitle>
+        <PageSubtitle>an adventure game in React</PageSubtitle>
         <Version>pre-alpha</Version>
       </View>
     )
@@ -2066,7 +2066,7 @@ class Game extends Component {
         border: HUDBorder,
         padding: HUDBlockPadding,
         background: "#EDC39D",
-        borderRadius: '5px'
+        borderRadius: '5px',
       },
       StoryContainer: {
         maxHeight: StoryRowHeight - HUDPadding * 2 + px,
