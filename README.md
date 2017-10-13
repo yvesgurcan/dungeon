@@ -1,6 +1,9 @@
 # Dungeon!
-A D&D inspired game in React
+An adventure game in React.
 
-### Getting started
+## How to play
+Go to http://dungeon.yvesgurcan.com.
+
+## Getting started
  - `npm install`
  - `npm start`
