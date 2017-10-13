@@ -1608,7 +1608,7 @@ class Game extends Component {
     // various
     const px = "px"
 
-    const HUDPadding = 5
+    const HUDPadding = 8
     const HUDBlockPadding = HUDPadding + px
     const HUDBlockPadding2 = HUDPadding/2.5 + px
     const HUDBorder = "1px solid black"
@@ -2012,6 +2012,7 @@ class Game extends Component {
         gridColumnEnd: LastColumn,
         gridRowStart: TitleRow,
         textAlign: "center",
+        fontFamily: "UnifrakturMaguntia, cursive"
       },
       H1: {
         margin: "0px",
@@ -2064,6 +2065,8 @@ class Game extends Component {
         userSelect: "text",
         border: HUDBorder,
         padding: HUDBlockPadding,
+        background: "#EDC39D",
+        borderRadius: '5px'
       },
       StoryContainer: {
         maxHeight: StoryRowHeight - HUDPadding * 2 + px,
