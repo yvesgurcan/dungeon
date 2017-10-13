@@ -2697,6 +2697,16 @@ class Game extends Component {
     return matchTextAccessPoint
   }
 
+  AbilityCheck = (AbilityScore) => {
+
+    if (this.RandomInteger(UtilityAssets.MaxAbilityScore) >= AbilityScore) {
+      return true
+    }
+
+    return false
+
+  }
+
   CastSpell = (Spell, Caster) => {
 
     if (!Caster) {
@@ -2708,6 +2718,7 @@ class Game extends Component {
 
     if (!Spell.ManaCost || Caster.Mana >= Spell.ManaCost) {
       
+      this.RandomInteger()
 
     }
     else {
@@ -2813,7 +2824,6 @@ class Game extends Component {
       this.setState(State)
       
       this.UpdateText(targetCoordinates)
-
 
     }
     

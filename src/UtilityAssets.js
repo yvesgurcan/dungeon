@@ -81,6 +81,9 @@ export const UtilityAssets = {
        Level20: 355000,
     },
 
+    MaxAbilityScore: 50
+    ,
+
     SpellCasterProfiles: {
         MajorSpellCaster: {
             Level1: {
