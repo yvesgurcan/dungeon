@@ -278,7 +278,7 @@ export const StaticAssets = {
             Target: Surrounding,
         },
         Moonbeam: {
-            Level: 19,
+            Level: 18,
             Name: "moonbeam",
             Image: "spell_moonbeam",
             Type: Attack,
@@ -362,7 +362,7 @@ export const StaticAssets = {
             Duration: 5, 
         },
         Berserk: {
-            Level: 14,
+            Level: 15,
             Name: "berserk",
             Image: "spell_berserk",
             Type: Bonus,
@@ -424,7 +424,7 @@ export const StaticAssets = {
             Effect: "DetectMonster",
         },
         FindTraps: {
-            Level: 6,
+            Level: 7,
             Name: "Find traps",
             Image: "spell_find_traps",
             Effect: "FindTraps",
@@ -436,7 +436,7 @@ export const StaticAssets = {
             Effect: "MistyStep",
         },
         Invisibility: {
-            Level: 13,
+            Level: 14,
             Name: "invisibility",
             Image: "spell_invisibility",
             Effect: "Invisibility",
@@ -444,7 +444,7 @@ export const StaticAssets = {
         },
         GlobeOfInvulnerability: {
             Level: 17,
-            ManaCost: 80,
+            ManaCost: 10,
             Name: "globe of invulnerability",
             Image: "spell_globe_of_invulnerability",
             Effect: "Invulnerability",

@@ -39,11 +39,18 @@ export const UtilityAssets = {
             Mana2: "You feel the power of magic.",
             Mana3: "Nice!",
         },
-        Spells: {
+        Spell: {
+            UnsufficientLevel: "You have not mastered the secrets of this spell yet."
+            ,
             NotEnoughMana: [
-                "You fail to gather the energy necessary to cast this spell.",
-                "You can't concentrate enough to cast this spell.",
+                "You can't gather the energy necessary to operate this kind of magic.",
+                "Your power is too low to cast this spell.",
                 "You position your hands and get ready to cast the spell. Nothing happens."
+            ],
+            Failed: [
+                "As you finish pronouncing the magic words to cast the spell, the energy you focalized dissipates.",
+                "Your mind wandered at a critical time that required all your attention. The spell failed.",
+                "Darn! The effect of your spell flopped miserably.",
             ],
         }
 
@@ -56,7 +63,15 @@ export const UtilityAssets = {
         MonsterMissed: " tried to attack you and missed their target.",
         MonsterKilled: "You killed ",
         PlayerHit: "You hit ",
+        SpellSuccess: "You successfully casted ",
     },
+
+    MaxAbilityScore: 50
+    ,
+    MaxPlayerLevel: 20
+    ,
+    MaxSpellLevel: 18
+    ,
 
     // how much experience does the player need to reach a level
     LevelXP: {
@@ -80,9 +95,6 @@ export const UtilityAssets = {
        Level19: 305000,
        Level20: 355000,
     },
-
-    MaxAbilityScore: 50
-    ,
 
     SpellCasterProfiles: {
         MajorSpellCaster: {

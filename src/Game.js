@@ -2700,9 +2700,11 @@ class Game extends Component {
     return matchTextAccessPoint
   }
 
-  AbilityCheck = (AbilityScore) => {
+  AbilityCheck = (AbilityScore, Modifier) => {
 
-    if (this.RandomInteger(UtilityAssets.MaxAbilityScore) >= AbilityScore) {
+    console.log(Modifier, 100 - (AbilityScore/UtilityAssets.MaxAbilityScore*100), 100 - (AbilityScore/UtilityAssets.MaxAbilityScore*100) - (Modifier || 0))
+
+    if (this.RandomInteger() >= 100 - (AbilityScore/UtilityAssets.MaxAbilityScore*100) - (Modifier || 0)) {
       return true
     }
 
@@ -2712,22 +2714,81 @@ class Game extends Component {
 
   CastSpell = (Spell, Caster) => {
 
+    let {Player} = this.state
+
     if (!Caster) {
-      let {Player} = this.state
       Caster = Player    
     }
 
     console.log(Spell)
 
+    // enough mana
     if (!Spell.ManaCost || Caster.Mana >= Spell.ManaCost) {
-      
-      this.RandomInteger()
+    
+      // not enough XP
+      if (Spell.Level > Caster.Level) {
+
+        if (Caster === Player) {
+          this.SetText(UtilityAssets.Messages.Spell.UnsufficientLevel)
+        }
+
+        return false
+      }
+
+      // ability score spell-level modifier
+      let Modifier = 0
+      if (Caster.Intelligence <= 5) {
+        return false
+      }
+      else if (Caster.Intelligence <= 10)  {
+        Modifier = UtilityAssets.MaxSpellLevel/Spell.Level/4
+      }
+      else {
+        Modifier = UtilityAssets.MaxSpellLevel/Spell.Level
+      }
+
+      // attempt to cast the spell
+      if (this.AbilityCheck(Caster.Intelligence, Modifier)) {
+
+        // Heal
+        if (Spell.Type === "Heal") {
+
+          Caster[Spell.Heal.Property] += Math.min(this.RandomIntegerFromRange(Spell.Heal.Min,Spell.Heal.Max), Caster["Max" + Spell.Heal.Property])
+
+        }
+
+        // Attack
+
+        if (Spell.Type === "Attack") {
+        }
+
+        // update player state and message
+        if (Caster === Player) {
+          Caster.Mana -= Spell.ManaCost || 0
+          this.setState({Player: Caster})
+          this.SetText(UtilityAssets.PartialMessages.SpellSuccess + Spell.Name + UtilityAssets.PartialMessages.Period)
+        }
+
+        return true
+
+      }
+      // cast failed
+      else {
+
+        Caster.Mana -= Spell.ManaCost || 0
+        if (Caster === Player) {
+          this.setState({Player: Caster})
+          this.SetText(UtilityAssets.Messages.Spell.Failed[this.RandomInteger(UtilityAssets.Messages.Spell.Failed.length)])
+        }
+
+      }
 
     }
+    // player does not have required mana amount
     else {
-      
-      this.SetText(UtilityAssets.Messages.Spells.NotEnoughMana[this.RandomInteger(UtilityAssets.Messages.Spells.NotEnoughMana.length)])
-
+      if (Caster === Player) {
+        this.SetText(UtilityAssets.Messages.Spell.NotEnoughMana[this.RandomInteger(UtilityAssets.Messages.Spell.NotEnoughMana.length)])
+      }
     }
 
     return false
