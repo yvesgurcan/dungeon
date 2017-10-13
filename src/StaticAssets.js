@@ -159,9 +159,9 @@ export const StaticAssets = {
         // Heal
         FirstAid: {
             Level: 1,
+            ManaCost: 4,
             Name: "first aid",
             Image: "spell_first_aid",
-            ManaCost: 6,
             Type: Heal,
             // Cumulated Health Restored Range: 4-9
             Heal: {
@@ -173,6 +173,7 @@ export const StaticAssets = {
         },
         Alertness: {
             Level: 3,
+            ManaCost: 6,
             Name: "alertness",
             Image: "spell_alertness",
             Type: Heal,
@@ -186,19 +187,21 @@ export const StaticAssets = {
         },
         HealWounds: {
             Level: 6,
+            ManaCost: 8,
             Name: "heal wounds",
             Image: "spell_heal_wounds",
             Type: Heal,
-            // Cumulated Health Restored Range: 6-15
+            // Cumulated Health Restored Range: 6-16
             Heal: {
                 Property: "Health",
                 Min: 6,
-                Max: 15,
+                Max: 16,
             },
             Duration: 1,
         },
         Regenerate: {
             Level: 11,
+            ManaCost: 19,
             Name: "regenerate",
             Image: "spell_regenerate",
             Type: Heal,
@@ -214,6 +217,7 @@ export const StaticAssets = {
         // Attack
         MagicArrow: {
             Level: 1,
+            ManaCost: 3,
             Name: "magic arrow",
             Image: "spell_magic_arrow",
             Type: Attack,
@@ -223,6 +227,7 @@ export const StaticAssets = {
         },
         ColdTouch: {
             Level: 3,
+            ManaCost: 7,
             Name: "cold touch",
             Image: "spell_cold_touch",
             Type: Attack,
@@ -232,6 +237,7 @@ export const StaticAssets = {
         },
         Fireball: {
             Level: 5,
+            ManaCost: 11,
             Name: "fireball",
             Image: "spell_fireball",
             Type: Attack,
@@ -241,6 +247,7 @@ export const StaticAssets = {
         },
         VampiricTouch: {
             Level: 8,
+            ManaCost: 16,
             Name: "vampiric touch",
             Image: "spell_vampiric_touch",
             Type: Attack,
@@ -258,6 +265,7 @@ export const StaticAssets = {
         },
         ChainLightning: {
             Level: 12,
+            ManaCost: 26,
             Name: "chain lightning",
             Image: "spell_chain_lightning",
             Type: Attack,
@@ -269,6 +277,7 @@ export const StaticAssets = {
         },
         CircleOfDeath: {
             Level: 16,
+            ManaCost: 59,
             Name: "circle of death",
             Image: "spell_circle_of_death",
             Type: Attack,
@@ -279,6 +288,7 @@ export const StaticAssets = {
         },
         Moonbeam: {
             Level: 18,
+            ManaCost: 79,
             Name: "moonbeam",
             Image: "spell_moonbeam",
             Type: Attack,
@@ -292,18 +302,20 @@ export const StaticAssets = {
         // Bonus
         TrueStrike: {
             Level: 4,
+            ManaCost: 7,
             Name: "true strike",
             Image: "spell_true_strike",
             Type: Bonus,
             Boost: {
                 Property: "Damage",
-                Type: "Percentage",
-                Percentage: 10,
+                Type: "Fixed",
+                Fixed: 2,
             },
             Duration: 5, 
         },
         BarkSkin: {
             Level: 2,
+            ManaCost: 11,
             Name: "bark skin",
             Image: "spell_bark_skin",
             Type: Bonus,
@@ -316,6 +328,7 @@ export const StaticAssets = {
         },
         StoneSkin: {
             Level: 5,
+            ManaCost: 19,
             Name: "stone skin",
             Image: "spell_stone_skin",
             Type: Bonus,
@@ -328,6 +341,7 @@ export const StaticAssets = {
         },
         Bless: {
             Level: 3,
+            ManaCost: 13,
             Name: "bless",
             Image: "spell_bless",
             Type: Bonus,
@@ -339,6 +353,7 @@ export const StaticAssets = {
         },
         Blur: {
             Level: 6,
+            ManaCost: 20,
             Name: "blur",
             Image: "spell_blur",
             Type: Bonus,
