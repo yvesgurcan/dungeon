@@ -53,6 +53,7 @@ export const UtilityAssets = {
                 "Darn! The effect of your spell flopped miserably.",
             ],
             NoTarget: "A beautiful ray of magic appears, and crashes on a wall in front of you.",
+            NoTargetArea: "A wave of energy emanated from you, but nobody got hit.",
         }
 
     },

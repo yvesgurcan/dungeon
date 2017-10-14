@@ -2712,7 +2712,7 @@ class Game extends Component {
 
   CastSpell = (Spell, Caster) => {
 
-    let {Player, MonsterMap, Monsters} = this.state
+    let {Player, Monsters, MonsterMap} = this.state
 
     if (!Caster) {
       Caster = Player    
@@ -2793,16 +2793,45 @@ class Game extends Component {
             }
 
           }
-          // Surface Target
-          /*
-          else if () {
+
+          // Target Area
+          else if (Spell.Target === "Surrounding") {
+
+            let Targets = [].concat(
+              MonsterMap[Caster.y-1].slice(Caster.x-1, Caster.x+2),
+              MonsterMap[Caster.y].slice(Caster.x-1, Caster.x+2),
+              MonsterMap[Caster.y+1].slice(Caster.x-1, Caster.x+2),
+            ).filter(MapObject => {
+              return MapObject !== Empty
+            })
+
+            let TargetHit = 0
+
+            while (TargetHit < Math.min((Spell.MaxTarget || 8), Targets.length)) {
+
+              let Target = Monsters.filter(Monster => {
+                return Monster.Id === Targets[TargetHit]
+              })
+
+              this.MonsterTakeDamage(Target[0], this.RandomIntegerFromRange(Spell.Damage.Min, Spell.Damage.Max))
+
+              TargetHit++
+
+            }
+
+            if (TargetHit === 0) {
+
+              NoMessageUpdate = true
+              this.SetText(UtilityAssets.Messages.Spell.NoTargetArea)
+
+            }
 
           }
-          */
+
+          // Adjacent Targets
+          
 
         }
-
-
 
         // update player state and message
         if (Caster === Player) {
