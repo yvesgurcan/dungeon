@@ -1551,44 +1551,72 @@ class Game extends Component {
 
   ListenToKeyboard = (keypress) => {
 
-    let {Player, CreateCharacter} = this.state
+    let {Player, CreateCharacter, Keystrokes} = this.state
 
     if (Player.Dead) return false
     if (CreateCharacter) return false
 
     keypress.preventDefault()
 
+    // subsequent key strokes
+    let breakEvent = false
+    if (Keystrokes) Keystrokes.push(keypress.key)
+    else Keystrokes = [keypress.key]
+    this.setState({Keystrokes: Keystrokes}, function() {
+
+      // detect two digit numbers between 01 and 99
+      if (this.state.Keystrokes.join("").match(/[0-9][1-9]/) !== null) {
+
+        this.CastSpellFromKeyboard(this.state.Keystrokes.join(""))
+        this.FlushKeystrokeHistory()
+
+      }
+      
+    })
+
+    if (breakEvent) return true
+
     // in-game keyboard controls
     switch (keypress.key) {
 
       default:
         break
+
       case "ArrowDown":
         this.MovePlayer("South")
         this.onClickArrow(keypress.key)
+        this.FlushKeystrokeHistory()
         break
 
       case "ArrowUp":
         this.MovePlayer("North")
         this.onClickArrow(keypress.key)
+        this.FlushKeystrokeHistory()
         break
 
       case "ArrowLeft":
         this.MovePlayer("West")
         this.onClickArrow(keypress.key)
+        this.FlushKeystrokeHistory()
         break
 
       case "ArrowRight":
         this.MovePlayer("East")
         this.onClickArrow(keypress.key)
+        this.FlushKeystrokeHistory()
         break
 
       case "t":
         this.TakeAllLoot()
+        this.FlushKeystrokeHistory()
         break
 
     }
 
+  }
+
+  FlushKeystrokeHistory = () => {
+    this.setState({Keystrokes: []})
   }
 
   CalculateStyles = () => {
@@ -1612,6 +1640,7 @@ class Game extends Component {
     const HUDBlockPadding = HUDPadding + px
     const HUDBlockPadding2 = HUDPadding/2.5 + px
     const HUDBorder = "1px solid black"
+    const HUDBorderRadius = "5px"
     const HUDStatBarHeight = "10px"
 
     const ButtonNormalBackground = "lightgray"
@@ -2066,7 +2095,7 @@ class Game extends Component {
         border: HUDBorder,
         padding: HUDBlockPadding,
         background: "#EDC39D",
-        borderRadius: '5px',
+        borderRadius: HUDBorderRadius,
       },
       StoryContainer: {
         maxHeight: StoryRowHeight - HUDPadding * 2 + px,
@@ -2087,6 +2116,7 @@ class Game extends Component {
         border: HUDBorder,
         overflow: "hidden",
         padding: HUDBlockPadding,
+        borderRadius: HUDBorderRadius,
         // otherwise, the map will be distorted
         minWidth: "300px",
       },
@@ -2236,6 +2266,7 @@ class Game extends Component {
         gridRowStart: ControlRow,
         gridRowEnd: ControlRow2+1,
         border: HUDBorder,
+        borderRadius: HUDBorderRadius,
       },
       // Name and Ready Weapons
       PlayerStats0: {
@@ -2396,6 +2427,7 @@ class Game extends Component {
         gridRowStart: InventoryRow,
         padding: HUDBlockPadding2,
         border: HUDBorder,
+        borderRadius: HUDBorderRadius,
       },
 
       InventoryLabel: {
@@ -2408,6 +2440,7 @@ class Game extends Component {
         gridRowStart: SpellBookRow,
         padding: HUDBlockPadding2,
         border: HUDBorder,
+        borderRadius: HUDBorderRadius,
       },
       SpellBookLabel: {
         marginBottom: HUDBlockPadding2,
@@ -2420,6 +2453,7 @@ class Game extends Component {
         gridRowEnd: AccessoriesStopRow,
         padding: HUDBlockPadding,
         border: HUDBorder,
+        borderRadius: HUDBorderRadius,
       },
       // Item Image
       ItemImageBlock: {
@@ -2710,6 +2744,18 @@ class Game extends Component {
 
   }
 
+  CastSpellFromKeyboard = (SpellNumber) => {
+
+    let {Player} = this.state
+
+    let SpellName = Object.keys(Player.SpellBook.Spells)[Number(SpellNumber)]
+
+    if (!SpellName) return false
+
+    this.CastSpell(Player.SpellBook.Spells[SpellName], Player)
+
+  }
+
   CastSpell = (Spell, Caster) => {
 
     let {Player, Monsters, MonsterMap} = this.state
@@ -2769,10 +2815,8 @@ class Game extends Component {
             }
 
             // find target
-            let position = 0
             let TargetMonster = Monsters.filter((Monster, index) => {
               if (Monster.x === targetCoordinates.x && Monster.y === targetCoordinates.y) {
-                position = index
                 return true
               }
               return false
@@ -3142,16 +3186,19 @@ class Game extends Component {
     let LootCount = 0
     let FreeSlots = Backpack.maxItems - Backpack.Items.length
 
-    currentEvent.map(event => {
+    let LootEvents = currentEvent.map(event => {
       if (event.eventType === "loot") {
         if (event.items) {
           LootCount += event.items.length
+          return true
         }
       }
-      return null
+      return false
     })
 
-    currentEvent.map(event => {
+    if (LootEvents.length === 0) return false
+
+    LootEvents.map(event => {
       if (event.eventType === "loot") {
         if (event.items) {
           loot = loot.concat(event.items)
