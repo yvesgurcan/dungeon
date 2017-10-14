@@ -236,7 +236,10 @@ class ItemImageBlock extends Component {
   render() {
     return (
       <View style={Styles.ItemImageBlock}>
-        <ItemImage {... this.props} />
+          <ItemImage {... this.props} />
+        <View style={Styles.ItemImageBlockNumber}>
+          {this.props.index}
+        </View>
       </View>
     )
   }
@@ -266,10 +269,11 @@ class SpellBook extends Component {
       return Player.SpellBook.Spells[SpellObjectName]
     })
 
-    let SpellImages = List.map((Spell, Index) => {
+    let SpellImages = List.map((Spell, index) => {
       return (
         <ItemImageBlock
-          key={Index}
+          key={index}
+          index={index <= 99 ? ("0" + Number(index+1)).slice(-2) : index}
           image={(Spell && Spell.Image) || null}
           name={(Spell && Spell.Name) || null}
           item={Spell}
@@ -2463,6 +2467,19 @@ class Game extends Component {
         margin: "1px",
         textAlign: "center",
         float: "left",
+        background: "lightgray",
+      },
+      ItemImageBlockNumber: {
+        color: "black",
+        background: "white",
+        width: "13px",
+        // webkitTextStroke: "0.25px black",
+        fontSize: "12px",
+        position: "relative",
+        top: -16,
+        left: 19,
+        // webkitTextStroke: "0.5px black",
+        fontFamily: "VT323, monospace"
       },
       ItemImage: {
         maxHeight: "30px",
@@ -2477,6 +2494,7 @@ class Game extends Component {
         height: "30px",
         width: "30px",
         border: "1px solid gray",
+        background: "lightgray",
         padding: "1px",
         margin: "1px"
       },
