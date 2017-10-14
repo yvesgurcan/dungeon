@@ -282,7 +282,7 @@ export const StaticAssets = {
             Image: "spell_circle_of_death",
             Type: Attack,
             // Cumulated Damage Range: 40-80 (5-10 * 8)
-            Danage: {Min: 5, Max: 10},
+            Damage: {Min: 5, Max: 10},
             Duration: 1,
             Target: Surrounding,
         },

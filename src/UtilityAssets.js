@@ -52,6 +52,7 @@ export const UtilityAssets = {
                 "Your mind wandered at a critical time that required all your attention. The spell failed.",
                 "Darn! The effect of your spell flopped miserably.",
             ],
+            NoTarget: "A beautiful ray of magic appears, and crashes on a wall in front of you.",
         }
 
     },
@@ -557,6 +558,25 @@ export const UtilityAssets = {
         East: {
             x: 2,
             y: 1,
+        },
+    },
+
+    DirectionsOffset: {
+        North: {
+            x: 0,
+            y: -1,
+        },
+        South: {
+            x: 0,
+            y: 1,
+        },
+        West: {
+            x: -1,
+            y: 0,
+        },
+        East: {
+            x: 1,
+            y: 0,
         },
     },
 

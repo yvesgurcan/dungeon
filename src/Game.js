@@ -2598,7 +2598,7 @@ class Game extends Component {
 
     // Vitals
     Player.MaxHealth = Player.Health = this.CalculateMaxHealth(Player)
-    Player.MaxMana = Player.Mana = this.CalculateMaxMana(Player)
+    Player.MaxMana = Player.Mana = this.CalculateMaxMana(Player) * 999
     Player.MaxStamina = Player.Stamina = this.CalculateMaxStamina(Player)
     Player.MaxWeight = this.CalculateMaxWeight(Player)    
 
@@ -2702,8 +2702,6 @@ class Game extends Component {
 
   AbilityCheck = (AbilityScore, Modifier) => {
 
-    console.log(Modifier, 100 - (AbilityScore/UtilityAssets.MaxAbilityScore*100), 100 - (AbilityScore/UtilityAssets.MaxAbilityScore*100) - (Modifier || 0))
-
     if (this.RandomInteger() >= 100 - (AbilityScore/UtilityAssets.MaxAbilityScore*100) - (Modifier || 0)) {
       return true
     }
@@ -2714,13 +2712,11 @@ class Game extends Component {
 
   CastSpell = (Spell, Caster) => {
 
-    let {Player} = this.state
+    let {Player, MonsterMap, Monsters} = this.state
 
     if (!Caster) {
       Caster = Player    
     }
-
-    console.log(Spell)
 
     // enough mana
     if (!Spell.ManaCost || Caster.Mana >= Spell.ManaCost) {
@@ -2747,8 +2743,12 @@ class Game extends Component {
         Modifier = UtilityAssets.MaxSpellLevel/Spell.Level
       }
 
+      console.log(Spell)
+
       // attempt to cast the spell
       if (this.AbilityCheck(Caster.Intelligence, Modifier)) {
+
+        let NoMessageUpdate = false
 
         // Heal
         if (Spell.Type === "Heal") {
@@ -2758,15 +2758,62 @@ class Game extends Component {
         }
 
         // Attack
+        else if (Spell.Type === "Attack") {
 
-        if (Spell.Type === "Attack") {
+          // Default Target: whatever is in front of the caster
+          if (!Spell.Target) {
+
+            let targetCoordinates = {
+              x: Caster.x + UtilityAssets.DirectionsOffset[Caster.Facing].x,
+              y: Caster.y + UtilityAssets.DirectionsOffset[Caster.Facing].y
+            }
+
+            // find target
+            let position = 0
+            let TargetMonster = Monsters.filter((Monster, index) => {
+              if (Monster.x === targetCoordinates.x && Monster.y === targetCoordinates.y) {
+                position = index
+                return true
+              }
+              return false
+            })
+
+            if (TargetMonster.length === 0) {
+
+              NoMessageUpdate = true
+              this.SetText(UtilityAssets.Messages.Spell.NoTarget)
+
+            }
+            else {
+
+              if (!this.MonsterTakeDamage(TargetMonster[0], this.RandomIntegerFromRange(Spell.Damage.Min, Spell.Damage.Max))) {
+                NoMessageUpdate = true
+              }
+
+            }
+
+          }
+          // Surface Target
+          /*
+          else if () {
+
+          }
+          */
+
         }
+
+
 
         // update player state and message
         if (Caster === Player) {
+
           Caster.Mana -= Spell.ManaCost || 0
           this.setState({Player: Caster})
-          this.SetText(UtilityAssets.PartialMessages.SpellSuccess + Spell.Name + UtilityAssets.PartialMessages.Period)
+          
+          if (!NoMessageUpdate) {
+            this.SetText(UtilityAssets.PartialMessages.SpellSuccess + Spell.Name + UtilityAssets.PartialMessages.Period)            
+          }
+
         }
 
         return true
