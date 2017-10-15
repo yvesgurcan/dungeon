@@ -31,22 +31,22 @@ When your progression is blocked by a monster, moving towards them will automati
 
 Whether you are able to hit your target depends on how dexterous you are. If your attack is successful, the monster may take some damage. Your strength and the weapon you used are contingent on the severity of the wound inflicted to your enemy.
 
-When a monster is attacked or close enough to you, it will try to hit you as well. If the offensive is successful, your health may decrease. If your health reaches an unviable level, you collapse on the ground and die.
+When you attack a monster or when a monster is close enough to you, it will try to hit you as well. If the offensive is successful, your health may decrease. If your health reaches an unviable level, you collapse on the ground and die.
 
 You can also cast [spells](#spellbook) that will injure your enemies or affect their combat skills.
 
 
 ### Backpack
 
-When you find loot, you can put it in your backpack. You can pick up as many items as your backpack allows, provided that your inventory does not exceed the maximum weight (determined by your strength) you can carry.
+When you find loot, you can put it in your backpack. You can pick up as many items as your backpack allows, provided that your inventory and gear do not exceed the maximum weight (determined by your strength) you can carry.
 
 ### Equipment
 In addition to your inventory, you also carry items on your person. For example, items can be held in your left or right hands, worn around your neck, or on your head.
 
-Each slot only takes 1 item at a time. In order to equip an item, it must fit the part of your body that you are trying to put it on. For example, a ring can only go on your fingers, arrows can only go in the quiver on your back, and boots can only be worn on your feet.
+Each slot can only take 1 item at a time. In order to equip an item, it must fit the part of your body that you are trying to put it on. For example, a ring can only go on your fingers, arrows can only go in the quiver on your back, and boots can only be worn on your feet.
 
 ### <a name="spellbook"/> Spellbook
-As you progress throughout your adventure, you will learn magic spells. Each spell you memorize is contained in your spellbook. You can only learn spells that are appropriate to your level.
+As you progress throughout your adventure, you will learn magic spells (unless your character class disallows it). Each spell you memorize is contained in your spellbook. You can only learn spells that are appropriate to your level.
 
 To summon magic, simply click on one of the spells you learnt or use [keyboard shortcuts](#keyboard).
 
