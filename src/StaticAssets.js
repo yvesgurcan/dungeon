@@ -32,21 +32,26 @@ export const StaticAssets = {
     },
 
     Items: {
+
         // Backpacks  
         BagOfHolding: {
             Type: "backpack",
+            MaxItems: 28,
         },
         TravelerBag: {
             Type: "backpack",
+            MaxItems: 5,
         },
+        
         // Miscellani
         Rock: {
             Level: 1,
             Type: "misc",
-            Name: "Rock",
+            Name: "rock",
             image: "rock",
             Weight: 2,
         },
+        
         // Potions
         HealthPotion: {
             Level: 1,
@@ -78,16 +83,8 @@ export const StaticAssets = {
             Action: "DrinkPotion",
             Weight: 0.5,
         },
-        AntidotePotion: {
-            Level: 1,
-            Type: "potion",
-            Name: "antidote",
-            image: "potion_antidote",
-            Heal: "Poison",
-            Strength: 70,
-            Action: "DrinkPotion",
-            Weight: 0.5,
-        },
+
+        // Weapons
         // Swords
         EmeraldDagger: {
             Level: 2,
@@ -120,6 +117,8 @@ export const StaticAssets = {
             Type: "shield",
             image: "shield",
         },
+
+        // Accesories
         // Necklaces
         AmuletOfMagic: {
             Name: "amulet of magic",
@@ -131,88 +130,215 @@ export const StaticAssets = {
             Type: "necklace",
             image: "amulet_skull",
         },
+
         // Food
+        Leaf: {
+            Name: "leaf",
+            Type: "food",
+            image: "food_leaf",
+            RestoreStamina: 2,
+            Action: "ConsumeFood",
+            Weight: 0.1,
+        },
         Apple: {
             Name: "apple",
             Type: "food",
             image: "food_apple",
+            RestoreStamina: 3,
+            Action: "ConsumeFood",
+            Weight: 0.3,
+        },
+        Berries: {
+            Name: "berries",
+            Type: "food",
+            image: "food_berries",
+            RestoreStamina: 3,
+            Action: "ConsumeFood",
+            Weight: 0.2,
+        },
+        Grapes: {
+            Name: "grapes",
+            Type: "food",
+            image: "food_grapes",
+            RestoreStamina: 3,
+            Action: "ConsumeFood",
+            Weight: 0.4,
+        },
+        Bread: {
+            Name: "bread",
+            Type: "food",
+            image: "food_bread",
+            RestoreStamina: 5,
+            Action: "ConsumeFood",
+            Weight: 0.5,
+        },
+        Chicken: {
+            Name: "chicken",
+            Type: "food",
+            image: "food_chicken",
+            RestoreStamina: 7,
+            Action: "ConsumeFood",
+            Weight: 0.4,
         },
         Sausage: {
             Name: "sausage",
             Type: "food",
             image: "food_sausage",
+            RestoreStamina: 7,
+            Action: "ConsumeFood",
+            Weight: 0.3,
         },
+
         // Scrolls
+        // Attack
+        MagicArrowScroll: {
+            Name: "scroll of magic arrow",
+            Spell: "MagicArrow",
+            ...UtilityAssets.Scrolls.AttackSpell,
+        },
+        ColdTouchScroll: {
+            Name: "scroll of cold touch",
+            Spell: "ColdTouch",
+            ...UtilityAssets.Scrolls.AttackSpell,
+        },
         FireballScroll: {
-            Level: 1,
-            Name: "fireball scroll",
-            Type: "scroll",
-            Spell: "FireballSpell",
-            image: "scroll",
-            Weight: 0.1,
+            Name: "scroll of fireball",
+            Spell: "Fireball",
+            ...UtilityAssets.Scrolls.AttackSpell,
+        },
+        VampiricTouchScroll: {
+            Name: "scroll of vampiric touch",
+            Spell: "VampiricTouch",
+            ...UtilityAssets.Scrolls.AttackSpell,
+        },
+        ChainLightningScroll: {
+            Name: "scroll of chain lightning",
+            Spell: "ChainLightning",
+            ...UtilityAssets.Scrolls.AttackSpell,
+        },
+        CircleOfDeathScroll: {
+            Name: "scroll of circle of death",
+            Spell: "CircleOfDeath",
+            ...UtilityAssets.Scrolls.AttackSpell,
+        },
+        MoonbeamScroll: {
+            Name: "scroll of moonbeam",
+            Spell: "Moonbeam",
+            ...UtilityAssets.Scrolls.AttackSpell,
+        },
+        // Heal
+        FirstAidScroll: {
+            Name: "scroll of first aid",
+            Spell: "FirstAid",
+            ...UtilityAssets.Scrolls.BonusSpell,
+        },
+        AlertnessScroll: {
+            Name: "scroll of alertness",
+            Spell: "Alertness",
+            ...UtilityAssets.Scrolls.BonusSpell,
+        },
+        HealWoundsScroll: {
+            Name: "scroll of heal wounds",
+            Spell: "HealWounds",
+            ...UtilityAssets.Scrolls.BonusSpell,
+        },
+        RegenerateScroll: {
+            Name: "scroll of regenerate",
+            Spell: "Regenerate",
+            ...UtilityAssets.Scrolls.BonusSpell,
+        },
+        // Bonus
+        TrueStrikeScroll: {
+            Name: "scroll of true strike",
+            Spell: "TrueStrike",
+            ...UtilityAssets.Scrolls.BonusSpell,
+        },
+        BarkSkinScroll: {
+            Name: "scroll of bark sin",
+            Spell: "BarkSkin",
+            ...UtilityAssets.Scrolls.BonusSpell,
+        },
+        StoneSkinScroll: {
+            Name: "scroll of stone skin",
+            Spell: "StoneSkin",
+            ...UtilityAssets.Scrolls.BonusSpell,
+        },
+        BlessScroll: {
+            Name: "scroll of bless",
+            Spell: "Bless",
+            ...UtilityAssets.Scrolls.BonusSpell,
+        },
+        BlurScroll: {
+            Name: "scroll of blur",
+            Spell: "Blur",
+            ...UtilityAssets.Scrolls.BonusSpell,
+        },
+        MirrorShieldScroll: {
+            Name: "scroll of mirror shield",
+            Spell: "MirrorShield",
+            ...UtilityAssets.Scrolls.BonusSpell,
+        },
+        BerserkScroll: {
+            Name: "scroll of berserk",
+            Spell: "Berserk",
+            ...UtilityAssets.Scrolls.BonusSpell,
+        },
+        // Motion Modifiers
+        ConfusionScroll: {
+            Name: "scroll of confusion",
+            Spell: "Confusion",
+            ...UtilityAssets.Scrolls.MotionModifierSpell,
+        },
+        EntangleScroll: {
+            Name: "scroll of entangle",
+            Spell: "Entangle",
+            ...UtilityAssets.Scrolls.MotionModifierSpell,
+        },
+        ShockingGraspScroll: {
+            Name: "scroll of shocking grasp",
+            Spell: "ShockingGrasp",
+            ...UtilityAssets.Scrolls.MotionModifierSpell,
+        },
+        EarthquakeScroll: {
+            Name: "scroll of earthquake",
+            Spell: "Earthquake",
+            ...UtilityAssets.Scrolls.MotionModifierSpell,
+        },
+        // Other
+        CreateFoodScroll: {
+            Name: "scroll of create food",
+            Spell: "CreateFood",
+            ...UtilityAssets.Scrolls.OtherSpell,
+        },
+        DetectMonsterScroll: {
+            Name: "scroll of detect monster",
+            Spell: "DetectMonster",
+            ...UtilityAssets.Scrolls.OtherSpell,
+        },
+        FindTrapsScroll: {
+            Name: "scroll of find traps",
+            Spell: "FindTraps",
+            ...UtilityAssets.Scrolls.OtherSpell,
+        },
+        MistyStepScroll: {
+            Name: "scroll of misty step",
+            Spell: "MistyStep",
+            ...UtilityAssets.Scrolls.OtherSpell,
+        },
+        InvisibilityScroll: {
+            Name: "scroll of invisibility",
+            Spell: "Invisibility",
+            ...UtilityAssets.Scrolls.OtherSpell,
+        },
+        GlobeOfInvulnerabilityScroll: {
+            Name: "scroll of globe of invulnerability",
+            Spell: "GlobeOfInvulnerability",
+            ...UtilityAssets.Scrolls.OtherSpell,
         },
     },
 
     // Spells
     Spells: {
-
-        // Heal
-        FirstAid: {
-            Level: 1,
-            ManaCost: 4,
-            Name: "first aid",
-            Image: "spell_first_aid",
-            Type: Heal,
-            // Cumulated Health Restored Range: 4-9
-            Heal: {
-                Property: "Health",
-                Min: 4,
-                Max: 9,
-            },
-            Duration: 1,
-        },
-        Alertness: {
-            Level: 3,
-            ManaCost: 6,
-            Name: "alertness",
-            Image: "spell_alertness",
-            Type: Heal,
-            // Cumulated Stamina Restored Range: 24-48
-            Heal: {
-                Property: "Stamina",
-                Min: 8,
-                Max: 16,
-            },
-            Duration: 3,     
-        },
-        HealWounds: {
-            Level: 6,
-            ManaCost: 8,
-            Name: "heal wounds",
-            Image: "spell_heal_wounds",
-            Type: Heal,
-            // Cumulated Health Restored Range: 6-16
-            Heal: {
-                Property: "Health",
-                Min: 6,
-                Max: 16,
-            },
-            Duration: 1,
-        },
-        Regenerate: {
-            Level: 11,
-            ManaCost: 19,
-            Name: "regenerate",
-            Image: "spell_regenerate",
-            Type: Heal,
-            // Cumulated Health Restored Range: 18-33
-            Heal: {
-                Property: "Health",
-                Min: 6,
-                Max: 11,
-            },
-            Duration: 3,
-        },
 
         // Attack
         MagicArrow: {
@@ -291,6 +417,64 @@ export const StaticAssets = {
             Duration: 2,
             Target: Surrounding,
             MaxTargets: 5,
+        },
+
+        // Heal
+        FirstAid: {
+            Level: 1,
+            ManaCost: 4,
+            Name: "first aid",
+            Image: "spell_first_aid",
+            Type: Heal,
+            // Cumulated Health Restored Range: 4-9
+            Heal: {
+                Property: "Health",
+                Min: 4,
+                Max: 9,
+            },
+            Duration: 1,
+        },
+        Alertness: {
+            Level: 3,
+            ManaCost: 6,
+            Name: "alertness",
+            Image: "spell_alertness",
+            Type: Heal,
+            // Cumulated Stamina Restored Range: 24-48
+            Heal: {
+                Property: "Stamina",
+                Min: 8,
+                Max: 16,
+            },
+            Duration: 3,     
+        },
+        HealWounds: {
+            Level: 6,
+            ManaCost: 8,
+            Name: "heal wounds",
+            Image: "spell_heal_wounds",
+            Type: Heal,
+            // Cumulated Health Restored Range: 6-16
+            Heal: {
+                Property: "Health",
+                Min: 6,
+                Max: 16,
+            },
+            Duration: 1,
+        },
+        Regenerate: {
+            Level: 11,
+            ManaCost: 19,
+            Name: "regenerate",
+            Image: "spell_regenerate",
+            Type: Heal,
+            // Cumulated Health Restored Range: 18-33
+            Heal: {
+                Property: "Health",
+                Min: 6,
+                Max: 11,
+            },
+            Duration: 3,
         },
 
         // Bonus
