@@ -3737,6 +3737,7 @@ class Game extends Component {
       Monster.Dead = true
       MonsterMap[Monster.y][Monster.x] = Empty
       this.SetText(UtilityAssets.PartialMessages.MonsterKilled + Functions.IndefiniteArticle(Monster.Name) + " " + Monster.Name + UtilityAssets.PartialMessages.Period)
+      this.DistributeXP(Monster)
       return false
     }
 
@@ -3852,6 +3853,26 @@ class Game extends Component {
     })
 
     return UpdatedBackpackItems
+
+  }
+
+  DistributeXP = (Source) => {
+
+    if (!Source) return false
+
+    let {Player} = this.state
+
+    if (Source.XP) {
+      
+      Player.XP += Source.XP
+
+      if (Player.Level < UtilityAssets.MaxPlayerLevel && Player.XP > UtilityAssets.LevelXP["Level" + Number(Player.Level+1)]) {
+        Player.Level++ 
+      }
+
+      this.setState({Player: Player})
+
+    }
 
   }
 

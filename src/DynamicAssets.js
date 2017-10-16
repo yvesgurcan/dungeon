@@ -20,7 +20,7 @@ export const DynamicAssets = {
         x: 10,
         y: 14,
         Facing: "East",
-        Level: 20,
+        Level: 1,
         XP: 0,
         Constitution: null,
         Strength: null,

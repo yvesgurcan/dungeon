@@ -657,22 +657,25 @@ export const StaticAssets = {
         // Green Skins
         Goblin: {
             Name: "goblin",
-            Type: UtilityAssets.MonsterTypes.GreenSkin,
+            Type: "Green Skin",
             Level: 1,
+            XP: 15,
             Health: 7,
             Damage: {Min: 1, Max: 4},
         },
         Hobgoblin: {
             Name: "hobgoblin",
-            Type: UtilityAssets.MonsterTypes.GreenSkin,
+            Type: "Green Skin",
             Level: 1,
+            XP: 20,
             Health: 11,
             Damage: {Min: 2, Max: 6},
         },
         Orc: {
             Name: "orc",
-            Type: UtilityAssets.MonsterTypes.GreenSkin,
+            Type: "Green Skin",
             Level: 1,
+            XP: 20,
             Health: 15,
             Damage: {Min: 4, Max: 7},
         },

@@ -77,7 +77,7 @@ export const UtilityAssets = {
 
     // how much experience does the player need to reach a level
     LevelXP: {
-        Level2: 300,
+        Level2: 10,
         Level3: 900,
         Level4: 2700,
         Level5: 6500,
@@ -235,10 +235,6 @@ export const UtilityAssets = {
             Weight: 0.1,
         },
 
-    },
-
-    MonsterTypes: {
-        GreenSkin: "green skin",
     },
 
 }
