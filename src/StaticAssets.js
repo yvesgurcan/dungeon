@@ -254,13 +254,7 @@ export const StaticAssets = {
             // Cumulated Damage Range: 4-10
             Damage: {Min: 4, Max: 10},
             // Cumulated Health Restored Range: 4-10
-            Heal: {
-                Property: "Health",
-                Source: "Target",
-                Vampiric: true,
-                Type: "Percentage",
-                Percentage: 100,
-            },
+            Vampiric: true,
             Duration: 1,       
         },
         ChainLightning: {
@@ -479,21 +473,21 @@ export const StaticAssets = {
         // Green Skins
         Goblin: {
             Name: "goblin",
-            Type: UtilityAssets.GreenSkin,
+            Type: UtilityAssets.MonsterTypes.GreenSkin,
             Level: 1,
             Health: 7,
             Damage: {Min: 1, Max: 4},
         },
         Hobgoblin: {
             Name: "hobgoblin",
-            Type: UtilityAssets.GreenSkin,
+            Type: UtilityAssets.MonsterTypes.GreenSkin,
             Level: 1,
             Health: 11,
             Damage: {Min: 2, Max: 6},
         },
         Orc: {
             Name: "orc",
-            Type: UtilityAssets.GreenSkin,
+            Type: UtilityAssets.MonsterTypes.GreenSkin,
             Level: 1,
             Health: 15,
             Damage: {Min: 4, Max: 7},

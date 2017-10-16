@@ -1991,7 +1991,7 @@ class Game extends Component {
         gridTemplateColumns:
           MobileScreen ?
             // column1-10
-            "repeat(10, 28px)"
+            "repeat(10, 29px)"
           :
           TabletScreen ?
             // column1
@@ -2645,7 +2645,7 @@ class Game extends Component {
     Player.Constitution = this.GeneratePlayerAbilityScore()
     Player.Strength = this.GeneratePlayerAbilityScore()
     Player.Dexterity = this.GeneratePlayerAbilityScore()
-    Player.Intelligence = this.GeneratePlayerAbilityScore()
+    Player.Intelligence = 50 || this.GeneratePlayerAbilityScore()
     Player.ArmorClass = 10 + this.AbilityModifier(Player.Dexterity)
 
     // Vitals
@@ -2762,11 +2762,41 @@ class Game extends Component {
 
   }
 
+  FindMonsterById = (MonsterId) => {
+
+    let {Monsters} = this.state
+
+    return Monsters.filter(Monster => {
+      return Monster.Id === MonsterId
+    })
+
+  }
+
+  FindSingleMonsterInSurroundings = (Actor) => {
+
+    let {MonsterMap} = this.state
+
+    let Targets = [].concat(
+      MonsterMap[Actor.y-1].slice(Actor.x-1, Actor.x+2),
+      MonsterMap[Actor.y].slice(Actor.x-1, Actor.x+2),
+      MonsterMap[Actor.y+1].slice(Actor.x-1, Actor.x+2),
+    ).filter(MapObject => {
+      return MapObject !== Empty
+    })
+
+    if (Targets.length > 0) {
+      return this.FindMonsterById(Targets[0])
+    }
+
+    return false
+
+  }
+
   CastSpellFromKeyboard = (SpellNumber) => {
 
     let {Player} = this.state
 
-    let SpellName = Object.keys(Player.SpellBook.Spells)[Number(SpellNumber)]
+    let SpellName = Object.keys(Player.SpellBook.Spells)[Number(SpellNumber-1)]
 
     if (!SpellName) return false
 
@@ -2807,8 +2837,6 @@ class Game extends Component {
         Modifier = UtilityAssets.MaxSpellLevel/Spell.Level
       }
 
-      console.log(Spell)
-
       // attempt to cast the spell
       if (this.AbilityCheck(Caster.Intelligence, Modifier)) {
 
@@ -2824,8 +2852,9 @@ class Game extends Component {
         // Attack
         else if (Spell.Type === "Attack") {
 
-          // Default Target: whatever is in front of the caster
-          if (!Spell.Target) {
+          // Default Target: whatever monster is in front of the caster
+          // and Adjacent Targets: whatever monster is in front of the caster and then an monster adjacent to this monster (and so on, until the max number of targets is reached)
+          if (!Spell.Target || Spell.Target === "Adjacent") {
 
             let targetCoordinates = {
               x: Caster.x + UtilityAssets.DirectionsOffset[Caster.Facing].x,
@@ -2848,15 +2877,54 @@ class Game extends Component {
             }
             else {
 
-              if (!this.MonsterTakeDamage(TargetMonster[0], this.RandomIntegerFromRange(Spell.Damage.Min, Spell.Damage.Max))) {
+              let Damage = this.RandomIntegerFromRange(Spell.Damage.Min, Spell.Damage.Max)
+
+              if (!this.MonsterTakeDamage(TargetMonster[0], Damage)) {
                 NoMessageUpdate = true
+              }
+
+              if (Spell.Vampiric) {
+                Caster.Health += Damage
+              }
+
+              // adjacent-spell only
+              if (Spell.Target === "Adjacent") {
+
+                if (Spell.MaxTargets) {
+
+                  let MonsterInCenter = TargetMonster[0]
+                  let TargetHit = 0
+
+                  while (TargetHit < Spell.MaxTargets-1 && MonsterInCenter) {
+
+                    let Target = this.FindSingleMonsterInSurroundings(MonsterInCenter)
+
+                    console.log(
+                      "target hit:",TargetHit,
+                      "\nmonster in center:", MonsterInCenter,
+                      "\nnew target:",Target
+                    )
+
+                    if (Target) {
+
+                      this.MonsterTakeDamage(Target[0], this.RandomIntegerFromRange(Spell.Damage.Min, Spell.Damage.Max))
+
+                      TargetHit++
+
+                    }
+
+                    MonsterInCenter = Target[0]
+
+                  }
+
+                }
               }
 
             }
 
           }
 
-          // Target Area
+          // Target Area: whatever monsters are surrounding the caster (until the maximum number of targets has been reached)
           else if (Spell.Target === "Surrounding") {
 
             let Targets = [].concat(
@@ -2869,11 +2937,9 @@ class Game extends Component {
 
             let TargetHit = 0
 
-            while (TargetHit < Math.min((Spell.MaxTarget || 8), Targets.length)) {
+            while (TargetHit < Math.min((Spell.MaxTargets || 8), Targets.length)) {
 
-              let Target = Monsters.filter(Monster => {
-                return Monster.Id === Targets[TargetHit]
-              })
+              let Target = this.FindMonsterById(Targets[TargetHit])
 
               this.MonsterTakeDamage(Target[0], this.RandomIntegerFromRange(Spell.Damage.Min, Spell.Damage.Max))
 
@@ -2889,9 +2955,6 @@ class Game extends Component {
             }
 
           }
-
-          // Adjacent Targets
-          
 
         }
 

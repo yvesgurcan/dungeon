@@ -1,6 +1,6 @@
 import StaticAssets from "./StaticAssets.js"
 
-const Debug = false
+const Debug = true
 
 export const DynamicAssets = {
 
@@ -79,9 +79,25 @@ export const DynamicAssets = {
     Monsters: [
         {...StaticAssets.Bestiary.Orc,
             x: 12,
+            y: 13,
+            Id: 2,
+            Name: "cell keeper1",
+            Damage: {Min: 1, Max: 4},
+            Stationary: true,
+        },
+        {...StaticAssets.Bestiary.Orc,
+            x: 12,
             y: 14,
             Id: 1,
-            Name: "cell keeper",
+            Name: "cell keeper2",
+            Damage: {Min: 1, Max: 4},
+            Stationary: true,
+        },
+        {...StaticAssets.Bestiary.Orc,
+            x: 12,
+            y: 15,
+            Id: 3,
+            Name: "cell keeper3",
             Damage: {Min: 1, Max: 4},
             Stationary: true,
         },
