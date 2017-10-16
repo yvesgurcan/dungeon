@@ -237,7 +237,7 @@ class ItemImageBlock extends Component {
     return (
       <View style={Styles.ItemImageBlock}>
           <ItemImage {... this.props} />
-        <View style={Styles.ItemImageBlockNumber}>
+        <View style={Styles.ItemImageBlockNumber} hidden={!this.props.showIndex}>
           {this.props.index}
         </View>
       </View>
@@ -274,6 +274,7 @@ class SpellBook extends Component {
         <ItemImageBlock
           key={index}
           index={index <= 99 ? ("0" + Number(index+1)).slice(-2) : index}
+          showIndex
           image={(Spell && Spell.Image) || null}
           name={(Spell && Spell.Name) || null}
           item={Spell}
@@ -2650,8 +2651,9 @@ class Game extends Component {
 
     // Vitals
     Player.MaxHealth = Player.Health = this.CalculateMaxHealth(Player)
-    Player.MaxMana = Player.Mana = this.CalculateMaxMana(Player) * 999
+    Player.MaxMana = Player.Mana = this.CalculateMaxMana(Player)
     Player.MaxStamina = Player.Stamina = this.CalculateMaxStamina(Player)
+    Player.Stamina = 0    
     Player.MaxWeight = this.CalculateMaxWeight(Player)    
 
     if (saveState) {
@@ -3385,8 +3387,6 @@ class Game extends Component {
       BackpackWeight += LootWeight
     }
 
-    console.log(BackpackWeight, Player.MaxWeight)
-
     if (BackpackWeight <= Player.MaxWeight) {
       Backpack.Weight = BackpackWeight
       this.setState({Backpack: Backpack})
@@ -3811,7 +3811,37 @@ class Game extends Component {
 
     }
 
-    // remove item from inventory
+    Backpack.Items = this.RemoveItemFromInventory(Item)
+
+    this.setState({Player: Player, Backpack: Backpack}, function() {
+      this.CheckInventoryWeight()
+    })
+
+  }
+
+  ConsumeFood = (Item) => {
+    
+    let {Player, Backpack} = this.state
+
+    let RestoreStamina = Number(Item.RestoreStamina)
+    let Bonus = RestoreStamina + this.RandomIntegerFromRange(Math.floor(RestoreStamina/-4),Math.ceil(RestoreStamina/4))
+
+    console.log(Bonus)
+
+    Player.Stamina = Math.min(Player.MaxStamina, Player.Stamina + Bonus)
+
+    Backpack.Items = this.RemoveItemFromInventory(Item)
+
+    this.setState({Player: Player, Backpack: Backpack}, function() {
+      this.CheckInventoryWeight()
+    })
+
+  }
+
+  RemoveItemFromInventory = (Item) => {
+
+    let {Backpack} = this.state
+
     let UpdatedBackpackItems = []
 
     Backpack.Items.map((BackpackItem, index) => {
@@ -3821,9 +3851,7 @@ class Game extends Component {
       return null
     })
 
-    Backpack.Items = UpdatedBackpackItems
-
-    this.setState({Player: Player, Backpack: Backpack})
+    return UpdatedBackpackItems
 
   }
 
