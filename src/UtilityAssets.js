@@ -1,3 +1,5 @@
+import React, { Component } from "react"
+
 let MobileScreenBreakpoint = 376
 let TabletScreenBreakpoint = 769
 
@@ -54,6 +56,17 @@ export const UtilityAssets = {
             ],
             NoTarget: "A beautiful ray of magic appears, and crashes on a wall in front of you.",
             NoTargetArea: "A wave of energy emanated from you, but nobody got hit.",
+        },
+        Food: {
+            // random
+            Yummy: <span>Crunch crunch... Now <i>that</i> was yummy.</span>,
+            Delicious: "Delicious! Totally worth it.",
+            Diet: "Look at you. A perfect, healthy diet.",
+            NotAsGoodAsMyMom: "Not as good as my mom's, but that will do.",
+            // more or less needed
+            Rest: "Aaaaaah! That was a good meal. How about a little nap now?",
+            More: "Well, you could definitively use some more of that.",
+            NotNecessary: "Well, that wasn't really necessary, was it?",
         }
 
     },

@@ -752,7 +752,7 @@ class Story extends Component {
     return (
       <View style={Styles.Story} hidden={currentEvent.length > 0 && currentText === ""}>
         <Block style={Styles.Paragraph}>
-          {currentText.split("\n").map((paragraph, index) => {
+          {typeof currentText.split !== "function" ? currentText : currentText.split("\n").map((paragraph, index) => {
             return <Text key={index}>{paragraph}<LineBreak/></Text>
           })}
         </Block>
@@ -2605,9 +2605,12 @@ class Game extends Component {
     }.bind(this), 2000)
   }
 
-  SetText = (Message) => {
-    if (Message) {
-      this.setState({ currentText: Message})
+  SetText = (Message = "", Image = null) => {
+    if (Message || Image) {
+      this.setState({
+        currentText: Message,
+        currentTextImage: Image
+      })
     }
   }
 
@@ -2646,14 +2649,13 @@ class Game extends Component {
     Player.Constitution = this.GeneratePlayerAbilityScore()
     Player.Strength = this.GeneratePlayerAbilityScore()
     Player.Dexterity = this.GeneratePlayerAbilityScore()
-    Player.Intelligence = 50 || this.GeneratePlayerAbilityScore()
+    Player.Intelligence = this.GeneratePlayerAbilityScore()
     Player.ArmorClass = 10 + this.AbilityModifier(Player.Dexterity)
 
     // Vitals
     Player.MaxHealth = Player.Health = this.CalculateMaxHealth(Player)
     Player.MaxMana = Player.Mana = this.CalculateMaxMana(Player)
     Player.MaxStamina = Player.Stamina = this.CalculateMaxStamina(Player)
-    Player.Stamina = 0    
     Player.MaxWeight = this.CalculateMaxWeight(Player)    
 
     if (saveState) {
@@ -2682,33 +2684,33 @@ class Game extends Component {
   CalculateMaxWeight = (Player) => {
     // level up
     if (Player.MaxWeight) {
-      return Math.ceil(Player.Strength * 1.75)
+      return Math.ceil(Player.Strength * 1.6)
     }
     // new player
     else {
-      return Math.ceil(Player.Strength * 1.75)
+      return Math.ceil(Player.Strength * 1.6)
     }
   }
 
   CalculateMaxHealth = (Player) => {
     // level up
     if (Player.MaxHealth) {
-      return Math.ceil((Player.MaxHealth * 1.1))
+      return Math.ceil((Player.Constitution * 2.5) + (Player.Strength/5))
     }
     // new player
     else {
-      return Math.ceil((Player.Constitution * 2.25) + (Player.Strength/3) + this.RandomIntegerFromRange(-3, 5))
+      return Math.ceil((Player.Constitution * 2.5) + (Player.Strength/5))
     }
   }
 
   CalculateMaxMana = (Player) => {
     // level up
     if (Player.MaxMana) {
-      return Math.ceil(Player.MaxMana * 1.1)
+      return Math.ceil((Player.Intelligence) * 1.85)
     }
     // new player
     else {
-     return Math.ceil((Player.Intelligence) * 1.45) + this.RandomIntegerFromRange(-4, 3)
+     return Math.ceil((Player.Intelligence) * 1.85)
     }
   }
 
@@ -3827,11 +3829,29 @@ class Game extends Component {
     let RestoreStamina = Number(Item.RestoreStamina)
     let Bonus = RestoreStamina + this.RandomIntegerFromRange(Math.floor(RestoreStamina/-4),Math.ceil(RestoreStamina/4))
 
-    console.log(Bonus)
-
     Player.Stamina = Math.min(Player.MaxStamina, Player.Stamina + Bonus)
 
     Backpack.Items = this.RemoveItemFromInventory(Item)
+
+    let Messages = [
+      UtilityAssets.Messages.Food.Yummy,
+      UtilityAssets.Messages.Food.Delicious,
+      UtilityAssets.Messages.Food.Diet,
+      UtilityAssets.Messages.Food.NotAsGoodAsMyMom,
+    ]
+
+    if (Player.Stamina/Player.MaxStamina < 0.4) {
+      Messages.push(UtilityAssets.Messages.Food.Rest)
+    }
+    
+    if (Player.Stamina/Player.MaxStamina < 0.7) {
+      Messages.push(UtilityAssets.Messages.Food.More)
+    }
+    else if (Player.Stamina/Player.MaxStamina > 0.9) {
+      Messages.push(UtilityAssets.Messages.Food.NotNecessary)
+    }
+
+    this.SetText(Messages[this.RandomInteger(Messages.length)])
 
     this.setState({Player: Player, Backpack: Backpack}, function() {
       this.CheckInventoryWeight()
