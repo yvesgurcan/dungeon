@@ -147,6 +147,7 @@ export const UtilityAssets = {
         Cleric: {
             Name: "cleric",
             MaxHealthBoost: 8,
+            
         },
         Fighter: {
             Name: "fighter",

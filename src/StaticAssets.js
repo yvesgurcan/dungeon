@@ -544,6 +544,7 @@ export const StaticAssets = {
         },
         MirrorShield: {
             Level: 10,
+            ManaCost: 36,
             Name: "mirror shield",
             Image: "spell_mirror_shield",
             Type: Bonus,
@@ -556,6 +557,7 @@ export const StaticAssets = {
         },
         Berserk: {
             Level: 15,
+            ManaCost: 41,
             Name: "berserk",
             Image: "spell_berserk",
             Type: Bonus,
@@ -570,6 +572,7 @@ export const StaticAssets = {
         // Motion Modifiers
         Confusion: {
             Level: 5,
+            ManaCost: 17,
             Name: "confusion",
             Image: "spell_confusion",
             Type: Motion,
@@ -578,6 +581,7 @@ export const StaticAssets = {
         },
         Entangle: {
             Level: 9,
+            ManaCost: 18,
             Name: "entangle",
             Image: "spell_entangle",
             Type: Motion,
@@ -586,6 +590,7 @@ export const StaticAssets = {
         },
         ShockingGrasp: {
             Level: 13,
+            ManaCost: 25,
             Name: "shocking grasp",
             Image: "spell_shocking_grasp",
             Type: Motion,
@@ -595,6 +600,7 @@ export const StaticAssets = {
         },
         Earthquake: {
             Level: 16,
+            ManaCost: 69,
             Name: "earthquake",
             Image: "spell_earthquake",
             Type: Motion,
@@ -606,30 +612,35 @@ export const StaticAssets = {
         // Other
         CreateFood: {
             Level: 3,
+            ManaCost: 9,
             Name: "create food",
             Image: "spell_create_food",
             Effect: "CreateFood",
         },
         DetectMonster: {
             Level: 4,
+            ManaCost: 12,
             Name: "detect monster",
             Image: "spell_detect_monster",
             Effect: "DetectMonster",
         },
         FindTraps: {
             Level: 7,
+            ManaCost: 14,
             Name: "Find traps",
             Image: "spell_find_traps",
             Effect: "FindTraps",
         },
         MistyStep: {
             Level: 11,
+            ManaCost: 23,
             Name: "misty step",
             Image: "spell_misty_step",
             Effect: "MistyStep",
         },
         Invisibility: {
             Level: 14,
+            ManaCost: 78,
             Name: "invisibility",
             Image: "spell_invisibility",
             Effect: "Invisibility",
@@ -637,7 +648,7 @@ export const StaticAssets = {
         },
         GlobeOfInvulnerability: {
             Level: 17,
-            ManaCost: 10,
+            ManaCost: 89,
             Name: "globe of invulnerability",
             Image: "spell_globe_of_invulnerability",
             Effect: "Invulnerability",
