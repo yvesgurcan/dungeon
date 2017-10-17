@@ -35,6 +35,9 @@ When you attack a monster or when a monster is close enough to you, it will try 
 
 You can also cast [spells](#spellbook) that will injure your enemies or affect their combat skills.
 
+### Experience
+
+As you slay the monsters in this dungeon, you gain experience (XP). If you amass enough XP, your character level up. Reaching the next level means that you can learn new spells and gain bonuses that make you stronger, wiser, more vigorous or more dexterous (your choice).
 
 ### Backpack
 
