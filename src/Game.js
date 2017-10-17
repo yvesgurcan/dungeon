@@ -2093,10 +2093,13 @@ class Game extends Component {
         gridColumnEnd: ContactColumnStop,
         gridRowStart: MessageRow,
         fontWeight: "bold",
-        background: "#EDC39D",
         border: HUDBorder,
         padding: HUDBlockPadding,
         borderRadius: HUDBorderRadius,
+        background: "rgb(255,232,186)", /* Old browsers */
+        background: "-moz-linear-gradient(135deg, rgb(255,232,186) 7%, rgb(247,229,150) 17%, rgb(255,217,130) 34%, rgb(255,202,130) 75%)", /* FF3.6-15 */
+        background: "-webkit-linear-gradient(135deg, rgb(255,232,186) 7%, rgb(247,229,150) 17%, rgb(255,217,130) 34%, rgb(255,202,130) 75%)", /* Chrome10-25,Safari5.1-6 */
+        background: "linear-gradient(135deg, rgb(255,232,186) 7%, rgb(247,229,150) 17%, rgb(255,217,130) 34%, rgb(255,202,130) 75%)", /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */   
       },
       // Story
       StoryBlock: {
@@ -2105,9 +2108,12 @@ class Game extends Component {
         gridRowStart: MainRow,
         userSelect: "text",
         border: HUDBorder,
-        padding: HUDBlockPadding,
-        background: "#EDC39D",
+        padding: HUDBlockPadding,    
         borderRadius: HUDBorderRadius,
+        background: "rgb(255,232,186)", /* Old browsers */
+        background: "-moz-linear-gradient(45deg, rgb(255,232,186) 25%,rgb(252,216,159) 45%,rgb(255,202,130) 68%,rgb(234,204,121) 93%)", /* FF3.6-15 */
+        background: "-webkit-linear-gradient(45deg, rgb(255,232,186) 25%,rgb(252,216,159) 45%,rgb(255,202,130) 68%,rgb(234,204,121) 93%)", /* Chrome10-25,Safari5.1-6 */
+        background: "linear-gradient(45deg, rgb(255,232,186) 25%,rgb(252,216,159) 45%,rgb(255,202,130) 68%,rgb(234,204,121) 93%)", /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */   
       },
       StoryContainer: {
         maxHeight: StoryRowHeight - HUDPadding * 2 + px,
@@ -2131,6 +2137,10 @@ class Game extends Component {
         borderRadius: HUDBorderRadius,
         // otherwise, the map will be distorted
         minWidth: "300px",
+        background: "rgb(255,232,186)", /* Old browsers */
+        background: "-moz-linear-gradient(135deg, rgb(255,202,130) 25%,rgb(255,217,130) 49%,rgb(247,229,150) 73%,rgb(255,232,186) 93%)", /* FF3.6-15 */
+        background: "-webkit-linear-gradient(135deg, rgb(255,202,130) 25%,rgb(255,217,130) 49%,rgb(247,229,150) 73%,rgb(255,232,186) 93%)", /* Chrome10-25,Safari5.1-6 */
+        background: "linear-gradient(135deg, rgb(255,202,130) 25%,rgb(255,217,130) 49%,rgb(247,229,150) 73%,rgb(255,232,186) 93%)", /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */  
       },
       MapRow: {
         height: WallBoxHeight + px,

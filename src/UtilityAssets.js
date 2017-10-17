@@ -42,8 +42,6 @@ export const UtilityAssets = {
             Mana3: "Nice!",
         },
         Spell: {
-            NotReady: "You are not ready to cast another spell yet."
-            ,
             UnsufficientLevel: "You have not mastered the secrets of this spell yet."
             ,
             NotEnoughMana: [

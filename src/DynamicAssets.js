@@ -116,7 +116,7 @@ export const DynamicAssets = {
 
                 Where are you?
                 
-                You try to examine your surroundings, but your eyes can't see a thing. It's too dark. Night time? There's no star in the sky.
+                You try to examine your surroundings, but your eyes can't see a thing. It's too dark. Night time? There's not a star in the sky.
                 
                 A terrible stench makes you belch. What the hell is this putrid smell?! You must be in some sort of small enclosed space--a basement, without any window.
                 
