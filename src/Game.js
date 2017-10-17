@@ -735,11 +735,11 @@ class Controls extends Component {
 /* story and events */
 
 // a brief message that provides feedback on the user's actions (example: "you can't go there")
-class Message extends Component {
+class EventLog extends Component {
   render() {
     return (
-      <View style={Styles.Message}>
-        {this.props.permanentMessage || this.props.currentMessage}
+      <View style={Styles.EventLog}>
+        {!this.props.EventLog ? null : this.props.EventLog.map(LogEntry => {return <View>{LogEntry}</View>})}
       </View>
     )
   }
@@ -815,7 +815,7 @@ class Event extends Component {
 
   GenerateEventText = () => {
 
-    let {currentEvent, Stationary} = this.props
+    let {currentEvent, Player} = this.props
     let loot = false
     let lootIsEmpty = true
     let lootCount = 0
@@ -827,7 +827,7 @@ class Event extends Component {
         loot = true
 
         if (event.items.length === 0) {
-          if (!Stationary) {
+          if (!Player.Stationary) {
             event.Name = "empty " + event.Name.replace("empty ","")
           }
         }
@@ -835,7 +835,7 @@ class Event extends Component {
           lootIsEmpty = false
         }
 
-        if (Stationary && event.items.length === 0) {
+        if (Player.Stationary && event.items.length === 0) {
           return (
             <Text key={index}>
               <Text>The  </Text>
@@ -1539,6 +1539,8 @@ class Game extends Component {
     initState.Player.Backpack = 
     this.CheckInventoryWeightAtStartUp(initState.Backpack)
 
+    initState.Turn = 0
+
     this.state = initState
 
     
@@ -1679,16 +1681,16 @@ class Game extends Component {
 
     // grid rows
     let TitleRow = 1
-    let MessageRow = 2
     let ContactRow = 2
-    let MainRow = 3
+    let MessageRow = 3
+    let MainRow = 4
     let MapRow = MainRow
-    let ControlRow = 4
-    let ControlRow2 = 4
-    let InventoryRow = 5
-    let SpellBookRow = 6
-    let AccessoriesStartRow = 5
-    let AccessoriesStopRow = 7
+    let ControlRow = 5
+    let ControlRow2 = 5
+    let InventoryRow = 6
+    let SpellBookRow = 7
+    let AccessoriesStartRow = 6
+    let AccessoriesStopRow = 8
 
     if (MobileScreen) {
 
@@ -2023,20 +2025,22 @@ class Game extends Component {
         gridTemplateRows:
           // title (row1)
           "auto " +
-          // message (row2)
+          // contact (row2)
           (MobileScreen ? "25px " : "") +
           "25px " +
-          // story/map (row3)
+          // event log (row3)
+          Number(HUDPadding * 2 + 18 * UtilityAssets.MaxEventLogEntries) + px + " " +
+          // story/map (row4)
           StoryRowHeight + px + " " +
-          // story (row4)
+          // story (row5)
           (MobileScreen ? StoryRowHeight + px + " " : "") +
-          // controls (row5)
+          // controls (row6a)
           "auto " +
-          // controls2 (row5b)
+          // controls2 (row6b)
           (MobileScreen ? "auto " : "") +
-          // inventory
+          // inventory (row7)
           "auto " +
-          // spell book 
+          // spell book (row8)
           "auto "
         ,
       },
@@ -2070,14 +2074,6 @@ class Game extends Component {
         color: "inherit",
         textDecoration: "none",
       },
-      // Top-screen Message
-      Message: {
-        gridColumnStart: FirstColumn,
-        gridColumnEnd: ContactColumnStop,
-        gridRowStart: MessageRow,
-        minHeight: "25px",
-        fontWeight: "bold",
-      },
       // Contact info
       Contact: {
         gridColumnStart: ContactColumnStart,
@@ -2090,6 +2086,17 @@ class Game extends Component {
         height: "30px",
         verticalAlign: "middle",
         marginLeft: "2px",
+      },
+      // Top-screen Messages
+      EventLog: {
+        gridColumnStart: FirstColumn,
+        gridColumnEnd: ContactColumnStop,
+        gridRowStart: MessageRow,
+        fontWeight: "bold",
+        background: "#EDC39D",
+        border: HUDBorder,
+        padding: HUDBlockPadding,
+        borderRadius: HUDBorderRadius,
       },
       // Story
       StoryBlock: {
@@ -2607,10 +2614,20 @@ class Game extends Component {
 
   SetText = (Message = "", Image = null) => {
     if (Message || Image) {
-      this.setState({
-        currentText: Message,
-        currentTextImage: Image
-      })
+
+    let {EventLog} = this.state
+
+    if (!EventLog) {
+      EventLog = []
+    }
+
+    EventLog.push(Message)
+
+    if (EventLog.length > UtilityAssets.MaxEventLogEntries) {
+      EventLog = EventLog.slice(EventLog.length - UtilityAssets.MaxEventLogEntries, EventLog.length)
+    }
+
+      this.setState({EventLog: EventLog})
     }
   }
 
@@ -2810,10 +2827,10 @@ class Game extends Component {
 
   CastSpell = (Spell, Caster) => {
 
-    let {Player, Monsters, MonsterMap} = this.state
+    let {Player, Monsters, MonsterMap, Turn} = this.state
 
     if (!Caster) {
-      Caster = Player    
+      Caster = Player
     }
 
     // enough mana
@@ -2827,6 +2844,14 @@ class Game extends Component {
         }
 
         return false
+      }
+
+
+      if (Caster === Player) {
+        Caster.Stamina--
+        Caster.SpellActionUsed = true
+        Turn++
+        this.setState({Turn: Turn})
       }
 
       // ability score spell-level modifier
@@ -2972,6 +2997,9 @@ class Game extends Component {
             this.SetText(UtilityAssets.PartialMessages.SpellSuccess + Spell.Name + UtilityAssets.PartialMessages.Period)            
           }
 
+          // move enemies
+          this.MoveMonsters()
+
         }
 
         return true
@@ -3003,7 +3031,7 @@ class Game extends Component {
   MovePlayer = (Direction) => {
 
     let {Player, WallMap, MonsterMap, NoClip} = this.state
-    let UpdateState = true
+    let FullStateUpdate = true
 
     if (Player.Dead) return false
 
@@ -3041,7 +3069,7 @@ class Game extends Component {
 
     // player is attacking a monster
     if (MonsterMap[targetCoordinates.y][targetCoordinates.x] !== Empty) {
-      UpdateState = false
+      FullStateUpdate = false
       this.AttackMonster(targetCoordinates)
 
     }
@@ -3064,37 +3092,52 @@ class Game extends Component {
     // the monsters get to move now
     this.MoveMonsters(targetCoordinates)
 
-    // update state
-    if (UpdateState) {
+    let {Turn, DiscoveryMap, currentEvent, currentText, currentTextImage} = this.state
 
-      // init
-      let State = this.state
-      
-      // update the data about which parts of the map were revealed, in order to show loot containers on the map
-      State.DiscoveryMap = this.UpdateDiscoveryMap(targetCoordinates)
+    // update the state partially
+    Player.Facing = Direction
 
-      // add containers to the list of events
-      State.currentEvent = this.CheckLootContainers(targetCoordinates)
+    // update various parts of the state
+    if (FullStateUpdate) {
 
-      if (State.currentEvent.length > 0) {
-        State.currentText = ""
-        State.currentTextImage = null
+      // add 1 turn to the game state
+      Turn++
+
+      // update which parts of the map were revealed
+      DiscoveryMap = this.UpdateDiscoveryMap(targetCoordinates)
+
+      // add loot containers to the list of events if applicable
+      currentEvent = this.CheckLootContainers(targetCoordinates)
+
+      // reset messages when an event occur (loot container)
+      if (currentEvent.length > 0) {
+        currentText = ""
+        currentTextImage = null
       }
 
       // save the new coordinates
-      State.Player.x = targetCoordinates.x
-      State.Player.y = targetCoordinates.y
-      State.Player.Facing = Direction
-      State.Stationary = false
+      Player.x = targetCoordinates.x
+      Player.y = targetCoordinates.y
+
+      Player.Stationary = false
 
       // update player stats
-      State.Player.Stamina = State.Player.Stamina - 1
-
-      this.setState(State)
+      Player.Stamina--
       
-      this.UpdateText(targetCoordinates)
 
     }
+
+    this.setState({
+      Player: Player,
+      Turn: Turn,
+      currentEvent: currentEvent,
+      currentText: currentText,
+      currentTextImage: currentTextImage,
+      DiscoveryMap: DiscoveryMap,
+    })
+
+    // update story text
+    this.UpdateText(targetCoordinates)
     
   }
 
@@ -3271,7 +3314,7 @@ class Game extends Component {
     let LootCount = 0
     let FreeSlots = Backpack.maxItems - Backpack.Items.length
 
-    let LootEvents = currentEvent.map(event => {
+    let LootEvents = currentEvent.filter(event => {
       if (event.eventType === "loot") {
         if (event.items) {
           LootCount += event.items.length
@@ -3305,8 +3348,9 @@ class Game extends Component {
           return null
         })
 
-        Backpack.Items = Backpack.Items.concat(loot)        
-        this.setState({Backpack: Backpack, Stationary: true})
+        Backpack.Items = Backpack.Items.concat(loot)
+        Player.Stationary = true    
+        this.setState({Backpack: Backpack, Player: Player})
 
         this.SetText("You gathered all the loot in your backpack.")
              
@@ -3345,7 +3389,8 @@ class Game extends Component {
 
           this.setState({Backpack: Backpack}, function() {
             matchLootContainer.items.splice(lootIndex,1)
-            this.setState({currentEvent: this.state.currentEvent, Stationary: true})
+            Player.Stationary = true
+            this.setState({currentEvent: this.state.currentEvent, Player: Player})
           })
 
       }
@@ -3382,6 +3427,9 @@ class Game extends Component {
     }
 
     if (Loot) {
+
+      console.log(Loot)
+
       let LootWeight = Loot.map(Item => {
         return Item !== null ? Item.Weight || 0 : 0
       }).reduce((sum, val) => sum + val)
@@ -3441,7 +3489,7 @@ class Game extends Component {
   }
 
   MoveMonsters = (PlayerNewCoordinates) => {
-    let {Monsters} = this.state
+    let {Monsters, Player} = this.state
 
     if (Monsters) {
 
@@ -3451,7 +3499,7 @@ class Game extends Component {
 
       MovingMonsters.map(Monster => {
         if (Monster.ChasePlayer) {
-          return this.ChasePlayer(Monster, PlayerNewCoordinates)
+          return this.ChasePlayer(Monster, PlayerNewCoordinates || {x: Player.x, y: Player.y})
         }
         else {
           return this.Patrol(Monster)
@@ -3924,7 +3972,7 @@ class Game extends Component {
         <Header/>
         {/* row 2 */}
         <Contact/>
-        <Message {... this} {... this.state} />
+        <EventLog {... this} {... this.state} />
         {/* row 3 */}
         <StoryBlock>
           <Story {... this.state} />

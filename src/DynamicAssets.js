@@ -1,6 +1,6 @@
 import StaticAssets from "./StaticAssets.js"
 
-const Debug = true
+const Debug = false
 
 export const DynamicAssets = {
 
@@ -45,12 +45,17 @@ export const DynamicAssets = {
         maxItems: 28,
         Weight: 0,
         Items: [
-            StaticAssets.Items.Bow,
-            StaticAssets.UniqueItems.IronKey,
-            StaticAssets.UniqueItems.BrassKey,
-            StaticAssets.UniqueItems.OrnateKey,
             {...StaticAssets.Items.HealthPotion, Id: 1},
+            {...StaticAssets.Items.HealthPotion, Id: 12},
+            {...StaticAssets.Items.HealthPotion, Id: 13},
+            {...StaticAssets.Items.HealthPotion, Id: 14},
             {...StaticAssets.Items.ManaPotion, Id: 3},
+            {...StaticAssets.Items.ManaPotion, Id: 6},
+            {...StaticAssets.Items.ManaPotion, Id: 7},
+            {...StaticAssets.Items.ManaPotion, Id: 8},
+            {...StaticAssets.Items.ManaPotion, Id: 9},
+            {...StaticAssets.Items.ManaPotion, Id: 10},
+            {...StaticAssets.Items.ManaPotion, Id: 11},
             {...StaticAssets.Items.StaminaPotion, Id: 4},
             StaticAssets.Items.AmuletOfMagic,
             StaticAssets.Items.SkullAmulet,
@@ -61,13 +66,6 @@ export const DynamicAssets = {
             StaticAssets.Items.EntangleScroll,
             StaticAssets.Items.DetectMonsterScroll,
             {...StaticAssets.Items.Apple, Id: 5},
-            {...StaticAssets.Items.Sausage, Id: 6},
-            {...StaticAssets.Items.Chicken, Id: 7},
-            {...StaticAssets.Items.Bread, Id: 8},
-            {...StaticAssets.Items.Berries, Id: 9},
-            {...StaticAssets.Items.Leaf, Id: 10},
-            {...StaticAssets.Items.Grapes, Id: 12},
-            StaticAssets.Items.Rock,
         ],
     },
 

@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React from "react"
 
 let MobileScreenBreakpoint = 376
 let TabletScreenBreakpoint = 769
@@ -42,6 +42,8 @@ export const UtilityAssets = {
             Mana3: "Nice!",
         },
         Spell: {
+            NotReady: "You are not ready to cast another spell yet."
+            ,
             UnsufficientLevel: "You have not mastered the secrets of this spell yet."
             ,
             NotEnoughMana: [
@@ -62,7 +64,7 @@ export const UtilityAssets = {
             Yummy: <span>Crunch crunch... Now <i>that</i> was yummy.</span>,
             Delicious: "Delicious! Totally worth it.",
             Diet: "Look at you. A perfect, healthy diet.",
-            NotAsGoodAsMyMom: "Not as good as my mom's, but that will do.",
+            NotAsGoodAsMyMom: "Not as good as your mom's, but that will do.",
             // more or less needed
             Rest: "Aaaaaah! That was a good meal. How about a little nap now?",
             More: "Well, you could definitively use some more of that.",
@@ -86,6 +88,8 @@ export const UtilityAssets = {
     MaxPlayerLevel: 20
     ,
     MaxSpellLevel: 18
+    ,
+    MaxEventLogEntries: 5
     ,
 
     // how much experience does the player need to reach a level
