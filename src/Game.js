@@ -1714,7 +1714,7 @@ class Game extends Component {
     let MapStartColumn = StoryEndColumn
     let MapEndColumn = LastColumn
 
-    let ContactColumnStart = 7
+    let ContactColumnStart = 6
     let ContactColumnStop = LastColumn
 
     let PlayerWeaponStartColumn = FirstColumn
@@ -1987,10 +1987,12 @@ class Game extends Component {
       },
       // In-Game Grid
       Game: {
+        margin: "0 auto",
+        width: MobileScreen ? "270px" : TabletScreen ? "650px" : "790px",
         userSelect: "none",
         cursor: "pointer",
         display: "grid",
-        gridGap: "10px",
+        // gridGap: "10px",
         gridTemplateColumns:
           MobileScreen ?
             // column1-10
@@ -2027,7 +2029,7 @@ class Game extends Component {
           "auto " +
           // contact (row2)
           (MobileScreen ? "25px " : "") +
-          "25px " +
+          "30px " +
           // event log (row3)
           Number(HUDPadding * 2 + 18 * UtilityAssets.MaxEventLogEntries) + px + " " +
           // story/map (row4)
@@ -2050,7 +2052,8 @@ class Game extends Component {
         gridColumnEnd: LastColumn,
         gridRowStart: TitleRow,
         textAlign: "center",
-        fontFamily: "UnifrakturMaguntia, cursive"
+        fontFamily: "UnifrakturMaguntia, cursive",
+        color: "white",
       },
       H1: {
         margin: "0px",
@@ -2081,11 +2084,14 @@ class Game extends Component {
         gridRowStart: ContactRow,
         textAlign: (MobileScreen ? "center" : "right"),
         paddingLeft: (MobileScreen ? "30px" : null),
+        color: "white",
       },
       GitHubLogo: {
         height: "30px",
         verticalAlign: "middle",
-        marginLeft: "2px",
+        marginLeft: "5px",
+        backgroundColor: "white",
+        borderRadius: "25px",
       },
       // Top-screen Messages
       EventLog: {
@@ -2095,12 +2101,8 @@ class Game extends Component {
         fontWeight: "bold",
         border: HUDBorder,
         padding: HUDBlockPadding,
-        borderRadius: HUDBorderRadius,
         overflow: "auto",
-        background: "rgb(255,232,186)", /* Old browsers */
-        background: "-moz-linear-gradient(135deg, rgb(255,232,186) 7%, rgb(247,229,150) 17%, rgb(255,217,130) 34%, rgb(255,202,130) 75%)", /* FF3.6-15 */
-        background: "-webkit-linear-gradient(135deg, rgb(255,232,186) 7%, rgb(247,229,150) 17%, rgb(255,217,130) 34%, rgb(255,202,130) 75%)", /* Chrome10-25,Safari5.1-6 */
-        background: "linear-gradient(135deg, rgb(255,232,186) 7%, rgb(247,229,150) 17%, rgb(255,217,130) 34%, rgb(255,202,130) 75%)", /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */   
+        backgroundImage: "url(graphics/hud/parchment.jpg)",
       },
       // Story
       StoryBlock: {
@@ -2108,13 +2110,11 @@ class Game extends Component {
         gridColumnEnd: StoryEndColumn,
         gridRowStart: MainRow,
         userSelect: "text",
-        border: HUDBorder,
+        borderRight: HUDBorder,
+        borderLeft: HUDBorder,
         padding: HUDBlockPadding,    
-        borderRadius: HUDBorderRadius,
-        background: "rgb(255,232,186)", /* Old browsers */
-        background: "-moz-linear-gradient(45deg, rgb(255,232,186) 25%,rgb(252,216,159) 45%,rgb(255,202,130) 68%,rgb(234,204,121) 93%)", /* FF3.6-15 */
-        background: "-webkit-linear-gradient(45deg, rgb(255,232,186) 25%,rgb(252,216,159) 45%,rgb(255,202,130) 68%,rgb(234,204,121) 93%)", /* Chrome10-25,Safari5.1-6 */
-        background: "linear-gradient(45deg, rgb(255,232,186) 25%,rgb(252,216,159) 45%,rgb(255,202,130) 68%,rgb(234,204,121) 93%)", /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */   
+        backgroundImage: "url(graphics/hud/parchment.jpg)",
+        backgroundPosition: "0 -106px", 
       },
       StoryContainer: {
         maxHeight: StoryRowHeight - HUDPadding * 2 + px,
@@ -2132,16 +2132,13 @@ class Game extends Component {
         gridColumnStart: MapStartColumn,
         gridColumnEnd: MapEndColumn,
         gridRowStart: MapRow,
-        border: HUDBorder,
         overflow: "hidden",
         padding: HUDBlockPadding,
-        borderRadius: HUDBorderRadius,
+        borderRight: HUDBorder,
+        backgroundImage: "url(graphics/hud/parchment.jpg)",
+        backgroundPosition: "-514px -106px", 
         // otherwise, the map will be distorted
-        minWidth: "300px",
-        background: "rgb(255,232,186)", /* Old browsers */
-        background: "-moz-linear-gradient(135deg, rgb(255,202,130) 25%,rgb(255,217,130) 49%,rgb(247,229,150) 73%,rgb(255,232,186) 93%)", /* FF3.6-15 */
-        background: "-webkit-linear-gradient(135deg, rgb(255,202,130) 25%,rgb(255,217,130) 49%,rgb(247,229,150) 73%,rgb(255,232,186) 93%)", /* Chrome10-25,Safari5.1-6 */
-        background: "linear-gradient(135deg, rgb(255,202,130) 25%,rgb(255,217,130) 49%,rgb(247,229,150) 73%,rgb(255,232,186) 93%)", /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */  
+        minWidth: "290px",
       },
       MapRow: {
         height: WallBoxHeight + px,
@@ -2288,8 +2285,10 @@ class Game extends Component {
         gridColumnEnd: LastColumn,
         gridRowStart: ControlRow,
         gridRowEnd: ControlRow2+1,
-        border: HUDBorder,
-        borderRadius: HUDBorderRadius,
+        borderTop: HUDBorder,
+        borderLeft: HUDBorder,
+        borderRight: HUDBorder,
+        backgroundImage: "url(graphics/hud/metal.jpg)",
       },
       // Name and Ready Weapons
       PlayerStats0: {
@@ -2298,6 +2297,7 @@ class Game extends Component {
         gridRowStart: ControlRow,
         padding: HUDBlockPadding,
         textAlign: "center",
+        color: "white",
       },
       // Player Vital Stats
       PlayerVitals: {
@@ -2305,6 +2305,7 @@ class Game extends Component {
         gridColumnEnd: PlayerVitalsStopColumn,
         gridRowStart: ControlRow,
         padding: HUDBlockPadding,
+        color: "white",
       },
       // Directional Arrows
       ArrowContainer: {
@@ -2331,24 +2332,28 @@ class Game extends Component {
         gridColumnEnd: PlayerAttributesStopColumn,
         gridRowStart: ControlRow2,
         padding: HUDBlockPadding,
+        color: "white",
       },
       PlayerStats2Block1: {
         gridColumnStart: PlayerAttributesStartColumn,
         gridColumnEnd: PlayerAttributesBlockSeparation,
         gridRowStart: ControlRow2,
         padding: HUDBlockPadding,
+        color: "white",
       },
       PlayerStats2Block2: {
         gridColumnStart: PlayerAttributesBlockSeparation,
         gridColumnEnd: PlayerAttributesStopColumn,
         gridRowStart: ControlRow2,
         padding: HUDBlockPadding,
+        color: "white",
       },
       PlayerStats3: {
         gridColumnStart: PlayerStat2StartColumn,
         gridColumnEnd: PlayerStat2StopColumn,
         gridRowStart: ControlRow2,
         padding: HUDBlockPadding,
+        color: "white",
       },
       PlayerStat: {
         paddingBottom: "5px",
@@ -2448,9 +2453,11 @@ class Game extends Component {
         gridColumnStart: InventoryStartColumn,
         gridColumnEnd: InventoryStopColumn,
         gridRowStart: InventoryRow,
+        borderLeft: HUDBorder,
         padding: HUDBlockPadding2,
-        border: HUDBorder,
-        borderRadius: HUDBorderRadius,
+        backgroundImage: "url(graphics/hud/metal.jpg)",
+        backgroundPosition: "0 -128px",
+        color: "white",
       },
 
       InventoryLabel: {
@@ -2461,9 +2468,12 @@ class Game extends Component {
         gridColumnStart: SpellBookStartColumn,
         gridColumnEnd: SpellBookStopColumn,
         gridRowStart: SpellBookRow,
+        borderLeft: HUDBorder,
+        borderBottom: HUDBorder,
         padding: HUDBlockPadding2,
-        border: HUDBorder,
-        borderRadius: HUDBorderRadius,
+        backgroundImage: "url(graphics/hud/metal.jpg)",
+        backgroundPosition: "0 -248px", 
+        color: "white",
       },
       SpellBookLabel: {
         marginBottom: HUDBlockPadding2,
@@ -2474,9 +2484,11 @@ class Game extends Component {
         gridColumnEnd: AccessoriesStopColumn,
         gridRowStart: AccessoriesStartRow,
         gridRowEnd: AccessoriesStopRow,
+        borderRight: HUDBorder,
+        borderBottom: HUDBorder,
         padding: HUDBlockPadding,
-        border: HUDBorder,
-        borderRadius: HUDBorderRadius,
+        backgroundImage: "url(graphics/hud/metal.jpg)",
+        backgroundPosition: "-604px -128px", 
       },
       // Item Image
       ItemImageBlock: {
