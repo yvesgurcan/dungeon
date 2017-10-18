@@ -738,8 +738,8 @@ class Controls extends Component {
 class EventLog extends Component {
   render() {
     return (
-      <View style={Styles.EventLog}>
-        {!this.props.EventLog ? null : this.props.EventLog.map(LogEntry => {return <View>{LogEntry}</View>})}
+      <View style={Styles.EventLog} id="EventLog">
+        {!this.props.EventLog ? null : this.props.EventLog.map((LogEntry, Index) => {return <View key={Index}>{LogEntry}</View>})}
       </View>
     )
   }
@@ -2096,6 +2096,7 @@ class Game extends Component {
         border: HUDBorder,
         padding: HUDBlockPadding,
         borderRadius: HUDBorderRadius,
+        overflow: "auto",
         background: "rgb(255,232,186)", /* Old browsers */
         background: "-moz-linear-gradient(135deg, rgb(255,232,186) 7%, rgb(247,229,150) 17%, rgb(255,217,130) 34%, rgb(255,202,130) 75%)", /* FF3.6-15 */
         background: "-webkit-linear-gradient(135deg, rgb(255,232,186) 7%, rgb(247,229,150) 17%, rgb(255,217,130) 34%, rgb(255,202,130) 75%)", /* Chrome10-25,Safari5.1-6 */
@@ -2633,8 +2634,11 @@ class Game extends Component {
 
     EventLog.push(Message)
 
-    if (EventLog.length > UtilityAssets.MaxEventLogEntries) {
-      EventLog = EventLog.slice(EventLog.length - UtilityAssets.MaxEventLogEntries, EventLog.length)
+    let HtmlElement = document.getElementById("EventLog")
+    HtmlElement.scrollTop = HtmlElement.scrollHeight
+
+    if (EventLog.length > 20) {
+      EventLog = EventLog.slice(EventLog.length - 20, EventLog.length)
     }
 
       this.setState({EventLog: EventLog})
