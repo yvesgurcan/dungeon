@@ -667,7 +667,16 @@ export const StaticAssets = {
         },
         Boar: {
         },
-        
+        BlackBear: {
+        },
+        SwarmOfWasps: {
+        },
+        Kobold: {
+        },
+        Gnoll: {
+        },
+        Dryad: {
+        },
         // Undead
         Imp: {
             Name: "imp",
