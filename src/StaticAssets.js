@@ -677,6 +677,14 @@ export const StaticAssets = {
         },
         Dryad: {
         },
+        
+        // Subterranean
+        Bullywug: {
+        },
+        Lizard:{
+        },
+        
+        
         // Undead
         Imp: {
             Name: "imp",
