@@ -658,6 +658,16 @@ export const StaticAssets = {
     },
 
     Bestiary: {
+        // Forest
+        WinterWolf: {
+        },
+        Hyena: {
+        },
+        PoisonousSnake: {
+        },
+        Boar: {
+        },
+        
         // Undead
         Imp: {
             Name: "imp",
