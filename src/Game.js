@@ -267,7 +267,11 @@ class SpellBook extends Component {
 
   // no need to re-render spell book if it has not changed
   shouldComponentUpdate(nextProps) {
-    if (nextProps.Player.SpellBook !== this.props.Player.SpellBook) {
+    if (
+      nextProps.MobileScreen !== this.props.MobileScreen
+      || nextProps.TabletScreen !== this.props.TabletScreen
+      || nextProps.Player.SpellBook !== this.props.Player.SpellBook
+    ) {
       if (Debug) console.log("re-render: spellbook")
       return true
     }
@@ -321,7 +325,11 @@ class Inventory extends Component {
   
   // no need to re-render backpack content if it has not changed
   shouldComponentUpdate(nextProps) {
-    if (nextProps.Backpack !== this.props.Backpack) {
+    if (
+      nextProps.MobileScreen !== this.props.MobileScreen
+      || nextProps.TabletScreen !== this.props.TabletScreen
+      || nextProps.Backpack !== this.props.Backpack
+    ) {
       if (Debug) console.log("re-render: backpack")
       return true
     }
@@ -422,7 +430,9 @@ class Arrow extends Component {
   // no need to re-render the arrow if its style has not changed
   shouldComponentUpdate(nextProps, nextState) {
     if (
-      nextState.style !== this.state.style
+      nextProps.MobileScreen !== this.props.MobileScreen
+      || nextProps.TabletScreen !== this.props.TabletScreen
+      || nextState.style !== this.state.style
       || nextProps.arrowStyle !== this.props.arrowStyle
     ) {
       if (Debug) console.log("re-render: directional arrow")
@@ -631,7 +641,11 @@ class WeaponReadyBlock extends Component {
 
   // no need to re-render gear if it has not changed
   shouldComponentUpdate(nextProps) {
-    if (nextProps.Gear !== this.props.Gear) {
+    if (
+      nextProps.MobileScreen !== this.props.MobileScreen
+      || nextProps.TabletScreen !== this.props.TabletScreen
+      || nextProps.Gear !== this.props.Gear
+    ) {
       if (Debug) console.log("re-render: weapon ready")
       return true
     }
@@ -658,7 +672,9 @@ class PlayerStats0 extends Component {
   // no need to re-render stats if player has not changed
   shouldComponentUpdate(nextProps) {
     if (
-      nextProps.Player.Name !== this.props.Player.Name
+      nextProps.MobileScreen !== this.props.MobileScreen
+      || nextProps.TabletScreen !== this.props.TabletScreen
+      || nextProps.Player.Name !== this.props.Player.Name
       ||  nextProps.Gear !== this.props.Gear
     ) {
       if (Debug) console.log("re-render: player name and gear")
@@ -688,7 +704,10 @@ class PlayerVitals extends Component {
   // no need to re-render stats if player has not changed
   shouldComponentUpdate(nextProps) {
     if (
-      nextProps.Player.Health !== this.props.Player.Health
+      
+      nextProps.MobileScreen !== this.props.MobileScreen
+      || nextProps.TabletScreen !== this.props.TabletScreen
+      || nextProps.Player.Health !== this.props.Player.Health
       || nextProps.Player.MaxHealth !== this.props.Player.MaxHealth
       || nextProps.Player.Mana !== this.props.Player.Mana
       || nextProps.Player.MaxMana !== this.props.Player.MaxMana
@@ -728,7 +747,9 @@ class PlayerAttributesStacked extends Component {
   // no need to re-render stats if player has not changed
   shouldComponentUpdate(nextProps) {
     if (
-      nextProps.Player.Level !== this.props.Player.Level
+      nextProps.MobileScreen !== this.props.MobileScreen
+      || nextProps.TabletScreen !== this.props.TabletScreen
+      || nextProps.Player.Level !== this.props.Player.Level
       || nextProps.Player.XP !== this.props.Player.XP
       || nextProps.Player.Strength !== this.props.Player.Strength
       || nextProps.Player.Dexterity !== this.props.Player.Dexterity
@@ -774,7 +795,9 @@ class PlayerStats2Block1 extends Component {
   // no need to re-render stats if player has not changed
   shouldComponentUpdate(nextProps) {
     if (
-      nextProps.Player.Level !== this.props.Player.Level
+      nextProps.MobileScreen !== this.props.MobileScreen
+      || nextProps.TabletScreen !== this.props.TabletScreen
+      || nextProps.Player.Level !== this.props.Player.Level
       || nextProps.Player.XP !== this.props.Player.XP
       || nextProps.Player.ArmorClass !== this.props.Player.ArmorClass
     ) {
@@ -808,7 +831,9 @@ class PlayerStats2Block2 extends Component {
   // no need to re-render stats if player has not changed
   shouldComponentUpdate(nextProps) {
     if (
-      nextProps.Player.Strength !== this.props.Player.Strength
+      nextProps.MobileScreen !== this.props.MobileScreen
+      || nextProps.TabletScreen !== this.props.TabletScreen
+      || nextProps.Player.Strength !== this.props.Player.Strength
       || nextProps.Player.Dexterity !== this.props.Player.Dexterity
       || nextProps.Player.Constitution !== this.props.Player.Constitution
       || nextProps.Player.Intelligence !== this.props.Player.Intelligence
@@ -846,7 +871,9 @@ class PlayerStats3 extends Component {
   // no need to re-render stats if player has not changed
   shouldComponentUpdate(nextProps) {
     if (
-      nextProps.Player.Level !== this.props.Player.Level
+      nextProps.MobileScreen !== this.props.MobileScreen
+      || nextProps.TabletScreen !== this.props.TabletScreen
+      || nextProps.Player.Level !== this.props.Player.Level
       || nextProps.Player.XP !== this.props.Player.XP
       || nextProps.Player.ArmorClass !== this.props.Player.ArmorClass
     ) {
@@ -894,7 +921,11 @@ class EventLog extends Component {
 
   // no need to re-render the log if it has not changed
   shouldComponentUpdate(nextProps) {
-    if (nextProps.EventLog !== this.props.EventLog) {
+    if (
+      nextProps.MobileScreen !== this.props.MobileScreen
+      || nextProps.TabletScreen !== this.props.TabletScreen
+      || nextProps.EventLog !== this.props.EventLog
+    ) {
       if (Debug) console.log("re-render: event log")
       return true
     }
@@ -917,7 +948,11 @@ class Story extends Component {
 
   // no need to re-render story text if it has not changed
   shouldComponentUpdate(nextProps) {
-    if (nextProps.currentText !== this.props.currentText) {
+    if (  
+      nextProps.MobileScreen !== this.props.MobileScreen
+      || nextProps.TabletScreen !== this.props.TabletScreen
+      || nextProps.currentText !== this.props.currentText
+    ) {
       if (Debug) console.log("re-render: story")
       return true
     }
@@ -1000,7 +1035,9 @@ class Event extends Component {
   // no need to re-render event if it has not changed and the player has not taken the loot yet
   shouldComponentUpdate(nextProps) {
     if (
-      nextProps.currentEvent !== this.props.currentEvent
+      nextProps.MobileScreen !== this.props.MobileScreen
+      || nextProps.TabletScreen !== this.props.TabletScreen
+      || nextProps.currentEvent !== this.props.currentEvent
       || nextProps.Player !== this.props.Player
     ) {
       if (Debug) console.log("re-render: event")
@@ -1118,7 +1155,9 @@ class Map extends Component {
   // no need to re-render the map if the player or monsters haven't moved, or the area revealed has not changed
   shouldComponentUpdate(nextProps) {
     if (
-      nextProps.Player.x !== this.props.Player.x
+      nextProps.MobileScreen !== this.props.MobileScreen
+      || nextProps.TabletScreen !== this.props.TabletScreen
+      || nextProps.Player.x !== this.props.Player.x
       || nextProps.Player.y !== this.props.Player.y
       || nextProps.Monsters !== this.props.Monsters
       || nextProps.WallMapRevealed !== this.props.WallMapRevealed
@@ -1654,7 +1693,13 @@ class CreateCharacterHeader extends Component {
 class Contact extends Component {
 
   // content is static
-  shouldComponentUpdate() {
+  shouldComponentUpdate(nextProps) {
+    if (
+        nextProps.MobileScreen !== this.props.MobileScreen
+        || nextProps.TabletScreen !== this.props.TabletScreen
+      ) {
+      return true
+    }
     return false
   }
 
@@ -1687,9 +1732,16 @@ class Contact extends Component {
 class Header extends Component {
 
   // content is static
-  shouldComponentUpdate() {
+  shouldComponentUpdate(nextProps) {
+    if (
+        nextProps.MobileScreen !== this.props.MobileScreen
+        || nextProps.TabletScreen !== this.props.TabletScreen
+      ) {
+      return true
+    }
     return false
   }
+
   render() {
     return (
       <View style={Styles.Header}>
@@ -1872,916 +1924,925 @@ class Game extends Component {
 
     MobileScreen = UtilityAssets.ScreenSize.MobileScreen()
     TabletScreen = UtilityAssets.ScreenSize.TabletScreen()
-    
-    WallMapVisibleRange = MobileScreen ? UtilityAssets.WallMapVisibleRangeMobileScreen : UtilityAssets.WallMapVisibleRange
 
-    /* presets */
+    if (MobileScreen !== this.state.MobileScreen || TabletScreen !== this.state.TabletScreen) {
 
-    // grid columns
-    const FirstColumn = 1
-    const LastColumn = 10
+      WallMapVisibleRange = MobileScreen ? UtilityAssets.WallMapVisibleRangeMobileScreen : UtilityAssets.WallMapVisibleRange
 
-    // grid rows
-    const StoryRowHeight = 245
+      /* presets */
 
-    // various
-    const px = "px"
+      // grid columns
+      const FirstColumn = 1
+      const LastColumn = 10
 
-    const HUDPadding = 8
-    const HUDBlockPadding = HUDPadding + px
-    const HUDBlockPadding2 = HUDPadding/2.5 + px
-    const HUDBorder = "1px solid black"
-    const HUDStatBarHeight = "10px"
+      // grid rows
+      const StoryRowHeight = 245
 
-    const ButtonNormalBackground = "lightgray"
-    const ButtonHoverBackground = "darkgray"
-    const ButtonClickBackground = "gray"
+      // various
+      const px = "px"
 
-    const MapBackgroundColor = "white"
+      const HUDPadding = 8
+      const HUDBlockPadding = HUDPadding + px
+      const HUDBlockPadding2 = HUDPadding/2.5 + px
+      const HUDBorder = "1px solid black"
+      const HUDStatBarHeight = "10px"
 
-    const BorderThickness = 1.5
-    const BorderColor = "black"
-    const WallLine = BorderThickness + "px solid " + BorderColor
+      const ButtonNormalBackground = "lightgray"
+      const ButtonHoverBackground = "darkgray"
+      const ButtonClickBackground = "gray"
 
-    const WallBoxWidth = 15
-    const WallBoxHeight = 15
+      const MapBackgroundColor = "white"
 
-    const WallBoxWidthWithBorder = WallBoxWidth - BorderThickness
-    const WallBoxHeightWithBorder = WallBoxHeight - BorderThickness
+      const BorderThickness = 1.5
+      const BorderColor = "black"
+      const WallLine = BorderThickness + "px solid " + BorderColor
 
-    const PillarBoxWidth = WallBoxWidth - 5
-    const PillarBoxHeight = WallBoxHeight - 5
+      const WallBoxWidth = 15
+      const WallBoxHeight = 15
 
-    const WallBoxWidthCentered = WallBoxWidthWithBorder/2
-    const WallBoxHeightCentered = WallBoxHeightWithBorder/2
+      const WallBoxWidthWithBorder = WallBoxWidth - BorderThickness
+      const WallBoxHeightWithBorder = WallBoxHeight - BorderThickness
 
-    const DoorLine = Math.max(1,BorderThickness-BorderThickness/2) + "px solid " + BorderColor
-    const DoorColor = "lightsteelblue"
-    const DoorLongSize = 7
-    const DoorBoxLongSizeCentered = DoorLongSize-3
+      const PillarBoxWidth = WallBoxWidth - 5
+      const PillarBoxHeight = WallBoxHeight - 5
 
-    /* responsiveness */
+      const WallBoxWidthCentered = WallBoxWidthWithBorder/2
+      const WallBoxHeightCentered = WallBoxHeightWithBorder/2
 
-    // grid rows
-    let TitleRow = 1
-    let ContactRow = 2
-    let MessageRow = 3
-    let MainRow = 4
-    let MapRow = MainRow
-    let ControlRow = 5
-    let ControlRow2 = 5
-    let InventoryRow = 6
-    let SpellBookRow = 7
-    let AccessoriesStartRow = 6
-    let AccessoriesStopRow = 8
+      const DoorLine = Math.max(1,BorderThickness-BorderThickness/2) + "px solid " + BorderColor
+      const DoorColor = "lightsteelblue"
+      const DoorLongSize = 7
+      const DoorBoxLongSizeCentered = DoorLongSize-3
 
-    if (MobileScreen) {
+      /* responsiveness */
 
-      TitleRow = 1
-      ContactRow = 2
-      MessageRow = 3
-      MainRow = 4
-      MapRow = 5
-      ControlRow = 6
-      ControlRow2 = 7
-      InventoryRow = 8
-      SpellBookRow = 9
-      AccessoriesStartRow = 10
-      AccessoriesStopRow = 11
+      // grid rows
+      let TitleRow = 1
+      let ContactRow = 2
+      let MessageRow = 3
+      let MainRow = 4
+      let MapRow = MainRow
+      let ControlRow = 5
+      let ControlRow2 = 5
+      let InventoryRow = 6
+      let SpellBookRow = 7
+      let AccessoriesStartRow = 6
+      let AccessoriesStopRow = 8
 
-    }
+      if (MobileScreen) {
 
-    // grid columns
-    let StoryStartColumn = FirstColumn
-    let StoryEndColumn = 6
-    let MapStartColumn = StoryEndColumn
-    let MapEndColumn = LastColumn
+        TitleRow = 1
+        ContactRow = 2
+        MessageRow = 3
+        MainRow = 4
+        MapRow = 5
+        ControlRow = 6
+        ControlRow2 = 7
+        InventoryRow = 8
+        SpellBookRow = 9
+        AccessoriesStartRow = 10
+        AccessoriesStopRow = 11
 
-    let ContactColumnStart = 6
-    let ContactColumnStop = LastColumn
+      }
 
-    let PlayerWeaponStartColumn = FirstColumn
-    let PlayerWeaponStopColumn = 2
-    let PlayerVitalsStartColumn = PlayerWeaponStopColumn
-    let PlayerVitalsStopColumn = 3
-    let DirectionalArrowStartColumn = PlayerVitalsStopColumn
-    let DirectionalArrowStopColumn = 4
-    let PlayerActionStartColumn = DirectionalArrowStopColumn
-    let PlayerActionStopColumn = 6
+      // grid columns
+      let StoryStartColumn = FirstColumn
+      let StoryEndColumn = 6
+      let MapStartColumn = StoryEndColumn
+      let MapEndColumn = LastColumn
 
-    let PlayerStat2StartColumn = PlayerActionStopColumn
-    let PlayerStat2StopColumn = 7
+      let ContactColumnStart = 6
+      let ContactColumnStop = LastColumn
 
-    let PlayerAttributesStartColumn = PlayerStat2StopColumn
-    let PlayerAttributesBlockSeparation = PlayerAttributesStartColumn
-    let PlayerAttributesStopColumn = LastColumn
+      let PlayerWeaponStartColumn = FirstColumn
+      let PlayerWeaponStopColumn = 2
+      let PlayerVitalsStartColumn = PlayerWeaponStopColumn
+      let PlayerVitalsStopColumn = 3
+      let DirectionalArrowStartColumn = PlayerVitalsStopColumn
+      let DirectionalArrowStopColumn = 4
+      let PlayerActionStartColumn = DirectionalArrowStopColumn
+      let PlayerActionStopColumn = 6
 
-    let InventoryStartColumn = FirstColumn
-    let InventoryStopColumn = 7
+      let PlayerStat2StartColumn = PlayerActionStopColumn
+      let PlayerStat2StopColumn = 7
 
-    let SpellBookStartColumn = FirstColumn
-    let SpellBookStopColumn = 7
+      let PlayerAttributesStartColumn = PlayerStat2StopColumn
+      let PlayerAttributesBlockSeparation = PlayerAttributesStartColumn
+      let PlayerAttributesStopColumn = LastColumn
 
-    let AccessoriesStartColumn = 7
-    let AccessoriesStopColumn = LastColumn
+      let InventoryStartColumn = FirstColumn
+      let InventoryStopColumn = 7
 
-    if (MobileScreen) {
+      let SpellBookStartColumn = FirstColumn
+      let SpellBookStopColumn = 7
 
-      StoryStartColumn = FirstColumn
-      StoryEndColumn = LastColumn
-      MapStartColumn = FirstColumn
-      MapEndColumn = LastColumn
+      let AccessoriesStartColumn = 7
+      let AccessoriesStopColumn = LastColumn
 
-      ContactColumnStart = FirstColumn
-      ContactColumnStop = LastColumn
+      if (MobileScreen) {
 
-      PlayerWeaponStartColumn = FirstColumn
-      PlayerWeaponStopColumn = 4
-      PlayerVitalsStartColumn = PlayerWeaponStopColumn
-      PlayerVitalsStopColumn = 7
-      DirectionalArrowStartColumn = PlayerVitalsStopColumn
-      DirectionalArrowStopColumn = 9
+        StoryStartColumn = FirstColumn
+        StoryEndColumn = LastColumn
+        MapStartColumn = FirstColumn
+        MapEndColumn = LastColumn
 
-      PlayerActionStartColumn = FirstColumn
-      PlayerActionStopColumn = 4
-      PlayerAttributesStartColumn = PlayerActionStopColumn
-      PlayerAttributesStopColumn = 4
-      PlayerAttributesBlockSeparation = 7
-      PlayerAttributesStopColumn = LastColumn
+        ContactColumnStart = FirstColumn
+        ContactColumnStop = LastColumn
 
-      InventoryStartColumn = FirstColumn
-      InventoryStopColumn = LastColumn
+        PlayerWeaponStartColumn = FirstColumn
+        PlayerWeaponStopColumn = 4
+        PlayerVitalsStartColumn = PlayerWeaponStopColumn
+        PlayerVitalsStopColumn = 7
+        DirectionalArrowStartColumn = PlayerVitalsStopColumn
+        DirectionalArrowStopColumn = 9
 
-      SpellBookStartColumn = FirstColumn
-      SpellBookStopColumn = LastColumn
+        PlayerActionStartColumn = FirstColumn
+        PlayerActionStopColumn = 4
+        PlayerAttributesStartColumn = PlayerActionStopColumn
+        PlayerAttributesStopColumn = 4
+        PlayerAttributesBlockSeparation = 7
+        PlayerAttributesStopColumn = LastColumn
 
-      AccessoriesStartColumn = FirstColumn
-      AccessoriesStopColumn = LastColumn
+        InventoryStartColumn = FirstColumn
+        InventoryStopColumn = LastColumn
 
-    }
-    else if (TabletScreen) {
+        SpellBookStartColumn = FirstColumn
+        SpellBookStopColumn = LastColumn
 
-      PlayerVitalsStartColumn = PlayerWeaponStopColumn
-      PlayerVitalsStopColumn = 4
-      DirectionalArrowStartColumn = PlayerVitalsStopColumn
-      DirectionalArrowStopColumn = 5
-      PlayerActionStartColumn = DirectionalArrowStopColumn
-      PlayerActionStopColumn = 6
-      PlayerAttributesStartColumn = PlayerActionStopColumn
-      PlayerAttributesBlockSeparation = 7
-      PlayerAttributesStopColumn = LastColumn
+        AccessoriesStartColumn = FirstColumn
+        AccessoriesStopColumn = LastColumn
 
-    }
+      }
+      else if (TabletScreen) {
 
-    /* style object */
+        PlayerVitalsStartColumn = PlayerWeaponStopColumn
+        PlayerVitalsStopColumn = 4
+        DirectionalArrowStartColumn = PlayerVitalsStopColumn
+        DirectionalArrowStopColumn = 5
+        PlayerActionStartColumn = DirectionalArrowStopColumn
+        PlayerActionStopColumn = 6
+        PlayerAttributesStartColumn = PlayerActionStopColumn
+        PlayerAttributesBlockSeparation = 7
+        PlayerAttributesStopColumn = LastColumn
 
-    Styles = {
-      Hidden: {
-          display: "none",
-      },
-      // debug
-      Placeholder: {
-        background: "red",
-        width: WallBoxWidth + px,
-        height: WallBoxHeight + px,
-      },
-      // multi-use
-      Paragraph: {
-        display: "block",
-        paddingBottom: "13px",
-      },
-      // input fields
-      TextEdit: {
-        border: "none",
-        padding: "5px",
-        fontFamily: "inherit",
-        fontSize: "inherit",
-      },
-      TextEditFocus: {
-        border: "none",
-        padding: "5px",
-        outline: "none",
-        fontFamily: "inherit",
-        fontSize: "inherit",
-        textDecoration: "underline",
-      },
-      // input fields
-      TextEditCharacterName: {
-        border: "none",
-        padding: "5px",
-        fontFamily: "inherit",
-        fontSize: "inherit",
-        width: "120px",
-      },
-      TextEditCharacterNameFocus: {
-        border: "none",
-        padding: "5px",
-        outline: "none",
-        fontFamily: "inherit",
-        fontSize: "inherit",
-        textDecoration: "underline",
-        width: "120px",
-      },
-      // Create Player Grid
-      CreatePlayer: {
-        userSelect: "none",
-        cursor: "pointer",
-        display: "grid",
-        gridGap: "10px",
-        gridTemplateColumns:
-          MobileScreen ?
-          // column1-10
-          "repeat(10, 31px)"
-          :
-          TabletScreen ?
-          // column1-10
-          "repeat(10, 74.3px)"
-          :
-          // column1-10
-          "repeat(10, 88.6px)"
-        ,
-        gridTemplateRows:
-        // title (row1)
-        "auto " +
-        // contact (row2)
-        "25px " + 
-        // header (row3)
-        "auto" +
-        // body (row4)
-        "auto"
-        ,
-      },
-      CharacterHeader: {
-        gridColumnStart: FirstColumn,
-        gridColumnEnd: LastColumn,
-        gridRowStart: 3,
-      },
-      CharacterCreateName: {
-        gridRowStart: 4,
-        display: "grid",
-        // subgrid
-        gridTemplateColumns:
-        MobileScreen ?
-        // column1
-        "100px " +
-        "130px " +
-        // column2-10
-        "repeat(8, 31px)"
-        :
-        TabletScreen ?
-        // column1
-        "100px " +
-        "130px " +
-        // column2-10
-        "repeat(8, 74.3px)"
-        :
-        // column1
-        "100px " +
-        "130px " +
-        // column2-10
-        "repeat(8, 88.6px)"
-      ,
-      },
-      CharacterCreateBackground: {
-        gridColumnStart: 4,
-        gridColumnEnd: LastColumn,
-        gridRowStart: 4,
-        display: "grid",
-        // subgrid
-        gridTemplateColumns:
-        MobileScreen ?
-        // column1
-        "100px " +
-        "130px " +
-        // column2-10
-        "repeat(8, 31px)"
-        :
-        TabletScreen ?
-        // column1
-        "100px " +
-        "130px " +
-        // column2-10
-        "repeat(8, 74.3px)"
-        :
-        // column1
-        "100px " +
-        "130px " +
-        // column2-10
-        "repeat(8, 88.6px)"
-      ,
-      },
-      CharacterCreateView: {
-        gridColumnStart: FirstColumn,
-        gridColumnEnd: LastColumn,
-        gridRowStart: 5,
-        display: "grid",
-        // subgrid
-        gridTemplateColumns:
-        MobileScreen ?
-        // column1
-        "100px " +
-        "130px " +
-        // column2-10
-        "repeat(8, 31px)"
-        :
-        TabletScreen ?
-        // column1
-        "100px " +
-        "130px " +
-        // column2-10
-        "repeat(8, 74.3px)"
-        :
-        // column1
-        "100px " +
-        "130px " +
-        // column2-10
-        "repeat(8, 88.6px)"
-      ,
-      },
-      PropertyLabel: {
-        gridColumnStart: FirstColumn,
-        gridColumnEnd: FirstColumn,
-        padding: "2.5px",
-        textAlign: "right",
-        marginRight: "10px",
-      },
-      PropertyLabelForInput: {
-        gridColumnStart: FirstColumn,
-        gridColumnEnd: FirstColumn,
-        paddingTop: "5px",
-        textAlign: "right",
-        marginRight: "10px",
-      },
-      PropertyField: {
-        gridColumnStart: 2,
-        gridColumnEnd: 2,
-        padding: "2.5px",
-      },
-      PropertyFieldForInput: {
-        gridColumnStart: 2,
-        gridColumnEnd: 2,
-      },
-      RollAbilities: {
-        gridColumnStart: 2,
-      },
-      StartGame: {
-        gridColumnStart: FirstColumn,
-        gridColumnEnd: LastColumn,
-      },
-      // In-Game Grid
-      Game: {
-        margin: "0 auto",
-        width: MobileScreen ? "270px" : TabletScreen ? "650px" : "790px",
-        userSelect: "none",
-        cursor: "pointer",
-        display: "grid",
-        // gridGap: "10px",
-        gridTemplateColumns:
-          MobileScreen ?
+      }
+
+      /* style object */
+
+      Styles = {
+        Hidden: {
+            display: "none",
+        },
+        // debug
+        Placeholder: {
+          background: "red",
+          width: WallBoxWidth + px,
+          height: WallBoxHeight + px,
+        },
+        // multi-use
+        Paragraph: {
+          display: "block",
+          paddingBottom: "13px",
+        },
+        // input fields
+        TextEdit: {
+          border: "none",
+          padding: "5px",
+          fontFamily: "inherit",
+          fontSize: "inherit",
+        },
+        TextEditFocus: {
+          border: "none",
+          padding: "5px",
+          outline: "none",
+          fontFamily: "inherit",
+          fontSize: "inherit",
+          textDecoration: "underline",
+        },
+        // input fields
+        TextEditCharacterName: {
+          border: "none",
+          padding: "5px",
+          fontFamily: "inherit",
+          fontSize: "inherit",
+          width: "120px",
+        },
+        TextEditCharacterNameFocus: {
+          border: "none",
+          padding: "5px",
+          outline: "none",
+          fontFamily: "inherit",
+          fontSize: "inherit",
+          textDecoration: "underline",
+          width: "120px",
+        },
+        // Create Player Grid
+        CreatePlayer: {
+          userSelect: "none",
+          cursor: "pointer",
+          display: "grid",
+          gridGap: "10px",
+          gridTemplateColumns:
+            MobileScreen ?
             // column1-10
-            "repeat(10, 29px)"
-          :
-          TabletScreen ?
-            // column1
-            "110px " +
-            // column2-4
-            "40px " +
-            "50px " +
-            "70px " +
-            "70px " +
-            // column5
-            "120px " +
-            // column 6
-            "35px " + 
-            // column7-10
-            "repeat(3, 89px)"
-          :
-            // column1
-            "110px " +
-            // column2-6
-            "repeat(4, 91px) " +
-            // column7
-            "132px " +
-            // column 8
-            "30px " + 
-            // column9-10
-            "repeat(2, 86px)"
-        ,
-        gridTemplateRows:
+            "repeat(10, 31px)"
+            :
+            TabletScreen ?
+            // column1-10
+            "repeat(10, 74.3px)"
+            :
+            // column1-10
+            "repeat(10, 88.6px)"
+          ,
+          gridTemplateRows:
           // title (row1)
           "auto " +
           // contact (row2)
-          "30px " +
-          // event log (row3)
-          Number(HUDPadding * 2 + 18.5 * UtilityAssets.MaxEventLogEntries) + px + " " +
-          // story/map (row4)
-          StoryRowHeight + px + " " +
-          // story (row5)
-          (MobileScreen ? StoryRowHeight + px + " " : "") +
-          // controls (row6a)
-          "auto " +
-          // controls2 (row6b)
-          (MobileScreen ? "auto " : "") +
-          // inventory (row7)
-          "auto " +
-          // spell book (row8)
-          "auto "
+          "25px " + 
+          // header (row3)
+          "auto" +
+          // body (row4)
+          "auto"
+          ,
+        },
+        CharacterHeader: {
+          gridColumnStart: FirstColumn,
+          gridColumnEnd: LastColumn,
+          gridRowStart: 3,
+        },
+        CharacterCreateName: {
+          gridRowStart: 4,
+          display: "grid",
+          // subgrid
+          gridTemplateColumns:
+          MobileScreen ?
+          // column1
+          "100px " +
+          "130px " +
+          // column2-10
+          "repeat(8, 31px)"
+          :
+          TabletScreen ?
+          // column1
+          "100px " +
+          "130px " +
+          // column2-10
+          "repeat(8, 74.3px)"
+          :
+          // column1
+          "100px " +
+          "130px " +
+          // column2-10
+          "repeat(8, 88.6px)"
         ,
-      },
-      // page title
-      Header: {
-        gridColumnStart: FirstColumn,
-        gridColumnEnd: LastColumn,
-        gridRowStart: TitleRow,
-        textAlign: "center",
-        fontFamily: "UnifrakturMaguntia, cursive",
-        color: "white",
-      },
-      H1: {
-        margin: "0px",
-        fontStyle: "italic",
-  
-      },
-      H2: {
-        margin: "0px",
-      },
-      H3: {
-        margin: "0px",
-      },
-      H4: {
-        margin: "0px",
-      },
-      // links
-      Link: {
-        color: "inherit",
-      },
-      LinkHover: {
-        color: "inherit",
-        textDecoration: "none",
-      },
-      // Contact info
-      Contact: {
-        gridColumnStart: ContactColumnStart,
-        gridColumnEnd: LastColumn,
-        gridRowStart: ContactRow,
-        textAlign: (MobileScreen ? "center" : "right"),
-        paddingLeft: (MobileScreen ? "30px" : null),
-        color: "white",
-      },
-      GitHubLogo: {
-        height: "30px",
-        verticalAlign: "middle",
-        marginLeft: "5px",
-        backgroundColor: "white",
-        borderRadius: "25px",
-      },
-      // Top-screen Messages
-      EventLog: {
-        gridColumnStart: FirstColumn,
-        gridColumnEnd: ContactColumnStop,
-        gridRowStart: MessageRow,
-        fontWeight: "bold",
-        border: HUDBorder,
-        padding: HUDBlockPadding,
-        backgroundImage: "url(graphics/hud/parchment.jpg)",
-      },
-      EventLogContainer: {
-        maxHeight: 18.5 * UtilityAssets.MaxEventLogEntries + px,
-        overflow: "auto",
-      },
-      // Story
-      StoryBlock: {
-        gridColumnStart: StoryStartColumn,
-        gridColumnEnd: StoryEndColumn,
-        gridRowStart: MainRow,
-        userSelect: "text",
-        borderRight: HUDBorder,
-        borderLeft: HUDBorder,
-        padding: HUDBlockPadding,    
-        backgroundImage: "url(graphics/hud/parchment.jpg)",
-        backgroundPosition: "0 -106px", 
-      },
-      StoryContainer: {
-        maxHeight: StoryRowHeight - HUDPadding * 2 + px,
-        overflow: "auto",
-      },
-      Story: {
-        userSelect: "text",
-      },
-  
-      Event: {
-        userSelect: "text",
-      },
-      // Map
-      Map: {
-        gridColumnStart: MapStartColumn,
-        gridColumnEnd: MapEndColumn,
-        gridRowStart: MapRow,
-        overflow: "hidden",
-        padding: HUDBlockPadding,
-        borderRight: HUDBorder,
-        borderTop: MobileScreen ? HUDBorder : null,
-        backgroundImage: "url(graphics/hud/parchment.jpg)",
-        backgroundPosition: MobileScreen ? "0px -351px" : "-514px -106px", 
-        // otherwise, the map will be distorted
-        minWidth: MobileScreen ? null : "300px",
-      },
-      MapRow: {
-        height: WallBoxHeight + px,
-      },
-      MapObject: {
-        display: "inline-block",
-        width: WallBoxWidth + px,
-        height: WallBoxHeight + px,
-      },
-      Player: {
-        boxSizing: "border-box",
-        width: WallBoxWidth + px,
-        height: WallBoxHeight  + px,
-        background: "purple",
-        borderRadius: "50%",
-      },
-      Loot: {
-        boxSizing: "border-box",
-        margin: "1.5px",
-        width: WallBoxWidth - 3 + px,
-        height: WallBoxHeight - 3 + px,
-        background: "orange",
-        borderRadius: "50%",
-      },
-      Monster: {
-        boxSizing: "border-box",
-        margin: "1.5px",
-        width: WallBoxWidth - 3 + px,
-        height: WallBoxHeight - 3 + px,
-        background: "red",
-        borderRadius: "50%",
-      },
-      Wall: {
-        Pillar: {
-          boxSizing: "border-box",
-          marginTop: (WallBoxHeight - PillarBoxHeight)/2 + px,
-          marginRight: (WallBoxWidth - PillarBoxWidth)/2 + px,
-          marginBottom: (WallBoxHeight - PillarBoxHeight)/2 + px,
-          marginLeft: (WallBoxWidth - PillarBoxWidth)/2 + px,
-          width: PillarBoxWidth + px,
-          height: PillarBoxHeight + px,
-          background: "black",
         },
-        // Continous Walls
-        NorthToSouth: {
-          boxSizing: "border-box",
-          borderLeft: WallLine,
-          marginLeft: WallBoxWidthCentered + px,
-          width: BorderThickness + px,
-          height: WallBoxHeight + px,
+        CharacterCreateBackground: {
+          gridColumnStart: 4,
+          gridColumnEnd: LastColumn,
+          gridRowStart: 4,
+          display: "grid",
+          // subgrid
+          gridTemplateColumns:
+          MobileScreen ?
+          // column1
+          "100px " +
+          "130px " +
+          // column2-10
+          "repeat(8, 31px)"
+          :
+          TabletScreen ?
+          // column1
+          "100px " +
+          "130px " +
+          // column2-10
+          "repeat(8, 74.3px)"
+          :
+          // column1
+          "100px " +
+          "130px " +
+          // column2-10
+          "repeat(8, 88.6px)"
+        ,
         },
-        WestToEast: {
-          boxSizing: "border-box",
-          borderTop: WallLine,
-          marginTop: WallBoxHeightCentered + px,
-          width: WallBoxWidth + px,
-          height: BorderThickness + px,
-
+        CharacterCreateView: {
+          gridColumnStart: FirstColumn,
+          gridColumnEnd: LastColumn,
+          gridRowStart: 5,
+          display: "grid",
+          // subgrid
+          gridTemplateColumns:
+          MobileScreen ?
+          // column1
+          "100px " +
+          "130px " +
+          // column2-10
+          "repeat(8, 31px)"
+          :
+          TabletScreen ?
+          // column1
+          "100px " +
+          "130px " +
+          // column2-10
+          "repeat(8, 74.3px)"
+          :
+          // column1
+          "100px " +
+          "130px " +
+          // column2-10
+          "repeat(8, 88.6px)"
+        ,
         },
-        NorthToEast: {
-          boxSizing: "border-box",
-          borderLeft: WallLine,
-          borderBottom: WallLine,
-          marginLeft:  WallBoxHeightCentered + px,
-          width: WallBoxWidthCentered + BorderThickness + px,
-          height: WallBoxHeightCentered + BorderThickness + px,
+        PropertyLabel: {
+          gridColumnStart: FirstColumn,
+          gridColumnEnd: FirstColumn,
+          padding: "2.5px",
+          textAlign: "right",
+          marginRight: "10px",
         },
-        NorthToWest: {
-          boxSizing: "border-box",
-          borderRight: WallLine,
-          borderBottom: WallLine,
-          marginRight:  WallBoxHeightCentered + px,
-          width: WallBoxWidthCentered + BorderThickness + px,
-          height: WallBoxHeightCentered + BorderThickness + px,
+        PropertyLabelForInput: {
+          gridColumnStart: FirstColumn,
+          gridColumnEnd: FirstColumn,
+          paddingTop: "5px",
+          textAlign: "right",
+          marginRight: "10px",
         },
-        SouthToEast: {
-          boxSizing: "border-box",
-          borderLeft: WallLine,
-          borderTop: WallLine,
-          marginTop:  WallBoxHeightCentered + px,
-          marginLeft:  WallBoxHeightCentered + px,
-          width: WallBoxWidthCentered + BorderThickness + px,
-          height: WallBoxHeightCentered + BorderThickness + px,
+        PropertyField: {
+          gridColumnStart: 2,
+          gridColumnEnd: 2,
+          padding: "2.5px",
         },
-        SouthToWest: {
-          boxSizing: "border-box",
-          borderRight: WallLine,
-          borderTop: WallLine,
-          marginTop:  WallBoxHeightCentered + px,
-          marginRight:  WallBoxHeightCentered + px,
-          width: WallBoxWidthCentered + BorderThickness + px,
-          height: WallBoxHeightCentered + BorderThickness + px,
+        PropertyFieldForInput: {
+          gridColumnStart: 2,
+          gridColumnEnd: 2,
         },
-        // T-shaped walls
-        TShapedWallNSE: {
-          boxSizing: "border-box",
-          background: BorderColor,
-          marginLeft: WallBoxHeightCentered + px
+        RollAbilities: {
+          gridColumnStart: 2,
         },
-        NorthSouthAndEast: {
-          boxSizing: "border-box",
-          borderTop: WallBoxWidthCentered + "px solid " + MapBackgroundColor,
-          borderBottom: WallBoxWidthCentered + "px solid " + MapBackgroundColor,
-          marginLeft: BorderThickness + px,
-          width: WallBoxWidthCentered + BorderThickness + px,
-          height: WallBoxHeight + px,
-          background: BorderColor,
+        StartGame: {
+          gridColumnStart: FirstColumn,
+          gridColumnEnd: LastColumn,
         },
-        TShapedWallNSW: {
-          boxSizing: "border-box",
-          background: BorderColor,
-          marginRight: WallBoxHeightCentered + px
+        // In-Game Grid
+        Game: {
+          margin: "0 auto",
+          width: MobileScreen ? "270px" : TabletScreen ? "650px" : "790px",
+          userSelect: "none",
+          cursor: "pointer",
+          display: "grid",
+          // gridGap: "10px",
+          gridTemplateColumns:
+            MobileScreen ?
+              // column1-10
+              "repeat(10, 29px)"
+            :
+            TabletScreen ?
+              // column1
+              "110px " +
+              // column2-4
+              "40px " +
+              "50px " +
+              "70px " +
+              "70px " +
+              // column5
+              "120px " +
+              // column 6
+              "35px " + 
+              // column7-10
+              "repeat(3, 89px)"
+            :
+              // column1
+              "110px " +
+              // column2-6
+              "repeat(4, 91px) " +
+              // column7
+              "132px " +
+              // column 8
+              "30px " + 
+              // column9-10
+              "repeat(2, 86px)"
+          ,
+          gridTemplateRows:
+            // title (row1)
+            "auto " +
+            // contact (row2)
+            "30px " +
+            // event log (row3)
+            Number(HUDPadding * 2 + 18.5 * UtilityAssets.MaxEventLogEntries) + px + " " +
+            // story/map (row4)
+            StoryRowHeight + px + " " +
+            // story (row5)
+            (MobileScreen ? StoryRowHeight + px + " " : "") +
+            // controls (row6a)
+            "auto " +
+            // controls2 (row6b)
+            (MobileScreen ? "auto " : "") +
+            // inventory (row7)
+            "auto " +
+            // spell book (row8)
+            "auto "
+          ,
         },
-        NorthSouthAndWest: {
-          boxSizing: "border-box",
-          borderTop: WallBoxWidthCentered + "px solid " + MapBackgroundColor,
-          borderBottom: WallBoxWidthCentered + "px solid " + MapBackgroundColor,
-          width: WallBoxWidthCentered + px,
-          height: WallBoxHeight + px,
-          background: BorderColor,
+        // page title
+        Header: {
+          gridColumnStart: FirstColumn,
+          gridColumnEnd: LastColumn,
+          gridRowStart: TitleRow,
+          textAlign: "center",
+          fontFamily: "UnifrakturMaguntia, cursive",
+          color: "white",
         },
-      },
-      Door: {
-        NorthToSouth: {
-          boxSizing: "border-box",
-          border: DoorLine,
-          marginLeft: DoorBoxLongSizeCentered + px,
-          width: DoorLongSize + px,
-          height: WallBoxHeight + px,
-          background: DoorColor,
-        },
-        WestToEast: {
-          boxSizing: "border-box",
-          border: DoorLine,
-          marginTop: DoorBoxLongSizeCentered + px,
-          width: WallBoxHeight + px,
-          height: DoorLongSize + px,
-          background: DoorColor,
-        },
-      },
-      // Various Player Controls
-      ControlBlock: {
-        gridColumnStart: FirstColumn,
-        gridColumnEnd: LastColumn,
-        gridRowStart: ControlRow,
-        gridRowEnd: ControlRow2+1,
-        borderTop: HUDBorder,
-        borderLeft: HUDBorder,
-        borderRight: HUDBorder,
-        backgroundImage: "url(graphics/hud/metal.jpg)",
-      },
-      // Name and Ready Weapons
-      PlayerStats0: {
-        gridColumnStart: PlayerWeaponStartColumn,
-        gridColumnEnd: PlayerWeaponStopColumn,
-        gridRowStart: ControlRow,
-        padding: HUDBlockPadding,
-        textAlign: "center",
-        color: "white",
-      },
-      // Player Vital Stats
-      PlayerVitals: {
-        gridColumnStart: PlayerVitalsStartColumn,
-        gridColumnEnd: PlayerVitalsStopColumn,
-        gridRowStart: ControlRow,
-        padding: HUDBlockPadding,
-        color: "white",
-      },
-      // Directional Arrows
-      ArrowContainer: {
-        gridColumnStart: DirectionalArrowStartColumn,
-        gridColumnEnd: DirectionalArrowStopColumn,
-        gridRowStart: ControlRow,
-        textAlign: "center",
-        padding: HUDBlockPadding,
-        margin: "auto",
-      },
-      Rest: {
-        gridColumnStart: PlayerActionStartColumn,
-        gridColumnEnd: PlayerActionStopColumn,
-        gridRowStart: ControlRow2,
-        padding: HUDBlockPadding,
-        margin: "auto",
-        marginTop: "25px",
-      },
-      RestButton: {
-        width: "60px",
-      },
-      PlayerAttributesStacked: {
-        gridColumnStart: PlayerAttributesStartColumn,
-        gridColumnEnd: PlayerAttributesStopColumn,
-        gridRowStart: ControlRow2,
-        padding: HUDBlockPadding,
-        color: "white",
-      },
-      PlayerStats2Block1: {
-        gridColumnStart: PlayerAttributesStartColumn,
-        gridColumnEnd: PlayerAttributesBlockSeparation,
-        gridRowStart: ControlRow2,
-        padding: HUDBlockPadding,
-        color: "white",
-      },
-      PlayerStats2Block2: {
-        gridColumnStart: PlayerAttributesBlockSeparation,
-        gridColumnEnd: PlayerAttributesStopColumn,
-        gridRowStart: ControlRow2,
-        padding: HUDBlockPadding,
-        color: "white",
-      },
-      PlayerStats3: {
-        gridColumnStart: PlayerStat2StartColumn,
-        gridColumnEnd: PlayerStat2StopColumn,
-        gridRowStart: ControlRow2,
-        padding: HUDBlockPadding,
-        color: "white",
-      },
-      PlayerStat: {
-        paddingBottom: "5px",
-      },
-      // Weapons At Hand
-      ReadyItemBlock: {
-        paddingTop: "8px",
-        height: "calc(100% - 18px)",
-      },
-      ReadyItem: {
-        display: "inline-block",
-      },
-      // Player Stat Bars
-      StatBar: {
-        boxSizing: "border-box",
-        width: "100%",
-        height: "14px",
-        padding: "1px",
-        border: "1px solid gray",
-      },
-      HealthBar: {
-        background: "red",
-        height: HUDStatBarHeight,
-      },
-      ManaBar: {
-        background: "blue",
-        height: HUDStatBarHeight,
-      },
-      StaminaBar: {
-        background: "green",
-        height: HUDStatBarHeight,
-      },
-      // Directional Arrows
-      ArrowRow: {
-        width: "72px",
-      },
-      ArrowBlock: {
-        display: "inline-block",
-        width: "32px",
-        height: "23px",
-        textAlign: "center",
-        border: "1px solid black",
-        paddingTop: "3px",
-        margin: "1px",
-        background: ButtonNormalBackground,
-      },
-      ArrowBlockHover: {
-        display: "inline-block",
-        width: "32px",
-        height: "23px",
-        textAlign: "center",
-        border: "1px solid black",
-        paddingTop: "3px",
-        margin: "1px",
-        background: ButtonHoverBackground,
-      },
-      ArrowBlockClick: {
-        display: "inline-block",
-        width: "32px",
-        height: "23px",
-        textAlign: "center",
-        border: "1px solid black",
-        paddingTop: "3px",
-        margin: "1px",
-        background: ButtonClickBackground,
-      },
-      // Actions
-      ActionButton: {
-        display: "inline-block",
-        textAlign: "center",
-        border: "1px solid black",
-        padding: "3px",
-        margin: "1px",
-        userSelect: "none",
-        background: ButtonNormalBackground,
-      },
-      ActionButtonHover: {
-        display: "inline-block",
-        textAlign: "center",
-        border: "1px solid black",
-        padding: "3px",
-        margin: "1px",
-        userSelect: "none",
-        background: ButtonHoverBackground,
-      },
-      ActionButtonClick: {
-        display: "inline-block",
-        textAlign: "center",
-        border: "1px solid black",
-        padding: "3px",
-        margin: "1px",
-        userSelect: "none",
-        background: ButtonClickBackground,
-      },
-      // Inventory
-      Inventory: {
-        gridColumnStart: InventoryStartColumn,
-        gridColumnEnd: InventoryStopColumn,
-        gridRowStart: InventoryRow,
-        borderLeft: HUDBorder,
-        padding: HUDBlockPadding2,
-        backgroundImage: "url(graphics/hud/metal.jpg)",
-        backgroundPosition: MobileScreen ? "0px -250px" : "0px -128px",
-        color: "white",
-      },
-
-      InventoryLabel: {
-        marginBottom: HUDBlockPadding2,
-      },
-      // SpellBook
-      SpellBook: {
-        gridColumnStart: SpellBookStartColumn,
-        gridColumnEnd: SpellBookStopColumn,
-        gridRowStart: SpellBookRow,
-        borderLeft: HUDBorder,
-        borderBottom: HUDBorder,
-        padding: HUDBlockPadding2,
-        backgroundImage: "url(graphics/hud/metal.jpg)",
-        backgroundPosition: MobileScreen ? "0px -440px" : "0px -248px", 
-        color: "white",
-      },
-      SpellBookLabel: {
-        marginBottom: HUDBlockPadding2,
-      },
-      // Accessories
-      Accessories: {
-        gridColumnStart: AccessoriesStartColumn,
-        gridColumnEnd: AccessoriesStopColumn,
-        gridRowStart: AccessoriesStartRow,
-        gridRowEnd: AccessoriesStopRow,
-        borderRight: MobileScreen ? null : HUDBorder,
-        borderBottom: HUDBorder,
-        padding: HUDBlockPadding,
-        backgroundImage: "url(graphics/hud/metal.jpg)",
-        backgroundPosition: MobileScreen ? "0px -491px" : TabletScreen ? "-452px -128px" : "-604px -128px", 
-      },
-      // Item Image
-      ItemImageBlock: {
-        height: "32px",
-        width: "32px",
-        border: "1px solid gray",
-        margin: "1px",
-        textAlign: "center",
-        float: "left",
-        background: "lightgray",
-      },
-      ItemImageBlockNumber: {
-        color: "black",
-        background: "white",
-        width: "13px",
-        // webkitTextStroke: "0.25px black",
-        fontSize: "12px",
-        position: "relative",
-        top: -16,
-        left: 19,
-        // webkitTextStroke: "0.5px black",
-        fontFamily: "VT323, monospace"
-      },
-      ItemImage: {
-        maxHeight: "30px",
-        // maxWidth: "30px",
-        width: "30px",
-        padding: "1px",
-        // placeholder style when asset is missing
-        overflow: "hidden",
-        fontSize: "10px",
-      },
-      ItemImagePlaceholder: {
-        height: "30px",
-        width: "30px",
-        border: "1px solid gray",
-        background: "lightgray",
-        padding: "1px",
-        margin: "1px"
-      },
-    }
+        H1: {
+          margin: "0px",
+          fontStyle: "italic",
     
-    // Odd-shaped walls
-    Styles.Wall.NorthWestEastAndNorthWest = Styles.Wall.WestToEast
-    Styles.Wall.NorthSouthEastAndSouthEast = Styles.Wall.NorthToEast
+        },
+        H2: {
+          margin: "0px",
+        },
+        H3: {
+          margin: "0px",
+        },
+        H4: {
+          margin: "0px",
+        },
+        // links
+        Link: {
+          color: "inherit",
+        },
+        LinkHover: {
+          color: "inherit",
+          textDecoration: "none",
+        },
+        // Contact info
+        Contact: {
+          gridColumnStart: ContactColumnStart,
+          gridColumnEnd: LastColumn,
+          gridRowStart: ContactRow,
+          textAlign: (MobileScreen ? "center" : "right"),
+          paddingLeft: (MobileScreen ? "30px" : null),
+          color: "white",
+        },
+        GitHubLogo: {
+          height: "30px",
+          verticalAlign: "middle",
+          marginLeft: "5px",
+          backgroundColor: "white",
+          borderRadius: "25px",
+        },
+        // Top-screen Messages
+        EventLog: {
+          gridColumnStart: FirstColumn,
+          gridColumnEnd: ContactColumnStop,
+          gridRowStart: MessageRow,
+          fontWeight: "bold",
+          border: HUDBorder,
+          padding: HUDBlockPadding,
+          backgroundImage: "url(graphics/hud/parchment.jpg)",
+        },
+        EventLogContainer: {
+          maxHeight: 18.5 * UtilityAssets.MaxEventLogEntries + px,
+          overflow: "auto",
+        },
+        // Story
+        StoryBlock: {
+          gridColumnStart: StoryStartColumn,
+          gridColumnEnd: StoryEndColumn,
+          gridRowStart: MainRow,
+          userSelect: "text",
+          borderRight: HUDBorder,
+          borderLeft: HUDBorder,
+          padding: HUDBlockPadding,    
+          backgroundImage: "url(graphics/hud/parchment.jpg)",
+          backgroundPosition: "0 -106px", 
+        },
+        StoryContainer: {
+          maxHeight: StoryRowHeight - HUDPadding * 2 + px,
+          overflow: "auto",
+        },
+        Story: {
+          userSelect: "text",
+        },
+    
+        Event: {
+          userSelect: "text",
+        },
+        // Map
+        Map: {
+          gridColumnStart: MapStartColumn,
+          gridColumnEnd: MapEndColumn,
+          gridRowStart: MapRow,
+          overflow: "hidden",
+          padding: HUDBlockPadding,
+          borderRight: HUDBorder,
+          borderTop: MobileScreen ? HUDBorder : null,
+          backgroundImage: "url(graphics/hud/parchment.jpg)",
+          backgroundPosition: MobileScreen ? "0px -351px" : "-514px -106px", 
+          // otherwise, the map will be distorted
+          minWidth: MobileScreen ? null : "300px",
+        },
+        MapRow: {
+          height: WallBoxHeight + px,
+        },
+        MapObject: {
+          display: "inline-block",
+          width: WallBoxWidth + px,
+          height: WallBoxHeight + px,
+        },
+        Player: {
+          boxSizing: "border-box",
+          width: WallBoxWidth + px,
+          height: WallBoxHeight  + px,
+          background: "purple",
+          borderRadius: "50%",
+        },
+        Loot: {
+          boxSizing: "border-box",
+          margin: "1.5px",
+          width: WallBoxWidth - 3 + px,
+          height: WallBoxHeight - 3 + px,
+          background: "orange",
+          borderRadius: "50%",
+        },
+        Monster: {
+          boxSizing: "border-box",
+          margin: "1.5px",
+          width: WallBoxWidth - 3 + px,
+          height: WallBoxHeight - 3 + px,
+          background: "red",
+          borderRadius: "50%",
+        },
+        Wall: {
+          Pillar: {
+            boxSizing: "border-box",
+            marginTop: (WallBoxHeight - PillarBoxHeight)/2 + px,
+            marginRight: (WallBoxWidth - PillarBoxWidth)/2 + px,
+            marginBottom: (WallBoxHeight - PillarBoxHeight)/2 + px,
+            marginLeft: (WallBoxWidth - PillarBoxWidth)/2 + px,
+            width: PillarBoxWidth + px,
+            height: PillarBoxHeight + px,
+            background: "black",
+          },
+          // Continous Walls
+          NorthToSouth: {
+            boxSizing: "border-box",
+            borderLeft: WallLine,
+            marginLeft: WallBoxWidthCentered + px,
+            width: BorderThickness + px,
+            height: WallBoxHeight + px,
+          },
+          WestToEast: {
+            boxSizing: "border-box",
+            borderTop: WallLine,
+            marginTop: WallBoxHeightCentered + px,
+            width: WallBoxWidth + px,
+            height: BorderThickness + px,
 
-    this.forceUpdate()
+          },
+          NorthToEast: {
+            boxSizing: "border-box",
+            borderLeft: WallLine,
+            borderBottom: WallLine,
+            marginLeft:  WallBoxHeightCentered + px,
+            width: WallBoxWidthCentered + BorderThickness + px,
+            height: WallBoxHeightCentered + BorderThickness + px,
+          },
+          NorthToWest: {
+            boxSizing: "border-box",
+            borderRight: WallLine,
+            borderBottom: WallLine,
+            marginRight:  WallBoxHeightCentered + px,
+            width: WallBoxWidthCentered + BorderThickness + px,
+            height: WallBoxHeightCentered + BorderThickness + px,
+          },
+          SouthToEast: {
+            boxSizing: "border-box",
+            borderLeft: WallLine,
+            borderTop: WallLine,
+            marginTop:  WallBoxHeightCentered + px,
+            marginLeft:  WallBoxHeightCentered + px,
+            width: WallBoxWidthCentered + BorderThickness + px,
+            height: WallBoxHeightCentered + BorderThickness + px,
+          },
+          SouthToWest: {
+            boxSizing: "border-box",
+            borderRight: WallLine,
+            borderTop: WallLine,
+            marginTop:  WallBoxHeightCentered + px,
+            marginRight:  WallBoxHeightCentered + px,
+            width: WallBoxWidthCentered + BorderThickness + px,
+            height: WallBoxHeightCentered + BorderThickness + px,
+          },
+          // T-shaped walls
+          TShapedWallNSE: {
+            boxSizing: "border-box",
+            background: BorderColor,
+            marginLeft: WallBoxHeightCentered + px
+          },
+          NorthSouthAndEast: {
+            boxSizing: "border-box",
+            borderTop: WallBoxWidthCentered + "px solid " + MapBackgroundColor,
+            borderBottom: WallBoxWidthCentered + "px solid " + MapBackgroundColor,
+            marginLeft: BorderThickness + px,
+            width: WallBoxWidthCentered + BorderThickness + px,
+            height: WallBoxHeight + px,
+            background: BorderColor,
+          },
+          TShapedWallNSW: {
+            boxSizing: "border-box",
+            background: BorderColor,
+            marginRight: WallBoxHeightCentered + px
+          },
+          NorthSouthAndWest: {
+            boxSizing: "border-box",
+            borderTop: WallBoxWidthCentered + "px solid " + MapBackgroundColor,
+            borderBottom: WallBoxWidthCentered + "px solid " + MapBackgroundColor,
+            width: WallBoxWidthCentered + px,
+            height: WallBoxHeight + px,
+            background: BorderColor,
+          },
+        },
+        Door: {
+          NorthToSouth: {
+            boxSizing: "border-box",
+            border: DoorLine,
+            marginLeft: DoorBoxLongSizeCentered + px,
+            width: DoorLongSize + px,
+            height: WallBoxHeight + px,
+            background: DoorColor,
+          },
+          WestToEast: {
+            boxSizing: "border-box",
+            border: DoorLine,
+            marginTop: DoorBoxLongSizeCentered + px,
+            width: WallBoxHeight + px,
+            height: DoorLongSize + px,
+            background: DoorColor,
+          },
+        },
+        // Various Player Controls
+        ControlBlock: {
+          gridColumnStart: FirstColumn,
+          gridColumnEnd: LastColumn,
+          gridRowStart: ControlRow,
+          gridRowEnd: ControlRow2+1,
+          borderTop: HUDBorder,
+          borderLeft: HUDBorder,
+          borderRight: HUDBorder,
+          backgroundImage: "url(graphics/hud/metal.jpg)",
+        },
+        // Name and Ready Weapons
+        PlayerStats0: {
+          gridColumnStart: PlayerWeaponStartColumn,
+          gridColumnEnd: PlayerWeaponStopColumn,
+          gridRowStart: ControlRow,
+          padding: HUDBlockPadding,
+          textAlign: "center",
+          color: "white",
+        },
+        // Player Vital Stats
+        PlayerVitals: {
+          gridColumnStart: PlayerVitalsStartColumn,
+          gridColumnEnd: PlayerVitalsStopColumn,
+          gridRowStart: ControlRow,
+          padding: HUDBlockPadding,
+          color: "white",
+        },
+        // Directional Arrows
+        ArrowContainer: {
+          gridColumnStart: DirectionalArrowStartColumn,
+          gridColumnEnd: DirectionalArrowStopColumn,
+          gridRowStart: ControlRow,
+          textAlign: "center",
+          padding: HUDBlockPadding,
+          margin: "auto",
+        },
+        Rest: {
+          gridColumnStart: PlayerActionStartColumn,
+          gridColumnEnd: PlayerActionStopColumn,
+          gridRowStart: ControlRow2,
+          padding: HUDBlockPadding,
+          margin: "auto",
+          marginTop: "25px",
+        },
+        RestButton: {
+          width: "60px",
+        },
+        PlayerAttributesStacked: {
+          gridColumnStart: PlayerAttributesStartColumn,
+          gridColumnEnd: PlayerAttributesStopColumn,
+          gridRowStart: ControlRow2,
+          padding: HUDBlockPadding,
+          color: "white",
+        },
+        PlayerStats2Block1: {
+          gridColumnStart: PlayerAttributesStartColumn,
+          gridColumnEnd: PlayerAttributesBlockSeparation,
+          gridRowStart: ControlRow2,
+          padding: HUDBlockPadding,
+          color: "white",
+        },
+        PlayerStats2Block2: {
+          gridColumnStart: PlayerAttributesBlockSeparation,
+          gridColumnEnd: PlayerAttributesStopColumn,
+          gridRowStart: ControlRow2,
+          padding: HUDBlockPadding,
+          color: "white",
+        },
+        PlayerStats3: {
+          gridColumnStart: PlayerStat2StartColumn,
+          gridColumnEnd: PlayerStat2StopColumn,
+          gridRowStart: ControlRow2,
+          padding: HUDBlockPadding,
+          color: "white",
+        },
+        PlayerStat: {
+          paddingBottom: "5px",
+        },
+        // Weapons At Hand
+        ReadyItemBlock: {
+          paddingTop: "8px",
+          height: "calc(100% - 18px)",
+        },
+        ReadyItem: {
+          display: "inline-block",
+        },
+        // Player Stat Bars
+        StatBar: {
+          boxSizing: "border-box",
+          width: "100%",
+          height: "14px",
+          padding: "1px",
+          border: "1px solid gray",
+        },
+        HealthBar: {
+          background: "red",
+          height: HUDStatBarHeight,
+        },
+        ManaBar: {
+          background: "blue",
+          height: HUDStatBarHeight,
+        },
+        StaminaBar: {
+          background: "green",
+          height: HUDStatBarHeight,
+        },
+        // Directional Arrows
+        ArrowRow: {
+          width: "72px",
+        },
+        ArrowBlock: {
+          display: "inline-block",
+          width: "32px",
+          height: "23px",
+          textAlign: "center",
+          border: "1px solid black",
+          paddingTop: "3px",
+          margin: "1px",
+          background: ButtonNormalBackground,
+        },
+        ArrowBlockHover: {
+          display: "inline-block",
+          width: "32px",
+          height: "23px",
+          textAlign: "center",
+          border: "1px solid black",
+          paddingTop: "3px",
+          margin: "1px",
+          background: ButtonHoverBackground,
+        },
+        ArrowBlockClick: {
+          display: "inline-block",
+          width: "32px",
+          height: "23px",
+          textAlign: "center",
+          border: "1px solid black",
+          paddingTop: "3px",
+          margin: "1px",
+          background: ButtonClickBackground,
+        },
+        // Actions
+        ActionButton: {
+          display: "inline-block",
+          textAlign: "center",
+          border: "1px solid black",
+          padding: "3px",
+          margin: "1px",
+          userSelect: "none",
+          background: ButtonNormalBackground,
+        },
+        ActionButtonHover: {
+          display: "inline-block",
+          textAlign: "center",
+          border: "1px solid black",
+          padding: "3px",
+          margin: "1px",
+          userSelect: "none",
+          background: ButtonHoverBackground,
+        },
+        ActionButtonClick: {
+          display: "inline-block",
+          textAlign: "center",
+          border: "1px solid black",
+          padding: "3px",
+          margin: "1px",
+          userSelect: "none",
+          background: ButtonClickBackground,
+        },
+        // Inventory
+        Inventory: {
+          gridColumnStart: InventoryStartColumn,
+          gridColumnEnd: InventoryStopColumn,
+          gridRowStart: InventoryRow,
+          borderLeft: HUDBorder,
+          padding: HUDBlockPadding2,
+          backgroundImage: "url(graphics/hud/metal.jpg)",
+          backgroundPosition: MobileScreen ? "0px -250px" : "0px -128px",
+          color: "white",
+        },
+
+        InventoryLabel: {
+          marginBottom: HUDBlockPadding2,
+        },
+        // SpellBook
+        SpellBook: {
+          gridColumnStart: SpellBookStartColumn,
+          gridColumnEnd: SpellBookStopColumn,
+          gridRowStart: SpellBookRow,
+          borderLeft: HUDBorder,
+          borderBottom: HUDBorder,
+          padding: HUDBlockPadding2,
+          backgroundImage: "url(graphics/hud/metal.jpg)",
+          backgroundPosition: MobileScreen ? "0px -440px" : "0px -248px", 
+          color: "white",
+        },
+        SpellBookLabel: {
+          marginBottom: HUDBlockPadding2,
+        },
+        // Accessories
+        Accessories: {
+          gridColumnStart: AccessoriesStartColumn,
+          gridColumnEnd: AccessoriesStopColumn,
+          gridRowStart: AccessoriesStartRow,
+          gridRowEnd: AccessoriesStopRow,
+          borderRight: MobileScreen ? null : HUDBorder,
+          borderBottom: HUDBorder,
+          padding: HUDBlockPadding,
+          backgroundImage: "url(graphics/hud/metal.jpg)",
+          backgroundPosition: MobileScreen ? "0px -491px" : TabletScreen ? "-452px -128px" : "-604px -128px", 
+        },
+        // Item Image
+        ItemImageBlock: {
+          height: "32px",
+          width: "32px",
+          border: "1px solid gray",
+          margin: "1px",
+          textAlign: "center",
+          float: "left",
+          background: "lightgray",
+        },
+        ItemImageBlockNumber: {
+          color: "black",
+          background: "white",
+          width: "13px",
+          // webkitTextStroke: "0.25px black",
+          fontSize: "12px",
+          position: "relative",
+          top: -16,
+          left: 19,
+          // webkitTextStroke: "0.5px black",
+          fontFamily: "VT323, monospace"
+        },
+        ItemImage: {
+          maxHeight: "30px",
+          // maxWidth: "30px",
+          width: "30px",
+          padding: "1px",
+          // placeholder style when asset is missing
+          overflow: "hidden",
+          fontSize: "10px",
+        },
+        ItemImagePlaceholder: {
+          height: "30px",
+          width: "30px",
+          border: "1px solid gray",
+          background: "lightgray",
+          padding: "1px",
+          margin: "1px"
+        },
+      }
+      
+      // Odd-shaped walls
+      Styles.Wall.NorthWestEastAndNorthWest = Styles.Wall.WestToEast
+      Styles.Wall.NorthSouthEastAndSouthEast = Styles.Wall.NorthToEast
+
+      this.forceUpdate()
+
+      this.setState({
+        MobileScreen: MobileScreen,
+        TabletScreen: TabletScreen,
+      })
+    
+    }
 
   }
 
