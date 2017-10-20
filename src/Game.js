@@ -1698,6 +1698,7 @@ class Contact extends Component {
         nextProps.MobileScreen !== this.props.MobileScreen
         || nextProps.TabletScreen !== this.props.TabletScreen
       ) {
+        console.warn("RENDER")
       return true
     }
     return false
@@ -2011,7 +2012,7 @@ class Game extends Component {
       let MapStartColumn = StoryEndColumn
       let MapEndColumn = LastColumn
 
-      let ContactColumnStart = 6
+      let ContactColumnStart = 5
       let ContactColumnStop = LastColumn
 
       let PlayerWeaponStartColumn = FirstColumn
@@ -4335,7 +4336,7 @@ class Game extends Component {
           {/* row 1 */}
           <Header/>
           {/* row 2 */}
-          <Contact/>
+          <Contact {... this.state}/>
           {/* row 3 */}
           <CreateCharacterHeader/>
           {/* row 4 */}
@@ -4354,7 +4355,7 @@ class Game extends Component {
         {/* row 1 */}
         <Header/>
         {/* row 2 */}
-        <Contact/>
+        <Contact {... this.state}/>
         <EventLog {... this} {... this.state} />
         {/* row 3 */}
         <StoryBlock>

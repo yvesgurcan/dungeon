@@ -1,6 +1,6 @@
 import React from "react"
 
-let MobileScreenBreakpoint = 376
+let MobileScreenBreakpoint = 400
 let TabletScreenBreakpoint = 769
 
 let MobileScreen = function() {
