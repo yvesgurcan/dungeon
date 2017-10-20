@@ -2800,6 +2800,9 @@ class Game extends Component {
           textAlign: "center",
           float: "left",
           background: "lightgray",
+          // background: "linear-gradient(90deg, light gray, white 50%)",
+          // background: "linear-gradient(135deg, rgb(30,87,153),rgb(41,137,216) 50%,rgb(32,124,202) 51%,rgb(125,185,232) 100%)",
+          background: "linear-gradient(135deg, gray 50%, lightgray 100%)",
         },
         ItemImageBlockNumber: {
           color: "black",
