@@ -3,17 +3,22 @@ import React from "react"
 let MobileScreenBreakpoint = 376
 let TabletScreenBreakpoint = 769
 
+let MobileScreen = function() {
+    return window.matchMedia( "(max-width: " + MobileScreenBreakpoint + "px)" ).matches
+}
+
+let TabletScreen = function() {
+    return window.matchMedia( "(max-width: " + TabletScreenBreakpoint + "px)" ).matches
+}
+
+
 export const UtilityAssets = {
 
     // responsiveness
     ScreenSize: {
-        MobileScreen: function() {
-            return window.matchMedia( "(max-width: " + MobileScreenBreakpoint + "px)" ).matches
-        }
+        MobileScreen: MobileScreen
         ,
-        TabletScreen: function() {
-            return window.matchMedia( "(max-width: " + TabletScreenBreakpoint + "px)" ).matches
-        }
+        TabletScreen: TabletScreen
     },
     ScreenBreakpoints: {
         MobileScreen: MobileScreenBreakpoint,
@@ -170,6 +175,10 @@ export const UtilityAssets = {
     // map size in terms of elements within the array
     WallMapVisibleRange: {
         x: 10,
+        y: 7,
+    },
+    WallMapVisibleRangeMobileScreen: {
+        x: 7,
         y: 7,
     },
 

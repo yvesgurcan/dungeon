@@ -5,6 +5,8 @@ const Debug = false
 export const DynamicAssets = {
 
 
+    CreateCharacter: false,
+
     // debug
     ShowFullMap: Debug || false
     ,

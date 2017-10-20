@@ -6,8 +6,12 @@ import Functions from "./Functions.js"
 
 /* utility */
 
+const Debug = true
+
 const {North, South, West, East} = UtilityAssets.Directions
 const {Wall, Door, LootContainer, Undiscovered, Empty} = UtilityAssets.MapObjects
+// let {WallMapVisibleRange} = UtilityAssets.WallMapVisibleRange
+let WallMapVisibleRange = Object.assign({}, UtilityAssets.WallMapVisibleRange)
 
 let MobileScreen = UtilityAssets.ScreenSize.MobileScreen()
 let TabletScreen = UtilityAssets.ScreenSize.TabletScreen()
@@ -80,7 +84,7 @@ class TextEdit extends Component {
 // div
 class Block extends Component {
   render() {
-    return <div {...this.props} />
+    return <div {... this.props} />
   }
 }
 
@@ -261,9 +265,19 @@ class Accessories extends Component {
 
 class SpellBook extends Component {
 
+  // no need to re-render spell book if it has not changed
+  shouldComponentUpdate(nextProps) {
+    if (nextProps.Player.SpellBook !== this.props.Player.SpellBook) {
+      if (Debug) console.log("re-render: spellbook")
+      return true
+    }
+    return false
+  }
+
   DisplaySpellBook = () => {
 
-    let {Player} = this.props
+    // let {Player} = this.props
+    let Player = Object.assign({}, this.props.Player)
 
     let List = Object.keys(Player.SpellBook.Spells).map(SpellObjectName => {
       return Player.SpellBook.Spells[SpellObjectName]
@@ -286,7 +300,9 @@ class SpellBook extends Component {
   }
 
   render() {
-    let {Player} = this.props
+    // let {Player} = this.props
+    let Player = Object.assign({}, this.props.Player)
+
     if (Player.SpellBook.MaxSpells === 0) {
       return null
     }
@@ -303,9 +319,20 @@ class SpellBook extends Component {
 
 class Inventory extends Component {
   
+  // no need to re-render backpack content if it has not changed
+  shouldComponentUpdate(nextProps) {
+    if (nextProps.Backpack !== this.props.Backpack) {
+      if (Debug) console.log("re-render: backpack")
+      return true
+    }
+    return false
+  }
+
   DisplayInventory = () => {
 
-    let {Backpack} = this.props
+    // let {Backpack} = this.props
+    let Backpack = Object.assign({}, this.props.Backpack)
+
     let list = []
 
     for (let i = 0; i < Backpack.maxItems; i++) {
@@ -332,7 +359,10 @@ class Inventory extends Component {
   }
 
   render() {
-    let {Player, Backpack} = this.props
+    // let {Player, Backpack} = this.props
+    let Player = Object.assign({}, this.props.Player)
+    let Backpack = Object.assign({}, this.props.Backpack)
+
     return (
       <View style={Styles.Inventory}>
         <Block style={Styles.InventoryLabel}>Backpack</Block>
@@ -350,7 +380,7 @@ class Inventory extends Component {
 
 class GoNorth extends Component {
   MovePlayer = () => {
-    let { MovePlayer } = this.props
+    let {MovePlayer} = this.props
     MovePlayer("North")
   }
   render() {
@@ -360,7 +390,7 @@ class GoNorth extends Component {
 
 class GoWest extends Component {
   MovePlayer = () => {
-    let { MovePlayer } = this.props
+    let {MovePlayer} = this.props
     MovePlayer("West")
   }
   render() {
@@ -370,7 +400,7 @@ class GoWest extends Component {
 
 class GoEast extends Component {
   MovePlayer = () => {
-    let { MovePlayer } = this.props
+    let {MovePlayer} = this.props
     MovePlayer("East")
   }
   render() {
@@ -379,7 +409,7 @@ class GoEast extends Component {
 }
 class GoSouth extends Component {
   MovePlayer = () => {
-    let { MovePlayer } = this.props
+    let {MovePlayer} = this.props
     MovePlayer("South")
   }
   render() {
@@ -388,6 +418,19 @@ class GoSouth extends Component {
 }
 
 class Arrow extends Component {
+
+  // no need to re-render the arrow if its style has not changed
+  shouldComponentUpdate(nextProps, nextState) {
+    if (
+      nextState.style !== this.state.style
+      || nextProps.arrowStyle !== this.props.arrowStyle
+    ) {
+      if (Debug) console.log("re-render: directional arrow")
+      return true
+    }
+    return false
+  }
+
   constructor(props) {
     super(props)
     this.state = { style: Styles.ArrowBlock }
@@ -425,6 +468,7 @@ class Arrow extends Component {
 }
 
 class Arrows extends Component {
+
   render() {
     return (
       <View style={Styles.ArrowContainer}>
@@ -555,7 +599,10 @@ class ManaBar extends Component {
 
 class WeaponReady extends Component {
   render() {
-    let {Item, Slot} = this.props
+    // let {Item, Slot} = this.props
+    let Item = Object.assign({}, this.props.Item)
+    let Slot = this.props.Slot
+
     if (!Item) {
       return (
         <View style={Styles.ReadyItem}>
@@ -581,8 +628,20 @@ class WeaponReady extends Component {
 }
 
 class WeaponReadyBlock extends Component {
+
+  // no need to re-render gear if it has not changed
+  shouldComponentUpdate(nextProps) {
+    if (nextProps.Gear !== this.props.Gear) {
+      if (Debug) console.log("re-render: weapon ready")
+      return true
+    }
+    return false
+  }
+
   render() {
-    let {Gear} = this.props
+    // let {Gear} = this.props
+    let Gear = Object.assign({}, this.props.Gear)
+
     return (
       <View>
         <WeaponReady Slot="Left hand" Item={Gear.LeftHand} />
@@ -595,8 +654,22 @@ class WeaponReadyBlock extends Component {
 /* player stats */
 
 class PlayerStats0 extends Component {
+
+  // no need to re-render stats if player has not changed
+  shouldComponentUpdate(nextProps) {
+    if (
+      nextProps.Player.Name !== this.props.Player.Name
+      ||  nextProps.Gear !== this.props.Gear
+    ) {
+      if (Debug) console.log("re-render: player name and gear")
+      return true
+    }
+    return false
+  }
+
   render() {
-    let {Player} = this.props
+    // let {Player} = this.props
+    let Player = Object.assign({}, this.props.Player)
     return (
       <View style={Styles.PlayerStats0}>
         <Block>
@@ -611,8 +684,26 @@ class PlayerStats0 extends Component {
 }
 
 class PlayerVitals extends Component {
+
+  // no need to re-render stats if player has not changed
+  shouldComponentUpdate(nextProps) {
+    if (
+      nextProps.Player.Health !== this.props.Player.Health
+      || nextProps.Player.MaxHealth !== this.props.Player.MaxHealth
+      || nextProps.Player.Mana !== this.props.Player.Mana
+      || nextProps.Player.MaxMana !== this.props.Player.MaxMana
+      || nextProps.Player.Stamina !== this.props.Player.Stamina
+      || nextProps.Player.MaxStamina !== this.props.Player.MaxStamina
+    ) {
+      if (Debug) console.log("re-render: player vitals")
+      return true
+    }
+    return false
+  }
+
   render() {
-    let {Player} = this.props
+    // let {Player} = this.props
+    let Player = Object.assign({}, this.props.Player)
     return (
       <View style={Styles.PlayerVitals}>
         <Block style={Styles.PlayerStat}>
@@ -633,8 +724,26 @@ class PlayerVitals extends Component {
 }
 
 class PlayerAttributesStacked extends Component {
+
+  // no need to re-render stats if player has not changed
+  shouldComponentUpdate(nextProps) {
+    if (
+      nextProps.Player.Level !== this.props.Player.Level
+      || nextProps.Player.XP !== this.props.Player.XP
+      || nextProps.Player.Strength !== this.props.Player.Strength
+      || nextProps.Player.Dexterity !== this.props.Player.Dexterity
+      || nextProps.Player.Constitution !== this.props.Player.Constitution
+      || nextProps.Player.Intelligence !== this.props.Player.Intelligence
+    ) {
+      if (Debug) console.log("re-render: player level/XP + abilities")
+      return true
+    }
+    return false
+  }
+
   render() {
-    let {Player} = this.props
+    // let {Player} = this.props
+    let Player = Object.assign({}, this.props.Player)
     return (
       <View style={MobileScreen || TabletScreen ? Styles.Hidden : Styles.PlayerAttributesStacked}>
         <Block style={Styles.PlayerStat} hidden={!TabletScreen}>
@@ -661,8 +770,23 @@ class PlayerAttributesStacked extends Component {
 }
 
 class PlayerStats2Block1 extends Component {
+
+  // no need to re-render stats if player has not changed
+  shouldComponentUpdate(nextProps) {
+    if (
+      nextProps.Player.Level !== this.props.Player.Level
+      || nextProps.Player.XP !== this.props.Player.XP
+      || nextProps.Player.ArmorClass !== this.props.Player.ArmorClass
+    ) {
+      if (Debug) console.log("re-render: player level/XP and AC")
+      return true
+    }
+    return false
+  }
+
   render() {
-    let {Player} = this.props
+    // let {Player} = this.props
+    let Player = Object.assign({}, this.props.Player)
     return (
       <View style={MobileScreen || TabletScreen ? Styles.PlayerStats2Block1 : Styles.Hidden}>
         <Block style={Styles.PlayerStat}>
@@ -680,8 +804,24 @@ class PlayerStats2Block1 extends Component {
 }
 
 class PlayerStats2Block2 extends Component {
+
+  // no need to re-render stats if player has not changed
+  shouldComponentUpdate(nextProps) {
+    if (
+      nextProps.Player.Strength !== this.props.Player.Strength
+      || nextProps.Player.Dexterity !== this.props.Player.Dexterity
+      || nextProps.Player.Constitution !== this.props.Player.Constitution
+      || nextProps.Player.Intelligence !== this.props.Player.Intelligence
+    ) {
+      if (Debug) console.log("re-render: player abilities")
+      return true
+    }
+    return false
+  }
+
   render() {
-    let {Player} = this.props
+    // let {Player} = this.props
+    let Player = Object.assign({}, this.props.Player)
     return (
       <View style={MobileScreen || TabletScreen ? Styles.PlayerStats2Block2 : Styles.Hidden}>
         <Block style={Styles.PlayerStat}>
@@ -702,8 +842,23 @@ class PlayerStats2Block2 extends Component {
 }
 
 class PlayerStats3 extends Component {
+
+  // no need to re-render stats if player has not changed
+  shouldComponentUpdate(nextProps) {
+    if (
+      nextProps.Player.Level !== this.props.Player.Level
+      || nextProps.Player.XP !== this.props.Player.XP
+      || nextProps.Player.ArmorClass !== this.props.Player.ArmorClass
+    ) {
+      if (Debug) console.log("re-render: player level/XP + AC")
+      return true
+    }
+    return false
+  }
+
   render() {
-    let {Player} = this.props
+    // let {Player} = this.props
+    let Player = Object.assign({}, this.props.Player)
     return (
       <View style={TabletScreen ? Styles.Hidden : Styles.PlayerStats3}>
         <Block style={Styles.PlayerStat}>
@@ -734,12 +889,24 @@ class Controls extends Component {
 
 /* story and events */
 
-// a brief message that provides feedback on the user's actions (example: "you can't go there")
+// a set of brief messages that provides feedback on the user's actions (example: "you can't go there")
 class EventLog extends Component {
+
+  // no need to re-render the log if it has not changed
+  shouldComponentUpdate(nextProps) {
+    if (nextProps.EventLog !== this.props.EventLog) {
+      if (Debug) console.log("re-render: event log")
+      return true
+    }
+    return false
+  }
+
   render() {
     return (
-      <View style={Styles.EventLog} id="EventLog">
-        {!this.props.EventLog ? null : this.props.EventLog.map((LogEntry, Index) => {return <View key={Index}>{LogEntry}</View>})}
+      <View style={Styles.EventLog}>
+        <Block id="EventLog" style={Styles.EventLogContainer}>
+          {!this.props.EventLog ? null : this.props.EventLog.map((LogEntry, Index) => {return <View key={Index}>{LogEntry}</View>})}
+        </Block>
       </View>
     )
   }
@@ -747,8 +914,23 @@ class EventLog extends Component {
 
 // a descriptive paragraph about the surroundings of the user, to set the mood :)
 class Story extends Component {
+
+  // no need to re-render story text if it has not changed
+  shouldComponentUpdate(nextProps) {
+    if (nextProps.currentText !== this.props.currentText) {
+      if (Debug) console.log("re-render: story")
+      return true
+    }
+    return false
+  }
+
   render() {
-    let {currentText, currentTextImage, currentEvent} = this.props
+
+    // let {currentText, currentTextImage, currentEvent} = this.props
+    let currentText = this.props.currentText
+    let currentTextImage = this.props.currentTextImage
+    let currentEvent = Object.assign([], this.props.currentEvent)
+
     return (
       <View style={Styles.Story} hidden={currentEvent.length > 0 && currentText === ""}>
         <Block style={Styles.Paragraph}>
@@ -772,7 +954,9 @@ class Loot extends Component {
   }
 
   render() {
-    let {item} = this.props
+    // let {item} = this.props
+    let item = Object.assign({}, this.props.item)
+
     return (
       <ItemImageBlock
         onClick={this.onClick}
@@ -813,9 +997,24 @@ class LootList extends Component {
 // some text that describes an event that has just occurred ("you found a chest")
 class Event extends Component {
 
+  // no need to re-render event if it has not changed and the player has not taken the loot yet
+  shouldComponentUpdate(nextProps) {
+    if (
+      nextProps.currentEvent !== this.props.currentEvent
+      || nextProps.Player !== this.props.Player
+    ) {
+      if (Debug) console.log("re-render: event")
+      return true
+    }
+    return false
+  }
+
   GenerateEventText = () => {
 
-    let {currentEvent, Player} = this.props
+    // let {currentEvent, Player} = this.props
+    let currentEvent = Object.assign([], this.props.currentEvent)
+    let Player = Object.assign({}, this.props.Player)
+
     let loot = false
     let lootIsEmpty = true
     let lootCount = 0
@@ -916,21 +1115,39 @@ class StoryBlock extends Component {
 
 class Map extends Component {
 
+  // no need to re-render the map if the player or monsters haven't moved, or the area revealed has not changed
+  shouldComponentUpdate(nextProps) {
+    if (
+      nextProps.Player.x !== this.props.Player.x
+      || nextProps.Player.y !== this.props.Player.y
+      || nextProps.Monsters !== this.props.Monsters
+      || nextProps.WallMapRevealed !== this.props.WallMapRevealed
+    ) {
+      if (Debug) console.log("re-render: map")
+      return true
+    }
+    return false
+  }
+
   DrawMap = () => {
-    let {WallMap, WallMapRevealed, Player} = this.props
+    // let {WallMap, WallMapRevealed, Player} = this.props
+    let WallMap = Object.assign([], this.props.WallMap)
+    let WallMapRevealed = Object.assign([], this.props.WallMapRevealed)
+    let Player = Object.assign({}, this.props.Player)
+
     return WallMapRevealed.map((HorizontalLine, y) => {
       // make sure that the map object is in the max/min Y sight
       if (
-        Player.y + UtilityAssets.WallMapVisibleRange.y >= y &&
-        Player.y - UtilityAssets.WallMapVisibleRange.y <= y) {
+        Player.y + WallMapVisibleRange.y >= y &&
+        Player.y - WallMapVisibleRange.y <= y) {
         return (
           <View key={y} style={Styles.MapRow}>
             {HorizontalLine.map((MapObjectRevealed, x) => {
               let MapObject = WallMap[y][x]
               // make sure that the map object is in the max/min X sight
               if (
-                Player.x + UtilityAssets.WallMapVisibleRange.x >= x &&
-                Player.x - UtilityAssets.WallMapVisibleRange.x <= x
+                Player.x + WallMapVisibleRange.x >= x &&
+                Player.x - WallMapVisibleRange.x <= x
               ) {
                 return (
                   <Text key={x} style={Styles.MapObject} title={[x, y].join(",")}>
@@ -955,7 +1172,10 @@ class Map extends Component {
 
   DrawMonster = ({x, y}) => {
 
-    let {Player, MonsterMap, ShowFullMap} = this.props
+    // let {Player, MonsterMap, ShowFullMap} = this.props
+    let Player = Object.assign({}, this.props.Player)
+    let MonsterMap = Object.assign([], this.props.MonsterMap)
+    let ShowFullMap = Object.assign([], this.props.ShowFullMap)
 
     if (
       ShowFullMap
@@ -976,7 +1196,13 @@ class Map extends Component {
 
   DrawMapObject = (MapObject, MapObjectRevealed, x, y) => {
 
-    let {Player, ShowFullMap, WallMap, WallMapRevealed, DiscoveryMap, LootMap} = this.props
+    // let {Player, ShowFullMap, WallMap, WallMapRevealed, DiscoveryMap, LootMap} = this.props
+    let Player = Object.assign({}, this.props.Player)
+    let ShowFullMap = Object.assign([], this.props.ShowFullMap)
+    let WallMap = Object.assign([], this.props.WallMap)
+    let WallMapRevealed = Object.assign([], this.props.WallMapRevealed)
+    let DiscoveryMap = Object.assign([], this.props.DiscoveryMap)
+    let LootMap = Object.assign([], this.props.LootMap)
 
     // player marker
     if (x === Player.x && y === Player.y) {
@@ -1322,7 +1548,8 @@ class StartGame extends Component {
 
 class CreateCharacterName extends Component {
   render() {
-    let {Player} = this.props
+    // let {Player} = this.props
+    let Player = Object.assign({}, this.props.Player)
     return (
       <View style={Styles.CharacterCreateName}>
         <Block style={Styles.PropertyLabelForInput}>
@@ -1371,7 +1598,8 @@ class CreateCharacterBackground extends Component {
 
 class CreateCharacterAbilities extends Component {
   render() {
-    let {Player} = this.props
+    // let {Player} = this.props
+    let Player = Object.assign({}, this.props.Player)
     return (
       <View style={Styles.CharacterCreateView}>
         <SubHeading>Abilities</SubHeading>
@@ -1424,6 +1652,12 @@ class CreateCharacterHeader extends Component {
 /* top */
 
 class Contact extends Component {
+
+  // content is static
+  shouldComponentUpdate() {
+    return false
+  }
+
   render() {
     return (
       <View style={Styles.Contact}>
@@ -1451,6 +1685,11 @@ class Contact extends Component {
 }
 
 class Header extends Component {
+
+  // content is static
+  shouldComponentUpdate() {
+    return false
+  }
   render() {
     return (
       <View style={Styles.Header}>
@@ -1558,7 +1797,10 @@ class Game extends Component {
 
   ListenToKeyboard = (keypress) => {
 
-    let {Player, CreateCharacter, Keystrokes} = this.state
+    // let {Player, CreateCharacter, Keystrokes} = this.state
+    let Player = Object.assign({}, this.state.Player)
+    let CreateCharacter = this.state.CreateCharacter
+    let Keystrokes = Object.assign([], this.state.Keystrokes)
 
     if (Player.Dead) return false
     if (CreateCharacter) return false
@@ -1631,6 +1873,8 @@ class Game extends Component {
     MobileScreen = UtilityAssets.ScreenSize.MobileScreen()
     TabletScreen = UtilityAssets.ScreenSize.TabletScreen()
     
+    WallMapVisibleRange = MobileScreen ? UtilityAssets.WallMapVisibleRangeMobileScreen : UtilityAssets.WallMapVisibleRange
+
     /* presets */
 
     // grid columns
@@ -1647,7 +1891,6 @@ class Game extends Component {
     const HUDBlockPadding = HUDPadding + px
     const HUDBlockPadding2 = HUDPadding/2.5 + px
     const HUDBorder = "1px solid black"
-    const HUDBorderRadius = "5px"
     const HUDStatBarHeight = "10px"
 
     const ButtonNormalBackground = "lightgray"
@@ -2011,27 +2254,26 @@ class Game extends Component {
             // column 6
             "35px " + 
             // column7-10
-            "repeat(3, 76.8px)"
+            "repeat(3, 89px)"
           :
             // column1
             "110px " +
             // column2-6
             "repeat(4, 91px) " +
             // column7
-            "130px " +
+            "132px " +
             // column 8
-            "25px " + 
+            "30px " + 
             // column9-10
-            "repeat(2, 76.8px)"
+            "repeat(2, 86px)"
         ,
         gridTemplateRows:
           // title (row1)
           "auto " +
           // contact (row2)
-          (MobileScreen ? "25px " : "") +
           "30px " +
           // event log (row3)
-          Number(HUDPadding * 2 + 18 * UtilityAssets.MaxEventLogEntries) + px + " " +
+          Number(HUDPadding * 2 + 18.5 * UtilityAssets.MaxEventLogEntries) + px + " " +
           // story/map (row4)
           StoryRowHeight + px + " " +
           // story (row5)
@@ -2101,8 +2343,11 @@ class Game extends Component {
         fontWeight: "bold",
         border: HUDBorder,
         padding: HUDBlockPadding,
-        overflow: "auto",
         backgroundImage: "url(graphics/hud/parchment.jpg)",
+      },
+      EventLogContainer: {
+        maxHeight: 18.5 * UtilityAssets.MaxEventLogEntries + px,
+        overflow: "auto",
       },
       // Story
       StoryBlock: {
@@ -2135,10 +2380,11 @@ class Game extends Component {
         overflow: "hidden",
         padding: HUDBlockPadding,
         borderRight: HUDBorder,
+        borderTop: MobileScreen ? HUDBorder : null,
         backgroundImage: "url(graphics/hud/parchment.jpg)",
-        backgroundPosition: "-514px -106px", 
+        backgroundPosition: MobileScreen ? "0px -351px" : "-514px -106px", 
         // otherwise, the map will be distorted
-        minWidth: "290px",
+        minWidth: MobileScreen ? null : "300px",
       },
       MapRow: {
         height: WallBoxHeight + px,
@@ -2456,7 +2702,7 @@ class Game extends Component {
         borderLeft: HUDBorder,
         padding: HUDBlockPadding2,
         backgroundImage: "url(graphics/hud/metal.jpg)",
-        backgroundPosition: "0 -128px",
+        backgroundPosition: MobileScreen ? "0px -250px" : "0px -128px",
         color: "white",
       },
 
@@ -2472,7 +2718,7 @@ class Game extends Component {
         borderBottom: HUDBorder,
         padding: HUDBlockPadding2,
         backgroundImage: "url(graphics/hud/metal.jpg)",
-        backgroundPosition: "0 -248px", 
+        backgroundPosition: MobileScreen ? "0px -440px" : "0px -248px", 
         color: "white",
       },
       SpellBookLabel: {
@@ -2484,11 +2730,11 @@ class Game extends Component {
         gridColumnEnd: AccessoriesStopColumn,
         gridRowStart: AccessoriesStartRow,
         gridRowEnd: AccessoriesStopRow,
-        borderRight: HUDBorder,
+        borderRight: MobileScreen ? null : HUDBorder,
         borderBottom: HUDBorder,
         padding: HUDBlockPadding,
         backgroundImage: "url(graphics/hud/metal.jpg)",
-        backgroundPosition: "-604px -128px", 
+        backgroundPosition: MobileScreen ? "0px -491px" : TabletScreen ? "-452px -128px" : "-604px -128px", 
       },
       // Item Image
       ItemImageBlock: {
@@ -2628,17 +2874,18 @@ class Game extends Component {
   }
 
   ResetMessage = () => {
-    setTimeout(function () {
+    /*setTimeout(function () {
       if (this.state.currentMessage !== "") {
         this.setState({ currentMessage: "" })
       }
-    }.bind(this), 2000)
+    }.bind(this), 2000)*/
   }
 
   SetText = (Message = "", Image = null) => {
     if (Message || Image) {
 
-    let {EventLog} = this.state
+    // let {EventLog} = this.state
+    let EventLog = Object.assign([], this.state.EventLog)
 
     if (!EventLog) {
       EventLog = []
@@ -2646,14 +2893,14 @@ class Game extends Component {
 
     EventLog.push(Message)
 
-    let HtmlElement = document.getElementById("EventLog")
-    HtmlElement.scrollTop = HtmlElement.scrollHeight
-
     if (EventLog.length > 20) {
       EventLog = EventLog.slice(EventLog.length - 20, EventLog.length)
     }
 
-      this.setState({EventLog: EventLog})
+      this.setState({EventLog: EventLog}, function() {
+        let HtmlElement = document.getElementById("EventLog")
+        HtmlElement.scrollTop = HtmlElement.scrollHeight
+      })
     }
   }
 
@@ -2673,7 +2920,9 @@ class Game extends Component {
   }
 
   SavePlayerName = (input) => {
-    let {Player} = this.state
+    // let {Player} = this.state
+    let Player = Object.assign({}, this.state.Player)
+
     Player[input.name] = input.value
     this.setState({Player: Player})
 
@@ -2769,20 +3018,22 @@ class Game extends Component {
   }
 
   UpdateText = ({ x, y }) => {
-    let State = this.state
+    let currentText = this.state.currentText
+    let currentTextImage = this.state.currentTextImage
+    let Text = Object.assign([], this.state.Text)
 
     let matchTextAccessPoint = false
 
-    if (State.Text) {
+    if (Text) {
 
-      State.Text.map((text, index) => {
+      Text.map((text, index) => {
         if (text.Used) return null
         return !text.accessPoints ? null : text.accessPoints.filter(accessPoint => {
           if (accessPoint.x === x && accessPoint.y === y) {
             matchTextAccessPoint = true
-            State.currentText = text.text
-            State.currentTextImage = text.image || null
-            State.Text[index].Used = true
+            currentText = text.text
+            currentTextImage = text.image || null
+            Text[index].Used = true
             return true
           }
           else {
@@ -2792,7 +3043,7 @@ class Game extends Component {
 
       })
 
-      this.setState(State)
+      this.setState({currentText: currentText, currentTextImage: currentTextImage, Text: Text})
 
     }
 
@@ -2811,7 +3062,8 @@ class Game extends Component {
 
   FindMonsterById = (MonsterId) => {
 
-    let {Monsters} = this.state
+    // let {Monsters} = this.state
+    let Monsters = Object.assign([], this.state.Monsters)
 
     return Monsters.filter(Monster => {
       return Monster.Id === MonsterId
@@ -2821,7 +3073,8 @@ class Game extends Component {
 
   FindSingleMonsterInSurroundings = (Actor) => {
 
-    let {MonsterMap} = this.state
+    // let {MonsterMap} = this.state
+    let MonsterMap = Object.assign([], this.state.MonsterMap)
 
     let Targets = [].concat(
       MonsterMap[Actor.y-1].slice(Actor.x-1, Actor.x+2),
@@ -2841,39 +3094,46 @@ class Game extends Component {
 
   CastSpellFromKeyboard = (SpellNumber) => {
 
-    let {Player} = this.state
+    // let {Player} = this.state
+    let Player = Object.assign({}, this.state.Player)
 
     let SpellName = Object.keys(Player.SpellBook.Spells)[Number(SpellNumber-1)]
 
     if (!SpellName) return false
 
-    this.CastSpell(Player.SpellBook.Spells[SpellName], Player)
+    this.CastSpell(Player.SpellBook.Spells[SpellName])
 
   }
 
   CastSpell = (Spell, Caster) => {
 
-    let {Player, Monsters, MonsterMap, Turn} = this.state
+    // let {Player, Monsters, MonsterMap, Turn} = this.state
+    let Player = Object.assign({}, this.state.Player)
+    let Monsters = Object.assign([], this.state.Monsters)
+    let MonsterMap = Object.assign([], this.state.MonsterMap)
+    let Turn = this.state.Turn
+
+    let CasterIsPlayer = false
 
     if (!Caster) {
       Caster = Player
+      CasterIsPlayer = true
     }
 
     // enough mana
     if (!Spell.ManaCost || Caster.Mana >= Spell.ManaCost) {
-    
+
       // not enough XP
       if (Spell.Level > Caster.Level) {
 
-        if (Caster === Player) {
+        if (CasterIsPlayer) {
           this.SetText(UtilityAssets.Messages.Spell.UnsufficientLevel)
         }
 
         return false
       }
 
-
-      if (Caster === Player) {
+      if (CasterIsPlayer) {
         Caster.Stamina--
         Caster.SpellActionUsed = true
         Turn++
@@ -2894,8 +3154,6 @@ class Game extends Component {
 
       // attempt to cast the spell
       if (this.AbilityCheck(Caster.Intelligence, Modifier)) {
-
-        let NoMessageUpdate = false
 
         // Heal
         if (Spell.Type === "Heal") {
@@ -2926,8 +3184,9 @@ class Game extends Component {
 
             if (TargetMonster.length === 0) {
 
-              NoMessageUpdate = true
-              this.SetText(UtilityAssets.Messages.Spell.NoTarget)
+              if (CasterIsPlayer) {
+                this.SetText(UtilityAssets.Messages.Spell.NoTarget)
+              }
 
             }
             else {
@@ -2935,7 +3194,6 @@ class Game extends Component {
               let Damage = this.RandomIntegerFromRange(Spell.Damage.Min, Spell.Damage.Max)
 
               if (!this.MonsterTakeDamage(TargetMonster[0], Damage)) {
-                NoMessageUpdate = true
               }
 
               if (Spell.Vampiric) {
@@ -3004,8 +3262,9 @@ class Game extends Component {
 
             if (TargetHit === 0) {
 
-              NoMessageUpdate = true
-              this.SetText(UtilityAssets.Messages.Spell.NoTargetArea)
+              if (CasterIsPlayer) {
+                this.SetText(UtilityAssets.Messages.Spell.NoTargetArea)
+              }
 
             }
 
@@ -3014,14 +3273,12 @@ class Game extends Component {
         }
 
         // update player state and message
-        if (Caster === Player) {
+        if (CasterIsPlayer) {
 
           Caster.Mana -= Spell.ManaCost || 0
           this.setState({Player: Caster})
           
-          if (!NoMessageUpdate) {
-            this.SetText(UtilityAssets.PartialMessages.SpellSuccess + Spell.Name + UtilityAssets.PartialMessages.Period)            
-          }
+          this.SetText(UtilityAssets.PartialMessages.SpellSuccess + Spell.Name + UtilityAssets.PartialMessages.Period)
 
           // move enemies
           this.MoveMonsters()
@@ -3035,17 +3292,17 @@ class Game extends Component {
       else {
 
         Caster.Mana -= Spell.ManaCost || 0
-        if (Caster === Player) {
-          this.setState({Player: Caster})
+        if (CasterIsPlayer) {
+          this.setState({Player: Caster}, function() {})
           this.SetText(UtilityAssets.Messages.Spell.Failed[this.RandomInteger(UtilityAssets.Messages.Spell.Failed.length)])
         }
 
       }
 
     }
-    // player does not have required mana amount
+    // caster does not have required mana amount
     else {
-      if (Caster === Player) {
+      if (CasterIsPlayer) {
         this.SetText(UtilityAssets.Messages.Spell.NotEnoughMana[this.RandomInteger(UtilityAssets.Messages.Spell.NotEnoughMana.length)])
       }
     }
@@ -3056,7 +3313,13 @@ class Game extends Component {
 
   MovePlayer = (Direction) => {
 
-    let {Player, WallMap, MonsterMap, NoClip} = this.state
+
+    // let {Player, WallMap, MonsterMap, NoClip} = this.state
+    let Player = Object.assign({}, this.state.Player)
+    let WallMap = Object.assign([], this.state.WallMap)
+    let MonsterMap = Object.assign([], this.state.MonsterMap)
+    let NoClip = this.state.NoClip
+
     let FullStateUpdate = true
 
     if (Player.Dead) return false
@@ -3067,10 +3330,7 @@ class Game extends Component {
 
     // out of range
     if (targetCoordinates.y > WallMap.length - 1 || targetCoordinates.y < 0 || targetCoordinates.x > WallMap[targetCoordinates.y].length - 1 || targetCoordinates.x < 0) {
-      this.setState({
-        currentMessage: UtilityAssets.Messages.Collision
-      })
-      this.ResetMessage()
+      this.SetText(UtilityAssets.Messages.Collision)
       return
     }
 
@@ -3103,10 +3363,7 @@ class Game extends Component {
 
       // the player can not go there (there is a wall/door in the way)
       if (!this.DetectCollision(targetCoordinates)) {
-        this.setState({
-          currentMessage: UtilityAssets.Messages.Collision
-        })
-        this.ResetMessage()
+        this.SetText(UtilityAssets.Messages.Collision)
         return
       }
 
@@ -3118,11 +3375,16 @@ class Game extends Component {
     // the monsters get to move now
     this.MoveMonsters(targetCoordinates)
 
-    let {Turn, DiscoveryMap, currentEvent, currentText, currentTextImage} = this.state
+    // let {Turn, DiscoveryMap, currentEvent, currentText, currentTextImage} = this.state
+    let Turn = this.state.Turn
+    let DiscoveryMap = Object.assign([], this.state.DiscoveryMap)
+    let currentEvent = Object.assign([], this.state.currentEvent)
+    let currentText = this.state.currentText
+    let currentTextImage = this.state.currentTextImage
 
     // update the state partially
     Player.Facing = Direction
-
+    
     // update various parts of the state
     if (FullStateUpdate) {
 
@@ -3149,7 +3411,6 @@ class Game extends Component {
 
       // update player stats
       Player.Stamina--
-      
 
     }
 
@@ -3192,7 +3453,10 @@ class Game extends Component {
 
   DetectCollision = ({ x, y }) => {
 
-    let {WallMap, MonsterMap, NoClip} = this.state
+    // let {WallMap, MonsterMap, NoClip} = this.state
+    let WallMap = Object.assign([], this.state.WallMap)
+    let MonsterMap = Object.assign([], this.state.MonsterMap)
+    let NoClip = this.state.NoClip
 
     if (NoClip) {
       return true
@@ -3230,7 +3494,8 @@ class Game extends Component {
 
   UpdateDiscoveryMap = ({x, y}) => {
 
-    let {DiscoveryMap} = this.state
+    // let {DiscoveryMap} = this.state
+    let DiscoveryMap = Object.assign([], this.state.DiscoveryMap)
 
     let NewDiscoveryMap = DiscoveryMap.map((HorizontalLine, MapY) => {
       return HorizontalLine.map((MapObject, MapX) => {
@@ -3249,7 +3514,8 @@ class Game extends Component {
 
   CheckLockedDoors = ({ x, y }) => {
 
-    let {LockedDoors} = this.state
+    // let {LockedDoors} = this.state
+    let LockedDoors = Object.assign([], this.state.LockedDoors)
 
     if (LockedDoors) {
 
@@ -3273,7 +3539,8 @@ class Game extends Component {
 
   UnlockDoor = (Door) => {
 
-    let {Backpack} = this.state
+    // let {Backpack} = this.state
+    let Backpack = Object.assign({}, this.state.Backpack)
 
     let matchKey = Backpack.Items.filter(Item => {
       return Item.DoorId === Door.Id
@@ -3292,7 +3559,8 @@ class Game extends Component {
 
   CheckLootContainers = ({ x, y }) => {
 
-    let {LootContainers} = this.state
+    // let {LootContainers} = this.state
+    let LootContainers = Object.assign([], this.state.LootContainers)
 
     if (LootContainers) {
 
@@ -3318,7 +3586,9 @@ class Game extends Component {
   }
 
   GenerateRandomLoot = (item) => {
-    let { RandomItems } = this.state
+    // let {RandomItems} = this.state
+    let RandomItems = Object.assign({}, this.state.RandomItems)
+
     if (item && item.random) {
       if (!this.GetUnlucky(10)) {
         item = RandomItems["Level" + item.Level][this.RandomIntegerFromRange(0, RandomItems["Level" + item.Level].length - 1)]
@@ -3332,7 +3602,10 @@ class Game extends Component {
 
   TakeAllLoot = () => {
 
-    let {currentEvent, Backpack, Player} = this.state
+    // let {currentEvent, Backpack, Player} = this.state
+    let currentEvent = Object.assign([], this.state.currentEvent)
+    let Backpack = Object.assign({}, this.state.Backpack)
+    let Player = Object.assign({}, this.state.Player)
 
     if (Player.Dead) return false
 
@@ -3397,7 +3670,10 @@ class Game extends Component {
 
   TakeSingleLoot = (lootIndex, containerId) => {
     
-    let {LootContainers, Backpack, Player} = this.state
+    // let {LootContainers, Backpack, Player} = this.state
+    let LootContainers = Object.assign([], this.state.LootContainers)
+    let Backpack = Object.assign({}, this.state.Backpack)
+    let Player = Object.assign({}, this.state.Player)
 
     if (Player.Dead) return false
 
@@ -3439,7 +3715,9 @@ class Game extends Component {
 
   CheckInventoryWeight = (Loot) => {
 
-    let {Backpack, Player} = this.state
+    // let {Backpack, Player} = this.state
+    let Backpack = Object.assign({}, this.state.Backpack)
+    let Player = Object.assign({}, this.state.Player)
 
     let BackpackWeight = 0
 
@@ -3453,8 +3731,6 @@ class Game extends Component {
     }
 
     if (Loot) {
-
-      console.log(Loot)
 
       let LootWeight = Loot.map(Item => {
         return Item !== null ? Item.Weight || 0 : 0
@@ -3494,7 +3770,8 @@ class Game extends Component {
 
   WakeUpMonster = ({x, y}) => {
     
-    let {Monsters} = this.state
+    // let {Monsters} = this.state
+    let Monsters = Object.assign([], this.state.Monsters)
 
     if (Monsters) {
 
@@ -3515,7 +3792,9 @@ class Game extends Component {
   }
 
   MoveMonsters = (PlayerNewCoordinates) => {
-    let {Monsters, Player} = this.state
+    // let {Monsters, Player} = this.state
+    let Monsters = Object.assign([], this.state.Monsters)
+    let Player = Object.assign({}, this.state.Player)
 
     if (Monsters) {
 
@@ -3538,7 +3817,8 @@ class Game extends Component {
 
   Patrol = (Monster) => {
 
-    let {MonsterMap} = this.state
+    // let {MonsterMap} = this.state
+    let MonsterMap = Object.assign([], this.state.MonsterMap)
 
     let Surroundings = this.GetSurroundingWalls({x: Monster.x, y: Monster.y})
 
@@ -3584,7 +3864,9 @@ class Game extends Component {
 
   ChasePlayer = (Monster, PlayerNewCoordinates) => {
 
-    let {MonsterMap, WallMap} = this.state
+    // let {MonsterMap, WallMap} = this.state
+    let MonsterMap = Object.assign([], this.state.MonsterMap)
+    let WallMap = Object.assign([], this.state.WallMap)
 
     let originalMonsterCoordinates = {x: Monster.x, y: Monster.y}
     let HorizontalDistance = PlayerNewCoordinates.x - Monster.x
@@ -3732,7 +4014,8 @@ class Game extends Component {
 
   AttackPlayer = (Monster) => {
 
-    let {Player} = this.state
+    // let {Player} = this.state
+    let Player = Object.assign({}, this.state.Player)
 
     if (this.RandomInteger(100) >= Player.Dexterity) {
 
@@ -3752,7 +4035,10 @@ class Game extends Component {
 
   AttackMonster = (MonsterCoordinates) => {
 
-    let {Player, Gear, Monsters} = this.state
+    // let {Player, Gear, Monsters} = this.state
+    let Player = Object.assign({}, this.state.Player)
+    let Gear = Object.assign({}, this.state.Gear)
+    let Monsters = Object.assign([], this.state.Monsters)
 
     if (this.RandomInteger(100) >= Player.Dexterity) {
       
@@ -3784,7 +4070,9 @@ class Game extends Component {
 
   PlayerTakeDamage = (Damage) => {
 
-    let {Player, GodMode} = this.state
+    // let {Player, GodMode} = this.state
+    let Player = Object.assign({}, this.state.Player)
+    let GodMode = this.state.GodMode
 
     if (!GodMode) {
 
@@ -3805,7 +4093,8 @@ class Game extends Component {
 
   MonsterTakeDamage = (Monster, Damage) => {
 
-    let {MonsterMap} = this.state
+    // let {MonsterMap} = this.state
+    let MonsterMap = Object.assign([], this.state.MonsterMap)
 
     Monster.Health = Math.max(0,Monster.Health - Damage)
 
@@ -3823,7 +4112,8 @@ class Game extends Component {
 
   GetSurroundingWalls = ({x, y}) => {
 
-    let {WallMap} = this.state
+    // let {WallMap} = this.state
+    let WallMap = Object.assign([], this.state.WallMap)
 
     let Surroundings = [
       y-1 >= 0 ? WallMap[y-1].slice(x-1, x+2) : [Wall, Wall, Wall],
@@ -3861,7 +4151,9 @@ class Game extends Component {
 
   DrinkPotion = (Item) => {
 
-    let {Player, Backpack} = this.state
+    // let {Player, Backpack} = this.state
+    let Player = Object.assign({}, this.state.Player)
+    let Backpack = Object.assign({}, this.state.Backpack)
 
     // Healing potion
     if (Player[Item.Heal]) {
@@ -3898,7 +4190,9 @@ class Game extends Component {
 
   ConsumeFood = (Item) => {
     
-    let {Player, Backpack} = this.state
+    // let {Player, Backpack} = this.state
+    let Player = Object.assign({}, this.state.Player)
+    let Backpack = Object.assign({}, this.state.Backpack)
 
     let RestoreStamina = Number(Item.RestoreStamina)
     let Bonus = RestoreStamina + this.RandomIntegerFromRange(Math.floor(RestoreStamina/-4),Math.ceil(RestoreStamina/4))
@@ -3935,7 +4229,8 @@ class Game extends Component {
 
   RemoveItemFromInventory = (Item) => {
 
-    let {Backpack} = this.state
+    // let {Backpack} = this.state
+    let Backpack = Object.assign({}, this.state.Backpack)
 
     let UpdatedBackpackItems = []
 
@@ -3954,7 +4249,8 @@ class Game extends Component {
 
     if (!Source) return false
 
-    let {Player} = this.state
+    // let {Player} = this.state
+    let Player = Object.assign({}, this.state.Player)
 
     if (Source.XP) {
       
