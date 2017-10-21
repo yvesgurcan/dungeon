@@ -94,6 +94,10 @@ export const UtilityAssets = {
     ,
     MaxEventLogEntries: 5
     ,
+    MaxSoundFilesPerFolder: 10
+    ,
+    DefaultSoundVolume: .3
+    ,
 
     // how much experience does the player need to reach a level
     LevelXP: {

@@ -7,6 +7,7 @@ import Functions from "./Functions.js"
 /* utility */
 
 const Debug = true
+const SoundDebug = false
 
 const {North, South, West, East} = UtilityAssets.Directions
 const {Wall, Door, LootContainer, Undiscovered, Empty} = UtilityAssets.MapObjects
@@ -244,6 +245,42 @@ class ItemImageBlock extends Component {
         <View style={Styles.ItemImageBlockNumber} hidden={!this.props.showIndex}>
           {this.props.index}
         </View>
+      </View>
+    )
+  }
+}
+
+/* set volume */
+
+class Volume extends Component {
+  onClick = () => {
+
+    let Sound = {...this.props.Sound}
+    let Volume = 0
+    
+    // Create sound object
+    if (!Object.getOwnPropertyNames(Sound).length) {
+      Volume = UtilityAssets.DefaultSoundVolume - .1
+    }
+    // Update sound object
+    else {
+      if (Sound.Volume - .1 < 0) {
+        Volume = 1
+      }
+      else {
+        Volume = Sound.Volume - .1 
+      }
+    }
+
+    this.props.SetVolume(Math.floor(Volume*100)/100)
+
+  }
+  render() {
+    return (
+      <View style={Styles.Volume}>
+        <Block onClick={this.onClick}>
+        Sound: {this.props.Sound ? this.props.Sound.Volume*100 : UtilityAssets.DefaultSoundVolume*100}%
+        </Block>
       </View>
     )
   }
@@ -527,7 +564,7 @@ class ActionButton extends Component {
     }
 
     this.props.onClick()
-    
+
   }
   render() {
     return (
@@ -1993,6 +2030,7 @@ class Game extends Component {
       let SpellBookRow = 7
       let AccessoriesStartRow = 6
       let AccessoriesStopRow = 8
+      let VolumeRow = 9
 
       if (MobileScreen) {
 
@@ -2007,6 +2045,7 @@ class Game extends Component {
         SpellBookRow = 9
         AccessoriesStartRow = 10
         AccessoriesStopRow = 11
+        VolumeRow = 12
 
       }
 
@@ -2165,6 +2204,8 @@ class Game extends Component {
           // contact (row2)
           "25px " + 
           // header (row3)
+          "auto" +
+          // body (row4)
           "auto" +
           // body (row4)
           "auto"
@@ -2779,7 +2820,6 @@ class Game extends Component {
           gridColumnEnd: SpellBookStopColumn,
           gridRowStart: SpellBookRow,
           borderLeft: HUDBorder,
-          borderBottom: HUDBorder,
           padding: HUDBlockPadding2,
           backgroundImage: "url(graphics/hud/metal.jpg)",
           backgroundPosition: MobileScreen ? "0px -440px" : "0px -248px", 
@@ -2795,10 +2835,22 @@ class Game extends Component {
           gridRowStart: AccessoriesStartRow,
           gridRowEnd: AccessoriesStopRow,
           borderRight: MobileScreen ? null : HUDBorder,
-          borderBottom: HUDBorder,
           padding: HUDBlockPadding,
           backgroundImage: "url(graphics/hud/metal.jpg)",
           backgroundPosition: MobileScreen ? "0px -491px" : TabletScreen ? "-452px -128px" : "-604px -128px", 
+        },
+        // Volume Control
+        Volume: {
+          gridColumnStart: FirstColumn,
+          gridColumnEnd: LastColumn,
+          gridRowStart: VolumeRow,
+          textAlign: "right",
+          background: "white",
+          padding: HUDBlockPadding,
+          backgroundImage: "url(graphics/hud/metal.jpg)",
+          backgroundPosition: MobileScreen ? "0px -508px" : "0px -348px",
+          color: "white",
+
         },
         // Item Image
         ItemImageBlock: {
@@ -2853,6 +2905,200 @@ class Game extends Component {
       })
     
     }
+
+  }
+
+  SetVolume = (Volume) => {
+
+    let Sound = {...this.state.Sound}
+
+    // Create sound object
+    if (!Object.getOwnPropertyNames(Sound).length) {
+      Sound = {
+        Volume: Volume,
+      }
+    }
+    // Update sound object
+    else {
+      Sound.Volume = Volume      
+    }
+
+    this.setState({Sound: Sound})
+
+  }
+
+  PlaySound = (SoundName, Precedence) => {
+
+    const SoundFileExtensions = [".wav",".mp3",".ogg"]
+    const SoundFileFolders = ["", SoundName + "/"]
+
+    let Sound = {...this.state.Sound}
+    let SoundPlaying = false
+    let CountTest = 0
+    let CountErrors = 0
+    let MaxErrorCount =
+      SoundFileFolders.length * SoundFileExtensions.length +
+      (SoundFileFolders.length-1) * SoundFileExtensions.length * UtilityAssets.MaxSoundFilesPerFolder
+
+    let SoundArray = []
+
+    // Create sound object
+    if (!Object.getOwnPropertyNames(Sound).length) {
+      Sound = {
+        Volume: .3,
+        SoundEffect: {
+          SoundName: SoundName,
+          Precedence: Precedence,
+        },        
+      }
+    }
+
+    let AudioObject = new Audio()
+
+    /* Function to handle single sound */
+    let PlaySingleFile = function(AudObj) {
+
+      AudioObject.play()
+      .then(function() {
+
+        AudObj.volume = Sound.Volume
+        SoundPlaying = true
+
+      })
+      .catch(function() {
+
+        CountErrors++
+
+        // did not find a sound file that matches any extension
+        if (CountErrors === MaxErrorCount) {
+          console.error(["Sound '", SoundName, "' not found."].join(""))
+        }
+
+      })
+    }
+
+    /* Functions to handle random sound selection */
+    // on error
+    let SoundFileDoesNotExist = function() {
+
+      CountErrors++
+      CountTest++
+
+      if (CountErrors === MaxErrorCount) {
+        console.error(["Sound '", SoundName, "' not found."].join(""))
+      }
+
+    }
+    // on loaded data
+    var that = this
+    let SoundFileExists = function(AudObj, i, x, p) {
+
+      AudObj.onloadeddata = function() {
+
+        if (SoundPlaying) {
+          console.warn(
+            [
+              `Warning: Sound files for the '`,SoundName,`' event were both found in the 'sounds/' folder and in the 'sounds/`,SoundName + "/",`' subfolder.
+              \nIf you want to play a randomly selected sound when this event occur, keep the 'sounds/`,SoundName + "/", `' subfolder and delete the '`,SoundName,`' file at the root of the 'sounds/' folder.
+              \nIf you want to play the exact same sound every time, delete the 'sounds/`,SoundName + "/",`' subfolder and keep the '`,SoundName,`' file at the root of the 'sounds/' folder.`
+            ].join(""))
+          return null
+        }
+
+        CountTest++
+
+        SoundArray.push("/sounds/" +
+        SoundFileFolders[i] +
+        SoundName + (p || "") + SoundFileExtensions[x])
+
+        if (CountTest === MaxErrorCount) {
+          
+          let SelectedSound = SoundArray[that.RandomInteger(SoundArray.length)]
+
+          AudObj = new Audio(SelectedSound)
+
+          if (SoundDebug) console.log("Random sound options:", SoundArray)
+
+          AudObj.play()
+          .then(function() {
+
+            AudObj.volume = Sound.Volume
+            SoundPlaying = true
+
+          })
+          .catch(function() {
+
+              console.error(["Could not play '", SelectedSound, "'."].join(""))
+          })
+
+        }
+      }
+
+    } 
+
+    /* Find audio file */
+    // Inspect folders
+    for (let i = 0; i < SoundFileFolders.length; i++) {
+
+      // Inspect file extensions
+      for (let x = 0; x < SoundFileExtensions.length; x++) {
+
+        // Inspect subfolders
+        if (SoundFileFolders[i] !== "") {
+
+          // Try numbered file names (e.g.: /drink_potion/drink_potion1.wav)
+          for (let p = 0; p <= UtilityAssets.MaxSoundFilesPerFolder; p++) {
+
+            if (SoundDebug) console.log("Inspecting:", "/sounds/" + SoundFileFolders[i] + SoundName + (p || "") + SoundFileExtensions[x])
+
+            AudioObject = new Audio(
+              "/sounds/" +
+              SoundFileFolders[i] +
+              SoundName + (p || "") + SoundFileExtensions[x]
+            )
+
+            AudioObject.onerror = SoundFileDoesNotExist
+
+            SoundFileExists(AudioObject, i, x, p) 
+
+            if (SoundPlaying) {
+              break
+            }
+
+          }
+          
+        }
+
+        // Inspect root folder
+        else {
+
+          CountTest++
+
+          if (SoundDebug) console.log("Inspecting:", "/sounds/" + SoundName + SoundFileExtensions[x])
+
+          AudioObject = new Audio(
+            "/sounds/" +
+            SoundName + SoundFileExtensions[x]
+          )
+
+          PlaySingleFile(AudioObject)
+
+        }
+
+        if (SoundPlaying) {
+          console.log("BREAK")
+          break
+        }
+
+      }
+
+      if (SoundPlaying) {
+        break
+      }
+
+    }
+
+    this.setState({Sound: Sound})
 
   }
 
@@ -4093,10 +4339,15 @@ class Game extends Component {
       let Damage = this.RandomIntegerFromRange(Monster.Damage.Min,Monster.Damage.Max)
 
       if (this.PlayerTakeDamage(Damage)) {
+
+        this.PlaySound("attack_hit")
+
         this.SetText(Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + UtilityAssets.PartialMessages.MonsterAttacking)
       }
     }
     else {
+
+      this.PlaySound("attack_missed")
 
       this.SetText(Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + UtilityAssets.PartialMessages.MonsterMissed)
 
@@ -4126,6 +4377,9 @@ class Game extends Component {
         console.log(Gear.LeftHand.Damage.Min + this.AbilityModifier(Player.Strength), Gear.LeftHand.Damage.Max + this.AbilityModifier(Player.Strength))
 
         if (this.MonsterTakeDamage(Monster, Damage)) {
+
+          this.PlaySound("attack_hit")
+
           this.SetText(UtilityAssets.PartialMessages.PlayerHit + Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + UtilityAssets.PartialMessages.Period)
         }
 
@@ -4133,6 +4387,9 @@ class Game extends Component {
 
     }
     else {
+
+      this.PlaySound("attack_missed")
+
       this.SetText(UtilityAssets.Messages.PlayerMissed)
 
     }
@@ -4252,6 +4509,9 @@ class Game extends Component {
     }
 
     Backpack.Items = this.RemoveItemFromInventory(Item)
+
+    this.PlaySound("drink_potion", 999)
+
 
     this.setState({Player: Player, Backpack: Backpack}, function() {
       this.CheckInventoryWeight()
@@ -4385,6 +4645,7 @@ class Game extends Component {
         <Inventory {... this} {... this.state} />
         <SpellBook {... this} {... this.state} />
         <Accessories {... this} {... this.state} />
+        <Volume {... this} {... this.state}/>
       </View>
     )
   }
