@@ -512,19 +512,22 @@ class ActionButton extends Component {
   }
   onClick = () => {
 
-    if (!this.props.onClick) {
-      console.warn("This feature is not ready yet :)")
-      return null
-    }
-
-    this.props.onClick()
     this.setState({ style: Styles.ActionButtonClick })
+
     let that = this
     setTimeout(function () {
       if (that.state.style === Styles.ActionButtonClick) {
         that.setState({ style: Styles.ActionButtonHover })
       }
     }, 50)
+
+    if (!this.props.onClick) {
+      console.warn("This feature is not ready yet :)")
+      return null
+    }
+
+    this.props.onClick()
+    
   }
   render() {
     return (
@@ -1948,9 +1951,10 @@ class Game extends Component {
       const HUDBorder = "1px solid black"
       const HUDStatBarHeight = "10px"
 
-      const ButtonNormalBackground = "lightgray"
-      const ButtonHoverBackground = "darkgray"
-      const ButtonClickBackground = "gray"
+      const ButtonNormalBackground = "linear-gradient(135deg, #ccc 35%, #ddd 70%, #eee 100%)"
+      
+      const ButtonHoverBackground = "linear-gradient(135deg, #aaa 35%, #ccc 70%, #ccc 100%)"
+      const ButtonClickBackground = "linear-gradient(135deg, #888 35%, #aaa 70%, #ddd 100%)"
 
       const MapBackgroundColor = "white"
 
@@ -2625,9 +2629,6 @@ class Game extends Component {
           margin: "auto",
           marginTop: "25px",
         },
-        RestButton: {
-          width: "60px",
-        },
         PlayerAttributesStacked: {
           gridColumnStart: PlayerAttributesStartColumn,
           gridColumnEnd: PlayerAttributesStopColumn,
@@ -2673,18 +2674,20 @@ class Game extends Component {
           width: "100%",
           height: "14px",
           padding: "1px",
-          border: "1px solid gray",
+          border: "1px solid #555",
+          background: "linear-gradient(135deg, dimgray 35%, gray 70%, #aaa 100%)",
+          boxShadow: "inset 0 0 10px gray",
         },
         HealthBar: {
-          background: "red",
+          background: "linear-gradient(0deg, red 50%, lightgray 100%)",
           height: HUDStatBarHeight,
         },
         ManaBar: {
-          background: "blue",
+          background: "linear-gradient(0deg, blue 50%, lightgray 100%)",
           height: HUDStatBarHeight,
         },
         StaminaBar: {
-          background: "green",
+          background: "linear-gradient(0deg, green 50%, lightgray 100%)",
           height: HUDStatBarHeight,
         },
         // Directional Arrows
@@ -2694,60 +2697,66 @@ class Game extends Component {
         ArrowBlock: {
           display: "inline-block",
           width: "32px",
-          height: "23px",
+          height: "21.5px",
           textAlign: "center",
-          border: "1px solid black",
+          border: "1px solid #333",
           paddingTop: "3px",
           margin: "1px",
           background: ButtonNormalBackground,
+          boxShadow: "inset 0 0 10px gray",
         },
         ArrowBlockHover: {
           display: "inline-block",
           width: "32px",
-          height: "23px",
+          height: "21.5px",
           textAlign: "center",
-          border: "1px solid black",
+          border: "1px solid #333",
           paddingTop: "3px",
           margin: "1px",
           background: ButtonHoverBackground,
+          boxShadow: "inset 0 0 10px gray",
         },
         ArrowBlockClick: {
           display: "inline-block",
           width: "32px",
-          height: "23px",
+          height: "21.5px",
           textAlign: "center",
-          border: "1px solid black",
+          border: "1px solid #333",
           paddingTop: "3px",
           margin: "1px",
           background: ButtonClickBackground,
+          boxShadow: "inset 0 0 10px gray",
         },
         // Actions
         ActionButton: {
           display: "inline-block",
           textAlign: "center",
           border: "1px solid black",
-          padding: "3px",
+          padding: "3px 20px 3px 20px",
           margin: "1px",
           userSelect: "none",
           background: ButtonNormalBackground,
+          boxShadow: "inset 0 0 10px gray",
         },
         ActionButtonHover: {
           display: "inline-block",
           textAlign: "center",
           border: "1px solid black",
-          padding: "3px",
+          padding: "3px 20px 3px 20px",
           margin: "1px",
           userSelect: "none",
           background: ButtonHoverBackground,
+          boxShadow: "inset 0 0 10px gray",
         },
         ActionButtonClick: {
           display: "inline-block",
           textAlign: "center",
           border: "1px solid black",
-          padding: "3px",
+          padding: "3px 20px 3px 20px",
           margin: "1px",
           userSelect: "none",
           background: ButtonClickBackground,
+          boxShadow: "inset 0 0 10px gray",
         },
         // Inventory
         Inventory: {
@@ -2795,14 +2804,12 @@ class Game extends Component {
         ItemImageBlock: {
           height: "32px",
           width: "32px",
-          border: "1px solid gray",
+          border: "1px solid #666",
           margin: "1px",
           textAlign: "center",
           float: "left",
-          background: "lightgray",
-          // background: "linear-gradient(90deg, light gray, white 50%)",
-          // background: "linear-gradient(135deg, rgb(30,87,153),rgb(41,137,216) 50%,rgb(32,124,202) 51%,rgb(125,185,232) 100%)",
-          background: "linear-gradient(135deg, gray 50%, lightgray 100%)",
+          background: "linear-gradient(135deg, #999 35%, #aaa 60%, lightgray 100%)",
+          boxShadow: "inset 0 0 10px gray",
         },
         ItemImageBlockNumber: {
           color: "black",
@@ -2828,7 +2835,6 @@ class Game extends Component {
         ItemImagePlaceholder: {
           height: "30px",
           width: "30px",
-          border: "1px solid gray",
           background: "lightgray",
           padding: "1px",
           margin: "1px"
