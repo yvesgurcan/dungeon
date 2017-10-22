@@ -31,6 +31,11 @@ export const UtilityAssets = {
         LockedDoor: "You try to open the door... it's locked.",
         PlayerMissed: "You missed your target!",
         PlayerDead: "Ouch! You are dead.",
+        Loot: {
+            Gathered: "You gathered all the loot in your backpack.",
+            TooHeavy: "The loot is too heavy.",
+            TooMuch: "You can not take all the loot.",
+        },
         Potion: {
             NoEffect: "The potion had no effect.",
             // Health

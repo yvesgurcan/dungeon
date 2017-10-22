@@ -6,7 +6,7 @@ import Functions from "./Functions.js"
 
 /* utility */
 
-const Debug = true
+const Debug = DynamicAssets.Debug || false
 const SoundDebug = false
 
 const {North, South, West, East} = UtilityAssets.Directions
@@ -393,6 +393,8 @@ class Inventory extends Component {
       return (
         <ItemImageBlock
           key={index}
+          index={item && item.image ? "B" + (index <= 99 ? ("0" + Number(index+1)).slice(-2) : index) : null}
+          showIndex
           image={(item && item.image) || null}
           name={(item && item.Name) || null}
           item={item}
@@ -1351,7 +1353,7 @@ class Map extends Component {
     // let {Player, MonsterMap, ShowFullMap} = this.props
     let Player = Object.assign({}, this.props.Player)
     let MonsterMap = Object.assign([], this.props.MonsterMap)
-    let ShowFullMap = Object.assign([], this.props.ShowFullMap)
+    let ShowFullMap = this.props.ShowFullMap
 
     if (
       ShowFullMap
@@ -1374,7 +1376,7 @@ class Map extends Component {
 
     // let {Player, ShowFullMap, WallMap, WallMapRevealed, DiscoveryMap, LootMap} = this.props
     let Player = Object.assign({}, this.props.Player)
-    let ShowFullMap = Object.assign([], this.props.ShowFullMap)
+    let ShowFullMap = this.props.ShowFullMap
     let WallMap = Object.assign([], this.props.WallMap)
     let WallMapRevealed = Object.assign([], this.props.WallMapRevealed)
     let DiscoveryMap = Object.assign([], this.props.DiscoveryMap)
@@ -1991,6 +1993,7 @@ class Game extends Component {
     let Player = Object.assign({}, this.state.Player)
     let CreateCharacter = this.state.CreateCharacter
     let Keystrokes = Object.assign([], this.state.Keystrokes)
+    let Sound = {...this.state.Sound}
 
     if (Player.Dead) return false
     if (CreateCharacter) return false
@@ -2007,6 +2010,14 @@ class Game extends Component {
       if (this.state.Keystrokes.join("").match(/[0-9][1-9]/) !== null) {
 
         this.CastSpellFromKeyboard(this.state.Keystrokes.join(""))
+        this.FlushKeystrokeHistory()
+
+      }
+
+      // detect "B" + two digit numbers between 01 and 99
+      if (this.state.Keystrokes.join("").match(/b[0-9][1-9]/) !== null) {
+
+        this.UseItemFromKeyboard(this.state.Keystrokes.join(""))
         this.FlushKeystrokeHistory()
 
       }
@@ -2043,6 +2054,14 @@ class Game extends Component {
         this.MovePlayer("East")
         this.onClickArrow(keypress.key)
         this.FlushKeystrokeHistory()
+        break
+
+      case "+":
+        this.SetVolume(Sound ? Math.min(1, Sound.Volume + .1) : 0.3, Sound && Sound.Volume + .1 < 1 ? "sound_control" : null)
+        break
+
+      case "-":
+        this.SetVolume(Sound ? Math.max(0, Sound.Volume - .1) : 0.3, Sound && Sound.Volume - .1 > 0 ? "sound_control" : null)
         break
 
       case "t":
@@ -3011,12 +3030,12 @@ class Game extends Component {
         ItemImageBlockNumber: {
           color: "black",
           background: "white",
-          width: "13px",
+          width: "15px",
           // webkitTextStroke: "0.25px black",
-          fontSize: "12px",
+          fontSize: "10px",
           position: "relative",
-          top: -16,
-          left: 19,
+          top: -15,
+          right: -16,
           // webkitTextStroke: "0.5px black",
           fontFamily: "VT323, monospace"
         },
@@ -3053,7 +3072,7 @@ class Game extends Component {
 
   }
 
-  SetVolume = (Volume) => {
+  SetVolume = (Volume, SoundName = null) => {
 
     let Sound = {...this.state.Sound}
 
@@ -3068,7 +3087,12 @@ class Game extends Component {
       Sound.Volume = Volume      
     }
 
-    this.setState({Sound: Sound})
+    let that = this
+    this.setState({Sound: Sound}, function() {
+      if (SoundName) {
+        that.PlaySound(SoundName)        
+      }
+    })
 
   }
 
@@ -4096,7 +4120,7 @@ class Game extends Component {
       return null
     })
 
-    if (FreeSlots >= LootCount) {
+    if (FreeSlots >= LootCount && loot.length > 0) {
 
       if (this.CheckInventoryWeight(loot)) {
 
@@ -4113,18 +4137,19 @@ class Game extends Component {
         Player.Stationary = true    
         this.setState({Backpack: Backpack, Player: Player})
 
-        this.SetText("You gathered all the loot in your backpack.")
+        this.SetText(UtilityAssets.Messages.Loot.Gathered)
+        this.PlaySound("take_loot")
              
       }
       else {
-        this.SetText("The loot is too heavy.")
+        this.SetText(UtilityAssets.Messages.Loot.TooHeavy)
           
       }
 
     }
-    else {
+    else if (loot.length > 0) {
 
-      this.SetText("You can not take all the loot.")
+      this.SetText(UtilityAssets.Messages.Loot.TooMuch)
 
     }
 
@@ -4192,7 +4217,7 @@ class Game extends Component {
       BackpackWeight = 0
     }
 
-    if (Loot) {
+    if (Loot && Loot.length > 0) {
 
       let LootWeight = Loot.map(Item => {
         return Item !== null ? Item.Weight || 0 : 0
@@ -4338,6 +4363,7 @@ class Game extends Component {
     if (
       VerticalDistance < 0
       && WallMap[Monster.y-1][Monster.x] === Empty
+      && MonsterMap[Monster.y-1][Monster.x] === Empty
       && Monster.y-1 !== PlayerNewCoordinates.y
     ) {
       Monster.y -= 1
@@ -4346,6 +4372,7 @@ class Game extends Component {
     else if (
       VerticalDistance > 0
       && WallMap[Monster.y+1][Monster.x] === Empty
+      && MonsterMap[Monster.y+1][Monster.x] === Empty
       && Monster.y+1 !== PlayerNewCoordinates.y
     ) {
       Monster.y += 1
@@ -4354,6 +4381,7 @@ class Game extends Component {
     else if (
       HorizontalDistance < 0
       && WallMap[Monster.y][Monster.x-1] === Empty
+      && MonsterMap[Monster.y][Monster.x-1] === Empty
       && Monster.x-1 !== PlayerNewCoordinates.x
     ) {
       Monster.x -= 1
@@ -4362,6 +4390,7 @@ class Game extends Component {
       // player is east of the monster
       HorizontalDistance > 0
       && WallMap[Monster.y][Monster.x+1] === Empty
+      && MonsterMap[Monster.y][Monster.x+1] === Empty
       && Monster.x+1 !== PlayerNewCoordinates.x
     ) {
       Monster.x += 1
@@ -4370,6 +4399,7 @@ class Game extends Component {
     else if (
       VerticalDistance < 0 && HorizontalDistance < 0
       && WallMap[Monster.y-1][Monster.x] === Empty
+      && MonsterMap[Monster.y-1][Monster.x] === Empty
       && (Monster.y-1 !== PlayerNewCoordinates.y
         || (Monster.y-1 === PlayerNewCoordinates.y
         && Monster.x !== PlayerNewCoordinates.x))
@@ -4380,6 +4410,7 @@ class Game extends Component {
     else if (
       VerticalDistance < 0 && HorizontalDistance < 0
       && WallMap[Monster.y][Monster.x-1] === Empty
+      && MonsterMap[Monster.y][Monster.x-1] === Empty
       && (Monster.x-1 !== PlayerNewCoordinates.x
         || (Monster.x-1 === PlayerNewCoordinates.x
         && Monster.y !== PlayerNewCoordinates.y))
@@ -4390,6 +4421,7 @@ class Game extends Component {
     else if (
       VerticalDistance < 0 && HorizontalDistance > 0
       && WallMap[Monster.y-1][Monster.x] === Empty
+      && MonsterMap[Monster.y-1][Monster.x] === Empty
       && (Monster.y-1 !== PlayerNewCoordinates.y
         || (Monster.y-1 === PlayerNewCoordinates.y
         && Monster.x !== PlayerNewCoordinates.x))
@@ -4400,6 +4432,7 @@ class Game extends Component {
     else if (
       VerticalDistance < 0 && HorizontalDistance > 0
       && WallMap[Monster.y][Monster.x+1] === Empty
+      && MonsterMap[Monster.y][Monster.x+1] === Empty
       && (Monster.x+1 !== PlayerNewCoordinates.x
         || (Monster.x+1 === PlayerNewCoordinates.x
         && Monster.y !== PlayerNewCoordinates.y))
@@ -4410,6 +4443,7 @@ class Game extends Component {
     else if (
       VerticalDistance > 0 && HorizontalDistance < 0
       && WallMap[Monster.y+1][Monster.x] === Empty
+      && MonsterMap[Monster.y+1][Monster.x] === Empty
       && (Monster.y+1 !== PlayerNewCoordinates.y
         || (Monster.y+1 === PlayerNewCoordinates.y
         && Monster.x !== PlayerNewCoordinates.x))
@@ -4420,6 +4454,7 @@ class Game extends Component {
     else if (
       VerticalDistance > 0 && HorizontalDistance < 0
       && WallMap[Monster.y][Monster.x-1] === Empty
+      && MonsterMap[Monster.y][Monster.x-1] === Empty
       && (Monster.x-1 !== PlayerNewCoordinates.x
         || (Monster.x-1 === PlayerNewCoordinates.x
         && Monster.y !== PlayerNewCoordinates.y))
@@ -4430,6 +4465,7 @@ class Game extends Component {
     else if (
       VerticalDistance > 0 && HorizontalDistance > 0
       && WallMap[Monster.y+1][Monster.x] === Empty
+      && MonsterMap[Monster.y+1][Monster.x] === Empty
       && (Monster.y+1 !== PlayerNewCoordinates.y
         || (Monster.y+1 === PlayerNewCoordinates.y
         && Monster.x !== PlayerNewCoordinates.x))
@@ -4440,6 +4476,7 @@ class Game extends Component {
     else if (
       VerticalDistance > 0 && HorizontalDistance > 0
       && WallMap[Monster.y][Monster.x+1] === Empty
+      && MonsterMap[Monster.y][Monster.x+1] === Empty
       && (Monster.x+1 !== PlayerNewCoordinates.x
         || (Monster.x+1 === PlayerNewCoordinates.x
         && Monster.y !== PlayerNewCoordinates.y))
@@ -4611,6 +4648,23 @@ class Game extends Component {
     }
 
     return Surroundings
+
+  }
+
+  UseItemFromKeyboard = (ItemNumber) => {
+
+    let Backpack = {... this.state.Backpack}
+    
+    let FindItem = Backpack.Items.filter((Item, index) => {
+      if (index === Number(ItemNumber.replace("b","")-1)) {
+        return true
+      }
+      return false
+    })
+
+    if (FindItem.length === 0) return false  
+
+    this.UseItem(FindItem[0])
 
   }
 

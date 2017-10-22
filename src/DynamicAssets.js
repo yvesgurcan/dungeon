@@ -14,6 +14,8 @@ export const DynamicAssets = {
     ,
     GodMode: Debug || false
     ,
+    Debug: Debug
+    ,
 
     currentEvent: []
     ,
