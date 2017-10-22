@@ -250,37 +250,37 @@ class ItemImageBlock extends Component {
   }
 }
 
+class BottomControls extends Component {
+  render() {
+    return (
+      <View style={Styles.BottomControls}>
+      </View>
+    )
+  }
+}
+
 /* set volume */
 
 class Volume extends Component {
-  onClick = () => {
+  onClick = (NewValueRatio) => {
 
-    let Sound = {...this.props.Sound}
-    let Volume = 0
-    
-    // Create sound object
-    if (!Object.getOwnPropertyNames(Sound).length) {
-      Volume = UtilityAssets.DefaultSoundVolume - .1
-    }
-    // Update sound object
-    else {
-      if (Sound.Volume - .1 < 0) {
-        Volume = 1
-      }
-      else {
-        Volume = Sound.Volume - .1 
-      }
-    }
-
-    this.props.SetVolume(Math.floor(Volume*100)/100)
+    this.props.SetVolume(Math.min(1,Math.max(0,Math.floor(NewValueRatio*100)/100)))
 
   }
+
   render() {
+    let style = {...Styles.Slider, ...Styles.VolumeSlider}    
     return (
-      <View style={Styles.Volume}>
-        <Block onClick={this.onClick}>
-        Sound: {this.props.Sound ? this.props.Sound.Volume*100 : UtilityAssets.DefaultSoundVolume*100}%
+      <View style={Styles.VolumeControl}>
+        <Block style={Styles.VolumeLabel}>
+          Sound:
         </Block>
+        <Slider
+          Percentage
+          CurrentValue={this.props.Sound ? this.props.Sound.Volume : UtilityAssets.DefaultSoundVolume}
+          onClick={this.onClick}
+          style={style}
+        />
       </View>
     )
   }
@@ -590,6 +590,103 @@ class Rest extends Component {
           </View>
         </ActionButton>
       </View>
+    )
+  }
+}
+
+/* slider */
+
+class Slider extends Component {
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      Dragging: false,
+      Id: Math.floor(Math.random() * 99999999999)
+    }
+
+  }
+
+  onClick = (input) => {
+
+    input.preventDefault()
+
+    let State = {...this.state}
+
+    let {style} = this.props
+    let SliderWidth = style.width.replace("px","")
+
+    this.props.onClick((document.getElementById(this.state.Id).getBoundingClientRect().x - input.clientX) / SliderWidth * -1)
+
+    delete State.x
+    delete State.y
+    State.Dragging = false
+
+    this.setState(State)
+
+  }
+  
+  onMouseDown = (input) => {
+
+  input.preventDefault()
+
+  if (!this.state.Dragging) {
+    this.setState({
+      Dragging: true,
+      x: input.clientX,
+      y: input.clientY,
+    })
+  }
+
+  var that = this
+  document.addEventListener("mouseup", that.onMouseUp)
+
+  }
+
+  onMouseUp = (input) => {
+
+    input.preventDefault()
+
+    let State = {...this.state}
+
+    let {style, Percentage, CurrentValue, MaxValue, MinValue} = this.props
+    let SliderWidth = style.width.replace("px","")
+    let Ratio = Percentage ? CurrentValue : (CurrentValue - MinValue)/(MaxValue-MinValue)
+
+    this.props.onClick((State.x - SliderWidth * Ratio - input.clientX) / SliderWidth * -1)
+
+    delete State.x
+    delete State.y
+    State.Dragging = false
+
+    this.setState(State)
+
+    document.removeEventListener("mouseup", this.onMouseUp)
+
+  }
+
+  render() {
+    let {style, Percentage, CurrentValue, MaxValue, MinValue} = this.props
+    let SliderWidth = style.width.replace("px","")
+    let CursorWidth = Number(Styles.SliderCursor.width.replace("px","")) + Number(Styles.SliderCursor.border.replace(/[^0-9]/g, "") * 2)
+    let Ratio = Percentage ? null : (CurrentValue - MinValue)/(MaxValue-MinValue)
+    return (
+      <View style={style}>
+        <Block
+          id={this.state.Id}
+          onClick={this.onClick}
+          onMouseDown={this.onMouseDown}
+          title={this.props.Percentage ? CurrentValue * 100 + "%" : CurrentValue}>
+          <Block style={Styles.SliderTrack}/>
+          <Block style={Styles.SliderInside}/>
+          <Block
+            style={{
+            ...Styles.SliderCursor,
+            left: (((SliderWidth-CursorWidth*2) * (Ratio || CurrentValue)) + CursorWidth/2 + "px")
+          }}/>
+        </Block>
+      </View>    
     )
   }
 }
@@ -2839,18 +2936,66 @@ class Game extends Component {
           backgroundImage: "url(graphics/hud/metal.jpg)",
           backgroundPosition: MobileScreen ? "0px -491px" : TabletScreen ? "-452px -128px" : "-604px -128px", 
         },
-        // Volume Control
-        Volume: {
+        // Game settings
+        BottomControls: {
           gridColumnStart: FirstColumn,
           gridColumnEnd: LastColumn,
           gridRowStart: VolumeRow,
-          textAlign: "right",
           background: "white",
           padding: HUDBlockPadding,
           backgroundImage: "url(graphics/hud/metal.jpg)",
           backgroundPosition: MobileScreen ? "0px -508px" : "0px -348px",
+        },
+        // Volume
+        VolumeControl: {
+          gridColumnStart: MobileScreen ? 6 : 7,
+          gridColumnEnd: LastColumn,
+          gridRowStart: VolumeRow,
+          padding: HUDBlockPadding,
           color: "white",
-
+        },
+        VolumeLabel: {
+          display: "inline-block",
+          margin: "1px",
+          textAlign: "right",
+          width: "60px",
+        },
+        VolumeSlider: {
+          float: "right",
+          width: "120px",
+        },
+        // Sliders
+        Slider: {
+          display:"block",
+          height: "22px",
+        },
+        SliderTrack: {
+          position: "relative",
+          top: "8px",
+          margin: "auto",
+          width: "calc(100% - 4px)",
+          height: "4px",
+          border: "1px solid black",
+          background: "linear-gradient(90deg, lightgray 0%, dimgray 100%)",
+          borderRadius: "2px",
+        },
+        SliderInside: {
+          position: "relative",
+          top: "4px",
+          margin: "auto",
+          width: "calc(100% - 8px)",
+          height: "2px",
+          background: "linear-gradient(90deg, #999 0%, #555 100%)",
+          borderRadius: "2px",
+        },
+        SliderCursor: {
+          position: "relative",
+          top: "-7.5px",
+          height: "19px",
+          width: "8px",
+          border: "1px solid black",
+          background: "linear-gradient(135deg, dimgray 0%, lightgray 100%)",
+          borderRadius: "4px",
         },
         // Item Image
         ItemImageBlock: {
@@ -4645,6 +4790,7 @@ class Game extends Component {
         <Inventory {... this} {... this.state} />
         <SpellBook {... this} {... this.state} />
         <Accessories {... this} {... this.state} />
+        <BottomControls/>
         <Volume {... this} {... this.state}/>
       </View>
     )
