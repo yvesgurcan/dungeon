@@ -2580,6 +2580,7 @@ class Game extends Component {
         StoryContainer: {
           maxHeight: StoryRowHeight - HUDPadding * 2 + px,
           overflow: "auto",
+          
         },
         Story: {
           userSelect: "text",

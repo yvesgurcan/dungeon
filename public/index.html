@@ -36,6 +36,25 @@
         src: local('VT323 Regular'), local('VT323-Regular'), url(fonts/VT323.woff2) format('woff2');
         unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
       }
+
+      /* scrollbars */
+      div::-webkit-scrollbar
+      {
+        background-color: transparent;
+      }
+      div::-webkit-scrollbar-thumb
+      {
+        /* background: linear-gradient(135deg, #e3d5b3 50%, #d5a761 100%); */
+        background: rgba(0, 0, 0, 0.35);
+        border-radius: 8px;
+        border: 1px solid dimgray;
+      }
+      div::-webkit-scrollbar-track
+      {
+        background-color: transparent;
+      }
+
+
     </style>
 
     <title>Dungeon!</title>
