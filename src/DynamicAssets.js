@@ -1,6 +1,6 @@
 import StaticAssets from "./StaticAssets.js"
 
-const Debug = false
+const Debug = true
 
 export const DynamicAssets = {
 

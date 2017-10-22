@@ -27,6 +27,9 @@ export const UtilityAssets = {
 
     // HUD messages
     Messages: {
+        LoadGameError: {
+            Invalid: "The game state you entered is not valid.",
+        },
         Collision: "You can't go there.",
         LockedDoor: "You try to open the door... it's locked.",
         PlayerMissed: "You missed your target!",

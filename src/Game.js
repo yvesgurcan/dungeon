@@ -261,6 +261,175 @@ class BottomControls extends Component {
   }
 }
 
+/* game state manipulations (save/load) */
+class GameStateOptions extends Component {
+
+  ToggleSaveGameStateBox = () => {
+
+    this.props.ToggleGameStateBox("Save")
+  }
+
+  ToggleLoadGameStateBox = () => {
+
+    this.props.ToggleGameStateBox("Load")
+
+  }
+
+  ToggleCancelGameStateBox = () => {
+
+    this.props.ToggleGameStateBox("Cancel")
+    
+  }
+
+  render() {
+    return (
+      <View style={Styles.GameState}>
+        <ActionButton onClick={this.ToggleSaveGameStateBox}>Save Game</ActionButton>
+        <ActionButton onClick={this.ToggleLoadGameStateBox}>Load Game</ActionButton>
+        <ActionButton onClick={this.ToggleCancelGameStateBox} hidden={!this.props.ShowGameStateBox}>Close</ActionButton>
+      </View>
+    )
+  }
+}
+
+class GameStateBox extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      IncludeStaticAssets: false,
+      GameState: this.GenerateSaveGameState({...this.props.state}, false)
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.ShowGameStateBox === true) {
+      if (!this.props.EditableGameStateBox && nextProps.EditableGameStateBox) {
+        this.props.UpdateGameStateToLoad("")
+        this.setState({GameState: ""})  
+      }
+      else if (!nextProps.EditableGameStateBox && nextProps.state !== this.props.state) {
+        this.setState({GameState: this.GenerateSaveGameState({...nextProps.state})})  
+      }
+    }
+  }
+
+  GenerateSaveGameState = (GameState, IncludeStaticAssets = null) => {
+
+    if (IncludeStaticAssets === null) {
+      IncludeStaticAssets = this.state.IncludeStaticAssets      
+    }
+
+    delete GameState.Keystrokes
+    delete GameState.ShowGameStateBox
+    delete GameState.EditableGameStateBox
+    delete GameState.MobileScreen
+    delete GameState.TabletScreen
+    delete GameState.LoadGameError
+    delete GameState.GameStateToLoad
+    delete GameState.CreateCharacter
+    delete GameState.RandomItems
+
+    // remove debug state
+    delete GameState.ShowFullMap
+    delete GameState.NoClip
+    delete GameState.GodMode
+    delete GameState.Debug
+
+    if (!IncludeStaticAssets) {
+      GameState = this.StripStaticAssets(GameState)      
+    }
+
+    let DisplayState = JSON.stringify(
+      GameState,
+      null,
+      /*function(Key, Value) {
+        // maps
+        if (Key === "WallMap" || Key === "WallMapRevealed" || Key === "DiscoveryMap" || Key === "LootMap" || Key === "MonsterMap") {
+          return (
+              Value.map(NestedArray => {
+                return (
+                  `[` +
+                    NestedArray.map(ArrayElement => {
+                      return (
+                        ArrayElement
+                      )
+                    }) +
+                    `]`
+                )})
+          )
+        }
+        else {
+          return Value          
+        }
+      },*/
+      `\t`,
+    )
+
+    // console.log(DisplayState)
+    return DisplayState
+  }
+
+  StripStaticAssets = (GameState) => {
+
+    delete GameState.UniqueItems
+    delete GameState.Items
+    delete GameState.Spells
+    delete GameState.Bestiary
+
+    return GameState
+  }
+
+  ToggleSaveStaticAsset = () => {
+    
+    let GameState = {...this.props.state}
+    let IncludeStaticAssets = !this.state.IncludeStaticAssets
+
+    this.setState({
+      GameState: this.GenerateSaveGameState(GameState, IncludeStaticAssets),
+      IncludeStaticAssets: IncludeStaticAssets,
+    })  
+
+  }
+
+  onChange = (input) => {
+
+    if (this.props.EditableGameStateBox) {
+      this.props.UpdateGameStateToLoad(input.target.value)
+      this.setState({GameState: input.target.value})
+    }
+
+  }
+
+  onClick = (input) => {
+
+    if (!this.props.EditableGameStateBox) {
+      input.target.select()
+    }
+  }
+
+  render() {
+    return (
+      <View style={Styles.GameStateBoxContainer} 
+      hidden={!this.props.ShowGameStateBox}>
+        <Block hidden={!this.props.EditableGameStateBox}>
+          {this.props.LoadGameError}
+        </Block>
+        <Block hidden={this.props.EditableGameStateBox}>
+          <input type="checkbox" checked={this.state.IncludeStaticAssets} onChange={this.ToggleSaveStaticAsset}/> include static assets
+        </Block>
+        <textarea
+          readOnly={!this.props.EditableGameStateBox}
+          style={{...Styles.GameStateBox}}
+          onChange={this.onChange}
+          onClick={this.onClick}
+          value={this.state.GameState}
+        />
+      </View>
+    )
+  }
+}
+
 /* set volume */
 
 class Volume extends Component {
@@ -575,10 +744,11 @@ class ActionButton extends Component {
   render() {
     return (
       <View
+        hidden={this.props.hidden}
         onClick={this.onClick}
         onMouseMove={this.HoverStyle}
         onMouseLeave={this.NormalStyle}
-        style={this.state.style}>
+        style={this.props.hidden ? {display: "none"} : this.state.style}>
         {this.props.children}
       </View>
     )
@@ -1844,7 +2014,6 @@ class Contact extends Component {
         nextProps.MobileScreen !== this.props.MobileScreen
         || nextProps.TabletScreen !== this.props.TabletScreen
       ) {
-        console.warn("RENDER")
       return true
     }
     return false
@@ -1974,7 +2143,7 @@ class Game extends Component {
 
     // initState.CreateCharacter = true
 
-    initState.Player.Backpack = 
+    initState.Backpack = 
     this.CheckInventoryWeightAtStartUp(initState.Backpack)
 
     initState.Turn = 0
@@ -1987,6 +2156,8 @@ class Game extends Component {
     // debug
     initState.Player.Mana = initState.Player.MaxMana = 999
     initState.Player.Level = 20
+    initState.ShowGameStateBox = true
+
 
     this.state = initState
 
@@ -2003,16 +2174,89 @@ class Game extends Component {
     this.setState({CreateCharacter: false})
   }
 
+  ToggleGameStateBox = (Operation) => {
+
+    let EditableGameStateBox = this.state.EditableGameStateBox
+    let Visibility = !this.state.ShowGameStateBox
+    let Editable = true
+
+    // can not modify the game state
+    if (Operation === "Save") {
+      Editable = false
+    }
+
+    // user has already clicked the save game button 
+    if (Operation === "Save" && !EditableGameStateBox) {
+      Visibility = true
+    }
+
+    // user has already clicked the load game button 
+    if (Operation === "Save" && EditableGameStateBox) {
+      Visibility = true
+      this.UpdateGameStateToLoad("")
+    }
+
+    // user has already clicked the save game button
+    if (Operation === "Load" && !EditableGameStateBox) {
+      Visibility = true
+    }
+
+    // load the state
+    if (Operation === "Load" && EditableGameStateBox) {
+      this.LoadGame(this.state.GameStateToLoad)
+      return false
+    }
+
+    // close everything
+    if (Operation === "Cancel") {
+      Editable = false
+      Visibility = false
+      this.UpdateGameStateToLoad("")
+    }
+
+    this.setState({EditableGameStateBox: Editable, ShowGameStateBox: Visibility, LoadGameError: ""})
+
+  }
+
+  UpdateGameStateToLoad = (GameState) => {
+    this.setState({GameStateToLoad: GameState, LoadGameError: ""})
+  }
+
+  LoadGame = () => {
+
+    let GameStateToLoad = this.state.GameStateToLoad
+
+    try {
+          
+      GameStateToLoad = JSON.parse(GameStateToLoad)
+      console.log(GameStateToLoad, GameStateToLoad.Bestiary)
+
+      delete this.state
+
+      this.setState(GameStateToLoad, function() {
+        console.log(this.state, this.state.Bestiary)
+      })
+    
+    }
+    // catch JSON parse error
+    catch (error) {
+
+      if (Debug) console.error("Invalid JSON object.", GameStateToLoad)      
+      this.setState({LoadGameError: UtilityAssets.Messages.LoadGameError.Invalid})
+
+    }
+
+  }
+
   ListenToKeyboard = (keypress) => {
 
-    // let {Player, CreateCharacter, Keystrokes} = this.state
-    let Player = Object.assign({}, this.state.Player)
-    let CreateCharacter = this.state.CreateCharacter
+    let Player = {...this.state.Player}
     let Keystrokes = Object.assign([], this.state.Keystrokes)
     let Sound = {...this.state.Sound}
 
+    // do not capture key strokes
     if (Player.Dead) return false
-    if (CreateCharacter) return false
+    if (keypress.target.tagName.toLowerCase() === "textarea" || keypress.target.tagName.toLowerCase() === "input") return false
 
     keypress.preventDefault()
 
@@ -2166,7 +2410,9 @@ class Game extends Component {
       let SpellBookRow = 7
       let AccessoriesStartRow = 6
       let AccessoriesStopRow = 8
+      let BottomControlsRow = 9
       let VolumeRow = 9
+      let GameStateRow = 10
 
       if (MobileScreen) {
 
@@ -2182,6 +2428,8 @@ class Game extends Component {
         AccessoriesStartRow = 10
         AccessoriesStopRow = 11
         VolumeRow = 12
+        BottomControlsRow = 13
+        GameStateRow = 14
 
       }
 
@@ -2769,8 +3017,6 @@ class Game extends Component {
           gridRowStart: ControlRow,
           gridRowEnd: ControlRow2+1,
           borderTop: HUDBorder,
-          borderLeft: HUDBorder,
-          borderRight: HUDBorder,
           backgroundImage: "url(graphics/hud/metal.jpg)",
         },
         // Name and Ready Weapons
@@ -2941,7 +3187,6 @@ class Game extends Component {
           gridColumnStart: InventoryStartColumn,
           gridColumnEnd: InventoryStopColumn,
           gridRowStart: InventoryRow,
-          borderLeft: HUDBorder,
           padding: HUDBlockPadding2,
           backgroundImage: "url(graphics/hud/metal.jpg)",
           backgroundPosition: MobileScreen ? "0px -250px" : "0px -128px",
@@ -2971,7 +3216,6 @@ class Game extends Component {
           gridColumnEnd: AccessoriesStopColumn,
           gridRowStart: AccessoriesStartRow,
           gridRowEnd: AccessoriesStopRow,
-          borderRight: MobileScreen ? null : HUDBorder,
           padding: HUDBlockPadding,
           backgroundImage: "url(graphics/hud/metal.jpg)",
           backgroundPosition: MobileScreen ? "0px -491px" : TabletScreen ? "-452px -128px" : "-604px -128px", 
@@ -2985,9 +3229,37 @@ class Game extends Component {
           backgroundImage: "url(graphics/hud/metal.jpg)",
           backgroundPosition: MobileScreen ? "0px -508px" : "0px -348px",
         },
+        GameState: {
+          gridColumnStart: FirstColumn,
+          gridColumnEnd: MobileScreen ? LastColumn : 7,
+          gridRowStart: BottomControlsRow,
+          padding: HUDBlockPadding,
+          textAlign: MobileScreen ? "center" : null,
+          backgroundImage: MobileScreen ? "url(graphics/hud/metal.jpg)" : null,
+          backgroundPosition: MobileScreen ? "0px -546px" : null,
+        },
+        GameStateBoxContainer: {
+          gridColumnStart: FirstColumn,
+          gridColumnEnd: LastColumn,
+          gridRowStart: GameStateRow,
+          padding: HUDBlockPadding,
+          borderTop: "1px solid black",
+          backgroundImage: "url(graphics/hud/parchment.jpg)",
+          color: "black",
+          fontWeight: "bold",
+        },
+        GameStateBox: {
+          width: "100%",
+          height: "500px",
+          cursor: "pointer",
+          outline: "none",
+          background: "transparent",
+          color: "white",
+          border: "none",
+        },
         // Volume
         VolumeControl: {
-          gridColumnStart: MobileScreen ? 6 : 7,
+          gridColumnStart: MobileScreen ? FirstColumn : 7,
           gridColumnEnd: LastColumn,
           gridRowStart: VolumeRow,
           padding: HUDBlockPadding,
@@ -3644,7 +3916,9 @@ class Game extends Component {
         Caster.Stamina--
         Caster.SpellActionUsed = true
         Turn++
-        this.setState({Turn: Turn})
+        this.setState({Turn: Turn},
+          this.MoveMonsters()
+        )
       }
 
       // ability score spell-level modifier
@@ -4895,6 +5169,8 @@ class Game extends Component {
         <SpellBook {... this} {... this.state} />
         <Accessories {... this} {... this.state} />
         <BottomControls/>
+        <GameStateOptions {... this} {... this.state}/>
+        <GameStateBox  {... this} {... this.state}/>
         <Volume {... this} {... this.state}/>
       </View>
     )

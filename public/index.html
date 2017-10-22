@@ -38,20 +38,24 @@
       }
 
       /* scrollbars */
-      div::-webkit-scrollbar
+      div::-webkit-scrollbar, textarea::-webkit-scrollbar
       {
         background-color: transparent;
       }
-      div::-webkit-scrollbar-thumb
+      div::-webkit-scrollbar-thumb, textarea::-webkit-scrollbar-thumb
       {
         /* background: linear-gradient(135deg, #e3d5b3 50%, #d5a761 100%); */
         background: rgba(0, 0, 0, 0.35);
         border-radius: 8px;
         border: 1px solid dimgray;
       }
-      div::-webkit-scrollbar-track
+      div::-webkit-scrollbar-track, textarea::-webkit-scrollbar-track
       {
         background-color: transparent;
+      }
+
+      textarea {
+        resize: none;
       }
 
 
