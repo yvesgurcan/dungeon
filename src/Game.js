@@ -157,6 +157,7 @@ class GitHub extends Component {
   render() {
     return (
       <Graphics
+        draggable={false}
         src={gitHubLogo}
         style={Styles.GitHubLogo}
         title="GitHub repository"/>
@@ -228,6 +229,7 @@ class ItemImage extends Component {
     return (
       <Text>
         <Graphics
+          draggable={this.props.draggable}
           onClick={this.onClick}
           src={this.props.image ? itemPath + this.props.image + imgExt : null}
           style={Styles.ItemImage}
@@ -327,6 +329,7 @@ class SpellBook extends Component {
     let SpellImages = List.map((Spell, index) => {
       return (
         <ItemImageBlock
+          draggable={false}
           key={index}
           index={index <= 99 ? ("0" + Number(index+1)).slice(-2) : index}
           showIndex
@@ -392,6 +395,7 @@ class Inventory extends Component {
     let inventory = list.map((item, index) => {
       return (
         <ItemImageBlock
+          draggable={true}
           key={index}
           index={item && item.image ? "B" + (index <= 99 ? ("0" + Number(index+1)).slice(-2) : index) : null}
           showIndex
@@ -1113,7 +1117,10 @@ class Story extends Component {
           })}
         </Block>
         <Block hidden={!currentTextImage}>
-          <Image src={storyPath + currentTextImage + imgExt} style={Styles.Paragraph}/>
+          <Image
+            draggable={false}
+            src={storyPath + currentTextImage + imgExt}
+            style={Styles.Paragraph}/>
         </Block>
       </View>
     )
@@ -3897,7 +3904,9 @@ class Game extends Component {
       Player.Stationary = false
 
       // update player stats
-      Player.Stamina = Math.min(0,Player.Stamina--)
+      if (Player.Stamina > 1) {
+        Player.Stamina--
+      }
 
     }
 
