@@ -3896,7 +3896,7 @@ class Game extends Component {
       Player.Stationary = false
 
       // update player stats
-      Player.Stamina--
+      Player.Stamina = Math.min(0,Player.Stamina--)
 
     }
 
