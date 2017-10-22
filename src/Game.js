@@ -1979,6 +1979,15 @@ class Game extends Component {
 
     initState.Turn = 0
 
+    // sound
+    initState.Sound = {
+      Volume: UtilityAssets.DefaultSoundVolume
+    }
+
+    // debug
+    initState.Player.Mana = initState.Player.MaxMana = 999
+    initState.Player.Level = 20
+
     this.state = initState
 
     
@@ -2064,11 +2073,15 @@ class Game extends Component {
         break
 
       case "+":
-        this.SetVolume(Sound ? Math.min(1, Sound.Volume + .1) : 0.3, Sound && Sound.Volume + .1 < 1 ? "sound_control" : null)
+        this.SetVolume(Math.min(1, Sound.Volume + .1), "sound_control")
         break
 
       case "-":
-        this.SetVolume(Sound ? Math.max(0, Sound.Volume - .1) : 0.3, Sound && Sound.Volume - .1 > 0 ? "sound_control" : null)
+        this.SetVolume(Math.max(0, Sound.Volume - .1), "sound_control")
+        break
+
+      case "m":
+        this.SetVolume(0)
         break
 
       case "t":
@@ -2968,7 +2981,6 @@ class Game extends Component {
           gridColumnStart: FirstColumn,
           gridColumnEnd: LastColumn,
           gridRowStart: VolumeRow,
-          background: "white",
           padding: HUDBlockPadding,
           backgroundImage: "url(graphics/hud/metal.jpg)",
           backgroundPosition: MobileScreen ? "0px -508px" : "0px -348px",
@@ -3106,10 +3118,13 @@ class Game extends Component {
 
   PlaySound = (SoundName, Precedence) => {
 
-    const SoundFileExtensions = [".wav",".mp3",".ogg"]
+    let Sound = {...this.state.Sound}
+
+    if (!Object.getOwnPropertyNames(Sound).length || Sound.Volume === 0) return false
+
+    const SoundFileExtensions = [".wav",/*".mp3",*/".ogg"]
     const SoundFileFolders = ["", SoundName + "/"]
 
-    let Sound = {...this.state.Sound}
     let SoundPlaying = false
     let CountTest = 0
     let CountErrors = 0
@@ -3118,17 +3133,6 @@ class Game extends Component {
       (SoundFileFolders.length-1) * SoundFileExtensions.length * UtilityAssets.MaxSoundFilesPerFolder
 
     let SoundArray = []
-
-    // Create sound object
-    if (!Object.getOwnPropertyNames(Sound).length) {
-      Sound = {
-        Volume: .3,
-        SoundEffect: {
-          SoundName: SoundName,
-          Precedence: Precedence,
-        },        
-      }
-    }
 
     let AudioObject = new Audio()
 
@@ -3376,9 +3380,9 @@ class Game extends Component {
   }
 
   SetText = (Message = "", Image = null) => {
+
     if (Message || Image) {
 
-    // let {EventLog} = this.state
     let EventLog = Object.assign([], this.state.EventLog)
 
     if (!EventLog) {
@@ -3391,11 +3395,15 @@ class Game extends Component {
       EventLog = EventLog.slice(EventLog.length - 20, EventLog.length)
     }
 
+      console.log("update event log")
+
       this.setState({EventLog: EventLog}, function() {
         let HtmlElement = document.getElementById("EventLog")
         HtmlElement.scrollTop = HtmlElement.scrollHeight
       })
+
     }
+
   }
 
   onClickArrow = (key) => {
@@ -3608,10 +3616,14 @@ class Game extends Component {
     let Turn = this.state.Turn
 
     let CasterIsPlayer = false
+    let UpdateEventLog = true
 
     if (!Caster) {
       Caster = Player
       CasterIsPlayer = true
+
+      if (Player.Dead) return false
+
     }
 
     // enough mana
@@ -3625,6 +3637,7 @@ class Game extends Component {
         }
 
         return false
+        
       }
 
       if (CasterIsPlayer) {
@@ -3648,6 +3661,10 @@ class Game extends Component {
 
       // attempt to cast the spell
       if (this.AbilityCheck(Caster.Intelligence, Modifier)) {
+
+        if (Spell.Sound) {
+          this.PlaySound(Spell.Sound)          
+        }
 
         // Heal
         if (Spell.Type === "Heal") {
@@ -3679,7 +3696,10 @@ class Game extends Component {
             if (TargetMonster.length === 0) {
 
               if (CasterIsPlayer) {
+
                 this.SetText(UtilityAssets.Messages.Spell.NoTarget)
+                UpdateEventLog = false
+
               }
 
             }
@@ -3772,7 +3792,9 @@ class Game extends Component {
           Caster.Mana -= Spell.ManaCost || 0
           this.setState({Player: Caster})
           
-          this.SetText(UtilityAssets.PartialMessages.SpellSuccess + Spell.Name + UtilityAssets.PartialMessages.Period)
+          if (UpdateEventLog) {
+            this.SetText(UtilityAssets.PartialMessages.SpellSuccess + Spell.Name + UtilityAssets.PartialMessages.Period)
+          }
 
           // move enemies
           this.MoveMonsters()
@@ -3785,10 +3807,18 @@ class Game extends Component {
       // cast failed
       else {
 
-        Caster.Mana -= Spell.ManaCost || 0
+        this.PlaySound("spell_failed")
+
         if (CasterIsPlayer) {
-          this.setState({Player: Caster}, function() {})
+          
+          Caster.Mana -= Spell.ManaCost || 0
+          this.setState({Player: Caster})
+
           this.SetText(UtilityAssets.Messages.Spell.Failed[this.RandomInteger(UtilityAssets.Messages.Spell.Failed.length)])
+
+          // move enemies
+          this.MoveMonsters()
+
         }
 
       }
@@ -3824,7 +3854,10 @@ class Game extends Component {
 
     // out of range
     if (targetCoordinates.y > WallMap.length - 1 || targetCoordinates.y < 0 || targetCoordinates.x > WallMap[targetCoordinates.y].length - 1 || targetCoordinates.x < 0) {
+
       this.SetText(UtilityAssets.Messages.Collision)
+      this.PlaySound("cant_go_there")
+
       return
     }
 
@@ -3857,7 +3890,10 @@ class Game extends Component {
 
       // the player can not go there (there is a wall/door in the way)
       if (!this.DetectCollision(targetCoordinates)) {
+
         this.SetText(UtilityAssets.Messages.Collision)
+        this.PlaySound("cant_go_there")
+        
         return
       }
 
@@ -4599,12 +4635,16 @@ class Game extends Component {
       Player.Health = Math.max(0,Player.Health - Damage)
 
       if (Player.Health <= 0) {
+
         Player.Dead = true
         this.SetText(UtilityAssets.Messages.PlayerDead)
+        this.setState({Player: Player})
+
         return false
       }
 
       this.setState({Player: Player})
+
     }
 
     return true
@@ -4663,7 +4703,7 @@ class Game extends Component {
 
   UseItemFromKeyboard = (ItemNumber) => {
 
-    let Backpack = {... this.state.Backpack}
+    let Backpack = {...this.state.Backpack}
     
     let FindItem = Backpack.Items.filter((Item, index) => {
       if (index === Number(ItemNumber.replace("b","")-1)) {

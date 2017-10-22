@@ -366,6 +366,7 @@ export const StaticAssets = {
             ManaCost: 11,
             Name: "fireball",
             Image: "spell_fireball",
+            Sound: "spells/fireball",
             Type: Attack,
             // Cumulated Damage Range: 6-12
             Damage: {Min: 6, Max: 12},
@@ -376,6 +377,7 @@ export const StaticAssets = {
             ManaCost: 16,
             Name: "vampiric touch",
             Image: "spell_vampiric_touch",
+            Sound: "spells/vampiric_touch",
             Type: Attack,
             // Cumulated Damage Range: 4-10
             Damage: {Min: 4, Max: 10},
@@ -496,6 +498,7 @@ export const StaticAssets = {
             ManaCost: 11,
             Name: "bark skin",
             Image: "spell_bark_skin",
+            Sound: "spells/bark_skin",
             Type: Bonus,
             Boost: {
                 Property: "Armor",
@@ -636,6 +639,7 @@ export const StaticAssets = {
             ManaCost: 23,
             Name: "misty step",
             Image: "spell_misty_step",
+            Sound: "spells/misty_step",
             Effect: "MistyStep",
         },
         Invisibility: {
