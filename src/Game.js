@@ -89,13 +89,6 @@ class Block extends Component {
   }
 }
 
-// h4
-class SubHeading extends Component {
-  render() {
-    return <h4 {...this.props} style={Styles.H4} children={this.props.children} />
-  }
-}
-
 // h3
 class Heading extends Component {
   render() {
@@ -664,7 +657,7 @@ class Arrow extends Component {
     this.setState({ style: Styles.ArrowBlockHover })
   }
   onClick = () => {
-    this.props.onClick()
+    this.props.onClick(this.props.arrow)
     this.setState({ style: Styles.ArrowBlockClick })
     let that = this
     setTimeout(function () {
@@ -1954,21 +1947,101 @@ class CreateCharacterName extends Component {
 }
 
 class CreateCharacterBackground extends Component {
+
+  SelectRace = (Input) => {
+
+    let Player = {...this.props.Player}
+    let Races = World.Races
+    let RaceName = ""
+    let index = 0
+
+    Object.keys(Races).filter((RaceObjectName, i) => {
+      if (RaceObjectName === Player.Race.Id) {
+        index = i
+        return true
+      }
+      return false
+      
+    })
+    
+    if (Input === "Left") {
+      Player.Race = Races[Object.keys(Races).filter((RaceObjectName, i) => {
+        if ((index === 0 && i === Object.keys(Races).length-1) || i === index-1) {
+          RaceName = RaceObjectName
+          return true
+        }
+        return false
+      })[0]]
+    }
+    else {
+      Player.Race = Races[Object.keys(Races).filter((RaceObjectName, i) => {
+        if ((index+2 > Object.keys(Races).length && i === 0) || i === index+1) {
+          RaceName = RaceObjectName
+          return true
+        }
+        return false
+      })[0]]
+    }
+    this.props.SetRace({...Player.Race, Id: RaceName})
+
+  }
+
+  SelectClass = (Input) => {
+
+    let Player = {...this.props.Player}
+    let Classes = World.Classes
+    let ClassName = ""
+    let index = 0
+
+    Object.keys(Classes).filter((ClassObjectName, i) => {
+      if (ClassObjectName === Player.Class.Id) {
+        index = i
+        return true
+      }
+      return false
+      
+    })
+    
+    if (Input === "Left") {
+      Player.Class = Classes[Object.keys(Classes).filter((ClassObjectName, i) => {
+        if ((index === 0 && i === Object.keys(Classes).length-1) || i === index-1) {
+          ClassName = ClassObjectName
+          return true
+        }
+        return false
+      })[0]]
+    }
+    else {
+      Player.Class = Classes[Object.keys(Classes).filter((ClassObjectName, i) => {
+        if ((index+2 > Object.keys(Classes).length && i === 0) || i === index+1) {
+          ClassName = ClassObjectName
+          return true
+        }
+        return false
+      })[0]]
+    }
+    this.props.SetClass({...Player.Class, Id: ClassName})
+  }
+
   render() {
-    let Player = {... this.props.Player}
+    let Player = {...this.props.Player}
     return (
       <View style={Styles.CharacterCreateBackground}>
         <Block style={Styles.PropertyLabel}>
           <Text>Race:</Text>
         </Block>
         <Block style={Styles.PropertyField}>
-        <Text>{Player.Race.Name}</Text>        
+          <Arrow {...this.props} onClick={this.SelectRace} arrow="Left">←</Arrow>
+          <Text>{Player.Race.Name}</Text>
+          <Arrow {...this.props} onClick={this.SelectRace} arrow="Right">→</Arrow>     
         </Block>
         <Block style={Styles.PropertyLabel}>
           <Text>Class:</Text>
         </Block>
         <Block style={Styles.PropertyField}>
-        <Text>{Player.Class.Name}</Text>        
+          <Arrow {...this.props} onClick={this.SelectClass} arrow="Left">←</Arrow>
+          <Text>{Player.Class.Name}</Text>   
+          <Arrow {...this.props} onClick={this.SelectClass} arrow="Right">→</Arrow>          
         </Block>
         <Block style={Styles.PropertyLabel}>
           <Text>Spell:</Text>
@@ -2303,6 +2376,18 @@ class Game extends Component {
       
         this.forceUpdate()
     })
+  }
+
+  SetRace = (RaceObject) => {
+    let Player = {...this.state.Player}
+    Player.Race = {...RaceObject}
+    this.setState({Player : Player})
+  }
+
+  SetClass = (ClassObject) => {
+    let Player = {...this.state.Player}
+    Player.Class = {...ClassObject}
+    this.setState({Player : Player})
   }
 
   StartGame = () => {
@@ -2708,7 +2793,7 @@ class Game extends Component {
         // Create Player Grid
         CreatePlayer: {
           margin: "0 auto",
-          width: MobileScreen ? "300px" : TabletScreen ? "750px" : "900px",
+          width: MobileScreen ? "300px" : TabletScreen ? "675px" : "810px",
           userSelect: "none",
           cursor: "pointer",
           display: "grid",
@@ -2719,10 +2804,10 @@ class Game extends Component {
             :
             TabletScreen ?
             // column1-10
-            "repeat(9, 82.5px)"
+            "repeat(9, 75px)"
             :
             // column1-10
-            "repeat(9, 98.4px)"
+            "repeat(9, 90px)"
           ,
           gridTemplateRows:
           // title (row1)

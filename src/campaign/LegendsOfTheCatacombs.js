@@ -11,7 +11,7 @@ export const CampaignAssets = {
         // debug
         Name: "Leto Seldon",
         Level: Utilities.MaxSpellLevel,
-        Class: WorldAssets.Classes.Wizard,
+        Class: {...WorldAssets.Classes.Wizard, Id: "Wizard"},
         SpellBook: {
             Spells: Object.keys(WorldAssets.Spells).map(Key => {return WorldAssets.Spells[Key]}),
         },
