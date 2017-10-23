@@ -2826,6 +2826,7 @@ class Game extends Component {
           gridColumnEnd: LastColumn,
           gridRowStart: 3,
         },
+        // Character Name and Vitals
         CharacterCreateName: {
           padding: HUDPadding,
           gridColumnStart: FirstColumn,
@@ -2862,36 +2863,7 @@ class Game extends Component {
           gridRowEnd: 7,
           backgroundImage: "url(graphics/hud/parchment.jpg)",
         },
-        CharacterCreateBackground: {
-          padding: HUDPadding,
-          gridColumnStart: MobileScreen ? FirstColumn : 7,
-          gridColumnEnd: 10,
-          gridRowStart: MobileScreen ? 6 : 4,
-          display: "grid",
-          // subgrid
-          gridTemplateRows: "23px 23px 23px",
-          gridTemplateColumns:
-          MobileScreen ?
-          // column1
-          "100px " +
-          "130px " +
-          // column2-10
-          "repeat(8, 31px)"
-          :
-          TabletScreen ?
-          // column1
-          "100px " +
-          "130px " +
-          // column2-10
-          "repeat(8, 74.3px)"
-          :
-          // column1
-          "100px " +
-          "130px " +
-          // column2-10
-          "repeat(8, 88.6px)"
-          ,
-        },
+        // Character Ability Scores
         CharacterCreateView: {
           padding: HUDPadding,
           gridColumnStart: MobileScreen ? FirstColumn : 4,
@@ -2922,6 +2894,38 @@ class Game extends Component {
           "repeat(8, 88.6px)"
         ,
         },
+        // Character Race and Class
+        CharacterCreateBackground: {
+          padding: HUDPadding,
+          gridColumnStart: MobileScreen ? FirstColumn : 6,
+          gridColumnEnd: 10,
+          gridRowStart: MobileScreen ? 6 : 4,
+          display: "grid",
+          // subgrid
+          gridTemplateRows: "23px 23px 23px",
+          gridTemplateColumns:
+          MobileScreen ?
+          // column1
+          "100px " +
+          "130px " +
+          // column2-10
+          "repeat(8, 31px)"
+          :
+          TabletScreen ?
+          // column1
+          "100px " +
+          "130px " +
+          // column2-10
+          "repeat(8, 74.3px)"
+          :
+          // column1
+          "100px " +
+          "130px " +
+          // column2-10
+          "repeat(8, 88.6px)"
+          ,
+        },
+        // Create Character: Label/Value Pairs
         PropertyLabel: {
           gridColumnStart: FirstColumn,
           gridColumnEnd: FirstColumn,
