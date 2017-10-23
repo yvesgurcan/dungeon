@@ -17,7 +17,7 @@ export const Utilities = {
     // debug
     ShowFullMap: Debug || false
     ,
-    NoClip: Debug || false
+    NoClip: false // Debug || false
     ,
     GodMode: Debug || false
     ,

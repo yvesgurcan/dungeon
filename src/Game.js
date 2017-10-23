@@ -7,7 +7,7 @@ import Functions from "./Functions.js"
 
 /* utility */
 
-const Debug = Campaign.Debug || false
+const Debug = Utilities.Debug || false
 const SoundDebug = false
 
 const {North, South, West, East} = Utilities.Directions
@@ -1247,6 +1247,18 @@ class Controls extends Component {
 }
 
 /* story and events */
+
+class ClearLog extends Component {
+  render() {
+    return (
+      <View style={Styles.ClearLog}>
+        <ActionButton onClick={this.props.ClearLog}>
+          {this.props.MobileScreen ? <Text>Clear</Text> : <Text>Clear Log</Text>}
+        </ActionButton>
+      </View>
+    )
+  }
+}
 
 // a set of brief messages that provides feedback on the user's actions (example: "you can't go there")
 class EventLog extends Component {
@@ -2942,6 +2954,16 @@ class Game extends Component {
           maxHeight: 18.5 * Utilities.MaxEventLogEntries + px,
           overflow: "auto",
         },
+        ClearLog: {
+          gridColumnStart: FirstColumn,
+          gridColumnEnd: LastColumn,
+          gridRowStart: MessageRow,
+          textAlign: "right",
+          padding: HUDBlockPadding,
+          paddingRight: "25px",
+          zIndex: "999",
+          height: "18px",
+        },
         // Story
         StoryBlock: {
           gridColumnStart: StoryStartColumn,
@@ -3523,6 +3545,8 @@ class Game extends Component {
       AudioObject.play()
       .then(function() {
 
+        if (SoundDebug) console.log("Played:",AudObj.src)
+
         AudObj.volume = Sound.Volume
         SoundPlaying = true
 
@@ -3583,6 +3607,8 @@ class Game extends Component {
 
           AudObj.play()
           .then(function() {
+
+            if (SoundDebug) console.log("Played:",AudObj.src)
 
             AudObj.volume = Sound.Volume
             SoundPlaying = true
@@ -3776,8 +3802,6 @@ class Game extends Component {
       EventLog = EventLog.slice(EventLog.length - 20, EventLog.length)
     }
 
-      console.log("update event log")
-
       this.setState({EventLog: EventLog}, function() {
         let HtmlElement = document.getElementById("EventLog")
         HtmlElement.scrollTop = HtmlElement.scrollHeight
@@ -3785,6 +3809,11 @@ class Game extends Component {
 
     }
 
+  }
+
+  ClearLog = () => {
+
+    this.setState({EventLog: []})
   }
 
   onClickArrow = (key) => {
@@ -4228,7 +4257,7 @@ class Game extends Component {
 
 
     // let {Player, WallMap, MonsterMap, NoClip} = this.state
-    let Player = Object.assign({}, this.state.Player)
+    let Player = {...this.state.Player}
     let WallMap = Object.assign([], this.state.WallMap)
     let MonsterMap = Object.assign([], this.state.MonsterMap)
     let NoClip = this.state.NoClip
@@ -4273,6 +4302,9 @@ class Game extends Component {
     if (MonsterMap[targetCoordinates.y][targetCoordinates.x] !== Empty) {
       FullStateUpdate = false
       this.AttackMonster(targetCoordinates)
+      // player is not moving
+      targetCoordinates.x = Player.x
+      targetCoordinates.y = Player.y
 
     }
     else {
@@ -4288,11 +4320,11 @@ class Game extends Component {
 
     }
 
-    // wake up any monster in the vicinity of the player
-    this.WakeUpMonster(targetCoordinates)
-
     // the monsters get to move now
     this.MoveMonsters(targetCoordinates)
+
+    // wake up any monster in the vicinity of the player
+    this.WakeUpMonster(targetCoordinates)
 
     // let {Turn, DiscoveryMap, currentEvent, currentText, currentTextImage} = this.state
     let Turn = this.state.Turn
@@ -4306,9 +4338,6 @@ class Game extends Component {
     
     // update various parts of the state
     if (FullStateUpdate) {
-
-      // add 1 turn to the game state
-      Turn++
 
       // update which parts of the map were revealed
       DiscoveryMap = this.UpdateDiscoveryMap(targetCoordinates)
@@ -4333,6 +4362,17 @@ class Game extends Component {
         Player.Stamina--
       }
 
+    }
+
+    // add 1 turn to the game state
+    Turn++  
+
+    // catch up with other state mutations
+    let NewPlayerCoordinates = {x: Player.x, y: Player.y}
+    if (Player !== this.state.Player) {
+      Player = {...this.state.Player}
+      Player.x = NewPlayerCoordinates.x
+      Player.y = NewPlayerCoordinates.y
     }
 
     this.setState({
@@ -4692,25 +4732,31 @@ class Game extends Component {
 
   WakeUpMonster = ({x, y}) => {
     
-    // let {Monsters} = this.state
-    let Monsters = Object.assign([], this.state.Monsters)
+    let Monsters = [...this.state.Monsters]
+    let PlaySound = false
 
     if (Monsters) {
 
-      let MonsterAwake = Monsters.filter(Monster => {
-        return Monster.x >= x-1 && Monster.x <= x+1 && Monster.y >= y-1 && Monster.y <= y+1 && !Monster.ChasePlayer
+      let MonsterList = Monsters.map(Monster => {
+
+        if (Monster.x >= x-1 && Monster.x <= x+1 && Monster.y >= y-1 && Monster.y <= y+1 && !Monster.ChasePlayer) {
+
+          PlaySound = true
+
+          Monster.ChasePlayer = true
+          Monster.Stationary = false
+          this.SetText(Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + Gameplay.PartialMessages.MonsterNoticed)
+        }
+        return Monster
+
       })
 
-      if (MonsterAwake.length === 0) return null
-      else MonsterAwake = MonsterAwake[0]
+      this.setState({Monsters: MonsterList})
 
-      MonsterAwake.ChasePlayer = true
-      MonsterAwake.Stationary = false
-
-      this.SetText(Functions.IndefiniteArticle(MonsterAwake.Name, true) + " " + MonsterAwake.Name + Gameplay.PartialMessages.MonsterNoticed)
-
+      if (PlaySound) {
+        this.PlaySound("player_noticed")        
+      }
     }
-
   }
 
   MoveMonsters = (PlayerNewCoordinates) => {
@@ -4918,12 +4964,6 @@ class Game extends Component {
     ) {
       Monster.x += 1
     }
-    else {
-      // the monster has lost interest in the player
-      if (this.RandomInteger(100) <= 5) {
-        Monster.ChasePlayer = false
-      }
-    }
 
     // recalculate distance for attack after move
     HorizontalDistance = PlayerNewCoordinates.x - Monster.x
@@ -4948,19 +4988,20 @@ class Game extends Component {
 
   AttackPlayer = (Monster) => {
 
-    // let {Player} = this.state
-    let Player = Object.assign({}, this.state.Player)
+    let Player = {...this.state.Player}
+
+    if (Player.Dead) return false
 
     if (this.RandomInteger(100) >= Player.Dexterity) {
 
       let Damage = this.RandomIntegerFromRange(Monster.Damage.Min,Monster.Damage.Max)
 
-      if (this.PlayerTakeDamage(Damage)) {
+      this.PlaySound("attack_hit")
 
-        this.PlaySound("attack_hit")
+      this.SetText(Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + Gameplay.PartialMessages.MonsterAttacking)
 
-        this.SetText(Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + Gameplay.PartialMessages.MonsterAttacking)
-      }
+      this.PlayerTakeDamage(Damage)
+
     }
     else {
 
@@ -4974,15 +5015,21 @@ class Game extends Component {
 
   AttackMonster = (MonsterCoordinates) => {
 
-    // let {Player, Gear, Monsters} = this.state
-    let Player = Object.assign({}, this.state.Player)
+    let Player = {...this.state.Player}
     let Gear = Object.assign({}, this.state.Gear)
     let Monsters = Object.assign([], this.state.Monsters)
+    let index = 0
 
     if (this.RandomInteger(100) >= Player.Dexterity) {
       
-      let Monster = Monsters.filter(Enemy => {
-        return Enemy.x === MonsterCoordinates.x && Enemy.y === MonsterCoordinates.y
+      let Monster = Monsters.filter((Enemy, i) => {
+        if (Enemy.x === MonsterCoordinates.x && Enemy.y === MonsterCoordinates.y) {
+          index = i
+          return true
+        }
+        else {
+          return false
+        }
       })
 
       if (Monster.length > 0) {
@@ -4991,9 +5038,9 @@ class Game extends Component {
 
         let Damage = this.RandomIntegerFromRange(Gear.LeftHand.Damage.Min + this.AbilityModifier(Player.Strength), Gear.LeftHand.Damage.Max + this.AbilityModifier(Player.Strength))
 
-        console.log(Gear.LeftHand.Damage.Min + this.AbilityModifier(Player.Strength), Gear.LeftHand.Damage.Max + this.AbilityModifier(Player.Strength))
+        // console.log(Gear.LeftHand.Damage.Min + this.AbilityModifier(Player.Strength), Gear.LeftHand.Damage.Max + this.AbilityModifier(Player.Strength))
 
-        if (this.MonsterTakeDamage(Monster, Damage)) {
+        if (this.MonsterTakeDamage(Monster, Damage, index)) {
 
           this.PlaySound("attack_hit")
 
@@ -5040,10 +5087,11 @@ class Game extends Component {
 
   }
 
-  MonsterTakeDamage = (Monster, Damage) => {
+  MonsterTakeDamage = (Monster, Damage, index = null) => {
 
     // let {MonsterMap} = this.state
     let MonsterMap = Object.assign([], this.state.MonsterMap)
+    let Monsters = [...this.state.Monsters]
 
     Monster.Health = Math.max(0,Monster.Health - Damage)
 
@@ -5052,6 +5100,13 @@ class Game extends Component {
       MonsterMap[Monster.y][Monster.x] = Empty
       this.SetText(Gameplay.PartialMessages.MonsterKilled + Functions.IndefiniteArticle(Monster.Name) + " " + Monster.Name + Gameplay.PartialMessages.Period)
       this.DistributeXP(Monster)
+
+      if (index !== null) {
+        Monsters.splice(index,1)
+      }
+
+      this.setState({Monsters: Monsters})
+
       return false
     }
 
@@ -5117,9 +5172,8 @@ class Game extends Component {
 
   DrinkPotion = (Item) => {
 
-    // let {Player, Backpack} = this.state
-    let Player = Object.assign({}, this.state.Player)
-    let Backpack = Object.assign({}, this.state.Backpack)
+    let Player = {...this.state.Player}
+    let Backpack = {...this.state.Backpack}
 
     // Healing potion
     if (Player[Item.Heal]) {
@@ -5264,6 +5318,7 @@ class Game extends Component {
         {/* row 2 */}
         <Contact {... this.state}/>
         <EventLog {... this} {... this.state} />
+        <ClearLog {... this} {... this.state} />
         {/* row 3 */}
         <StoryBlock>
           <Story {... this.state} />
