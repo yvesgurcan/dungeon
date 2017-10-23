@@ -11,7 +11,7 @@ export const CampaignAssets = {
         // debug
         Name: "Leto Seldon",
         Mana: 999,
-        Health: 1,
+        Health: 999,
         Level: Utilities.MaxSpellLevel,
         Class: WorldAssets.Classes.Wizard,
         SpellBook: {

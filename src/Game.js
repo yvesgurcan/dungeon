@@ -147,7 +147,7 @@ class Version extends Component {
   render() {
     return (
       <View>
-        {this.props.children} version
+        {this.props.children}
       </View>
     )
   }
@@ -343,26 +343,6 @@ class GameStateBox extends Component {
     let DisplayState = JSON.stringify(
       GameState,
       null,
-      /*function(Key, Value) {
-        // maps
-        if (Key === "WallMap" || Key === "WallMapRevealed" || Key === "DiscoveryMap" || Key === "LootMap" || Key === "MonsterMap") {
-          return (
-              Value.map(NestedArray => {
-                return (
-                  `[` +
-                    NestedArray.map(ArrayElement => {
-                      return (
-                        ArrayElement
-                      )
-                    }) +
-                    `]`
-                )})
-          )
-        }
-        else {
-          return Value          
-        }
-      },*/
       `\t`,
     )
 
@@ -2094,7 +2074,7 @@ class Header extends Component {
       <View style={Styles.Header}>
         <PageTitle>Dungeon!</PageTitle>
         <PageSubtitle>an adventure game in React</PageSubtitle>
-        <Version>pre-alpha</Version>
+        <Version>pre-alpha (v0.4)</Version>
       </View>
     )
   }
@@ -4214,9 +4194,6 @@ class Game extends Component {
             this.SetText(Gameplay.PartialMessages.SpellSuccess + Spell.Name + Gameplay.PartialMessages.Period)
           }
 
-          // move enemies
-          this.MoveMonsters()
-
         }
 
         return true
@@ -4233,9 +4210,6 @@ class Game extends Component {
           this.setState({Player: Caster})
 
           this.SetText(Gameplay.Messages.Spell.Failed[this.RandomInteger(Gameplay.Messages.Spell.Failed.length)])
-
-          // move enemies
-          this.MoveMonsters()
 
         }
 
@@ -4760,9 +4734,9 @@ class Game extends Component {
   }
 
   MoveMonsters = (PlayerNewCoordinates) => {
-    // let {Monsters, Player} = this.state
-    let Monsters = Object.assign([], this.state.Monsters)
-    let Player = Object.assign({}, this.state.Player)
+    
+    let Monsters = [...this.state.Monsters]
+    let Player = {...this.state.Player}
 
     if (Monsters) {
 
@@ -4832,13 +4806,22 @@ class Game extends Component {
 
   ChasePlayer = (Monster, PlayerNewCoordinates) => {
 
-    // let {MonsterMap, WallMap} = this.state
-    let MonsterMap = Object.assign([], this.state.MonsterMap)
-    let WallMap = Object.assign([], this.state.WallMap)
+    let MonsterMap = [...this.state.MonsterMap]
+    let Monsters = [...this.state.Monsters]
+    let WallMap = [...this.state.WallMap]
 
     let originalMonsterCoordinates = {x: Monster.x, y: Monster.y}
     let HorizontalDistance = PlayerNewCoordinates.x - Monster.x
     let VerticalDistance = PlayerNewCoordinates.y - Monster.y
+
+    let index = null
+    let MonsterObject = Monsters.filter((Monst, i) => {
+      if (Monst.Id === Monster.Id) {
+        index = i
+        return true
+      }
+      return false
+    })
 
     // player is north of the monster
     if (
@@ -4984,6 +4967,10 @@ class Game extends Component {
 
     MonsterMap[originalMonsterCoordinates.y][originalMonsterCoordinates.x] = Empty
     MonsterMap[Monster.y][Monster.x] = Monster.Id
+
+    Monsters[index] = Monster
+    this.setState({MonsterMap: MonsterMap, Monsters: Monsters})
+
   }
 
   AttackPlayer = (Monster) => {
@@ -5040,12 +5027,11 @@ class Game extends Component {
 
         // console.log(Gear.LeftHand.Damage.Min + this.AbilityModifier(Player.Strength), Gear.LeftHand.Damage.Max + this.AbilityModifier(Player.Strength))
 
-        if (this.MonsterTakeDamage(Monster, Damage, index)) {
+        this.PlaySound("attack_hit")
 
-          this.PlaySound("attack_hit")
+        this.SetText(Gameplay.PartialMessages.PlayerHit + Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + Gameplay.PartialMessages.Period)
 
-          this.SetText(Gameplay.PartialMessages.PlayerHit + Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + Gameplay.PartialMessages.Period)
-        }
+        this.MonsterTakeDamage(Monster, Damage, index)
 
       }
 
