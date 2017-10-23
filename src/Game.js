@@ -1,21 +1,21 @@
 import React, { Component } from "react"
-import StaticAssets from "./StaticAssets.js"
-import DynamicAssets from "./DynamicAssets.js"
-import UtilityAssets from "./UtilityAssets.js"
+import World from "./WorldAssets.js"
+import Campaign from "./campaign/LegendsOfTheCatacombs.js"
+import Gameplay from "./GameplayAssets.js"
+import Utilities from "./Utilities.js"
 import Functions from "./Functions.js"
 
 /* utility */
 
-const Debug = DynamicAssets.Debug || false
+const Debug = Campaign.Debug || false
 const SoundDebug = false
 
-const {North, South, West, East} = UtilityAssets.Directions
-const {Wall, Door, LootContainer, Undiscovered, Empty} = UtilityAssets.MapObjects
-// let {WallMapVisibleRange} = UtilityAssets.WallMapVisibleRange
-let WallMapVisibleRange = Object.assign({}, UtilityAssets.WallMapVisibleRange)
+const {North, South, West, East} = Utilities.Directions
+const {Wall, Door, LootContainer, Undiscovered, Empty} = Utilities.MapObjects
+let WallMapVisibleRange = Object.assign({}, Utilities.WallMapVisibleRange)
 
-let MobileScreen = UtilityAssets.ScreenSize.MobileScreen()
-let TabletScreen = UtilityAssets.ScreenSize.TabletScreen()
+let MobileScreen = Utilities.ScreenSize.MobileScreen()
+let TabletScreen = Utilities.ScreenSize.TabletScreen()
 
 /* miscellani */
 
@@ -448,7 +448,7 @@ class Volume extends Component {
         </Block>
         <Slider
           Percentage
-          CurrentValue={this.props.Sound ? this.props.Sound.Volume : UtilityAssets.DefaultSoundVolume}
+          CurrentValue={this.props.Sound.Volume}
           onClick={this.onClick}
           style={style}
         />
@@ -489,34 +489,53 @@ class SpellBook extends Component {
   DisplaySpellBook = () => {
 
     // let {Player} = this.props
-    let Player = Object.assign({}, this.props.Player)
+    let Player = {...this.props.Player}
+    let Spells = Player.SpellBook ? Player.SpellBook.Spells : []
 
-    let List = Object.keys(Player.SpellBook.Spells).map(SpellObjectName => {
+    let SpellSlots = []
+
+    for (let i = 0; i < Utilities.NumberOfSpells; i++) {
+      if (!Spells || Spells.length < i) {
+        SpellSlots.push(
+          <ItemImageBlock
+            key={i}/>
+        )     
+      }
+      else {
+        SpellSlots.push(
+          <ItemImageBlock
+          draggable={false}
+          key={i}
+          index={i <= 99 ? ("0" + Number(i+1)).slice(-2) : i}
+          showIndex
+          image={(Spells[i] && Spells[i].Image) || null}
+          name={(Spells[i] && Spells[i].Name) || null}
+          item={Spells[i]}
+          onClick={this.props.CastSpell} />
+        )  
+      }
+    }
+
+    /*let List = Object.keys(Player.SpellBook.Spells).map(SpellObjectName => {
       return Player.SpellBook.Spells[SpellObjectName]
     })
 
     let SpellImages = List.map((Spell, index) => {
       return (
-        <ItemImageBlock
-          draggable={false}
-          key={index}
-          index={index <= 99 ? ("0" + Number(index+1)).slice(-2) : index}
-          showIndex
-          image={(Spell && Spell.Image) || null}
-          name={(Spell && Spell.Name) || null}
-          item={Spell}
-          onClick={this.props.CastSpell} />
-      )
-    })
 
-    return SpellImages
+      )
+    })*/
+
+    return SpellSlots
+
+    // return SpellImages
   }
 
   render() {
     // let {Player} = this.props
     let Player = Object.assign({}, this.props.Player)
 
-    if (Player.SpellBook.MaxSpells === 0) {
+    if (!Player.Class.Spellcaster || !Player.SpellBook || Player.SpellBook.MaxSpells === 0) {
       return null
     }
     return (
@@ -1042,7 +1061,7 @@ class PlayerVitals extends Component {
           Health
           <HealthBar current={Player.Health} max={Player.MaxHealth}/>
         </Block>
-        <Block style={Styles.PlayerStat}>
+        <Block style={Styles.PlayerStat} hidden={!Player.Class || !Player.Class.Spellcaster}>
           Mana:
           <ManaBar current={Player.Mana} max={Player.MaxMana}/>
         </Block>
@@ -1282,7 +1301,7 @@ class Story extends Component {
     return (
       <View style={Styles.Story} hidden={currentEvent.length > 0 && currentText === ""}>
         <Block style={Styles.Paragraph}>
-          {typeof currentText.split !== "function" ? currentText : currentText.split("\n").map((paragraph, index) => {
+          {!currentText ? null : typeof currentText.split !== "function" ? currentText : currentText.split("\n").map((paragraph, index) => {
             return <Text key={index}>{paragraph}<LineBreak/></Text>
           })}
         </Block>
@@ -2076,17 +2095,34 @@ class Game extends Component {
   constructor(props) {
     super(props)
 
-    // grab the assets
-    let initState = Object.assign(
-      StaticAssets,
-      DynamicAssets,
-    )
+    // keep the start text in memory and delete it so that it does not appear in the state
+    const StartText = Campaign.StartText ? Campaign.StartText.text : null
+    delete Campaign.StartText
 
+    // campaign assets
+    let initState = {...Campaign}
+
+    // debug/cheats
+    if (Utilities.ShowFullMap) {
+      initState.ShowFullMap = true
+    }
+    if (Utilities.NoClip) {
+      initState.NoClip = true
+    }
+    if (Utilities.GodMode) {
+      initState.GodMode = true
+    }
+
+    // Story
+    // text displayed at the beginning of the campaign
+    initState.currentText = StartText
+
+    // Items
     // create the list of random items to draw from when looting, grouped by level
     initState.RandomItems = {}
 
-    Object.keys(initState.Items).map(itemObjectName => {
-      let item = initState.Items[itemObjectName]
+    Object.keys(World.Items).map(itemObjectName => {
+      let item = World.Items[itemObjectName]
       if (initState.RandomItems["Level" + item.Level] === undefined) {
         initState.RandomItems["Level" + item.Level] = []
       }
@@ -2094,12 +2130,99 @@ class Game extends Component {
       return null
     })
 
-    // create wall map revealed
-    initState.WallMapRevealed = DynamicAssets.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))
+    // Character
+    let Player = {...initState.Player}
 
-    // create discovery map, given player start position
-    initState.DiscoveryMap = JSON.parse(JSON.stringify(DynamicAssets.WallMap.map((HorizontalLine, y) => HorizontalLine.map((MapObject, x) => {
-        if ((x >= DynamicAssets.Player.x - 1 && x <= DynamicAssets.Player.x + 1) && (y >= DynamicAssets.Player.y - 1 && y <= DynamicAssets.Player.y + 1)) {
+    if (!Player) {
+      Player = {}
+    }
+
+    if (!Player.Class) {
+      Player.Class = {
+        ...World.Classes[Object.keys(World.Classes)[0]],
+        Id: Object.keys(World.Classes)[0]
+      }
+    }
+
+    if (!Player.Race) {
+      Player.Race = {
+        ...World.Races[Object.keys(World.Races)[0]],
+        Id: Object.keys(World.Races)[0]
+      }
+    }
+
+    // Abilities
+    // generate some random stats for the player (if none were pre-determined for the campaign start; weird numbers are handled gracefully)
+    Player.Constitution = Math.max(0, Math.min(Player.Constitution, Gameplay
+    .MaxAbilityScore)) || this.GeneratePlayerAbilityScore()
+    Player.Strength = Math.max(0, Math.min(Player.Strength, Gameplay
+      .MaxAbilityScore)) || this.GeneratePlayerAbilityScore()
+    Player.Dexterity = Math.max(0, Math.min(Player.Dexterity, Gameplay
+      .MaxAbilityScore))|| this.GeneratePlayerAbilityScore()
+    Player.ArmorClass = Math.max(0, Player.ArmorClass) || 10 + this.AbilityModifier(Player.Dexterity)
+
+    // Vitals
+    // the interface will take whatever numbers come from the campaign assets and make sense of them (negative values or maximums greater than the current amount are handled gracefully)
+    // Health
+    Player.MaxHealth = Math.max(0, Player.MaxHealth || 0) || this.CalculateMaxHealth(Player)
+    Player.Health = Math.max(0,Player.Health) || Player.MaxHealth
+    if (Player.MaxHealth < Player.Health) Player.MaxHealth = Player.Health 
+    // Stamina
+    Player.MaxStamina = Math.max(0, Player.MaxStamina || 0) || this.CalculateMaxStamina(Player)
+    Player.Stamina = Math.max(0, Player.Stamina) || Player.MaxStamina
+    if (Player.MaxStamina < Player.Stamina) Player.MaxStamina = Player.Stamina 
+    Player.MaxWeight = Player.MaxWeight || this.CalculateMaxWeight(Player)
+
+    // Intelligence and Mana
+    if (Player.Class.Spellcaster) {
+      Player.Intelligence = Math.max(0, Math.min(Player.Intelligence, Gameplay
+        .MaxAbilityScore)) || this.GeneratePlayerAbilityScore()
+      Player.MaxMana = Math.max(0, Player.MaxMana || 0) || this.CalculateMaxMana(Player)
+      Player.Mana = Math.max(0, Player.Mana) || Player.MaxMana  
+      if (Player.MaxMana < Player.Mana) Player.MaxMana = Player.Mana 
+    }
+    else {
+      Player.MaxMana = Player.Mana = 0
+      Player.Intelligence = 5
+    }
+
+    // Spellbook
+    if (!Player.Class.Spellcaster) {
+      delete Player.SpellBook
+    }
+    else {
+      // TODO: Add a default 1st level spell to spellcasters
+    }
+
+/*
+
+   
+*/
+
+    // Check player's start coordinates
+    if (!Player.x && !Player.x) {
+      Player.x = 0
+      Player.y = 0
+      console.error("Please make sure to assign starting coordinates to the player.")
+    }
+    
+    Player.Facing = Player.Facing || "North"
+    Player.Level = Player.Level || 1
+    Player.XP = Player.XP || 0
+
+    initState.Player = Player
+
+    // Character's Backpack
+    initState.Backpack = 
+    this.CheckInventoryWeightAtStartUp(initState.Backpack)
+
+    // Maps
+    // create the dynamic "revealed area" map as displayed in the HUD
+    initState.WallMapRevealed = Campaign.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))
+
+    // create internal discovery map, given player start position
+    initState.DiscoveryMap = JSON.parse(JSON.stringify(Campaign.WallMap.map((HorizontalLine, y) => HorizontalLine.map((MapObject, x) => {
+        if ((x >= Player.x - 1 && x <= Player.x + 1) && (y >= Player.y - 1 && y <= Player.y + 1)) {
           return Empty
         }
         else {
@@ -2108,11 +2231,11 @@ class Game extends Component {
       }))
     ))
 
-    // create the map of loot containers
-    let LootMap = JSON.parse(JSON.stringify(DynamicAssets.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))))
+    // create the internal map of loot containers
+    let LootMap = JSON.parse(JSON.stringify(Campaign.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))))
 
-    if (DynamicAssets.LootContainers) {
-      DynamicAssets.LootContainers.map(Container => {
+    if (Campaign.LootContainers) {
+      Campaign.LootContainers.map(Container => {
         if (Container.x && Container.y) {
           LootMap[Container.y][Container.x] = LootContainer
         }
@@ -2122,12 +2245,12 @@ class Game extends Component {
 
     initState.LootMap = LootMap
 
-    // create the map of monster locations
-    let MonsterMap = JSON.parse(JSON.stringify(DynamicAssets.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))))
+    // create the internal map of monster locations
+    let MonsterMap = JSON.parse(JSON.stringify(Campaign.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))))
 
-    if (DynamicAssets.Monsters) {
+    if (Campaign.Monsters) {
 
-      DynamicAssets.Monsters.map(Monster => {
+      Campaign.Monsters.map(Monster => {
         MonsterMap[Monster.y][Monster.x] = Monster.Id
         return null
       })
@@ -2136,28 +2259,14 @@ class Game extends Component {
 
     initState.MonsterMap = MonsterMap
 
-    // give the player first randomly generated stats
-    initState.Player = this.GeneratePlayerStats(initState.Player)
-    
-    initState.Player.Health = Math.min(19, initState.Player.MaxHealth)
 
-    // initState.CreateCharacter = true
-
-    initState.Backpack = 
-    this.CheckInventoryWeightAtStartUp(initState.Backpack)
-
+    // Turn
     initState.Turn = 0
 
-    // sound
+    // Sound
     initState.Sound = {
-      Volume: UtilityAssets.DefaultSoundVolume
+      Volume: Utilities.DefaultSoundVolume
     }
-
-    // debug
-    initState.Player.Mana = initState.Player.MaxMana = 999
-    initState.Player.Level = 20
-    initState.ShowGameStateBox = true
-
 
     this.state = initState
 
@@ -2229,12 +2338,12 @@ class Game extends Component {
     try {
           
       GameStateToLoad = JSON.parse(GameStateToLoad)
-      console.log(GameStateToLoad, GameStateToLoad.Bestiary)
+      console.log(GameStateToLoad)
 
       delete this.state
 
       this.setState(GameStateToLoad, function() {
-        console.log(this.state, this.state.Bestiary)
+        console.log(this.state)
       })
     
     }
@@ -2242,7 +2351,7 @@ class Game extends Component {
     catch (error) {
 
       if (Debug) console.error("Invalid JSON object.", GameStateToLoad)      
-      this.setState({LoadGameError: UtilityAssets.Messages.LoadGameError.Invalid})
+      this.setState({LoadGameError: Gameplay.Messages.LoadGameError.Invalid})
 
     }
 
@@ -2343,12 +2452,12 @@ class Game extends Component {
 
   CalculateStyles = () => {
 
-    MobileScreen = UtilityAssets.ScreenSize.MobileScreen()
-    TabletScreen = UtilityAssets.ScreenSize.TabletScreen()
+    MobileScreen = Utilities.ScreenSize.MobileScreen()
+    TabletScreen = Utilities.ScreenSize.TabletScreen()
 
     if (MobileScreen !== this.state.MobileScreen || TabletScreen !== this.state.TabletScreen) {
 
-      WallMapVisibleRange = MobileScreen ? UtilityAssets.WallMapVisibleRangeMobileScreen : UtilityAssets.WallMapVisibleRange
+      WallMapVisibleRange = MobileScreen ? Utilities.WallMapVisibleRangeMobileScreen : Utilities.WallMapVisibleRange
 
       /* presets */
 
@@ -2757,7 +2866,7 @@ class Game extends Component {
             // contact (row2)
             "30px " +
             // event log (row3)
-            Number(HUDPadding * 2 + 18.5 * UtilityAssets.MaxEventLogEntries) + px + " " +
+            Number(HUDPadding * 2 + 18.5 * Utilities.MaxEventLogEntries) + px + " " +
             // story/map (row4)
             StoryRowHeight + px + " " +
             // story (row5)
@@ -2830,7 +2939,7 @@ class Game extends Component {
           backgroundImage: "url(graphics/hud/parchment.jpg)",
         },
         EventLogContainer: {
-          maxHeight: 18.5 * UtilityAssets.MaxEventLogEntries + px,
+          maxHeight: 18.5 * Utilities.MaxEventLogEntries + px,
           overflow: "auto",
         },
         // Story
@@ -3402,7 +3511,7 @@ class Game extends Component {
     let CountErrors = 0
     let MaxErrorCount =
       SoundFileFolders.length * SoundFileExtensions.length +
-      (SoundFileFolders.length-1) * SoundFileExtensions.length * UtilityAssets.MaxSoundFilesPerFolder
+      (SoundFileFolders.length-1) * SoundFileExtensions.length * Utilities.MaxSoundFilesPerFolder
 
     let SoundArray = []
 
@@ -3500,7 +3609,7 @@ class Game extends Component {
         if (SoundFileFolders[i] !== "") {
 
           // Try numbered file names (e.g.: /drink_potion/drink_potion1.wav)
-          for (let p = 0; p <= UtilityAssets.MaxSoundFilesPerFolder; p++) {
+          for (let p = 0; p <= Utilities.MaxSoundFilesPerFolder; p++) {
 
             if (SoundDebug) console.log("Inspecting:", "/sounds/" + SoundFileFolders[i] + SoundName + (p || "") + SoundFileExtensions[x])
 
@@ -3826,7 +3935,7 @@ class Game extends Component {
 
   AbilityCheck = (AbilityScore, Modifier) => {
 
-    if (this.RandomInteger() >= 100 - (AbilityScore/UtilityAssets.MaxAbilityScore*100) - (Modifier || 0)) {
+    if (this.RandomInteger() >= 100 - (AbilityScore/Gameplay.MaxAbilityScore*100) - (Modifier || 0)) {
       return true
     }
 
@@ -3868,21 +3977,27 @@ class Game extends Component {
 
   CastSpellFromKeyboard = (SpellNumber) => {
 
-    // let {Player} = this.state
-    let Player = Object.assign({}, this.state.Player)
+    let Player = {...this.state.Player}
 
-    let SpellName = Object.keys(Player.SpellBook.Spells)[Number(SpellNumber-1)]
+    if (!Player.Class.Spellcaster || !Player.SpellBook) return false
 
-    if (!SpellName) return false
+    let FindSpell = Player.SpellBook.Spells.filter((Item, index) => {
+      if (index === Number(SpellNumber-1)) {
+        return true
+      }
+      return false
+    })
 
-    this.CastSpell(Player.SpellBook.Spells[SpellName])
+
+    if (!FindSpell.length) return false
+
+    this.CastSpell(FindSpell[0])
 
   }
 
   CastSpell = (Spell, Caster) => {
-
-    // let {Player, Monsters, MonsterMap, Turn} = this.state
-    let Player = Object.assign({}, this.state.Player)
+    
+    let Player = {...this.state.Player}
     let Monsters = Object.assign([], this.state.Monsters)
     let MonsterMap = Object.assign([], this.state.MonsterMap)
     let Turn = this.state.Turn
@@ -3905,7 +4020,7 @@ class Game extends Component {
       if (Spell.Level > Caster.Level) {
 
         if (CasterIsPlayer) {
-          this.SetText(UtilityAssets.Messages.Spell.UnsufficientLevel)
+          this.SetText(Gameplay.Messages.Spell.UnsufficientLevel)
         }
 
         return false
@@ -3927,10 +4042,10 @@ class Game extends Component {
         return false
       }
       else if (Caster.Intelligence <= 10)  {
-        Modifier = UtilityAssets.MaxSpellLevel/Spell.Level/4
+        Modifier = Utilities.MaxSpellLevel/Spell.Level/4
       }
       else {
-        Modifier = UtilityAssets.MaxSpellLevel/Spell.Level
+        Modifier = Utilities.MaxSpellLevel/Spell.Level
       }
 
       // attempt to cast the spell
@@ -3955,8 +4070,8 @@ class Game extends Component {
           if (!Spell.Target || Spell.Target === "Adjacent") {
 
             let targetCoordinates = {
-              x: Caster.x + UtilityAssets.DirectionsOffset[Caster.Facing].x,
-              y: Caster.y + UtilityAssets.DirectionsOffset[Caster.Facing].y
+              x: Caster.x + Utilities.DirectionsOffset[Caster.Facing].x,
+              y: Caster.y + Utilities.DirectionsOffset[Caster.Facing].y
             }
 
             // find target
@@ -3971,7 +4086,7 @@ class Game extends Component {
 
               if (CasterIsPlayer) {
 
-                this.SetText(UtilityAssets.Messages.Spell.NoTarget)
+                this.SetText(Gameplay.Messages.Spell.NoTarget)
                 UpdateEventLog = false
 
               }
@@ -4051,7 +4166,7 @@ class Game extends Component {
             if (TargetHit === 0) {
 
               if (CasterIsPlayer) {
-                this.SetText(UtilityAssets.Messages.Spell.NoTargetArea)
+                this.SetText(Gameplay.Messages.Spell.NoTargetArea)
               }
 
             }
@@ -4067,7 +4182,7 @@ class Game extends Component {
           this.setState({Player: Caster})
           
           if (UpdateEventLog) {
-            this.SetText(UtilityAssets.PartialMessages.SpellSuccess + Spell.Name + UtilityAssets.PartialMessages.Period)
+            this.SetText(Gameplay.PartialMessages.SpellSuccess + Spell.Name + Gameplay.PartialMessages.Period)
           }
 
           // move enemies
@@ -4088,7 +4203,7 @@ class Game extends Component {
           Caster.Mana -= Spell.ManaCost || 0
           this.setState({Player: Caster})
 
-          this.SetText(UtilityAssets.Messages.Spell.Failed[this.RandomInteger(UtilityAssets.Messages.Spell.Failed.length)])
+          this.SetText(Gameplay.Messages.Spell.Failed[this.RandomInteger(Gameplay.Messages.Spell.Failed.length)])
 
           // move enemies
           this.MoveMonsters()
@@ -4101,7 +4216,7 @@ class Game extends Component {
     // caster does not have required mana amount
     else {
       if (CasterIsPlayer) {
-        this.SetText(UtilityAssets.Messages.Spell.NotEnoughMana[this.RandomInteger(UtilityAssets.Messages.Spell.NotEnoughMana.length)])
+        this.SetText(Gameplay.Messages.Spell.NotEnoughMana[this.RandomInteger(Gameplay.Messages.Spell.NotEnoughMana.length)])
       }
     }
 
@@ -4129,7 +4244,7 @@ class Game extends Component {
     // out of range
     if (targetCoordinates.y > WallMap.length - 1 || targetCoordinates.y < 0 || targetCoordinates.x > WallMap[targetCoordinates.y].length - 1 || targetCoordinates.x < 0) {
 
-      this.SetText(UtilityAssets.Messages.Collision)
+      this.SetText(Gameplay.Messages.Collision)
       this.PlaySound("cant_go_there")
 
       return
@@ -4141,14 +4256,14 @@ class Game extends Component {
       let LockedDoor = this.UnlockDoor(Door.Object)
       if (LockedDoor.Unlocked) {
         let UnlockMessage =
-          UtilityAssets.PartialMessages.UnlockDoor  + 
+        Gameplay.PartialMessages.UnlockDoor  + 
           LockedDoor.Key +
-          UtilityAssets.PartialMessages.Period
+          Gameplay.PartialMessages.Period
         this.setState({currentText: UnlockMessage, currentTextImage: null})
       }
       else {
         this.setState({
-          currentText: UtilityAssets.Messages.LockedDoor, currentTextImage: null
+          currentText: Gameplay.Messages.LockedDoor, currentTextImage: null
         })
         return
       }
@@ -4165,7 +4280,7 @@ class Game extends Component {
       // the player can not go there (there is a wall/door in the way)
       if (!this.DetectCollision(targetCoordinates)) {
 
-        this.SetText(UtilityAssets.Messages.Collision)
+        this.SetText(Gameplay.Messages.Collision)
         this.PlaySound("cant_go_there")
         
         return
@@ -4457,19 +4572,19 @@ class Game extends Component {
         Player.Stationary = true    
         this.setState({Backpack: Backpack, Player: Player})
 
-        this.SetText(UtilityAssets.Messages.Loot.Gathered)
+        this.SetText(Gameplay.Messages.Loot.Gathered)
         this.PlaySound("take_loot")
              
       }
       else {
-        this.SetText(UtilityAssets.Messages.Loot.TooHeavy)
+        this.SetText(Gameplay.Messages.Loot.TooHeavy)
           
       }
 
     }
     else if (loot.length > 0) {
 
-      this.SetText(UtilityAssets.Messages.Loot.TooMuch)
+      this.SetText(Gameplay.Messages.Loot.TooMuch)
 
     }
 
@@ -4592,7 +4707,7 @@ class Game extends Component {
       MonsterAwake.ChasePlayer = true
       MonsterAwake.Stationary = false
 
-      this.SetText(Functions.IndefiniteArticle(MonsterAwake.Name, true) + " " + MonsterAwake.Name + UtilityAssets.PartialMessages.MonsterNoticed)
+      this.SetText(Functions.IndefiniteArticle(MonsterAwake.Name, true) + " " + MonsterAwake.Name + Gameplay.PartialMessages.MonsterNoticed)
 
     }
 
@@ -4844,14 +4959,14 @@ class Game extends Component {
 
         this.PlaySound("attack_hit")
 
-        this.SetText(Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + UtilityAssets.PartialMessages.MonsterAttacking)
+        this.SetText(Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + Gameplay.PartialMessages.MonsterAttacking)
       }
     }
     else {
 
       this.PlaySound("attack_missed")
 
-      this.SetText(Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + UtilityAssets.PartialMessages.MonsterMissed)
+      this.SetText(Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + Gameplay.PartialMessages.MonsterMissed)
 
     }
 
@@ -4882,7 +4997,7 @@ class Game extends Component {
 
           this.PlaySound("attack_hit")
 
-          this.SetText(UtilityAssets.PartialMessages.PlayerHit + Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + UtilityAssets.PartialMessages.Period)
+          this.SetText(Gameplay.PartialMessages.PlayerHit + Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + Gameplay.PartialMessages.Period)
         }
 
       }
@@ -4892,7 +5007,7 @@ class Game extends Component {
 
       this.PlaySound("attack_missed")
 
-      this.SetText(UtilityAssets.Messages.PlayerMissed)
+      this.SetText(Gameplay.Messages.PlayerMissed)
 
     }
 
@@ -4911,7 +5026,7 @@ class Game extends Component {
       if (Player.Health <= 0) {
 
         Player.Dead = true
-        this.SetText(UtilityAssets.Messages.PlayerDead)
+        this.SetText(Gameplay.Messages.PlayerDead)
         this.setState({Player: Player})
 
         return false
@@ -4935,7 +5050,7 @@ class Game extends Component {
     if (Monster.Health <= 0) {
       Monster.Dead = true
       MonsterMap[Monster.y][Monster.x] = Empty
-      this.SetText(UtilityAssets.PartialMessages.MonsterKilled + Functions.IndefiniteArticle(Monster.Name) + " " + Monster.Name + UtilityAssets.PartialMessages.Period)
+      this.SetText(Gameplay.PartialMessages.MonsterKilled + Functions.IndefiniteArticle(Monster.Name) + " " + Monster.Name + Gameplay.PartialMessages.Period)
       this.DistributeXP(Monster)
       return false
     }
@@ -5013,16 +5128,16 @@ class Game extends Component {
       let Message = null
 
       if (NewHealedProperty - Player[Item.Heal] === 0) {
-        Message = UtilityAssets.Messages.Potion.NoEffect
+        Message = Gameplay.Messages.Potion.NoEffect
       }
       else if (NewHealedProperty - Player[Item.Heal] <= 5) {
-        Message = UtilityAssets.Messages.Potion[Item.Heal + "1"]
+        Message = Gameplay.Messages.Potion[Item.Heal + "1"]
       }
       else if (NewHealedProperty - Player[Item.Heal] <= 10) {
-        Message = UtilityAssets.Messages.Potion[Item.Heal + "2"]
+        Message = Gameplay.Messages.Potion[Item.Heal + "2"]
       }
       else {
-        Message = UtilityAssets.Messages.Potion[Item.Heal + "3"]
+        Message = Gameplay.Messages.Potion[Item.Heal + "3"]
       }
 
       this.SetText(Message)
@@ -5056,21 +5171,21 @@ class Game extends Component {
     Backpack.Items = this.RemoveItemFromInventory(Item)
 
     let Messages = [
-      UtilityAssets.Messages.Food.Yummy,
-      UtilityAssets.Messages.Food.Delicious,
-      UtilityAssets.Messages.Food.Diet,
-      UtilityAssets.Messages.Food.NotAsGoodAsMyMom,
+      Gameplay.Messages.Food.Yummy,
+      Gameplay.Messages.Food.Delicious,
+      Gameplay.Messages.Food.Diet,
+      Gameplay.Messages.Food.NotAsGoodAsMyMom,
     ]
 
     if (Player.Stamina/Player.MaxStamina < 0.4) {
-      Messages.push(UtilityAssets.Messages.Food.Rest)
+      Messages.push(Gameplay.Messages.Food.Rest)
     }
     
     if (Player.Stamina/Player.MaxStamina < 0.7) {
-      Messages.push(UtilityAssets.Messages.Food.More)
+      Messages.push(Gameplay.Messages.Food.More)
     }
     else if (Player.Stamina/Player.MaxStamina > 0.9) {
-      Messages.push(UtilityAssets.Messages.Food.NotNecessary)
+      Messages.push(Gameplay.Messages.Food.NotNecessary)
     }
 
     this.SetText(Messages[this.RandomInteger(Messages.length)])
@@ -5110,7 +5225,7 @@ class Game extends Component {
       
       Player.XP += Source.XP
 
-      if (Player.Level < UtilityAssets.MaxPlayerLevel && Player.XP > UtilityAssets.LevelXP["Level" + Number(Player.Level+1)]) {
+      if (Player.Level < Gameplay.MaxPlayerLevel && Player.XP > Gameplay.LevelXP["Level" + Number(Player.Level+1)]) {
         Player.Level++ 
       }
 

@@ -1,33 +1,95 @@
-import UtilityAssets from "./UtilityAssets.js"
+const SpellTypes = {
+    Heal: "Heal",
+    Attack: "Attack",
+    Motion: "Motion",
+    Bonus: "Bonus",
+    // "Other" type is omitted
+}
 
-const Heal = "Heal"
-const Surrounding = "Surrounding"
-const Facing = "Facing"
-const Adjacent = "Adjacent"
-const Attack = "Attack"
-const Motion = "Motion"
-const Bonus = "Bonus"
+const SpellTargets = {
+    Surrounding: "Surrounding",
+    Facing: "Facing",
+    Adjacent: "Adjacent",
+}
 
-export const StaticAssets = {
+// Generic scroll items
+const ScrollItemTypes = {
+    AttackSpell: {
+        Type: "scroll",
+        image: "scroll_attack",
+        Weight: 0.1,
+    },
+    BonusSpell: {
+        Type: "scroll",
+        image: "scroll_bonus",
+        Weight: 0.1,
+    },
+    MotionModifierSpell: {
+        Type: "scroll",
+        image: "scroll_motion_modifier",
+        Weight: 0.1,
+    },
+    OtherSpell: {
+        Type: "scroll",
+        image: "scroll_other",
+        Weight: 0.1,
+    },
+}
 
-    UniqueItems: {
-        // Keys
-        IronKey: {
-            type: "key",
-            Name: "iron key",
-            DoorId: 1,
-            image: "key_iron",
-            Weight: 0.1
+export const WorldAssets = {
+
+    Races: {
+        Dwarf: {
+            Name: "dwarf",
+            AbilityBoost: {Constitution: 2},
         },
-        BrassKey: {
-            type: "key",
-            Name: "brass key",
-            image: "key_brass",
+        Elf: {
+            Name: "elf",
+            AbilityBoost: {Dexterity: 2},
         },
-        OrnateKey: {
-            type: "key",
-            Name: "ornate key",
-            image: "key_ornate",
+        Human: {
+            Name: "human",
+            AbilityBoost: {
+                Constitution: 1,
+                Strength: 1,
+                Intelligence: 1,
+            },
+        },
+        Gnome: {
+            Name: "gnome",
+            AbilityBoost: {Intelligence: 2},
+        },
+
+    },
+    
+    Classes: {
+        Barbarian: {
+            Name: "barbarian",
+            MaxHealthBoost: 12,
+        },
+        Cleric: {
+            Name: "cleric",
+            MaxHealthBoost: 8,
+            Spellcaster: true,
+            
+        },
+        Fighter: {
+            Name: "fighter",
+            MaxHealthBoost: 10,
+        },
+        Paladin: {
+            Name: "paladin",
+            MaxHealthBoost: 10,
+            Spellcaster: true,
+        },
+        Ranger: {
+            Name: "ranger",
+            MaxHealthBoost: 10,
+        },
+        Wizard: {
+            Name: "wizard",
+            MaxHealthBoost: 6,
+            Spellcaster: true,
         },
     },
 
@@ -41,6 +103,24 @@ export const StaticAssets = {
         TravelerBag: {
             Type: "backpack",
             MaxItems: 5,
+        },
+
+        // Keys
+        IronKey: {
+            type: "key",
+            Name: "iron key",
+            image: "key_iron",
+            Weight: 0.1
+        },
+        BrassKey: {
+            type: "key",
+            Name: "brass key",
+            image: "key_brass",
+        },
+        OrnateKey: {
+            type: "key",
+            Name: "ornate key",
+            image: "key_ornate",
         },
         
         // Miscellani
@@ -194,147 +274,155 @@ export const StaticAssets = {
         MagicArrowScroll: {
             Name: "scroll of magic arrow",
             Spell: "MagicArrow",
-            ...UtilityAssets.Scrolls.AttackSpell,
+            ...ScrollItemTypes.AttackSpell,
         },
         ColdTouchScroll: {
             Name: "scroll of cold touch",
             Spell: "ColdTouch",
-            ...UtilityAssets.Scrolls.AttackSpell,
+            ...ScrollItemTypes.AttackSpell,
         },
         FireballScroll: {
             Name: "scroll of fireball",
             Spell: "Fireball",
-            ...UtilityAssets.Scrolls.AttackSpell,
+            ...ScrollItemTypes.AttackSpell,
         },
         VampiricTouchScroll: {
             Name: "scroll of vampiric touch",
             Spell: "VampiricTouch",
-            ...UtilityAssets.Scrolls.AttackSpell,
+            ...ScrollItemTypes.AttackSpell,
         },
         ChainLightningScroll: {
             Name: "scroll of chain lightning",
             Spell: "ChainLightning",
-            ...UtilityAssets.Scrolls.AttackSpell,
+            ...ScrollItemTypes.AttackSpell,
         },
         CircleOfDeathScroll: {
             Name: "scroll of circle of death",
             Spell: "CircleOfDeath",
-            ...UtilityAssets.Scrolls.AttackSpell,
+            ...ScrollItemTypes.AttackSpell,
         },
         MoonbeamScroll: {
             Name: "scroll of moonbeam",
             Spell: "Moonbeam",
-            ...UtilityAssets.Scrolls.AttackSpell,
+            ...ScrollItemTypes.AttackSpell,
         },
         // Heal
         FirstAidScroll: {
             Name: "scroll of first aid",
             Spell: "FirstAid",
-            ...UtilityAssets.Scrolls.BonusSpell,
+            ...ScrollItemTypes.BonusSpell,
         },
         AlertnessScroll: {
             Name: "scroll of alertness",
             Spell: "Alertness",
-            ...UtilityAssets.Scrolls.BonusSpell,
+            ...ScrollItemTypes.BonusSpell,
         },
         HealWoundsScroll: {
             Name: "scroll of heal wounds",
             Spell: "HealWounds",
-            ...UtilityAssets.Scrolls.BonusSpell,
+            ...ScrollItemTypes.BonusSpell,
         },
         RegenerateScroll: {
             Name: "scroll of regenerate",
             Spell: "Regenerate",
-            ...UtilityAssets.Scrolls.BonusSpell,
+            ...ScrollItemTypes.BonusSpell,
         },
         // Bonus
         TrueStrikeScroll: {
             Name: "scroll of true strike",
             Spell: "TrueStrike",
-            ...UtilityAssets.Scrolls.BonusSpell,
+            ...ScrollItemTypes.BonusSpell,
         },
         BarkSkinScroll: {
             Name: "scroll of bark sin",
             Spell: "BarkSkin",
-            ...UtilityAssets.Scrolls.BonusSpell,
+            ...ScrollItemTypes.BonusSpell,
         },
         StoneSkinScroll: {
             Name: "scroll of stone skin",
             Spell: "StoneSkin",
-            ...UtilityAssets.Scrolls.BonusSpell,
+            ...ScrollItemTypes.BonusSpell,
         },
         BlessScroll: {
             Name: "scroll of bless",
             Spell: "Bless",
-            ...UtilityAssets.Scrolls.BonusSpell,
+            ...ScrollItemTypes.BonusSpell,
         },
         BlurScroll: {
             Name: "scroll of blur",
             Spell: "Blur",
-            ...UtilityAssets.Scrolls.BonusSpell,
+            ...ScrollItemTypes.BonusSpell,
         },
         MirrorShieldScroll: {
             Name: "scroll of mirror shield",
             Spell: "MirrorShield",
-            ...UtilityAssets.Scrolls.BonusSpell,
+            ...ScrollItemTypes.BonusSpell,
         },
         BerserkScroll: {
             Name: "scroll of berserk",
             Spell: "Berserk",
-            ...UtilityAssets.Scrolls.BonusSpell,
+            ...ScrollItemTypes.BonusSpell,
         },
         // Motion Modifiers
         ConfusionScroll: {
             Name: "scroll of confusion",
             Spell: "Confusion",
-            ...UtilityAssets.Scrolls.MotionModifierSpell,
+            ...ScrollItemTypes.MotionModifierSpell,
         },
         EntangleScroll: {
             Name: "scroll of entangle",
             Spell: "Entangle",
-            ...UtilityAssets.Scrolls.MotionModifierSpell,
+            ...ScrollItemTypes.MotionModifierSpell,
         },
         ShockingGraspScroll: {
             Name: "scroll of shocking grasp",
             Spell: "ShockingGrasp",
-            ...UtilityAssets.Scrolls.MotionModifierSpell,
+            ...ScrollItemTypes.MotionModifierSpell,
         },
         EarthquakeScroll: {
             Name: "scroll of earthquake",
             Spell: "Earthquake",
-            ...UtilityAssets.Scrolls.MotionModifierSpell,
+            ...ScrollItemTypes.MotionModifierSpell,
         },
         // Other
         CreateFoodScroll: {
             Name: "scroll of create food",
             Spell: "CreateFood",
-            ...UtilityAssets.Scrolls.OtherSpell,
+            ...ScrollItemTypes.OtherSpell,
         },
         DetectMonsterScroll: {
             Name: "scroll of detect monster",
             Spell: "DetectMonster",
-            ...UtilityAssets.Scrolls.OtherSpell,
+            ...ScrollItemTypes.OtherSpell,
         },
         FindTrapsScroll: {
             Name: "scroll of find traps",
             Spell: "FindTraps",
-            ...UtilityAssets.Scrolls.OtherSpell,
+            ...ScrollItemTypes.OtherSpell,
         },
         MistyStepScroll: {
             Name: "scroll of misty step",
             Spell: "MistyStep",
-            ...UtilityAssets.Scrolls.OtherSpell,
+            ...ScrollItemTypes.OtherSpell,
         },
         InvisibilityScroll: {
             Name: "scroll of invisibility",
             Spell: "Invisibility",
-            ...UtilityAssets.Scrolls.OtherSpell,
+            ...ScrollItemTypes.OtherSpell,
         },
         GlobeOfInvulnerabilityScroll: {
             Name: "scroll of globe of invulnerability",
             Spell: "GlobeOfInvulnerability",
-            ...UtilityAssets.Scrolls.OtherSpell,
+            ...ScrollItemTypes.OtherSpell,
         },
+    },
+
+    // Placeholder usable in campaign assets' loot containers
+    GenerateRandomItems: {
+        Level1: {
+            Level: 1,
+            random: true,
+        }
     },
 
     // Spells
@@ -346,7 +434,7 @@ export const StaticAssets = {
             ManaCost: 3,
             Name: "magic arrow",
             Image: "spell_magic_arrow",
-            Type: Attack,
+            Type: SpellTypes.Attack,
             // Cumulated Damage Range: 1-5
             Damage: {Min: 1, Max: 5},
             Duration: 1,
@@ -356,7 +444,7 @@ export const StaticAssets = {
             ManaCost: 7,
             Name: "cold touch",
             Image: "spell_cold_touch",
-            Type: Attack,
+            Type: SpellTypes.Attack,
             // Cumulated Damage Range: 4-8
             Damage: {Min: 2, Max: 4},
             Duration: 2,
@@ -367,7 +455,7 @@ export const StaticAssets = {
             Name: "fireball",
             Image: "spell_fireball",
             Sound: "spells/fireball",
-            Type: Attack,
+            Type: SpellTypes.Attack,
             // Cumulated Damage Range: 6-12
             Damage: {Min: 6, Max: 12},
             Duration: 1,
@@ -378,7 +466,7 @@ export const StaticAssets = {
             Name: "vampiric touch",
             Image: "spell_vampiric_touch",
             Sound: "spells/vampiric_touch",
-            Type: Attack,
+            Type: SpellTypes.Attack,
             // Cumulated Damage Range: 4-10
             Damage: {Min: 4, Max: 10},
             // Cumulated Health Restored Range: 4-10
@@ -390,11 +478,11 @@ export const StaticAssets = {
             ManaCost: 26,
             Name: "chain lightning",
             Image: "spell_chain_lightning",
-            Type: Attack,
+            Type: SpellTypes.Attack,
             // Cumulated Damage Range: 3-45 (1-15 * 3)
             Damage: {Min: 1, Max: 15},
             Duration: 1,
-            Target: Adjacent,
+            Target: SpellTargets.Adjacent,
             MaxTargets: 3,
         },
         CircleOfDeath: {
@@ -402,22 +490,22 @@ export const StaticAssets = {
             ManaCost: 59,
             Name: "circle of death",
             Image: "spell_circle_of_death",
-            Type: Attack,
+            Type: SpellTypes.Attack,
             // Cumulated Damage Range: 40-80 (5-10 * 8)
             Damage: {Min: 5, Max: 10},
             Duration: 1,
-            Target: Surrounding,
+            Target: SpellTargets.Surrounding,
         },
         Moonbeam: {
             Level: 18,
             ManaCost: 79,
             Name: "moonbeam",
             Image: "spell_moonbeam",
-            Type: Attack,
+            Type: SpellTypes.Attack,
             // Cumulated Damage Range: 30-120 (6-24 * 5)
             Damage: {Min: 3, Max: 12},
             Duration: 2,
-            Target: Surrounding,
+            Target: SpellTargets.Surrounding,
             MaxTargets: 5,
         },
 
@@ -427,7 +515,7 @@ export const StaticAssets = {
             ManaCost: 4,
             Name: "first aid",
             Image: "spell_first_aid",
-            Type: Heal,
+            Type: SpellTypes.Heal,
             // Cumulated Health Restored Range: 4-9
             Heal: {
                 Property: "Health",
@@ -441,7 +529,7 @@ export const StaticAssets = {
             ManaCost: 6,
             Name: "alertness",
             Image: "spell_alertness",
-            Type: Heal,
+            Type: SpellTypes.Heal,
             // Cumulated Stamina Restored Range: 24-48
             Heal: {
                 Property: "Stamina",
@@ -455,7 +543,7 @@ export const StaticAssets = {
             ManaCost: 8,
             Name: "heal wounds",
             Image: "spell_heal_wounds",
-            Type: Heal,
+            Type: SpellTypes.Heal,
             // Cumulated Health Restored Range: 6-16
             Heal: {
                 Property: "Health",
@@ -469,7 +557,7 @@ export const StaticAssets = {
             ManaCost: 19,
             Name: "regenerate",
             Image: "spell_regenerate",
-            Type: Heal,
+            Type: SpellTypes.Heal,
             // Cumulated Health Restored Range: 18-33
             Heal: {
                 Property: "Health",
@@ -485,7 +573,7 @@ export const StaticAssets = {
             ManaCost: 7,
             Name: "true strike",
             Image: "spell_true_strike",
-            Type: Bonus,
+            Type: SpellTypes.Bonus,
             Boost: {
                 Property: "Damage",
                 Type: "Fixed",
@@ -499,7 +587,7 @@ export const StaticAssets = {
             Name: "bark skin",
             Image: "spell_bark_skin",
             Sound: "spells/bark_skin",
-            Type: Bonus,
+            Type: SpellTypes.Bonus,
             Boost: {
                 Property: "Armor",
                 Type: "Percentage",
@@ -512,7 +600,7 @@ export const StaticAssets = {
             ManaCost: 19,
             Name: "stone skin",
             Image: "spell_stone_skin",
-            Type: Bonus,
+            Type: SpellTypes.Bonus,
             Boost: {
                 Property: "Armor",
                 Type: "Percentage",
@@ -525,7 +613,7 @@ export const StaticAssets = {
             ManaCost: 13,
             Name: "bless",
             Image: "spell_bless",
-            Type: Bonus,
+            Type: SpellTypes.Bonus,
             Boost: {
                 Property: "Damage",
                 Type: "Max",
@@ -537,12 +625,12 @@ export const StaticAssets = {
             ManaCost: 20,
             Name: "blur",
             Image: "spell_blur",
-            Type: Bonus,
+            Type: SpellTypes.Bonus,
             Boost: {
                 Property: "Damage",
                 Type: "Min",
             },
-            Target: Facing,
+            Target: SpellTargets.Facing,
             Duration: 6, 
         },
         MirrorShield: {
@@ -550,12 +638,12 @@ export const StaticAssets = {
             ManaCost: 36,
             Name: "mirror shield",
             Image: "spell_mirror_shield",
-            Type: Bonus,
+            Type: SpellTypes.Bonus,
             Damage: {
                 Type: "Percentage",
                 Percentage: 20,
             },
-            Target: Surrounding,
+            Target: SpellTargets.Surrounding,
             Duration: 5, 
         },
         Berserk: {
@@ -563,7 +651,7 @@ export const StaticAssets = {
             ManaCost: 41,
             Name: "berserk",
             Image: "spell_berserk",
-            Type: Bonus,
+            Type: SpellTypes.Bonus,
             Boost: {
                 Property: "Strength",
                 Type: "Absolute",
@@ -578,7 +666,7 @@ export const StaticAssets = {
             ManaCost: 17,
             Name: "confusion",
             Image: "spell_confusion",
-            Type: Motion,
+            Type: SpellTypes.Motion,
             Effect: "Random",
             Duration: 3, 
         },
@@ -587,7 +675,7 @@ export const StaticAssets = {
             ManaCost: 18,
             Name: "entangle",
             Image: "spell_entangle",
-            Type: Motion,
+            Type: SpellTypes.Motion,
             Effect: "Immobilize",
             Duration: 5, 
         },
@@ -596,7 +684,7 @@ export const StaticAssets = {
             ManaCost: 25,
             Name: "shocking grasp",
             Image: "spell_shocking_grasp",
-            Type: Motion,
+            Type: SpellTypes.Motion,
             Effect: "Immobilize",
             Damage: {Min: 3, max: 5},
             Duration: 2, 
@@ -606,9 +694,9 @@ export const StaticAssets = {
             ManaCost: 69,
             Name: "earthquake",
             Image: "spell_earthquake",
-            Type: Motion,
+            Type: SpellTypes.Motion,
             Effect: "Immobilize",
-            Target: Surrounding,
+            Target: SpellTargets.Surrounding,
             Duration: 3, 
         },
 
@@ -688,7 +776,6 @@ export const StaticAssets = {
         Lizard:{
         },
         
-        
         // Undead
         Imp: {
             Name: "imp",
@@ -725,4 +812,4 @@ export const StaticAssets = {
 
 }
 
-export default StaticAssets
+export default WorldAssets

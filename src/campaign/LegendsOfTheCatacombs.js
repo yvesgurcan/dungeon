@@ -1,45 +1,30 @@
-import StaticAssets from "./StaticAssets.js"
+import WorldAssets from "../WorldAssets.js"
+import Utilities from "../Utilities.js"
 
-const Debug = true
+export const CampaignAssets = {
 
-export const DynamicAssets = {
-
-
+    // Let the player create their character at the beginning of the campaign
     CreateCharacter: false,
 
-    // debug
-    ShowFullMap: Debug || false
-    ,
-    NoClip: Debug || false
-    ,
-    GodMode: Debug || false
-    ,
-    Debug: Debug
-    ,
-
-    currentEvent: []
-    ,
-
+    // Player start
     Player: {
+        // debug
+        Name: "Leto Seldon",
+        Mana: 999,
+        Health: 19,
+        Level: Utilities.MaxSpellLevel,
+        Class: WorldAssets.Classes.Wizard,
+        SpellBook: {
+            Spells: Object.keys(WorldAssets.Spells).map(Key => {return WorldAssets.Spells[Key]}),
+        },
+        //
         x: 10,
         y: 14,
         Facing: "East",
-        Level: 1,
-        XP: 0,
-        Constitution: null,
-        Strength: null,
-        Dexterity: null,
-        Intelligence: null,
-        ArmorClass: null,
-        Name: "Leto Seldon",
-        SpellBook: {
-            MaxSpells: 1,
-            Spells: StaticAssets.Spells,
-        }
     },
 
     Gear: {
-        LeftHand: StaticAssets.Items.EmeraldDagger,
+        LeftHand: WorldAssets.Items.EmeraldDagger,
         RightHand: null,
         PreparedSpell1: null,
         PreparedSpell2: null,
@@ -49,27 +34,27 @@ export const DynamicAssets = {
         maxItems: 28,
         Weight: 0,
         Items: [
-            {...StaticAssets.Items.HealthPotion, Id: 1},
-            {...StaticAssets.Items.HealthPotion, Id: 12},
-            {...StaticAssets.Items.HealthPotion, Id: 13},
-            {...StaticAssets.Items.HealthPotion, Id: 14},
-            {...StaticAssets.Items.ManaPotion, Id: 3},
-            {...StaticAssets.Items.ManaPotion, Id: 6},
-            {...StaticAssets.Items.ManaPotion, Id: 7},
-            {...StaticAssets.Items.ManaPotion, Id: 8},
-            {...StaticAssets.Items.ManaPotion, Id: 9},
-            {...StaticAssets.Items.ManaPotion, Id: 10},
-            {...StaticAssets.Items.ManaPotion, Id: 11},
-            {...StaticAssets.Items.StaminaPotion, Id: 4},
-            StaticAssets.Items.AmuletOfMagic,
-            StaticAssets.Items.SkullAmulet,
-            StaticAssets.Items.Sword,
-            StaticAssets.Items.SimpleStaff,
-            StaticAssets.Items.MagicArrowScroll,
-            StaticAssets.Items.HealWoundsScroll,
-            StaticAssets.Items.EntangleScroll,
-            StaticAssets.Items.DetectMonsterScroll,
-            {...StaticAssets.Items.Apple, Id: 5},
+            {...WorldAssets.Items.HealthPotion, Id: 1},
+            {...WorldAssets.Items.HealthPotion, Id: 12},
+            {...WorldAssets.Items.HealthPotion, Id: 13},
+            {...WorldAssets.Items.HealthPotion, Id: 14},
+            {...WorldAssets.Items.ManaPotion, Id: 3},
+            {...WorldAssets.Items.ManaPotion, Id: 6},
+            {...WorldAssets.Items.ManaPotion, Id: 7},
+            {...WorldAssets.Items.ManaPotion, Id: 8},
+            {...WorldAssets.Items.ManaPotion, Id: 9},
+            {...WorldAssets.Items.ManaPotion, Id: 10},
+            {...WorldAssets.Items.ManaPotion, Id: 11},
+            {...WorldAssets.Items.StaminaPotion, Id: 4},
+            WorldAssets.Items.AmuletOfMagic,
+            WorldAssets.Items.SkullAmulet,
+            WorldAssets.Items.Sword,
+            WorldAssets.Items.SimpleStaff,
+            WorldAssets.Items.MagicArrowScroll,
+            WorldAssets.Items.HealWoundsScroll,
+            WorldAssets.Items.EntangleScroll,
+            WorldAssets.Items.DetectMonsterScroll,
+            {...WorldAssets.Items.Apple, Id: 5},
         ],
     },
 
@@ -80,14 +65,16 @@ export const DynamicAssets = {
             y: 13,
             Name: "skeleton",
             items: [
-                // StaticAssets.UniqueItems.IronKey,
-                {...StaticAssets.Items.HealthPotion, Id: 2}
+                // WorldAssets.UniqueItems.IronKey,
+                {...WorldAssets.Items.HealthPotion, Id: 2}
             ]
         },
     ],
 
+    // LockedDoors
+
     Monsters: [
-        {...StaticAssets.Bestiary.Orc,
+        {...WorldAssets.Bestiary.Orc,
             x: 12,
             y: 13,
             Id: 2,
@@ -95,7 +82,7 @@ export const DynamicAssets = {
             Damage: {Min: 1, Max: 4},
             Stationary: true,
         },
-        {...StaticAssets.Bestiary.Orc,
+        {...WorldAssets.Bestiary.Orc,
             x: 12,
             y: 14,
             Id: 1,
@@ -103,7 +90,7 @@ export const DynamicAssets = {
             Damage: {Min: 1, Max: 4},
             Stationary: true,
         },
-        {...StaticAssets.Bestiary.Orc,
+        {...WorldAssets.Bestiary.Orc,
             x: 12,
             y: 15,
             Id: 3,
@@ -113,21 +100,23 @@ export const DynamicAssets = {
         },
     ],
 
-    Text: [
-        {
-            text:
-                `You slowly wake up. Ouch! Your head hurts...
+    // This text will be displayed when the player starts the map
+    StartText: {
+        text:
+            `You slowly wake up. Ouch! Your head hurts...
 
-                Where are you?
-                
-                You try to examine your surroundings, but your eyes can't see a thing. It's too dark. Night time? There's not a star in the sky.
-                
-                A terrible stench makes you belch. What the hell is this putrid smell?! You must be in some sort of small enclosed space--a basement, without any window.
-                
-                You become aware of the fact that you are lying down. You raise your left arm and touch your head. Something hot above your left eyebrow--must be blood. Probably a bad wound.
-                
-                With much effort, you manage to get in an upright position and find a vertical wall behind you to support your back. Little by little, you slide up the wall and, finally, stand up.`
-        },
+            Where are you?
+            
+            You try to examine your surroundings, but your eyes can't see a thing. It's too dark. Night time? There's not a star in the sky.
+            
+            A terrible stench makes you belch. What the hell is this putrid smell?! You must be in some sort of small enclosed space--a basement, without any window.
+            
+            You become aware of the fact that you are lying down. You raise your left arm and touch your head. Something hot above your left eyebrow--must be blood. Probably a bad wound.
+            
+            With much effort, you manage to get in an upright position and find a vertical wall behind you to support your back. Little by little, you slide up the wall and, finally, stand up.`
+    },
+
+    Text: [
         {
             accessPoints: [{x: 10, y: 13}],
             image: "bones",
@@ -206,12 +195,4 @@ export const DynamicAssets = {
 
 }
 
-// start text
-DynamicAssets.currentText =
-    DynamicAssets.Text
-    && DynamicAssets.Text[0]
-    && DynamicAssets.Text[0].text
-        ? DynamicAssets.Text[0].text
-        : null
-
-export default DynamicAssets
+export default CampaignAssets
