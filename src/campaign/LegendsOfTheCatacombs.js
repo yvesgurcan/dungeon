@@ -4,14 +4,12 @@ import Utilities from "../Utilities.js"
 export const CampaignAssets = {
 
     // Let the player create their character at the beginning of the campaign
-    CreateCharacter: false,
+    CreateCharacter: true,
 
     // Player start
     Player: {
         // debug
         Name: "Leto Seldon",
-        Mana: 999,
-        Health: 999,
         Level: Utilities.MaxSpellLevel,
         Class: WorldAssets.Classes.Wizard,
         SpellBook: {

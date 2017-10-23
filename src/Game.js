@@ -284,6 +284,7 @@ class GameStateOptions extends Component {
   render() {
     return (
       <View style={Styles.GameState}>
+        <ActionButton onClick={this.props.ShowCharacterScreen}>New Game</ActionButton>
         <ActionButton onClick={this.ToggleSaveGameStateBox}>Save Game</ActionButton>
         <ActionButton onClick={this.ToggleLoadGameStateBox}>Load Game</ActionButton>
         <ActionButton onClick={this.ToggleCancelGameStateBox} hidden={!this.props.ShowGameStateBox}>Close</ActionButton>
@@ -1954,9 +1955,27 @@ class CreateCharacterName extends Component {
 
 class CreateCharacterBackground extends Component {
   render() {
+    let Player = {... this.props.Player}
     return (
       <View style={Styles.CharacterCreateBackground}>
-        <SubHeading>Origins</SubHeading>
+        <Block style={Styles.PropertyLabel}>
+          <Text>Race:</Text>
+        </Block>
+        <Block style={Styles.PropertyField}>
+        <Text>{Player.Race.Name}</Text>        
+        </Block>
+        <Block style={Styles.PropertyLabel}>
+          <Text>Class:</Text>
+        </Block>
+        <Block style={Styles.PropertyField}>
+        <Text>{Player.Class.Name}</Text>        
+        </Block>
+        <Block style={Styles.PropertyLabel}>
+          <Text>Spell:</Text>
+        </Block>
+        <Block style={Styles.PropertyField}>
+        <Text>{Player.SpellBook && Player.SpellBook.Spells ? Player.SpellBook.Spells[0].Name : null}</Text>        
+        </Block>
       </View>
     )
   }
@@ -1968,7 +1987,6 @@ class CreateCharacterAbilities extends Component {
     let Player = Object.assign({}, this.props.Player)
     return (
       <View style={Styles.CharacterCreateView}>
-        <SubHeading>Abilities</SubHeading>
         <Block style={Styles.PropertyLabel}>
           <Text>Strength:</Text>
         </Block>
@@ -2005,6 +2023,15 @@ class CreateCharacterAbilities extends Component {
   }
 }
 
+class CreateCharacterContainer extends Component {
+  render() {
+    return (
+      <View style={Styles.CreateCharacterContainer}>
+      </View>
+    )
+  }
+}
+
 class CreateCharacterHeader extends Component {
   render() {
     return (
@@ -2022,7 +2049,8 @@ class Contact extends Component {
   // content is static
   shouldComponentUpdate(nextProps) {
     if (
-        nextProps.MobileScreen !== this.props.MobileScreen
+        nextProps.CreateCharacter !== this.props.CreateCharacter
+        || nextProps.MobileScreen !== this.props.MobileScreen
         || nextProps.TabletScreen !== this.props.TabletScreen
       ) {
       return true
@@ -2061,7 +2089,8 @@ class Header extends Component {
   // content is static
   shouldComponentUpdate(nextProps) {
     if (
-        nextProps.MobileScreen !== this.props.MobileScreen
+        nextProps.CreateCharacter !== this.props.CreateCharacter
+        || nextProps.MobileScreen !== this.props.MobileScreen
         || nextProps.TabletScreen !== this.props.TabletScreen
       ) {
       return true
@@ -2186,11 +2215,6 @@ class Game extends Component {
       // TODO: Add a default 1st level spell to spellcasters
     }
 
-/*
-
-   
-*/
-
     // Check player's start coordinates
     if (!Player.x && !Player.x) {
       Player.x = 0
@@ -2260,6 +2284,8 @@ class Game extends Component {
       Volume: Utilities.DefaultSoundVolume
     }
 
+    initState.EventLog = [".",".",".",".","."]
+
     this.state = initState
 
     
@@ -2271,8 +2297,20 @@ class Game extends Component {
     this.CalculateStyles()
   }
 
+  ShowCharacterScreen = () => {
+    this.setState({CreateCharacter: true}, function() {
+      this.CalculateStyles()
+      
+        this.forceUpdate()
+    })
+  }
+
   StartGame = () => {
-    this.setState({CreateCharacter: false})
+    this.setState({CreateCharacter: false}, function() {
+      this.CalculateStyles()
+      
+        this.forceUpdate()
+    })
   }
 
   ToggleGameStateBox = (Operation) => {
@@ -2655,6 +2693,7 @@ class Game extends Component {
           fontFamily: "inherit",
           fontSize: "inherit",
           width: "120px",
+          background: "transparent",
         },
         TextEditCharacterNameFocus: {
           border: "none",
@@ -2664,24 +2703,26 @@ class Game extends Component {
           fontSize: "inherit",
           textDecoration: "underline",
           width: "120px",
+          background: "transparent",
         },
         // Create Player Grid
         CreatePlayer: {
+          margin: "0 auto",
+          width: MobileScreen ? "300px" : TabletScreen ? "750px" : "900px",
           userSelect: "none",
           cursor: "pointer",
           display: "grid",
-          gridGap: "10px",
           gridTemplateColumns:
             MobileScreen ?
             // column1-10
-            "repeat(10, 31px)"
+            "repeat(9, 34.4px)"
             :
             TabletScreen ?
             // column1-10
-            "repeat(10, 74.3px)"
+            "repeat(9, 82.5px)"
             :
             // column1-10
-            "repeat(10, 88.6px)"
+            "repeat(9, 98.4px)"
           ,
           gridTemplateRows:
           // title (row1)
@@ -2691,20 +2732,23 @@ class Game extends Component {
           // header (row3)
           "auto" +
           // body (row4)
-          "auto" +
-          // body (row4)
           "auto"
           ,
         },
         CharacterHeader: {
+          padding: HUDPadding,
           gridColumnStart: FirstColumn,
           gridColumnEnd: LastColumn,
           gridRowStart: 3,
         },
         CharacterCreateName: {
+          padding: HUDPadding,
+          gridColumnStart: FirstColumn,
+          gridColumnEnd: MobileScreen ? LastColumn : 4,
           gridRowStart: 4,
           display: "grid",
           // subgrid
+          gridTemplateRows: "23px 23px 23px 23px",
           gridTemplateColumns:
           MobileScreen ?
           // column1
@@ -2725,42 +2769,52 @@ class Game extends Component {
           "130px " +
           // column2-10
           "repeat(8, 88.6px)"
-        ,
         },
-        CharacterCreateBackground: {
-          gridColumnStart: 4,
-          gridColumnEnd: LastColumn,
-          gridRowStart: 4,
-          display: "grid",
-          // subgrid
-          gridTemplateColumns:
-          MobileScreen ?
-          // column1
-          "100px " +
-          "130px " +
-          // column2-10
-          "repeat(8, 31px)"
-          :
-          TabletScreen ?
-          // column1
-          "100px " +
-          "130px " +
-          // column2-10
-          "repeat(8, 74.3px)"
-          :
-          // column1
-          "100px " +
-          "130px " +
-          // column2-10
-          "repeat(8, 88.6px)"
-        ,
-        },
-        CharacterCreateView: {
+        CreateCharacterContainer: {
           gridColumnStart: FirstColumn,
           gridColumnEnd: LastColumn,
-          gridRowStart: 5,
+          gridRowStart: 3,
+          gridRowEnd: 7,
+          backgroundImage: "url(graphics/hud/parchment.jpg)",
+        },
+        CharacterCreateBackground: {
+          padding: HUDPadding,
+          gridColumnStart: MobileScreen ? FirstColumn : 7,
+          gridColumnEnd: 10,
+          gridRowStart: MobileScreen ? 6 : 4,
           display: "grid",
           // subgrid
+          gridTemplateRows: "23px 23px 23px",
+          gridTemplateColumns:
+          MobileScreen ?
+          // column1
+          "100px " +
+          "130px " +
+          // column2-10
+          "repeat(8, 31px)"
+          :
+          TabletScreen ?
+          // column1
+          "100px " +
+          "130px " +
+          // column2-10
+          "repeat(8, 74.3px)"
+          :
+          // column1
+          "100px " +
+          "130px " +
+          // column2-10
+          "repeat(8, 88.6px)"
+          ,
+        },
+        CharacterCreateView: {
+          padding: HUDPadding,
+          gridColumnStart: MobileScreen ? FirstColumn : 4,
+          gridColumnEnd: MobileScreen ? LastColumn : 7,
+          gridRowStart: MobileScreen ? 5 : 4,
+          display: "grid",
+          // subgrid
+          gridTemplateRows: "23px 23px 23px 23px",
           gridTemplateColumns:
           MobileScreen ?
           // column1
@@ -2812,6 +2866,10 @@ class Game extends Component {
         StartGame: {
           gridColumnStart: FirstColumn,
           gridColumnEnd: LastColumn,
+          padding: HUDPadding,
+          backgroundImage: "url(graphics/hud/parchment.jpg)",
+          backgroundPosition: "0 -174px", 
+          textAlign: "right",
         },
         // In-Game Grid
         Game: {
@@ -2820,7 +2878,6 @@ class Game extends Component {
           userSelect: "none",
           cursor: "pointer",
           display: "grid",
-          // gridGap: "10px",
           gridTemplateColumns:
             MobileScreen ?
               // column1-10
@@ -2852,17 +2909,17 @@ class Game extends Component {
               // column9-10
               "repeat(2, 86px)"
           ,
-          gridTemplateRows:
+          gridTemplateRows: this.state.CreateCharacter ? null :
             // title (row1)
             "auto " +
             // contact (row2)
-            "30px " +
+            "auto " +
             // event log (row3)
-            Number(HUDPadding * 2 + 18.5 * Utilities.MaxEventLogEntries) + px + " " +
+            (this.state.CreateCharacter ? "auto" : Number(HUDPadding * 2 + 18.5 * Utilities.MaxEventLogEntries) + px) + " " +
             // story/map (row4)
-            StoryRowHeight + px + " " +
+            (this.state.CreateCharacter ? "auto" : StoryRowHeight + px) + " " +
             // story (row5)
-            (MobileScreen ? StoryRowHeight + px + " " : "") +
+            // (MobileScreen ? StoryRowHeight + px + " " : "") +
             // controls (row6a)
             "auto " +
             // controls2 (row6b)
@@ -3470,7 +3527,7 @@ class Game extends Component {
         MobileScreen: MobileScreen,
         TabletScreen: TabletScreen,
       })
-    
+
     }
 
   }
@@ -3899,14 +3956,7 @@ class Game extends Component {
   }
 
   CalculateMaxStamina = (Player) => {
-    // level up
-    if (Player.MaxStamina) {
-      return Math.ceil(Player.MaxStamina * 1.5)
-    }
-    // new player
-    else {
-     return Math.ceil((Player.Strength) * 5) + this.RandomIntegerFromRange(-5, 15)
-    }
+     return Math.ceil((Player.Strength) * 5)
   }
 
   UpdateText = ({ x, y }) => {
@@ -4815,7 +4865,7 @@ class Game extends Component {
     let VerticalDistance = PlayerNewCoordinates.y - Monster.y
 
     let index = null
-    let MonsterObject = Monsters.filter((Monst, i) => {
+    Monsters.filter((Monst, i) => {
       if (Monst.Id === Monster.Id) {
         index = i
         return true
@@ -5284,6 +5334,8 @@ class Game extends Component {
           <Header/>
           {/* row 2 */}
           <Contact {... this.state}/>
+          {/* container */}
+          <CreateCharacterContainer/>
           {/* row 3 */}
           <CreateCharacterHeader/>
           {/* row 4 */}
