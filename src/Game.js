@@ -2025,29 +2025,53 @@ class CreateCharacterBackground extends Component {
 
   render() {
     let Player = {...this.props.Player}
+    let FirstSpell = {... this.props.Player.SpellBook.Spells[0]}
     return (
       <View style={Styles.CharacterCreateBackground}>
-        <Block style={Styles.PropertyLabel}>
+        <Block style={{...Styles.PropertyLabel, paddingTop: "8px"}}>
           <Text>Race:</Text>
         </Block>
         <Block style={Styles.PropertyField}>
-          <Arrow {...this.props} onClick={this.SelectRace} arrow="Left">←</Arrow>
-          <Text>{Player.Race.Name}</Text>
-          <Arrow {...this.props} onClick={this.SelectRace} arrow="Right">→</Arrow>     
+          <Block style={{display: "flex"}}>
+              <Arrow {...this.props} onClick={this.SelectRace} arrow="Left">←</Arrow>
+            <Block style={{flexGrow: "1", flexBasis: "auto", textAlign: "center", margin: "auto"}}>
+              <Text>{Player.Race.Name}</Text>
+            </Block>
+              <Arrow {...this.props} onClick={this.SelectRace} arrow="Right">→</Arrow>  
+          </Block>
         </Block>
-        <Block style={Styles.PropertyLabel}>
+        <Block style={{...Styles.PropertyLabel, paddingTop: "8px"}}>
           <Text>Class:</Text>
         </Block>
         <Block style={Styles.PropertyField}>
-          <Arrow {...this.props} onClick={this.SelectClass} arrow="Left">←</Arrow>
-          <Text>{Player.Class.Name}</Text>   
-          <Arrow {...this.props} onClick={this.SelectClass} arrow="Right">→</Arrow>          
+        <Block style={{display: "flex"}}>
+            <Arrow {...this.props} onClick={this.SelectClass} arrow="Left">←</Arrow>
+          <Block style={{flexGrow: "1", flexBasis: "auto", textAlign: "center", margin: "auto"}}>
+            <Text>{Player.Class.Name}</Text>
+          </Block>
+            <Arrow {...this.props} onClick={this.SelectClass} arrow="Right">→</Arrow>  
         </Block>
-        <Block style={Styles.PropertyLabel}>
-          <Text>Spell:</Text>
+      </Block>
+        <Block style={{...Styles.PropertyLabel, paddingTop: "10px"}}>
+            <Text>Spell:</Text>
         </Block>
         <Block style={Styles.PropertyField}>
-        <Text>{Player.SpellBook && Player.SpellBook.Spells ? Player.SpellBook.Spells[0].Name : null}</Text>        
+          <Block style={{display: "flex"}}>
+            <Block style={{marginTop: "3px"}}>
+              <Arrow {...this.props} onClick={this.SelectSpell} arrow="Left">←</Arrow>
+            </Block>
+            <Block style={{flexGrow: "1", flexBasis: "auto", marginLeft: "8px"}}>
+              <ItemImageBlock
+                draggable={false}
+                image={(FirstSpell && FirstSpell.Image) || null}
+                name={(FirstSpell && FirstSpell.Name) || null}
+                item={FirstSpell}
+                onClick={null/*this.props.CastSpell*/} />
+            </Block>
+            <Block style={{marginTop: "3px"}}>
+              <Arrow {...this.props} onClick={this.SelectSpell} arrow="Right">→</Arrow>
+            </Block>
+          </Block> 
         </Block>
       </View>
     )
@@ -2087,7 +2111,7 @@ class CreateCharacterAbilities extends Component {
         <Block />
         <Block style={Styles.RollAbilities}>
           <ActionButton onClick={this.props.GeneratePlayerStats}>
-            Roll Again
+            Reroll
           </ActionButton>
         </Block>
         <Block />
@@ -2902,7 +2926,7 @@ class Game extends Component {
           gridRowStart: MobileScreen ? 6 : 4,
           display: "grid",
           // subgrid
-          gridTemplateRows: "23px 23px 23px",
+          gridTemplateRows: "32px 32px 32px",
           gridTemplateColumns:
           MobileScreen ?
           // column1
