@@ -775,14 +775,46 @@ export const WorldAssets = {
         },
         Lizard:{
         },
+        GiantRat: {
+        },
+        EvilSpider: {
+        },
+        Troglodyte: {
+        },
+        DeepRothe: {
+        },
         
         // Undead
-        Imp: {
-            Name: "imp",
+        Zombie: {
+        },
+        Skeleton: {
+        },
+        Ghoul: {
+        },
+        HellHound: {
+        },
+        Mummy: {
+            Name: "mummy",
             Level: 1,
             Health: 14,
             Damage: {Min: 2, Max: 5},
         },
+        Banshee: {
+        },
+        LostSoul: {
+        },
+        Vampire: {
+        },
+        BoneDevil: {
+        }
+        Lich: {
+        },
+        PitFiend: {
+        },
+        
+        // Humanoids
+        
+        
         // Green Skins
         Goblin: {
             Name: "goblin",
@@ -808,6 +840,19 @@ export const WorldAssets = {
             Health: 15,
             Damage: {Min: 4, Max: 7},
         },
+            
+        // Giants
+            
+            
+        // Magic
+            
+            
+        // Hybrids
+            
+            
+        // Fun
+            
+            
     },
 
 }
