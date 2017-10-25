@@ -2694,7 +2694,7 @@ class Game extends Component {
             // contact (row2)
             "auto " +
             // event log (row3)
-            (this.state.CreateCharacter ? "auto" : Number(HUDPadding * 2 + 18.5 * Utilities.MaxEventLogEntries) + px) + " " +
+            "auto" +
             // story/map (row4)
             (this.state.CreateCharacter ? "auto" : StoryRowHeight + px) + " " +
             // story (row5)
@@ -2765,6 +2765,7 @@ class Game extends Component {
           border: HUDBorder,
           padding: HUDBlockPadding,
           backgroundImage: "url(graphics/hud/parchment.jpg)",
+          minHeight: Number(18.5 * Utilities.MaxEventLogEntries) + px,
         },
         EventLogContainer: {
           maxHeight: 18.5 * Utilities.MaxEventLogEntries + px,
@@ -3421,8 +3422,6 @@ class Game extends Component {
       Volume: Utilities.DefaultSoundVolume
     }
 
-    initState.EventLog = [".",".",".",".","."]
-
     this.state = initState
 
     
@@ -3472,12 +3471,6 @@ class Game extends Component {
         }
       }
     }
-
-    let AbilityBoost = null
-    if (!Player.Class.Spellcaster) {
-      AbilityBoost = Player.Class.AbilityPriorities[0]
-    }
-
 
     // Abilities
     // generate and sort random stats for the player
@@ -4832,7 +4825,9 @@ class Game extends Component {
         })
 
         Backpack.Items = Backpack.Items.concat(loot)
-        Player.Stationary = true    
+        Backpack.Weight = this.CheckInventoryWeight(loot, true)
+        Player.Stationary = true  
+
         this.setState({Backpack: Backpack, Player: Player})
 
         this.SetText(Gameplay.Messages.Loot.Gathered)
@@ -4872,7 +4867,8 @@ class Game extends Component {
 
       if (this.CheckInventoryWeight([matchLootContainer.items[lootIndex]])) {
 
-          Backpack.Items.push(matchLootContainer.items[lootIndex])      
+          Backpack.Items.push(matchLootContainer.items[lootIndex])
+          Backpack.Weight = this.CheckInventoryWeight(matchLootContainer.items[lootIndex], true)
 
           this.setState({Backpack: Backpack}, function() {
             matchLootContainer.items.splice(lootIndex,1)
@@ -4898,7 +4894,7 @@ class Game extends Component {
 
   }
 
-  CheckInventoryWeight = (Loot) => {
+  CheckInventoryWeight = (Loot, Save) => {
 
     // let {Backpack, Player} = this.state
     let Backpack = Object.assign({}, this.state.Backpack)
@@ -4925,8 +4921,9 @@ class Game extends Component {
     }
 
     if (BackpackWeight <= Player.MaxWeight) {
-      Backpack.Weight = BackpackWeight
-      this.setState({Backpack: Backpack})
+      if (Save) {
+        return BackpackWeight
+      }
       return true
     }
 

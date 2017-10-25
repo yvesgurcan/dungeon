@@ -32,7 +32,7 @@ export const CampaignAssets = {
         maxItems: 28,
         Weight: 0,
         Items: [
-            {...WorldAssets.Items.HealthPotion, Id: 1},
+            /*{...WorldAssets.Items.HealthPotion, Id: 1},
             {...WorldAssets.Items.HealthPotion, Id: 12},
             {...WorldAssets.Items.HealthPotion, Id: 13},
             {...WorldAssets.Items.HealthPotion, Id: 14},
@@ -52,7 +52,7 @@ export const CampaignAssets = {
             WorldAssets.Items.HealWoundsScroll,
             WorldAssets.Items.EntangleScroll,
             WorldAssets.Items.DetectMonsterScroll,
-            {...WorldAssets.Items.Apple, Id: 5},
+            {...WorldAssets.Items.Apple, Id: 5},*/
         ],
     },
 
