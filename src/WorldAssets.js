@@ -65,31 +65,37 @@ export const WorldAssets = {
     Classes: {
         Barbarian: {
             Name: "barbarian",
-            MaxHealthBoost: 12,
+            // STR (+) - CON - DEX
+            AbilityPriorities: ["Strength","Constitution","Dexterity","Intelligence"],
         },
         Cleric: {
             Name: "cleric",
-            MaxHealthBoost: 8,
             Spellcaster: true,
+            // INT - CON - DEX
+            AbilityPriorities: ["Intelligence", "Constitution","Dexterity","Strength"],
             
         },
         Fighter: {
             Name: "fighter",
-            MaxHealthBoost: 10,
+            // STR (+) - DEX - CON
+            AbilityPriorities: ["Strength","Dexterity","Constitution","Intelligence"],
         },
         Paladin: {
             Name: "paladin",
-            MaxHealthBoost: 10,
-            Spellcaster: true,
+            Spellcaster: true,     
+            // STR - INT - CON       
+            AbilityPriorities: ["Strength","Intelligence","Constitution","Dexterity"],
         },
         Ranger: {
             Name: "ranger",
-            MaxHealthBoost: 10,
+            // DEX (+) - CON - STR
+            AbilityPriorities: ["Dexterity","Constitution","Strength","Intelligence"],
         },
         Wizard: {
             Name: "wizard",
-            MaxHealthBoost: 6,
             Spellcaster: true,
+            // INT - DEX - CON
+            AbilityPriorities: ["Intelligence","Dexterity","Constitution","Strength"],
         },
     },
 
@@ -582,7 +588,7 @@ export const WorldAssets = {
             Duration: 5, 
         },
         BarkSkin: {
-            Level: 2,
+            Level: 1,
             ManaCost: 11,
             Name: "bark skin",
             Image: "spell_bark_skin",
@@ -596,7 +602,7 @@ export const WorldAssets = {
             Duration: 10, 
         },
         StoneSkin: {
-            Level: 5,
+            Level: 3,
             ManaCost: 19,
             Name: "stone skin",
             Image: "spell_stone_skin",
@@ -609,7 +615,7 @@ export const WorldAssets = {
             Duration: 15, 
         },
         Bless: {
-            Level: 3,
+            Level: 2,
             ManaCost: 13,
             Name: "bless",
             Image: "spell_bless",
@@ -806,7 +812,7 @@ export const WorldAssets = {
         Vampire: {
         },
         BoneDevil: {
-        }
+        },
         Lich: {
         },
         PitFiend: {

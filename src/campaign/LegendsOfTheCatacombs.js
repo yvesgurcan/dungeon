@@ -11,15 +11,15 @@ export const CampaignAssets = {
         // debug
         Name: "Leto Seldon",
         Level: Utilities.MaxSpellLevel,
-        Class: {...WorldAssets.Classes.Wizard, Id: "Wizard"},
-        SpellBook: {
-            Spells: Object.keys(WorldAssets.Spells).map(Key => {return WorldAssets.Spells[Key]}),
-        },
         //
         x: 10,
         y: 14,
         Facing: "East",
     },
+
+    AvailableStartSpell:
+        Object.keys(WorldAssets.Spells).map(Key => {return WorldAssets.Spells[Key]}).filter(Spell => {return Spell.Level === 1})
+    ,
 
     Gear: {
         LeftHand: WorldAssets.Items.EmeraldDagger,

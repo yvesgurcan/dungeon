@@ -469,7 +469,7 @@ class SpellBook extends Component {
     let SpellSlots = []
 
     for (let i = 0; i < Utilities.NumberOfSpells; i++) {
-      if (!Spells || Spells.length < i) {
+      if (!Spells || Spells.length <= i) {
         SpellSlots.push(
           <ItemImageBlock
             key={i}/>
@@ -2023,9 +2023,52 @@ class CreateCharacterBackground extends Component {
     this.props.SetClass({...Player.Class, Id: ClassName})
   }
 
-  render() {
+  SelectFirstSpell = (Input) => {
+
     let Player = {...this.props.Player}
-    let FirstSpell = {... this.props.Player.SpellBook.Spells[0]}
+    let Spells = Campaign.AvailableStartSpell
+    let index = 0
+
+    Spells.filter((Spell, i) => {
+      if (Spell === Player.SpellBook.Spells[0]) {
+        index = i
+        return true
+      }
+      return false
+      
+    })
+
+    if (Input === "Left") {
+      if (index-1 < 0) {
+        Player.SpellBook.Spells[0] = Spells[Spells.length-1]  
+      }
+      else {
+        Player.SpellBook.Spells[0] = Spells[index-1]        
+      }
+    }
+    else {
+      if (index+1 > Spells.length-1) {
+        Player.SpellBook.Spells[0] = Spells[0]  
+      }
+      else {
+        Player.SpellBook.Spells[0] = Spells[index+1]
+      }
+    }
+
+    this.props.SetFirstSpell(Player.SpellBook)
+    
+
+  }
+
+  render() {
+
+    let Player = {...this.props.Player}
+
+    let FirstSpell = null
+    if (Player.SpellBook && Player.SpellBook.Spells) {
+      FirstSpell = {...Player.SpellBook.Spells[0]}
+    }
+
     return (
       <View style={Styles.CharacterCreateBackground}>
         <Block style={{...Styles.PropertyLabel, paddingTop: "8px"}}>
@@ -2052,13 +2095,13 @@ class CreateCharacterBackground extends Component {
             <Arrow {...this.props} onClick={this.SelectClass} arrow="Right">→</Arrow>  
         </Block>
       </Block>
-        <Block style={{...Styles.PropertyLabel, paddingTop: "10px"}}>
+        <Block style={{...Styles.PropertyLabel, paddingTop: "10px"}} hidden={!Player.Class.Spellcaster || !Campaign.AvailableStartSpell}>
             <Text>Spell:</Text>
         </Block>
-        <Block style={Styles.PropertyField}>
+        <Block style={Styles.PropertyField} hidden={!Player.Class.Spellcaster || !Campaign.AvailableStartSpell}>
           <Block style={{display: "flex"}}>
             <Block style={{marginTop: "3px"}}>
-              <Arrow {...this.props} onClick={this.SelectSpell} arrow="Left">←</Arrow>
+              <Arrow {...this.props} onClick={this.SelectFirstSpell} arrow="Left">←</Arrow>
             </Block>
             <Block style={{flexGrow: "1", flexBasis: "auto", marginLeft: "8px"}}>
               <ItemImageBlock
@@ -2069,7 +2112,7 @@ class CreateCharacterBackground extends Component {
                 onClick={null/*this.props.CastSpell*/} />
             </Block>
             <Block style={{marginTop: "3px"}}>
-              <Arrow {...this.props} onClick={this.SelectSpell} arrow="Right">→</Arrow>
+              <Arrow {...this.props} onClick={this.SelectFirstSpell} arrow="Right">→</Arrow>
             </Block>
           </Block> 
         </Block>
@@ -2088,25 +2131,25 @@ class CreateCharacterAbilities extends Component {
           <Text>Strength:</Text>
         </Block>
         <Block style={Styles.PropertyField}>
-          <Text>{Player.Strength}</Text>
+          <Text>{Player.Strength - (Player.Race.AbilityBoost.Strength || 0)} {Player.Race.AbilityBoost.Strength ? "+" + Player.Race.AbilityBoost.Strength : null}</Text>
         </Block>
         <Block style={Styles.PropertyLabel}>
           <Text>Dexterity:</Text>
         </Block>
         <Block style={Styles.PropertyField}>
-          <Text>{Player.Dexterity}</Text>
+          <Text>{Player.Dexterity - (Player.Race.AbilityBoost.Dexterity || 0)} {Player.Race.AbilityBoost.Dexterity ? "+" + Player.Race.AbilityBoost.Dexterity : null}</Text>
         </Block>
         <Block style={Styles.PropertyLabel}>
           <Text>Constitution:</Text>
         </Block>
         <Block style={Styles.PropertyField}>
-          <Text>{Player.Constitution}</Text>
+          <Text>{Player.Constitution - (Player.Race.AbilityBoost.Constitution || 0)} {Player.Race.AbilityBoost.Constitution ? "+" + Player.Race.AbilityBoost.Constitution : null}</Text>
         </Block>
         <Block style={Styles.PropertyLabel}>
           <Text>Intelligence:</Text>
         </Block>
         <Block style={Styles.PropertyField}>
-          <Text>{Player.Intelligence}</Text>
+          <Text>{Player.Intelligence - (Player.Race.AbilityBoost.Intelligence || 0)} {Player.Race.AbilityBoost.Intelligence ? "+" + Player.Race.AbilityBoost.Intelligence : null}</Text>
         </Block>
         <Block />
         <Block style={Styles.RollAbilities}>
@@ -2210,384 +2253,7 @@ class Header extends Component {
 
 class Game extends Component {
 
-  constructor(props) {
-    super(props)
-
-    // keep the start text in memory and delete it so that it does not appear in the state
-    const StartText = Campaign.StartText ? Campaign.StartText.text : null
-    delete Campaign.StartText
-
-    // campaign assets
-    let initState = {...Campaign}
-
-    // debug/cheats
-    if (Utilities.ShowFullMap) {
-      initState.ShowFullMap = true
-    }
-    if (Utilities.NoClip) {
-      initState.NoClip = true
-    }
-    if (Utilities.GodMode) {
-      initState.GodMode = true
-    }
-
-    // Story
-    // text displayed at the beginning of the campaign
-    initState.currentText = StartText
-
-    // Items
-    // create the list of random items to draw from when looting, grouped by level
-    initState.RandomItems = {}
-
-    Object.keys(World.Items).map(itemObjectName => {
-      let item = World.Items[itemObjectName]
-      if (initState.RandomItems["Level" + item.Level] === undefined) {
-        initState.RandomItems["Level" + item.Level] = []
-      }
-      initState.RandomItems["Level" + item.Level].push(item)
-      return null
-    })
-
-    // Character
-    let Player = {...initState.Player}
-
-    if (!Player) {
-      Player = {}
-    }
-
-    if (!Player.Class) {
-      Player.Class = {
-        ...World.Classes[Object.keys(World.Classes)[0]],
-        Id: Object.keys(World.Classes)[0]
-      }
-    }
-
-    if (!Player.Race) {
-      Player.Race = {
-        ...World.Races[Object.keys(World.Races)[0]],
-        Id: Object.keys(World.Races)[0]
-      }
-    }
-
-    // Abilities
-    // generate some random stats for the player (if none were pre-determined for the campaign start; weird numbers are handled gracefully)
-    Player.Constitution = Math.max(0, Math.min(Player.Constitution, Gameplay
-    .MaxAbilityScore)) || this.GeneratePlayerAbilityScore()
-    Player.Strength = Math.max(0, Math.min(Player.Strength, Gameplay
-      .MaxAbilityScore)) || this.GeneratePlayerAbilityScore()
-    Player.Dexterity = Math.max(0, Math.min(Player.Dexterity, Gameplay
-      .MaxAbilityScore))|| this.GeneratePlayerAbilityScore()
-    Player.ArmorClass = Math.max(0, Player.ArmorClass) || 10 + this.AbilityModifier(Player.Dexterity)
-
-    // Vitals
-    // the interface will take whatever numbers come from the campaign assets and make sense of them (negative values or maximums greater than the current amount are handled gracefully)
-    // Health
-    Player.MaxHealth = Math.max(0, Player.MaxHealth || 0) || this.CalculateMaxHealth(Player)
-    Player.Health = Math.max(0,Player.Health) || Player.MaxHealth
-    if (Player.MaxHealth < Player.Health) Player.MaxHealth = Player.Health 
-    // Stamina
-    Player.MaxStamina = Math.max(0, Player.MaxStamina || 0) || this.CalculateMaxStamina(Player)
-    Player.Stamina = Math.max(0, Player.Stamina) || Player.MaxStamina
-    if (Player.MaxStamina < Player.Stamina) Player.MaxStamina = Player.Stamina 
-    Player.MaxWeight = Player.MaxWeight || this.CalculateMaxWeight(Player)
-
-    // Intelligence and Mana
-    if (Player.Class.Spellcaster) {
-      Player.Intelligence = Math.max(0, Math.min(Player.Intelligence, Gameplay
-        .MaxAbilityScore)) || this.GeneratePlayerAbilityScore()
-      Player.MaxMana = Math.max(0, Player.MaxMana || 0) || this.CalculateMaxMana(Player)
-      Player.Mana = Math.max(0, Player.Mana) || Player.MaxMana  
-      if (Player.MaxMana < Player.Mana) Player.MaxMana = Player.Mana 
-    }
-    else {
-      Player.MaxMana = Player.Mana = 0
-      Player.Intelligence = 5
-    }
-
-    // Spellbook
-    if (!Player.Class.Spellcaster) {
-      delete Player.SpellBook
-    }
-    else {
-      // TODO: Add a default 1st level spell to spellcasters
-    }
-
-    // Check player's start coordinates
-    if (!Player.x && !Player.x) {
-      Player.x = 0
-      Player.y = 0
-      console.error("Please make sure to assign starting coordinates to the player.")
-    }
-    
-    Player.Facing = Player.Facing || "North"
-    Player.Level = Player.Level || 1
-    Player.XP = Player.XP || 0
-
-    initState.Player = Player
-
-    // Character's Backpack
-    initState.Backpack = 
-    this.CheckInventoryWeightAtStartUp(initState.Backpack)
-
-    // Maps
-    // create the dynamic "revealed area" map as displayed in the HUD
-    initState.WallMapRevealed = Campaign.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))
-
-    // create internal discovery map, given player start position
-    initState.DiscoveryMap = JSON.parse(JSON.stringify(Campaign.WallMap.map((HorizontalLine, y) => HorizontalLine.map((MapObject, x) => {
-        if ((x >= Player.x - 1 && x <= Player.x + 1) && (y >= Player.y - 1 && y <= Player.y + 1)) {
-          return Empty
-        }
-        else {
-          return Undiscovered
-        }
-      }))
-    ))
-
-    // create the internal map of loot containers
-    let LootMap = JSON.parse(JSON.stringify(Campaign.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))))
-
-    if (Campaign.LootContainers) {
-      Campaign.LootContainers.map(Container => {
-        if (Container.x && Container.y) {
-          LootMap[Container.y][Container.x] = LootContainer
-        }
-        return null
-      })
-    }
-
-    initState.LootMap = LootMap
-
-    // create the internal map of monster locations
-    let MonsterMap = JSON.parse(JSON.stringify(Campaign.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))))
-
-    if (Campaign.Monsters) {
-
-      Campaign.Monsters.map(Monster => {
-        MonsterMap[Monster.y][Monster.x] = Monster.Id
-        return null
-      })
-
-    }
-
-    initState.MonsterMap = MonsterMap
-
-
-    // Turn
-    initState.Turn = 0
-
-    // Sound
-    initState.Sound = {
-      Volume: Utilities.DefaultSoundVolume
-    }
-
-    initState.EventLog = [".",".",".",".","."]
-
-    this.state = initState
-
-    
-  }
-
-  componentWillMount() {
-    document.addEventListener("keydown", this.ListenToKeyboard, false)
-    window.addEventListener("resize", this.CalculateStyles, false)
-    this.CalculateStyles()
-  }
-
-  ShowCharacterScreen = () => {
-    this.setState({CreateCharacter: true}, function() {
-      this.CalculateStyles()
-      
-        this.forceUpdate()
-    })
-  }
-
-  SetRace = (RaceObject) => {
-    let Player = {...this.state.Player}
-    Player.Race = {...RaceObject}
-    this.setState({Player : Player})
-  }
-
-  SetClass = (ClassObject) => {
-    let Player = {...this.state.Player}
-    Player.Class = {...ClassObject}
-    this.setState({Player : Player})
-  }
-
-  StartGame = () => {
-    this.setState({CreateCharacter: false}, function() {
-      this.CalculateStyles()
-      
-        this.forceUpdate()
-    })
-  }
-
-  ToggleGameStateBox = (Operation) => {
-
-    let EditableGameStateBox = this.state.EditableGameStateBox
-    let Visibility = !this.state.ShowGameStateBox
-    let Editable = true
-
-    // can not modify the game state
-    if (Operation === "Save") {
-      Editable = false
-    }
-
-    // user has already clicked the save game button 
-    if (Operation === "Save" && !EditableGameStateBox) {
-      Visibility = true
-    }
-
-    // user has already clicked the load game button 
-    if (Operation === "Save" && EditableGameStateBox) {
-      Visibility = true
-      this.UpdateGameStateToLoad("")
-    }
-
-    // user has already clicked the save game button
-    if (Operation === "Load" && !EditableGameStateBox) {
-      Visibility = true
-    }
-
-    // load the state
-    if (Operation === "Load" && EditableGameStateBox) {
-      this.LoadGame(this.state.GameStateToLoad)
-      return false
-    }
-
-    // close everything
-    if (Operation === "Cancel") {
-      Editable = false
-      Visibility = false
-      this.UpdateGameStateToLoad("")
-    }
-
-    this.setState({EditableGameStateBox: Editable, ShowGameStateBox: Visibility, LoadGameError: ""})
-
-  }
-
-  UpdateGameStateToLoad = (GameState) => {
-    this.setState({GameStateToLoad: GameState, LoadGameError: ""})
-  }
-
-  LoadGame = () => {
-
-    let GameStateToLoad = this.state.GameStateToLoad
-
-    try {
-          
-      GameStateToLoad = JSON.parse(GameStateToLoad)
-      console.log(GameStateToLoad)
-
-      delete this.state
-
-      this.setState(GameStateToLoad, function() {
-        console.log(this.state)
-      })
-    
-    }
-    // catch JSON parse error
-    catch (error) {
-
-      if (Debug) console.error("Invalid JSON object.", GameStateToLoad)      
-      this.setState({LoadGameError: Gameplay.Messages.LoadGameError.Invalid})
-
-    }
-
-  }
-
-  ListenToKeyboard = (keypress) => {
-
-    let Player = {...this.state.Player}
-    let Keystrokes = Object.assign([], this.state.Keystrokes)
-    let Sound = {...this.state.Sound}
-
-    // do not capture key strokes
-    if (Player.Dead) return false
-    if (keypress.target.tagName.toLowerCase() === "textarea" || keypress.target.tagName.toLowerCase() === "input") return false
-
-    keypress.preventDefault()
-
-    // subsequent key strokes
-    let breakEvent = false
-    if (Keystrokes) Keystrokes.push(keypress.key)
-    else Keystrokes = [keypress.key]
-    this.setState({Keystrokes: Keystrokes}, function() {
-
-      // detect two digit numbers between 01 and 99
-      if (this.state.Keystrokes.join("").match(/[0-9][1-9]/) !== null) {
-
-        this.CastSpellFromKeyboard(this.state.Keystrokes.join(""))
-        this.FlushKeystrokeHistory()
-
-      }
-
-      // detect "B" + two digit numbers between 01 and 99
-      if (this.state.Keystrokes.join("").match(/b[0-9][1-9]/) !== null) {
-
-        this.UseItemFromKeyboard(this.state.Keystrokes.join(""))
-        this.FlushKeystrokeHistory()
-
-      }
-      
-    })
-
-    if (breakEvent) return true
-
-    // in-game keyboard controls
-    switch (keypress.key) {
-
-      default:
-        break
-
-      case "ArrowDown":
-        this.MovePlayer("South")
-        this.onClickArrow(keypress.key)
-        this.FlushKeystrokeHistory()
-        break
-
-      case "ArrowUp":
-        this.MovePlayer("North")
-        this.onClickArrow(keypress.key)
-        this.FlushKeystrokeHistory()
-        break
-
-      case "ArrowLeft":
-        this.MovePlayer("West")
-        this.onClickArrow(keypress.key)
-        this.FlushKeystrokeHistory()
-        break
-
-      case "ArrowRight":
-        this.MovePlayer("East")
-        this.onClickArrow(keypress.key)
-        this.FlushKeystrokeHistory()
-        break
-
-      case "+":
-        this.SetVolume(Math.min(1, Sound.Volume + .1), "sound_control")
-        break
-
-      case "-":
-        this.SetVolume(Math.max(0, Sound.Volume - .1), "sound_control")
-        break
-
-      case "m":
-        this.SetVolume(0)
-        break
-
-      case "t":
-        this.TakeAllLoot()
-        this.FlushKeystrokeHistory()
-        break
-
-    }
-
-  }
-
-  FlushKeystrokeHistory = () => {
-    this.setState({Keystrokes: []})
-  }
+  /* CSS */
 
   CalculateStyles = () => {
 
@@ -3645,6 +3311,516 @@ class Game extends Component {
 
   }
 
+  /* Global Event Listeners */
+
+  componentWillMount() {
+    // keyboard shortcuts
+    document.addEventListener("keydown", this.ListenToKeyboard, false)
+    // responsiveness
+    window.addEventListener("resize", this.CalculateStyles, false)
+    this.CalculateStyles()
+  }
+
+  /* Init Game State */
+
+  constructor(props) {
+    super(props)
+
+    // keep the start text in memory and delete it so that it does not appear in the state
+    const StartText = Campaign.StartText ? Campaign.StartText.text : null
+    delete Campaign.StartText
+
+    // campaign assets
+    let initState = {...Campaign}
+
+    // debug/cheats
+    if (Utilities.ShowFullMap) {
+      initState.ShowFullMap = true
+    }
+    if (Utilities.NoClip) {
+      initState.NoClip = true
+    }
+    if (Utilities.GodMode) {
+      initState.GodMode = true
+    }
+
+    // Story
+    // text displayed at the beginning of the campaign
+    initState.currentText = StartText
+
+    // Items
+    // create the list of random items to draw from when looting, grouped by level
+    initState.RandomItems = {}
+
+    Object.keys(World.Items).map(itemObjectName => {
+      let item = World.Items[itemObjectName]
+      if (initState.RandomItems["Level" + item.Level] === undefined) {
+        initState.RandomItems["Level" + item.Level] = []
+      }
+      initState.RandomItems["Level" + item.Level].push(item)
+      return null
+    })
+
+    // Character
+    let Player = {...initState.Player}
+
+    initState.Player = this.CreateCharacter(Player)
+
+    // Character's Backpack
+    initState.Backpack = 
+    this.CheckInventoryWeightAtStartUp(initState.Backpack)
+
+    // Maps
+    // create the dynamic "revealed area" map as displayed in the HUD
+    initState.WallMapRevealed = Campaign.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))
+
+    // create internal discovery map, given player start position
+    initState.DiscoveryMap = JSON.parse(JSON.stringify(Campaign.WallMap.map((HorizontalLine, y) => HorizontalLine.map((MapObject, x) => {
+        if ((x >= Player.x - 1 && x <= Player.x + 1) && (y >= Player.y - 1 && y <= Player.y + 1)) {
+          return Empty
+        }
+        else {
+          return Undiscovered
+        }
+      }))
+    ))
+
+    // create the internal map of loot containers
+    let LootMap = JSON.parse(JSON.stringify(Campaign.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))))
+
+    if (Campaign.LootContainers) {
+      Campaign.LootContainers.map(Container => {
+        if (Container.x && Container.y) {
+          LootMap[Container.y][Container.x] = LootContainer
+        }
+        return null
+      })
+    }
+
+    initState.LootMap = LootMap
+
+    // create the internal map of monster locations
+    let MonsterMap = JSON.parse(JSON.stringify(Campaign.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))))
+
+    if (Campaign.Monsters) {
+
+      Campaign.Monsters.map(Monster => {
+        MonsterMap[Monster.y][Monster.x] = Monster.Id
+        return null
+      })
+
+    }
+
+    initState.MonsterMap = MonsterMap
+
+    // Turn
+    initState.Turn = 0
+
+    // Sound
+    initState.Sound = {
+      Volume: Utilities.DefaultSoundVolume
+    }
+
+    initState.EventLog = [".",".",".",".","."]
+
+    this.state = initState
+
+    
+  }
+
+  /* Character Creation */
+
+  ShowCharacterScreen = () => {
+    this.setState({CreateCharacter: true}, function() {
+      this.CalculateStyles()
+        this.forceUpdate()
+    })
+  }
+
+  GeneratePlayerStats = () => {
+    let Player = {...this.state.Player}
+    Player = this.CreateCharacter(Player)
+    this.setState({Player: Player})
+  }
+
+  CreateCharacter = (Player) => {
+
+    if (!Player) {
+      Player = {}
+    }
+
+    if (Campaign.Player.Class) {
+      Player.Class = Campaign.Player.Class
+    }
+    else {
+      if (!Player.Class) {
+        Player.Class = {
+          ...World.Classes[Object.keys(World.Classes)[0]],
+          Id: Object.keys(World.Classes)[0]
+        }
+      }
+    }
+
+    if (Campaign.Player.Race) {
+      Player.Race = Campaign.Player.Race
+    }
+    else {
+      if (!Player.Race) {
+        Player.Race = {
+          ...World.Races[Object.keys(World.Races)[0]],
+          Id: Object.keys(World.Races)[0]
+        }
+      }
+    }
+
+    let AbilityBoost = null
+    if (!Player.Class.Spellcaster) {
+      AbilityBoost = Player.Class.AbilityPriorities[0]
+    }
+
+
+    // Abilities
+    // generate and sort random stats for the player
+    let Rolls = []
+    for (let i = 0; i < World.Classes[Player.Class.Id].AbilityPriorities.length; i++) {
+      // add a bonus die to the 2 first abilities of non-spell casters
+      if (!Player.Class.Spellcaster && i <= 1) {
+        Rolls.push(this.GeneratePlayerAbilityScore(true))
+      }
+      else {
+        Rolls.push(this.GeneratePlayerAbilityScore())
+      }
+    }
+    Rolls = Rolls.sort(function(a, b) {return a < b})
+
+    let AbilityScores = {}
+    for (let i = 0; i < World.Classes[Player.Class.Id].AbilityPriorities.length; i++) {
+      AbilityScores[World.Classes[Player.Class.Id].AbilityPriorities[i]] = Rolls[i]
+    }
+
+    // if stats were pre-determined for the campaign start, use them instead (weird numbers are handled gracefully)
+    Player.Constitution = Math.max(0, Math.min(Campaign.Player.Constitution, Gameplay
+    .MaxAbilityScore)) || AbilityScores.Constitution + (Player.Race.AbilityBoost.Constitution || 0)
+    Player.Strength = Math.max(0, Math.min(Campaign.Player.Strength, Gameplay
+      .MaxAbilityScore)) || AbilityScores.Strength + (Player.Race.AbilityBoost.Strength || 0)
+    Player.Dexterity = Math.max(0, Math.min(Campaign.Player.Dexterity, Gameplay
+      .MaxAbilityScore))|| AbilityScores.Dexterity + (Player.Race.AbilityBoost.Dexterity || 0)
+    Player.ArmorClass = Math.max(0, Campaign.Player.ArmorClass) || 10 + this.AbilityModifier(Player.Dexterity)
+
+    // Vitals
+    // the interface will take whatever numbers come from the campaign assets and make sense of them (negative values or maximums greater than the current amount are handled gracefully)
+    // Health
+    Player.MaxHealth = Math.max(0, Campaign.Player.MaxHealth || 0) || this.CalculateMaxHealth(Player)
+    Player.Health = Math.max(0, Campaign.Player.Health) || Player.MaxHealth
+    if (Player.MaxHealth < Player.Health) Player.MaxHealth = Player.Health 
+    // Stamina
+    Player.MaxStamina = Math.max(0, Campaign.Player.MaxStamina || 0) || this.CalculateMaxStamina(Player)
+    Player.Stamina = Math.max(0, Campaign.Player.Stamina) || Player.MaxStamina
+    if (Player.MaxStamina < Player.Stamina) Player.MaxStamina = Player.Stamina 
+    Player.MaxWeight = Campaign.Player.MaxWeight || this.CalculateMaxWeight(Player)
+
+    // Intelligence and Mana
+    if (Player.Class.Spellcaster) {
+      Player.Intelligence = Math.max(0, Math.min(Campaign.Player.Intelligence, Gameplay
+        .MaxAbilityScore)) || AbilityScores.Intelligence + (Player.Race.AbilityBoost.Intelligence || 0)
+      Player.MaxMana = Math.max(0, Campaign.Player.MaxMana || 0) || this.CalculateMaxMana(Player)
+      Player.Mana = Math.max(0, Campaign.Player.Mana) || Player.MaxMana  
+      if (Player.MaxMana < Player.Mana) Player.MaxMana = Player.Mana 
+    }
+    else {
+      Player.MaxMana = Player.Mana = 0
+      Player.Intelligence = 5
+    }
+
+    // Spellbook
+    if (!Player.Class.Spellcaster) {
+      delete Player.SpellBook
+    }
+    else {
+      if (!Player.SpellBook || !Player.SpellBook.Spells) {
+        if (Campaign.AvailableStartSpell && Campaign.AvailableStartSpell.length > 0) {
+          Player.SpellBook = {Spells: [Campaign.AvailableStartSpell[0]]}
+        }
+      }
+    }
+
+    // Check player's start coordinates
+    if (!Campaign.Player.x && !Campaign.Player.x) {
+      Player.x = 0
+      Player.y = 0
+      console.error("Please make sure to assign starting coordinates to the player.")
+    }
+    
+    Player.Facing = Campaign.Player.Facing || "North"
+    Player.Level = Campaign.Player.Level || 1
+    Player.XP = Campaign.Player.XP || 0
+
+    return Player
+
+  }
+
+  // takes the 3 best rolls out of 4d6
+  GeneratePlayerAbilityScore = (AbilityDieBonus = false) => {
+    let rolls = []
+    let score = 0
+    for (var i = 1; i <= 4 + AbilityDieBonus; i++) {
+      let dieScore = this.RollDice(1,6)
+      rolls.push(dieScore)
+      score += dieScore
+    }
+
+    score -= Math.min.apply(null, rolls)
+
+    return score
+  }
+
+  CalculateMaxHealth = (Player) => {
+    // level up
+    if (Player.MaxHealth) {
+      return Math.ceil((Player.Constitution * 2.5) + (Player.Strength/5))
+    }
+    // new player
+    else {
+      return Math.ceil((Player.Constitution * 2.5) + (Player.Strength/5))
+    }
+  }
+
+  CalculateMaxMana = (Player) => {
+    // level up
+    if (Player.MaxMana) {
+      return Math.ceil((Player.Intelligence) * 1.85)
+    }
+    // new player
+    else {
+     return Math.ceil((Player.Intelligence) * 1.85)
+    }
+  }
+
+  CalculateMaxStamina = (Player) => {
+     return Math.ceil((Player.Strength) * 5)
+  }
+
+  CalculateMaxWeight = (Player) => {
+    // level up
+    if (Player.MaxWeight) {
+      return Math.ceil(Player.Strength * 1.6)
+    }
+    // new player
+    else {
+      return Math.ceil(Player.Strength * 1.6)
+    }
+  }
+
+  SetRace = (RaceObject) => {
+    let Player = {...this.state.Player}
+    Player.Race = {...RaceObject}
+    Player = this.CreateCharacter(Player)
+    this.setState({Player : Player}, function() {
+      
+    })
+  }
+
+  SetClass = (ClassObject) => {
+    let Player = {...this.state.Player}
+    Player.Class = {...ClassObject}
+    Player = this.CreateCharacter(Player)
+    this.setState({Player : Player})
+  }
+
+  SetFirstSpell = (SpellBook) => {
+    let Player = {...this.state.Player}
+    Player.SpellBook = SpellBook
+    this.setState({Player : Player})
+  }
+
+  SavePlayerName = (input) => {
+    let Player = {...this.state.Player}
+    Player[input.name] = input.value
+    this.setState({Player: Player})
+
+  }
+
+  StartGame = () => {
+    this.setState({CreateCharacter: false}, function() {
+      this.CalculateStyles()
+      
+        this.forceUpdate()
+    })
+  }
+
+  /* Save/Load Game */
+
+  ToggleGameStateBox = (Operation) => {
+
+    let EditableGameStateBox = this.state.EditableGameStateBox
+    let Visibility = !this.state.ShowGameStateBox
+    let Editable = true
+
+    // can not modify the game state
+    if (Operation === "Save") {
+      Editable = false
+    }
+
+    // user has already clicked the save game button 
+    if (Operation === "Save" && !EditableGameStateBox) {
+      Visibility = true
+    }
+
+    // user has already clicked the load game button 
+    if (Operation === "Save" && EditableGameStateBox) {
+      Visibility = true
+      this.UpdateGameStateToLoad("")
+    }
+
+    // user has already clicked the save game button
+    if (Operation === "Load" && !EditableGameStateBox) {
+      Visibility = true
+    }
+
+    // load the state
+    if (Operation === "Load" && EditableGameStateBox) {
+      this.LoadGame(this.state.GameStateToLoad)
+      return false
+    }
+
+    // close everything
+    if (Operation === "Cancel") {
+      Editable = false
+      Visibility = false
+      this.UpdateGameStateToLoad("")
+    }
+
+    this.setState({EditableGameStateBox: Editable, ShowGameStateBox: Visibility, LoadGameError: ""})
+
+  }
+
+  UpdateGameStateToLoad = (GameState) => {
+    this.setState({GameStateToLoad: GameState, LoadGameError: ""})
+  }
+
+  LoadGame = () => {
+
+    let GameStateToLoad = this.state.GameStateToLoad
+
+    try {
+          
+      GameStateToLoad = JSON.parse(GameStateToLoad)
+      console.log(GameStateToLoad)
+
+      delete this.state
+
+      this.setState(GameStateToLoad, function() {
+        console.log(this.state)
+      })
+    
+    }
+    // catch JSON parse error
+    catch (error) {
+
+      if (Debug) console.error("Invalid JSON object.", GameStateToLoad)      
+      this.setState({LoadGameError: Gameplay.Messages.LoadGameError.Invalid})
+
+    }
+
+  }
+
+  /* In-Game Keyboard Shortcuts */
+
+  ListenToKeyboard = (keypress) => {
+
+    let Player = {...this.state.Player}
+    let Keystrokes = Object.assign([], this.state.Keystrokes)
+    let Sound = {...this.state.Sound}
+
+    // do not capture key strokes
+    if (Player.Dead) return false
+    if (keypress.target.tagName.toLowerCase() === "textarea" || keypress.target.tagName.toLowerCase() === "input") return false
+
+    keypress.preventDefault()
+
+    // subsequent key strokes
+    let breakEvent = false
+    if (Keystrokes) Keystrokes.push(keypress.key)
+    else Keystrokes = [keypress.key]
+    this.setState({Keystrokes: Keystrokes}, function() {
+
+      // detect two digit numbers between 01 and 99
+      if (this.state.Keystrokes.join("").match(/[0-9][1-9]/) !== null) {
+
+        this.CastSpellFromKeyboard(this.state.Keystrokes.join(""))
+        this.FlushKeystrokeHistory()
+
+      }
+
+      // detect "B" + two digit numbers between 01 and 99
+      if (this.state.Keystrokes.join("").match(/b[0-9][1-9]/) !== null) {
+
+        this.UseItemFromKeyboard(this.state.Keystrokes.join(""))
+        this.FlushKeystrokeHistory()
+
+      }
+      
+    })
+
+    if (breakEvent) return true
+
+    // in-game keyboard controls
+    switch (keypress.key) {
+
+      default:
+        break
+
+      case "ArrowDown":
+        this.MovePlayer("South")
+        this.onClickArrow(keypress.key)
+        this.FlushKeystrokeHistory()
+        break
+
+      case "ArrowUp":
+        this.MovePlayer("North")
+        this.onClickArrow(keypress.key)
+        this.FlushKeystrokeHistory()
+        break
+
+      case "ArrowLeft":
+        this.MovePlayer("West")
+        this.onClickArrow(keypress.key)
+        this.FlushKeystrokeHistory()
+        break
+
+      case "ArrowRight":
+        this.MovePlayer("East")
+        this.onClickArrow(keypress.key)
+        this.FlushKeystrokeHistory()
+        break
+
+      case "+":
+        this.SetVolume(Math.min(1, Sound.Volume + .1), "sound_control")
+        break
+
+      case "-":
+        this.SetVolume(Math.max(0, Sound.Volume - .1), "sound_control")
+        break
+
+      case "m":
+        this.SetVolume(0)
+        break
+
+      case "t":
+        this.TakeAllLoot()
+        this.FlushKeystrokeHistory()
+        break
+
+    }
+
+  }
+
+  FlushKeystrokeHistory = () => {
+    this.setState({Keystrokes: []})
+  }
+
+  /* Sound */
+
   SetVolume = (Volume, SoundName = null) => {
 
     let Sound = {...this.state.Sound}
@@ -3981,97 +4157,6 @@ class Game extends Component {
     }
   }
 
-  SavePlayerName = (input) => {
-    // let {Player} = this.state
-    let Player = Object.assign({}, this.state.Player)
-
-    Player[input.name] = input.value
-    this.setState({Player: Player})
-
-  }
-
-  GeneratePlayerStats = (Player) => {
-
-    let saveState = false
-
-    if (!Player) {
-      saveState = true
-      Player = this.state.Player
-    }
-
-    // Abilities
-    Player.Constitution = this.GeneratePlayerAbilityScore()
-    Player.Strength = this.GeneratePlayerAbilityScore()
-    Player.Dexterity = this.GeneratePlayerAbilityScore()
-    Player.Intelligence = this.GeneratePlayerAbilityScore()
-    Player.ArmorClass = 10 + this.AbilityModifier(Player.Dexterity)
-
-    // Vitals
-    Player.MaxHealth = Player.Health = this.CalculateMaxHealth(Player)
-    Player.MaxMana = Player.Mana = this.CalculateMaxMana(Player)
-    Player.MaxStamina = Player.Stamina = this.CalculateMaxStamina(Player)
-    Player.MaxWeight = this.CalculateMaxWeight(Player)    
-
-    if (saveState) {
-      this.setState({Player: Player})
-    }
-
-    return Player
-
-  }
-
-  // takes the 3 best rolls out of 4d6
-  GeneratePlayerAbilityScore = () => {
-    let rolls = []
-    let score = 0
-    for (var i = 1; i <= 4; i++) {
-      let dieScore = this.RollDice(1,6)
-      rolls.push(dieScore)
-      score += dieScore
-    }
-
-    score -= Math.min.apply(null, rolls)
-
-    return score
-  }
-
-  CalculateMaxWeight = (Player) => {
-    // level up
-    if (Player.MaxWeight) {
-      return Math.ceil(Player.Strength * 1.6)
-    }
-    // new player
-    else {
-      return Math.ceil(Player.Strength * 1.6)
-    }
-  }
-
-  CalculateMaxHealth = (Player) => {
-    // level up
-    if (Player.MaxHealth) {
-      return Math.ceil((Player.Constitution * 2.5) + (Player.Strength/5))
-    }
-    // new player
-    else {
-      return Math.ceil((Player.Constitution * 2.5) + (Player.Strength/5))
-    }
-  }
-
-  CalculateMaxMana = (Player) => {
-    // level up
-    if (Player.MaxMana) {
-      return Math.ceil((Player.Intelligence) * 1.85)
-    }
-    // new player
-    else {
-     return Math.ceil((Player.Intelligence) * 1.85)
-    }
-  }
-
-  CalculateMaxStamina = (Player) => {
-     return Math.ceil((Player.Strength) * 5)
-  }
-
   UpdateText = ({ x, y }) => {
     let currentText = this.state.currentText
     let currentTextImage = this.state.currentTextImage
@@ -4211,6 +4296,7 @@ class Game extends Component {
       // ability score spell-level modifier
       let Modifier = 0
       if (Caster.Intelligence <= 5) {
+        this.SetText(Gameplay.Messages.Spell.CanNotCast)
         return false
       }
       else if (Caster.Intelligence <= 10)  {

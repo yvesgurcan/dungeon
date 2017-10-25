@@ -31,6 +31,8 @@ export const GameplayAssets = {
             Mana3: "Nice!",
         },
         Spell: {
+            CanNotCast: "You have not studied the arcane of magic. You can not cast spells."
+            ,
             UnsufficientLevel: "You have not mastered the secrets of this spell yet."
             ,
             NotEnoughMana: [
