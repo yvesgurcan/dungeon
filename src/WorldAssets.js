@@ -83,7 +83,7 @@ export const WorldAssets = {
             AbilityPriorities: ["Strength","Constitution","Dexterity","Intelligence"], 
             Proficiency: ["all"], /* to-do: parse all weapon classes into a dynamic array */
             Description: "Barbarians are vigorous warriors. Their innate combat skills give them an advantage with all weapons. Conversely, barbarians have absolutely no interest in magic.",
-      
+        },
         Cleric: {
             Name: "cleric",
             Spellcaster: true,

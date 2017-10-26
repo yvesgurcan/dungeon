@@ -1894,13 +1894,20 @@ class Map extends Component {
 
 /* create player */
 
-class StartGame extends Component {
+class CreateCharacterHeader extends Component {
   render() {
     return (
-      <View style={Styles.StartGame}>
-        <ActionButton onClick={this.props.StartGame}>
-        Let's play!
-        </ActionButton>
+      <View style={Styles.CharacterHeader}>
+        <Heading>Create Your Character</Heading>
+      </View>
+    )
+  }
+}
+
+class CreateCharacterContainer extends Component {
+  render() {
+    return (
+      <View style={Styles.CreateCharacterContainer}>
       </View>
     )
   }
@@ -1941,6 +1948,48 @@ class CreateCharacterName extends Component {
         <Block style={Styles.PropertyField}>
         <Text>{Player.MaxStamina}</Text>        
         </Block>
+      </View>
+    )
+  }
+}
+
+class CreateCharacterAbilities extends Component {
+  render() {
+    // let {Player} = this.props
+    let Player = Object.assign({}, this.props.Player)
+    return (
+      <View style={Styles.CharacterCreateView}>
+        <Block style={Styles.PropertyLabel}>
+          <Text>Strength:</Text>
+        </Block>
+        <Block style={Styles.PropertyField}>
+          <Text>{Player.Strength - (Player.Race.AbilityBoost.Strength || 0)} {Player.Race.AbilityBoost.Strength ? "+" + Player.Race.AbilityBoost.Strength : null}</Text>
+        </Block>
+        <Block style={Styles.PropertyLabel}>
+          <Text>Dexterity:</Text>
+        </Block>
+        <Block style={Styles.PropertyField}>
+          <Text>{Player.Dexterity - (Player.Race.AbilityBoost.Dexterity || 0)} {Player.Race.AbilityBoost.Dexterity ? "+" + Player.Race.AbilityBoost.Dexterity : null}</Text>
+        </Block>
+        <Block style={Styles.PropertyLabel}>
+          <Text>Constitution:</Text>
+        </Block>
+        <Block style={Styles.PropertyField}>
+          <Text>{Player.Constitution - (Player.Race.AbilityBoost.Constitution || 0)} {Player.Race.AbilityBoost.Constitution ? "+" + Player.Race.AbilityBoost.Constitution : null}</Text>
+        </Block>
+        <Block style={Styles.PropertyLabel}>
+          <Text>Intelligence:</Text>
+        </Block>
+        <Block style={Styles.PropertyField}>
+          <Text>{Player.Intelligence - (Player.Race.AbilityBoost.Intelligence || 0)} {Player.Race.AbilityBoost.Intelligence ? "+" + Player.Race.AbilityBoost.Intelligence : null}</Text>
+        </Block>
+        <Block />
+        <Block style={Styles.RollAbilities}>
+          <ActionButton onClick={this.props.GeneratePlayerStats}>
+            Reroll
+          </ActionButton>
+        </Block>
+        <Block />
       </View>
     )
   }
@@ -2121,62 +2170,32 @@ class CreateCharacterBackground extends Component {
   }
 }
 
-class CreateCharacterAbilities extends Component {
+class CreateCharacterDescription extends Component {
   render() {
-    // let {Player} = this.props
-    let Player = Object.assign({}, this.props.Player)
+    let Player = {...this.props.Player}
     return (
-      <View style={Styles.CharacterCreateView}>
-        <Block style={Styles.PropertyLabel}>
-          <Text>Strength:</Text>
+      <View style={Styles.CreateCharacterDescription}>
+        <Block>
+          {Player.Race.Description}
         </Block>
-        <Block style={Styles.PropertyField}>
-          <Text>{Player.Strength - (Player.Race.AbilityBoost.Strength || 0)} {Player.Race.AbilityBoost.Strength ? "+" + Player.Race.AbilityBoost.Strength : null}</Text>
+        <Block>
+          {Player.Class.Description}
         </Block>
-        <Block style={Styles.PropertyLabel}>
-          <Text>Dexterity:</Text>
-        </Block>
-        <Block style={Styles.PropertyField}>
-          <Text>{Player.Dexterity - (Player.Race.AbilityBoost.Dexterity || 0)} {Player.Race.AbilityBoost.Dexterity ? "+" + Player.Race.AbilityBoost.Dexterity : null}</Text>
-        </Block>
-        <Block style={Styles.PropertyLabel}>
-          <Text>Constitution:</Text>
-        </Block>
-        <Block style={Styles.PropertyField}>
-          <Text>{Player.Constitution - (Player.Race.AbilityBoost.Constitution || 0)} {Player.Race.AbilityBoost.Constitution ? "+" + Player.Race.AbilityBoost.Constitution : null}</Text>
-        </Block>
-        <Block style={Styles.PropertyLabel}>
-          <Text>Intelligence:</Text>
-        </Block>
-        <Block style={Styles.PropertyField}>
-          <Text>{Player.Intelligence - (Player.Race.AbilityBoost.Intelligence || 0)} {Player.Race.AbilityBoost.Intelligence ? "+" + Player.Race.AbilityBoost.Intelligence : null}</Text>
-        </Block>
-        <Block />
-        <Block style={Styles.RollAbilities}>
-          <ActionButton onClick={this.props.GeneratePlayerStats}>
-            Reroll
-          </ActionButton>
-        </Block>
-        <Block />
       </View>
     )
   }
 }
 
-class CreateCharacterContainer extends Component {
+class StartGame extends Component {
   render() {
     return (
-      <View style={Styles.CreateCharacterContainer}>
-      </View>
-    )
-  }
-}
-
-class CreateCharacterHeader extends Component {
-  render() {
-    return (
-      <View style={Styles.CharacterHeader}>
-        <Heading>Create Your Character</Heading>
+      <View style={Styles.StartGame}>
+        <ActionButton onClick={this.props.ResumeGame} hidden={!this.props.GameInBackground}>
+        Resume Game
+        </ActionButton>
+        <ActionButton onClick={this.props.StartGame}>
+        Let's play!
+        </ActionButton>
       </View>
     )
   }
@@ -2500,13 +2519,8 @@ class Game extends Component {
             "repeat(9, 90px)"
           ,
           gridTemplateRows:
-          // title (row1)
           "auto " +
-          // contact (row2)
-          "25px " + 
-          // header (row3)
-          "auto" +
-          // body (row4)
+          "auto " + 
           "auto"
           ,
         },
@@ -2615,6 +2629,12 @@ class Game extends Component {
           "repeat(8, 88.6px)"
           ,
         },
+        CreateCharacterDescription: {
+          gridColumnStart: FirstColumn,
+          gridColumnEnd: LastColumn,
+          padding: HUDPadding,
+          gridRowStart: 5,
+        },
         // Create Character: Label/Value Pairs
         PropertyLabel: {
           gridColumnStart: FirstColumn,
@@ -2647,7 +2667,7 @@ class Game extends Component {
           gridColumnEnd: LastColumn,
           padding: HUDPadding,
           backgroundImage: "url(graphics/hud/parchment.jpg)",
-          backgroundPosition: "0 -174px", 
+          backgroundPosition: "0 -190px", 
           textAlign: "right",
         },
         // In-Game Grid
@@ -5536,9 +5556,9 @@ class Game extends Component {
           <CreateCharacterHeader/>
           {/* row 4 */}
           <CreateCharacterName {... this} {... this.state} />
-          <CreateCharacterBackground {... this} {... this.state} />
-          {/* row 5 */}
           <CreateCharacterAbilities {... this} {... this.state}/>
+          <CreateCharacterBackground {... this} {... this.state} />
+          <CreateCharacterDescription {... this} {... this.state} />
           {/* row 6 */}
           <StartGame {... this} {... this.state} />
         </View>
