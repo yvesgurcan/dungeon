@@ -2175,10 +2175,10 @@ class CreateCharacterDescription extends Component {
     let Player = {...this.props.Player}
     return (
       <View style={Styles.CreateCharacterDescription}>
-        <Block>
+        <Block style={Styles.Paragraph}>
           {Player.Race.Description}
         </Block>
-        <Block>
+        <Block style={Styles.Paragraph}>
           {Player.Class.Description}
         </Block>
       </View>
@@ -2282,6 +2282,9 @@ class Game extends Component {
     if (MobileScreen !== this.state.MobileScreen || TabletScreen !== this.state.TabletScreen) {
 
       WallMapVisibleRange = MobileScreen ? Utilities.WallMapVisibleRangeMobileScreen : Utilities.WallMapVisibleRange
+
+
+      let Player = {...this.state.Player}
 
       /* presets */
 
@@ -2633,7 +2636,17 @@ class Game extends Component {
           gridColumnStart: FirstColumn,
           gridColumnEnd: LastColumn,
           padding: HUDPadding,
+          paddingTop: "20px",
           gridRowStart: 5,
+          minHeight: "100px",
+        },
+        StartGame: {
+          gridColumnStart: FirstColumn,
+          gridColumnEnd: LastColumn,
+          padding: HUDPadding,
+          backgroundImage: "url(graphics/hud/parchment.jpg)",
+          backgroundPosition: "0 -300px", 
+          textAlign: "right",
         },
         // Create Character: Label/Value Pairs
         PropertyLabel: {
@@ -2661,14 +2674,6 @@ class Game extends Component {
         },
         RollAbilities: {
           gridColumnStart: 2,
-        },
-        StartGame: {
-          gridColumnStart: FirstColumn,
-          gridColumnEnd: LastColumn,
-          padding: HUDPadding,
-          backgroundImage: "url(graphics/hud/parchment.jpg)",
-          backgroundPosition: "0 -190px", 
-          textAlign: "right",
         },
         // In-Game Grid
         Game: {
@@ -3157,7 +3162,7 @@ class Game extends Component {
           gridRowStart: InventoryRow,
           padding: HUDBlockPadding2,
           backgroundImage: "url(graphics/hud/metal.jpg)",
-          backgroundPosition: MobileScreen ? "0px -250px" : "0px -128px",
+          backgroundPosition: MobileScreen ? "0px -250px" : "0px " + (Player.Class.Spellcaster ? "-128px" : "-108px"),
           color: "white",
         },
 
@@ -3186,7 +3191,7 @@ class Game extends Component {
           gridRowEnd: AccessoriesStopRow,
           padding: HUDBlockPadding,
           backgroundImage: "url(graphics/hud/metal.jpg)",
-          backgroundPosition: MobileScreen ? "0px -491px" : TabletScreen ? "-452px -128px" : "-604px -128px", 
+          backgroundPosition: MobileScreen ? "0px -491px" : TabletScreen ? "-452px " + (Player.Class.Spellcaster ? "-128px" : "-108px") : "-604px " + (Player.Class.Spellcaster ? "-128px" : "-108px"), 
         },
         // Game settings
         BottomControls: {
@@ -3450,9 +3455,12 @@ class Game extends Component {
   /* Character Creation */
 
   ShowCharacterScreen = () => {
-    this.setState({CreateCharacter: true}, function() {
-      this.CalculateStyles()
+    this.setState({CreateCharacter: true, GameInBackground: this.state}, function() {
+      let Player = this.CreateCharacter()
+      this.setState({Player: Player}, function() {
+        this.CalculateStyles()
         this.forceUpdate()
+      })
     })
   }
 
@@ -3465,11 +3473,11 @@ class Game extends Component {
   CreateCharacter = (Player) => {
 
     if (!Player) {
-      Player = {}
+      Player = {...Campaign.Player}
     }
 
     if (Campaign.Player.Class) {
-      Player.Class = Campaign.Player.Class
+      Player.Class = {...Campaign.Player.Class}
     }
     else {
       if (!Player.Class) {
@@ -3481,7 +3489,7 @@ class Game extends Component {
     }
 
     if (Campaign.Player.Race) {
-      Player.Race = Campaign.Player.Race
+      Player.Race = {...Campaign.Player.Race}
     }
     else {
       if (!Player.Race) {
@@ -3658,6 +3666,15 @@ class Game extends Component {
       this.CalculateStyles()
       
         this.forceUpdate()
+    })
+  }
+
+  ResumeGame = () => {
+    let GameInBackground = {...this.state.GameInBackground}
+    this.setState(GameInBackground, function() {
+      delete this.state.GameInBackground
+      this.CalculateStyles()
+      this.forceUpdate()
     })
   }
 

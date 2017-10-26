@@ -4,7 +4,7 @@ import Utilities from "../Utilities.js"
 export const CampaignAssets = {
 
     // Let the player create their character at the beginning of the campaign
-    CreateCharacter: true,
+    CreateCharacter: false,
 
     // Player start
     Player: {
@@ -29,7 +29,7 @@ export const CampaignAssets = {
     },
 
     Backpack: {
-        maxItems: 28,
+        maxItems: 5,
         Weight: 0,
         Items: [
             /*{...WorldAssets.Items.HealthPotion, Id: 1},
