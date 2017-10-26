@@ -42,12 +42,12 @@ export const WorldAssets = {
         Dwarf: {
             Name: "dwarf",
             AbilityBoost: {Constitution: 2},
-            Description: "",
+            Description: "Dwarves are used to the hardship of the mountains. They are very resistant to attacks.",
         },
         Elf: {
             Name: "elf",
             AbilityBoost: {Dexterity: 2},
-            Description: "",
+            Description: "Elves are atuned to their body. Their concentration gives them a great advantage during combat.",
         },
         Human: {
             Name: "human",
@@ -56,12 +56,12 @@ export const WorldAssets = {
                 Strength: 1,
                 Intelligence: 1,
             },
-            Description: "",
+            Description: "Humans are polyvalent. Their instincts make them fit for any kind of adventure.",
         },
         Gnome: {
             Name: "gnome",
             AbilityBoost: {Intelligence: 2},
-            Description: "",
+            Description: "Gnomes are a smart people. They can be great wizards.",
         },
 
     },
