@@ -42,10 +42,12 @@ export const WorldAssets = {
         Dwarf: {
             Name: "dwarf",
             AbilityBoost: {Constitution: 2},
+            Description: "",
         },
         Elf: {
             Name: "elf",
             AbilityBoost: {Dexterity: 2},
+            Description: "",
         },
         Human: {
             Name: "human",
@@ -54,10 +56,12 @@ export const WorldAssets = {
                 Strength: 1,
                 Intelligence: 1,
             },
+            Description: "",
         },
         Gnome: {
             Name: "gnome",
             AbilityBoost: {Intelligence: 2},
+            Description: "",
         },
 
     },
@@ -66,36 +70,47 @@ export const WorldAssets = {
         Barbarian: {
             Name: "barbarian",
             // STR (+) - CON - DEX
-            AbilityPriorities: ["Strength","Constitution","Dexterity","Intelligence"],
-        },
+            AbilityPriorities: ["Strength","Constitution","Dexterity","Intelligence"], 
+            Proficiency: ["all"], /* to-do: parse all weapon classes into a dynamic array */
+            Description: "Barbarians are vigorous warriors. Their innate combat skills give them an advantage with all weapons. Conversely, barbarians have absolutely no interest in magic.",
+      
         Cleric: {
             Name: "cleric",
             Spellcaster: true,
             // INT - CON - DEX
             AbilityPriorities: ["Intelligence", "Constitution","Dexterity","Strength"],
-            
+            Proficiency: ["blunt","staff"],
+            Description: "Clerics are spiritual guides who have a strong connection with the plane of immateriality. Their faith allows them to summon the powers of their gods. Clerics are experimented with blunt weapons and staves."
         },
         Fighter: {
             Name: "fighter",
             // STR (+) - DEX - CON
             AbilityPriorities: ["Strength","Dexterity","Constitution","Intelligence"],
+            Proficiency: ["melee"], /* to do: parse weapons */
+            Description: "Fighters are strong beings that consider combat as a sport. Their meticulous training make them more precise than barbarians. Fighters tend to have a slightly weaker constitution, though. They are unable to cast spells but they know the secrets of all melee weapons.",
         },
         Paladin: {
             Name: "paladin",
             Spellcaster: true,     
             // STR - INT - CON       
             AbilityPriorities: ["Strength","Intelligence","Constitution","Dexterity"],
+            Proficiency: ["sword","blunt"],
+            Description: "Paladins are both skilled soldiers and well-versed into the arcane of magic. Their weapon of choice is the sword but they also do a good deal of damage with blunt weapons.
         },
         Ranger: {
             Name: "ranger",
             // DEX (+) - CON - STR
             AbilityPriorities: ["Dexterity","Constitution","Strength","Intelligence"],
+            Proficiency: ["sword","bow","crossbow"],
+            Description: "Rangers are stealthy individuals. Their incredible dexterity is instrumental during combats. They excel at the art of dodging and hitting their foes. Rangers are good with swords, bows, and crossbows."
         },
         Wizard: {
             Name: "wizard",
             Spellcaster: true,
             // INT - DEX - CON
             AbilityPriorities: ["Intelligence","Dexterity","Constitution","Strength"],
+            Proficiency: ["staff"],
+            Description: "Wizard are powerful mages. Their dedicated study of the world and its essence give them the ability to manipulate reality. They cast spells to protect themselves or destroy their opponents. Wizards are proficient with staves." 
         },
     },
 
