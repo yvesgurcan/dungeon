@@ -95,7 +95,7 @@ export const WorldAssets = {
             // STR - INT - CON       
             AbilityPriorities: ["Strength","Intelligence","Constitution","Dexterity"],
             Proficiency: ["sword","blunt"],
-            Description: "Paladins are both skilled soldiers and well-versed into the arcane of magic. Their weapon of choice is the sword but they also do a good deal of damage with blunt weapons.
+            Description: "Paladins are both skilled soldiers and well-versed into the arcane of magic. Their weapon of choice is the sword but they also do a good deal of damage with blunt weapons."
         },
         Ranger: {
             Name: "ranger",
