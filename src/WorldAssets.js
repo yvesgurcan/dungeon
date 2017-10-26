@@ -36,6 +36,16 @@ const ScrollItemTypes = {
     },
 }
 
+const WeaponClasses = {
+    Dagger: "dagger",
+    Sword: "sword",
+    Blunt: "blunt",
+    Staff: "staff",
+    Bow: "bow",
+    Crossbow: "crossbow",
+}
+	
+
 export const WorldAssets = {
 
     Races: {
@@ -101,7 +111,7 @@ export const WorldAssets = {
             Name: "ranger",
             // DEX (+) - CON - STR
             AbilityPriorities: ["Dexterity","Constitution","Strength","Intelligence"],
-            Proficiency: ["sword","bow","crossbow"],
+            Proficiency: ["dagger","sword","bow","crossbow"],
             Description: "Rangers are stealthy individuals. Their incredible dexterity is instrumental during combats. They excel at the art of dodging and hitting their foes. Rangers are good with swords, bows, and crossbows."
         },
         Wizard: {
@@ -109,8 +119,8 @@ export const WorldAssets = {
             Spellcaster: true,
             // INT - DEX - CON
             AbilityPriorities: ["Intelligence","Dexterity","Constitution","Strength"],
-            Proficiency: ["staff"],
-            Description: "Wizard are powerful mages. Their dedicated study of the world and its essence give them the ability to manipulate reality. They cast spells to protect themselves or destroy their opponents. Wizards are proficient with staves." 
+            Proficiency: ["dagger","staff"],
+            Description: "Wizard are powerful mages. Their dedicated study of the world and its essence give them the ability to manipulate reality. They cast spells to protect themselves or destroy their opponents. Wizards are proficient with staves and ." 
         },
     },
 
