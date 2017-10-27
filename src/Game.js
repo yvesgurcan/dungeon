@@ -3200,7 +3200,7 @@ class Game extends Component {
           gridRowStart: VolumeRow,
           padding: HUDBlockPadding,
           backgroundImage: "url(graphics/hud/metal.jpg)",
-          backgroundPosition: MobileScreen ? "0px -508px" : "0px -348px",
+          backgroundPosition: MobileScreen ? "0px -508px" : "0px " + ("-154") + "px",
         },
         GameState: {
           gridColumnStart: FirstColumn,
