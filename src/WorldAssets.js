@@ -130,24 +130,24 @@ export const WorldAssets = {
         // Backpacks  
         BagOfHolding: {
             Type: "backpack",
+            Name: "bag of holding",
             MaxItems: 48,
         },
         TravelerBag: {
             Type: "backpack",
+            Name: "traveler's bag",
             MaxItems: 32,
         },
         DuffelBag: {
             Type: "backpack",
+            Name: "duffel bag",
             MaxItems: 16,
-        },
-        MessengerBag: {
-            Type: "backpack",
-            MaxItems: 10,
         },
         Haversack: {
             Type: "backpack",
-            MaxItems: 5,
-        }
+            Name: "haversack",
+            MaxItems: 10,
+        },
 
         // Keys
         IronKey: {
