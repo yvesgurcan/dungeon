@@ -22,10 +22,19 @@ export const CampaignAssets = {
     ,
 
     Gear: {
+        // top
+        Head: null,
+        Neck: null,
+        // middle
+        Chest: null,
         LeftHand: WorldAssets.Items.EmeraldDagger,
         RightHand: null,
-        PreparedSpell1: null,
-        PreparedSpell2: null,
+        LeftFinger: null,
+        RightFinger: null,
+        // bottom
+        Feet: null,
+        // back
+        Quiver: null,
     },
 
     Backpack: {
