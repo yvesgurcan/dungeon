@@ -44,7 +44,8 @@ const WeaponClasses = {
     Bow: "bow",
     Crossbow: "crossbow",
 }
-	
+
+const MeleeWeaponClasses = Object.keys(WeaponClasses).filter(Key => {return WeaponClasses[Key] !== "Bow" && WeaponClasses[Key] !="= "Crossbow"}).map(Key => {return WeaponClasses[Key]}),
 
 export const WorldAssets = {
 
@@ -81,7 +82,7 @@ export const WorldAssets = {
             Name: "barbarian",
             // STR (+) - CON - DEX
             AbilityPriorities: ["Strength","Constitution","Dexterity","Intelligence"], 
-            Proficiency: ["all"], /* to-do: parse all weapon classes into a dynamic array */
+            Proficiency: Object.keys(WeaponClasses).map(Key => {return WeaponClasses[Key]}),
             Description: "Barbarians are vigorous warriors. Their innate combat skills give them an advantage with all weapons. Conversely, barbarians have absolutely no interest in magic.",
         },
         Cleric: {
@@ -96,7 +97,7 @@ export const WorldAssets = {
             Name: "fighter",
             // STR (+) - DEX - CON
             AbilityPriorities: ["Strength","Dexterity","Constitution","Intelligence"],
-            Proficiency: ["melee"], /* to do: parse weapons */
+            Proficiency: MeleeWeaponClasses,
             Description: "Fighters are strong beings that consider combat as a sport. Their meticulous training make them more precise than barbarians. Fighters tend to have a slightly weaker constitution, though. They are unable to cast spells but they know the secrets of all melee weapons.",
         },
         Paladin: {
@@ -112,7 +113,7 @@ export const WorldAssets = {
             // DEX (+) - CON - STR
             AbilityPriorities: ["Dexterity","Constitution","Strength","Intelligence"],
             Proficiency: ["dagger","sword","bow","crossbow"],
-            Description: "Rangers are stealthy individuals. Their incredible dexterity is instrumental during combats. They excel at the art of dodging and hitting their foes. Rangers are good with swords, bows, and crossbows."
+            Description: "Rangers are stealthy individuals. Their incredible dexterity is instrumental during combats. They excel at the art of dodging and hitting their foes. Rangers are good with daggers, swords, bows, and crossbows."
         },
         Wizard: {
             Name: "wizard",
@@ -120,7 +121,7 @@ export const WorldAssets = {
             // INT - DEX - CON
             AbilityPriorities: ["Intelligence","Dexterity","Constitution","Strength"],
             Proficiency: ["dagger","staff"],
-            Description: "Wizard are powerful mages. Their dedicated study of the world and its essence give them the ability to manipulate reality. They cast spells to protect themselves or destroy their opponents. Wizards are proficient with staves and ." 
+            Description: "Wizard are powerful mages. Their dedicated study of the world and its essence give them the ability to manipulate reality. They cast spells to protect themselves or destroy their opponents. Wizards are proficient with staves and daggers." 
         },
     },
 
