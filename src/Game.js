@@ -2285,6 +2285,7 @@ class Game extends Component {
 
 
       let Player = {...this.state.Player}
+      let Backpack = {...this.state.Backpack}
 
       /* presets */
 
@@ -3200,7 +3201,7 @@ class Game extends Component {
           gridRowStart: VolumeRow,
           padding: HUDBlockPadding,
           backgroundImage: "url(graphics/hud/metal.jpg)",
-          backgroundPosition: MobileScreen ? "0px -508px" : "0px " + ("-154") + "px",
+          backgroundPosition: MobileScreen ? "0px -508px" : "0px " + (-154 + -36 * Math.ceil(Backpack.maxItems / 16)) + "px",
         },
         GameState: {
           gridColumnStart: FirstColumn,

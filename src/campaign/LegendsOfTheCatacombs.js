@@ -29,7 +29,7 @@ export const CampaignAssets = {
     },
 
     Backpack: {
-        maxItems: 0,
+        maxItems: 16,
         Weight: 0,
         Items: [
             /*{...WorldAssets.Items.HealthPotion, Id: 1},
