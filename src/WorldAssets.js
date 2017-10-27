@@ -45,7 +45,7 @@ const WeaponClasses = {
     Crossbow: "crossbow",
 }
 
-const MeleeWeaponClasses = Object.keys(WeaponClasses).filter(Key => {return WeaponClasses[Key] !== "Bow" && WeaponClasses[Key] !="= "Crossbow"}).map(Key => {return WeaponClasses[Key]}),
+const MeleeWeaponClasses = Object.keys(WeaponClasses).filter(Key => {return WeaponClasses[Key] !== "Bow" && WeaponClasses[Key] != "Crossbow"}).map(Key => {return WeaponClasses[Key]}),
 
 export const WorldAssets = {
 
@@ -130,12 +130,24 @@ export const WorldAssets = {
         // Backpacks  
         BagOfHolding: {
             Type: "backpack",
-            MaxItems: 28,
+            MaxItems: 48,
         },
         TravelerBag: {
             Type: "backpack",
-            MaxItems: 5,
+            MaxItems: 32,
         },
+        DuffelBag: {
+            Type: "backpack",
+            MaxItems: 16,
+        },
+        MessengerBag: {
+            Type: "backpack",
+            MaxItems: 10,
+        },
+        Haversack: {
+            Type: "backpack",
+            MaxItems: 5,
+        }
 
         // Keys
         IronKey: {
