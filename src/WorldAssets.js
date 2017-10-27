@@ -857,7 +857,12 @@ export const WorldAssets = {
         },
         
         // Humanoids
-        
+        Bandit: {
+        },
+        TribalWarrior: {
+        },
+        Assassin: {
+        },
         
         // Green Skins
         Goblin: {
@@ -884,13 +889,35 @@ export const WorldAssets = {
             Health: 15,
             Damage: {Min: 4, Max: 7},
         },
+        Troll: {
+        },
+        Dretch: {
+        },
             
         // Giants
-            
-            
+        HalfOgre: {
+        },
+        Ogre: {
+        },
+        Cyclops: {
+        },
+        Golem: {
+        },
+        StoneGiant: {
+        },
+        
         // Magic
-            
-            
+        Acolyte: {
+        },
+        Sprite: {
+        },
+        Satyr: {
+        },
+        Elemental: {
+        },
+        Djinn: {
+        },
+        
         // Hybrids
             
             
