@@ -40,6 +40,8 @@ export const Utilities = {
     ,
     MaxSoundFilesPerFolder: 10
     ,
+    // default
+    StartMaxItems: 5,
     DefaultSoundVolume: .3
     ,
     // TODO: The value below should be calculated from the WorldAssets' list of spells instead of being hardcoded.
