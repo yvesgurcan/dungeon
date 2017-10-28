@@ -2263,7 +2263,7 @@ class Header extends Component {
       <View style={Styles.Header}>
         <PageTitle>Dungeon!</PageTitle>
         <PageSubtitle>an adventure game in React</PageSubtitle>
-        <Version>pre-alpha (v0.4)</Version>
+        <Version>pre-alpha (v0.5)</Version>
       </View>
     )
   }
@@ -3931,8 +3931,6 @@ class Game extends Component {
 
     if (BreakEvent) return true
 
-    console.log(keypress.key)
-
     // in-game single-keypress shortcuts
     switch (keypress.key) {
 
@@ -4779,6 +4777,7 @@ class Game extends Component {
       let NewPlayerState = this.state.Player
       if (NewPlayerState.Health !== Player.Health) {
         Player.Health = NewPlayerState.Health
+        Player.Dead = NewPlayerState.Dead
       }
 
       // keep the coordinates
