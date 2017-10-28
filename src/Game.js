@@ -532,6 +532,7 @@ class Inventory extends Component {
       || nextProps.TabletScreen !== this.props.TabletScreen
       || nextProps.Backpack !== this.props.Backpack
     ) {
+
       if (Debug) console.log("re-render: backpack")
       return true
     }
@@ -3366,8 +3367,6 @@ class Game extends Component {
     // delete start text so that it does not appear in the state
     delete InitState.StartText
 
-    console.log(Campaign.LootContainers)
-
     InitState.LootContainers = [...Campaign.LootContainers]
 
     // Debug/Cheats
@@ -5471,12 +5470,12 @@ class Game extends Component {
 
     let Player = {...this.state.Player}
     let Backpack = {...this.state.Backpack}
+  
+    let Message = null
 
     // Healing potion
     if (Player[Item.Heal]) {
       let NewHealedProperty = Math.min(Player["Max" + Item.Heal], Player[Item.Heal] + Item.Strength + Functions.RandomIntegerFromRange(-2,3))
-      
-      let Message = null
 
       if (NewHealedProperty - Player[Item.Heal] === 0) {
         Message = Gameplay.Messages.Potion.NoEffect
@@ -5491,7 +5490,6 @@ class Game extends Component {
         Message = Gameplay.Messages.Potion[Item.Heal + "3"]
       }
 
-      this.SetText(Message)
 
       Player[Item.Heal] = NewHealedProperty
 
@@ -5499,11 +5497,19 @@ class Game extends Component {
 
     Backpack.Items = this.RemoveItemFromInventory(Item)
 
+
     this.PlaySound("drink_potion", 999)
 
+    if (Message) {
+      this.SetText(Message)        
+    }
 
     this.setState({Player: Player, Backpack: Backpack}, function() {
-      this.CheckInventoryWeight()
+
+      Backpack = {...this.state.Backpack}
+      Backpack.Weight = this.CheckInventoryWeight(null, true)
+      this.setState({Backpack: Backpack})
+    
     })
 
   }
@@ -5542,7 +5548,11 @@ class Game extends Component {
     this.SetText(Messages[this.RandomInteger(Messages.length)])
 
     this.setState({Player: Player, Backpack: Backpack}, function() {
-      this.CheckInventoryWeight()
+
+      Backpack = {...this.state.Backpack}
+      Backpack.Weight = this.CheckInventoryWeight(null, true)
+      this.setState({Backpack: Backpack})
+      
     })
 
   }
