@@ -7,8 +7,8 @@ import Functions from "./Functions.js"
 
 /* utility */
 
-const Debug = Utilities.Debug || false
-const SoundDebug = false
+let Debug = Utilities.Debug || false
+let SoundDebug = Utilities.SoundDebug || false
 
 const {North, South, West, East} = Utilities.Directions
 const {Wall, Door, LootContainer, Undiscovered, Empty} = Utilities.MapObjects
@@ -3349,6 +3349,33 @@ class Game extends Component {
     this.CalculateStyles()
   }
 
+  componentDidMount() {
+
+    let State = {...this.state}
+    let Debug = Utilities.Debug
+    let DebugEventMessages = []
+
+    if (Utilities.Debug) {
+      DebugEventMessages.push(Gameplay.Messages.Debug.On)
+    }
+    if (Utilities.SoundDebug) {
+      DebugEventMessages.push(Gameplay.Messages.SoundDebug.On)
+    }
+    if (State.ShowFullMap) {
+      DebugEventMessages.push(Gameplay.Messages.Cheats.ShowFullMap.On + (Debug ? " ShowFullMap is ON." : ""))
+    }
+    if (State.NoClip) {
+      DebugEventMessages.push(Gameplay.Messages.Cheats.NoClip.On + (Debug ? " NoClip is ON." : ""))
+    }
+    if (State.GodMode) {
+      DebugEventMessages.push(Gameplay.Messages.Cheats.GodMode.On + (Debug ? " GodMode is ON." : ""))
+    }
+    if (State.CastAlwaysSucceeds) {
+      DebugEventMessages.push(Gameplay.Messages.Cheats.CastAlwaysSucceeds.On + (Debug ? " CastAlwaysSucceeds is ON." : ""))
+    }
+    this.SetText(DebugEventMessages)
+  }
+
   /* Init Game State */
 
   constructor(props) {
@@ -3376,8 +3403,6 @@ class Game extends Component {
       WallMap: [...Campaign.WallMap],
     }
 
-    console.log(JSON.stringify(InitState.Monsters[0]), "\n\n---\n\n", JSON.stringify(Campaign.Monsters[0]))
-
     // let the player go to the main screen if their character is stored in the state already
     if (!InitPlayer) {
       delete InitState.CreateCharacter      
@@ -3394,6 +3419,9 @@ class Game extends Component {
     }
     if (Utilities.GodMode) {
       InitState.GodMode = true
+    }
+    if (Utilities.CastAlwaysSucceeds) {
+      InitState.CastAlwaysSucceeds = true
     }
 
     
@@ -3805,6 +3833,7 @@ class Game extends Component {
 
   ListenToKeyboard = (keypress) => {
 
+    let State = {...this.state}
     let Player = {...this.state.Player}
     let Keystrokes = Object.assign([], this.state.Keystrokes)
     let Sound = {...this.state.Sound}
@@ -3815,8 +3844,8 @@ class Game extends Component {
 
     keypress.preventDefault()
 
-    // subsequent key strokes
-    let breakEvent = false
+    // track subsequent key strokes
+    let BreakEvent = false
     if (Keystrokes) Keystrokes.push(keypress.key)
     else Keystrokes = [keypress.key]
     this.setState({Keystrokes: Keystrokes}, function() {
@@ -3826,6 +3855,7 @@ class Game extends Component {
 
         this.CastSpellFromKeyboard(this.state.Keystrokes.join(""))
         this.FlushKeystrokeHistory()
+        BreakEvent = true
 
       }
 
@@ -3834,17 +3864,84 @@ class Game extends Component {
 
         this.UseItemFromKeyboard(this.state.Keystrokes.join(""))
         this.FlushKeystrokeHistory()
+        BreakEvent = true
 
       }
+
+      // debug
+      if (this.state.Keystrokes.join("") === "debug") {
+
+        Debug = !Debug
+        console.log(Debug ? Gameplay.Messages.Debug.On : Gameplay.Messages.Debug.Off)
+        this.SetText(Debug ? Gameplay.Messages.Debug.On : Gameplay.Messages.Debug.Off)
+        this.FlushKeystrokeHistory()
+        BreakEvent = true
+
+      }
+      if (this.state.Keystrokes.join("") === "sound") {
+        
+        SoundDebug = !SoundDebug
+        console.log(SoundDebug ? Gameplay.Messages.SoundDebug.On : Gameplay.Messages.SoundDebug.Off)
+        this.SetText(Debug ? Gameplay.Messages.SoundDebug.On : Gameplay.Messages.SoundDebug.Off)
+        this.FlushKeystrokeHistory()
+        BreakEvent = true
+
+      }
+
+      // cheats
+      if (this.state.Keystrokes.join("") === "showmap") {
+
+        this.setState({ShowFullMap: State.ShowFullMap === undefined ? true : !State.ShowFullMap}, function() {
+          this.SetText(this.state.ShowFullMap ? Gameplay.Messages.Cheats.ShowFullMap.On : Gameplay.Messages.Cheats.ShowFullMap.Off)   
+        })
+        this.FlushKeystrokeHistory()
+        BreakEvent = true
+
+      }
+      if (this.state.Keystrokes.join("") === "noclip") {
+
+        this.setState({NoClip: State.NoClip === undefined ? true : !State.NoClip}, function() {
+          this.SetText(this.state.NoClip ? Gameplay.Messages.Cheats.NoClip.On : Gameplay.Messages.Cheats.NoClip.Off)   
+        })
+        this.FlushKeystrokeHistory()
+        BreakEvent = true
+
+      }
+      if (this.state.Keystrokes.join("") === "god") {
+
+        this.setState({GodMode: State.GodMode === undefined ? true : !State.GodMode}, function() {
+          this.SetText(this.state.GodMode ? Gameplay.Messages.Cheats.GodMode.On : Gameplay.Messages.Cheats.GodMode.Off)   
+        })
+        this.FlushKeystrokeHistory()
+        BreakEvent = true
+
+      }
+      if (this.state.Keystrokes.join("") === "spell") {
+
+        this.setState({CastAlwaysSucceeds: State.CastAlwaysSucceeds === undefined ? true : !State.CastAlwaysSucceeds}, function() {
+          this.SetText(this.state.CastAlwaysSucceeds ? Gameplay.Messages.Cheats.CastAlwaysSucceeds.On : Gameplay.Messages.Cheats.CastAlwaysSucceeds.Off)   
+        })
+        this.FlushKeystrokeHistory()
+        BreakEvent = true
+
+      }
+
       
     })
 
-    if (breakEvent) return true
+    if (BreakEvent) return true
 
-    // in-game keyboard controls
+    console.log(keypress.key)
+
+    // in-game single-keypress shortcuts
     switch (keypress.key) {
 
       default:
+        break
+      
+      case "Escape":
+      case "Enter":
+        this.FlushKeystrokeHistory()
         break
 
       case "ArrowDown":
@@ -4193,13 +4290,18 @@ class Game extends Component {
 
     if (Message || Image) {
 
-    let EventLog = Object.assign([], this.state.EventLog)
+    let EventLog = [...this.state.EventLog]
 
     if (!EventLog) {
       EventLog = []
     }
 
-    EventLog.push(Message)
+    if (Array.isArray(Message)) {
+      EventLog = [...EventLog, ...Message]
+    }
+    else {
+      EventLog.push(Message)      
+    }
 
     if (EventLog.length > 20) {
       EventLog = EventLog.slice(EventLog.length - 20, EventLog.length)
@@ -4332,9 +4434,10 @@ class Game extends Component {
   CastSpell = (Spell, Caster) => {
     
     let Player = {...this.state.Player}
-    let Monsters = Object.assign([], this.state.Monsters)
-    let MonsterMap = Object.assign([], this.state.MonsterMap)
+    let Monsters = [...this.state.Monsters]
+    let MonsterMap = [...this.state.MonsterMap]
     let Turn = this.state.Turn
+    let CastAlwaysSucceeds = this.state.CastAlwaysSucceeds
 
     let CasterIsPlayer = false
     let UpdateEventLog = true
@@ -4361,15 +4464,6 @@ class Game extends Component {
         
       }
 
-      if (CasterIsPlayer) {
-        Caster.Stamina--
-        Caster.SpellActionUsed = true
-        Turn++
-        this.setState({Turn: Turn},
-          this.MoveMonsters()
-        )
-      }
-
       // ability score spell-level modifier
       let Modifier = 0
       if (Caster.Intelligence <= 5) {
@@ -4384,7 +4478,7 @@ class Game extends Component {
       }
 
       // attempt to cast the spell
-      if (this.AbilityCheck(Caster.Intelligence, Modifier)) {
+      if (this.AbilityCheck(Caster.Intelligence, Modifier) || CastAlwaysSucceeds) {
 
         if (Spell.Sound) {
           this.PlaySound(Spell.Sound)          
@@ -4513,12 +4607,24 @@ class Game extends Component {
         // update player state and message
         if (CasterIsPlayer) {
 
+          Turn++
+          Caster.Stamina--
           Caster.Mana -= Spell.ManaCost || 0
-          this.setState({Player: Caster})
-          
+          Caster.SpellActionUsed = true
+
           if (UpdateEventLog) {
             this.SetText(Gameplay.PartialMessages.SpellSuccess + Spell.Name + Gameplay.PartialMessages.Period)
           }
+
+          this.setState({
+            Player: Caster,
+            Turn: Turn,
+          },
+
+            function() {
+              this.MoveMonsters()
+            }
+          )
 
         }
 
@@ -4668,10 +4774,16 @@ class Game extends Component {
     Turn++  
 
     // catch up with other state mutations
-    let NewPlayerCoordinates = {x: Player.x, y: Player.y}
+    let PlayerCoordinates = {x: Player.x, y: Player.y}
     if (Player !== this.state.Player) {
-      Player.x = NewPlayerCoordinates.x
-      Player.y = NewPlayerCoordinates.y
+      let NewPlayerState = this.state.Player
+      if (NewPlayerState.Health !== Player.Health) {
+        Player.Health = NewPlayerState.Health
+      }
+
+      // keep the coordinates
+      Player.x = PlayerCoordinates.x
+      Player.y = PlayerCoordinates.y
     }
 
     this.setState({
@@ -4861,9 +4973,14 @@ class Game extends Component {
 
   TakeAllLoot = () => {
 
+    if (!this.state.currentEvent) return false
+
     let currentEvent = [...this.state.currentEvent]
-    let Backpack = {...this.state.Backpack}
+
+    if (currentEvent.length === 0) return false
+
     let Player = {...this.state.Player}
+    let Backpack = {...this.state.Backpack}
 
     if (Player.Dead) return false
 
@@ -5383,13 +5500,15 @@ class Game extends Component {
 
   PlayerTakeDamage = (Damage) => {
 
-    // let {Player, GodMode} = this.state
-    let Player = Object.assign({}, this.state.Player)
+    let Player = {...this.state.Player}
     let GodMode = this.state.GodMode
 
     if (!GodMode) {
 
       Player.Health = Math.max(0,Player.Health - Damage)
+
+      console.log("Boom!", Player.Health)
+
 
       if (Player.Health <= 0) {
 

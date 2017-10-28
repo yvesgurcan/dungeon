@@ -4,6 +4,14 @@ export const GameplayAssets = {
 
     Messages: {
         NewGame: "Ready for adventure!",
+        Debug: {On: "Debug is ON.", Off: "Debug is OFF."},
+        SoundDebug: {On: "Sound debug is ON.", Off: "Sound debug is OFF."},
+        Cheats: {
+            ShowFullMap: {On: "You can sense your surroundings very clearly.", Off: "Your akin sense of perception dissipates."},
+            NoClip: {On: "Your essence is transformed. Your body becomes immaterial.", Off: "You cease floating into the air. Your feet are now anchored to the ground again."},
+            GodMode: {On: "You feel almighty and invincible.", Off: "Your godly powers leave your body."},
+            CastAlwaysSucceeds: {On: "Your concentration is at its highest.", Off: "You're not sure your next spell will succeed anymore."},
+        },
         LoadGameError: {
             Invalid: "The game state you entered is not valid.",
         },

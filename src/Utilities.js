@@ -1,6 +1,8 @@
 import WorldAssets from "./WorldAssets.js"
 
 const Debug = false
+const SoundDebug = false
+const Cheats = false
 
 const MobileScreenBreakpoint = 400
 const TabletScreenBreakpoint = 769
@@ -14,14 +16,18 @@ const TabletScreen = function() {
 
 export const Utilities = {
 
-    // debug
-    ShowFullMap: Debug || false
+    // debug and cheats
+    ShowFullMap: Cheats || false
     ,
-    NoClip: false // Debug || false
+    NoClip: Cheats || false
     ,
-    GodMode: Debug || false
+    GodMode: Cheats || false
+    ,
+    CastAlwaysSucceeds : Cheats || false
     ,
     Debug: Debug
+    ,
+    SoundDebug: SoundDebug
     ,
 
     // responsiveness
