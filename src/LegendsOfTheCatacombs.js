@@ -1,5 +1,4 @@
-import WorldAssets from "../WorldAssets.js"
-import Utilities from "../Utilities.js"
+import WorldAssets from "./WorldAssets.js"
 
 export const CampaignAssets = {
 
@@ -10,11 +9,12 @@ export const CampaignAssets = {
     Player: {
         // debug
         Name: "Leto Seldon",
-        Level: Utilities.MaxSpellLevel,
+        Level: 1,
         //
         x: 10,
         y: 14,
         Facing: "East",
+        Health: 19,
     },
 
     AvailableStartSpell:
@@ -27,7 +27,7 @@ export const CampaignAssets = {
         Neck: null,
         // middle
         Chest: null,
-        LeftHand: WorldAssets.Items.EmeraldDagger,
+        LeftHand: WorldAssets.Items.Sword,
         RightHand: null,
         LeftFinger: null,
         RightFinger: null,
@@ -38,10 +38,9 @@ export const CampaignAssets = {
     },
 
     Backpack: {
-        maxItems: 16,
-        Weight: 0,
-        Items: [
-            /*{...WorldAssets.Items.HealthPotion, Id: 1},
+        maxItems: 5,
+        /*Items: [
+            {...WorldAssets.Items.HealthPotion, Id: 1},
             {...WorldAssets.Items.HealthPotion, Id: 12},
             {...WorldAssets.Items.HealthPotion, Id: 13},
             {...WorldAssets.Items.HealthPotion, Id: 14},
@@ -61,8 +60,8 @@ export const CampaignAssets = {
             WorldAssets.Items.HealWoundsScroll,
             WorldAssets.Items.EntangleScroll,
             WorldAssets.Items.DetectMonsterScroll,
-            {...WorldAssets.Items.Apple, Id: 5},*/
-        ],
+            {...WorldAssets.Items.Apple, Id: 5},
+        ],*/
     },
     
     Maps: {
@@ -77,7 +76,41 @@ export const CampaignAssets = {
             Name: "skeleton",
             items: [
                 // WorldAssets.UniqueItems.IronKey,
-                {...WorldAssets.Items.HealthPotion, Id: 2}
+                {...WorldAssets.Items.HealthPotion, Id: 1},
+                {...WorldAssets.Items.ManaPotion, Id: 2},
+                {...WorldAssets.Items.ManaPotion, Id: 3},
+            ]
+        },
+        {
+            Id: 2,
+            x: 17,
+            y: 9,
+            Name: "dead body",
+            items: [
+                {...WorldAssets.Items.Apple, Id: 4},
+                {...WorldAssets.Items.Bread, Id: 5},
+            ]
+        },
+        {
+            Id: 3,
+            x: 16,
+            y: 15,
+            Name: "small bag",
+            items: [
+                {...WorldAssets.Items.Rock, Id: 6},
+                {...WorldAssets.Items.StaminaPotion, Id: 7},
+            ]
+        },
+        {
+            Id: 4,
+            x: 11,
+            y: 20,
+            Name: "chest",
+            items: [
+                {...WorldAssets.Items.HealthPotion, Id: 8},
+                {...WorldAssets.Items.ManaPotion, Id: 9},
+                {...WorldAssets.Items.Chicken, Id: 10},
+                {...WorldAssets.Items.Bow, Id: 11},
             ]
         },
     ],
@@ -85,29 +118,41 @@ export const CampaignAssets = {
     // LockedDoors
 
     Monsters: [
-        {...WorldAssets.Bestiary.Orc,
+        /*{...WorldAssets.Bestiary.Orc,
             x: 12,
             y: 13,
             Id: 2,
             Name: "cell keeper1",
             Damage: {Min: 1, Max: 4},
             Stationary: true,
-        },
+        },*/
         {...WorldAssets.Bestiary.Orc,
             x: 12,
             y: 14,
             Id: 1,
-            Name: "cell keeper2",
-            Damage: {Min: 1, Max: 4},
+            Name: "cell keeper",
             Stationary: true,
         },
-        {...WorldAssets.Bestiary.Orc,
+        /*{...WorldAssets.Bestiary.Orc,
             x: 12,
             y: 15,
             Id: 3,
             Name: "cell keeper3",
             Damage: {Min: 1, Max: 4},
             Stationary: true,
+        },*/
+        {...WorldAssets.Bestiary.Goblin,
+            x: 14,
+            y: 7,
+            Id: 2,
+            Damage: {Min: 5, Max: 10},
+        },
+        {...WorldAssets.Bestiary.Orc,
+            x: 15,
+            y: 21,
+            Id: 3,
+            Health: 70,
+            Damage: {Min: 15, Max: 20},
         },
     ],
 
@@ -129,7 +174,7 @@ export const CampaignAssets = {
 
     Text: [
         {
-            accessPoints: [{x: 10, y: 13}],
+            accessPoints: [{x: 10, y: 13, SingleTile: true}],
             image: "bones",
             text:
                 `As you take a few steps ahead of you, you stumble on something on the ground.
@@ -156,6 +201,12 @@ export const CampaignAssets = {
                 Before the cellkeeper has time to set a safe distance between you and him, you run towards him and hit the creature in the face!
                 `
         },
+        {
+            accessPoints: [{x: 14, y: 14}],
+            text:
+                `Free at last! Run for your life!
+                `
+        },
     ],
 
     WallMap: [
@@ -177,12 +228,12 @@ export const CampaignAssets = {
         [" "," "," "," "," "," "," "," "," ","X"," "," "," ","X"," ","X"," "," "," ","X"," "," "," "," "," "," "," "," "," "," "," "," "," "," ",],
         [" "," "," "," "," "," "," "," "," ","X","X","X","X","X"," ","X","X","X","X","X"," "," "," "," "," "," "," "," "," "," "," "," "," "," ",],
         [" "," "," "," "," "," "," "," "," "," "," "," "," ","X"," ","X"," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ",],
-        [" "," "," "," "," "," "," "," "," "," "," ","X","X","X","D","X","X"," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ",],
-        [" "," "," "," "," "," "," "," "," "," "," ","X"," "," "," "," ","X"," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ",],
-        [" "," "," "," "," "," "," "," "," "," "," ","X"," "," "," "," ","X"," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ",],
-        [" "," "," "," "," "," "," "," "," "," "," ","X"," "," "," "," ","X"," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ",],
-        [" "," "," "," "," "," "," "," "," "," "," ","X","X","X","X","D","X"," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ",],
-        [" "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ",],
+        [" "," "," "," "," "," "," "," "," "," "," "," "," ","X","D","X"," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ",],
+        [" "," "," "," "," "," "," "," "," "," ","X","X","X","X"," ","X","X"," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ",],
+        [" "," "," "," "," "," "," "," "," "," ","X"," "," "," "," "," ","X"," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ",],
+        [" "," "," "," "," "," "," "," "," "," ","X","X"," "," "," "," ","X"," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ",],
+        [" "," "," "," "," "," "," "," "," "," "," ","X","X"," "," "," ","X"," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ",],
+        [" "," "," "," "," "," "," "," "," "," "," "," ","X","X","X","X","X"," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ",],
         [" "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ",],
         [" "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ",],
         [" "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ",],

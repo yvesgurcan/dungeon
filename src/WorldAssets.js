@@ -221,7 +221,8 @@ export const WorldAssets = {
         Sword: {
             Name: "sword",
             Type: "weapon",
-            image: "weapon_sword"
+            image: "weapon_sword",
+            Damage: {Min: 5, Max: 9},
         },
         // Bows
         Bow: {
@@ -870,7 +871,7 @@ export const WorldAssets = {
             Type: "Green Skin",
             Level: 1,
             XP: 15,
-            Health: 7,
+            Health: 12,
             Damage: {Min: 1, Max: 4},
         },
         Hobgoblin: {
@@ -886,7 +887,7 @@ export const WorldAssets = {
             Type: "Green Skin",
             Level: 1,
             XP: 20,
-            Health: 15,
+            Health: 30,
             Damage: {Min: 4, Max: 7},
         },
         Troll: {

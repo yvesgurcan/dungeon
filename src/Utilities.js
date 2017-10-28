@@ -47,7 +47,7 @@ export const Utilities = {
     // TODO: The value below should be calculated from the WorldAssets' list of spells instead of being hardcoded.
     MaxSpellLevel: 18
     ,
-    NumberOfSpells: Object.keys(WorldAssets.Spells).length
+    NumberOfSpells: 24 // Object.keys(WorldAssets.Spells).length
     ,
 
     // determines how many elements fit on the map

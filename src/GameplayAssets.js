@@ -70,7 +70,7 @@ export const GameplayAssets = {
         MonsterMissed: " tried to attack you and missed their target.",
         MonsterKilled: "You killed ",
         PlayerHit: "You hit ",
-        SpellSuccess: "You successfully casted ",
+        SpellSuccess: "You successfully cast ",
     },
 
     LevelXP: {

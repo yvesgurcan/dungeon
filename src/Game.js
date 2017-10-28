@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import World from "./WorldAssets.js"
-import Campaign from "./campaign/LegendsOfTheCatacombs.js"
+import Campaign from "./LegendsOfTheCatacombs.js"
 import Gameplay from "./GameplayAssets.js"
 import Utilities from "./Utilities.js"
 import Functions from "./Functions.js"
@@ -547,7 +547,7 @@ class Inventory extends Component {
     let list = []
 
     for (let i = 0; i < Backpack.maxItems; i++) {
-      if (Backpack.Items[i] !== undefined) {
+      if (Backpack.Items && Backpack.Items[i] !== undefined) {
         list.push(Backpack.Items[i])
       }
       else {
@@ -2159,7 +2159,7 @@ class CreateCharacterBackground extends Component {
                 image={(FirstSpell && FirstSpell.Image) || null}
                 name={(FirstSpell && FirstSpell.Name) || null}
                 item={FirstSpell}
-                onClick={null/*this.props.CastSpell*/} />
+                onClick={null} />
             </Block>
             <Block style={{marginTop: "3px"}}>
               <Arrow {...this.props} onClick={this.SelectFirstSpell} arrow="Right">→</Arrow>
@@ -3179,7 +3179,7 @@ class Game extends Component {
           borderLeft: HUDBorder,
           padding: HUDBlockPadding2,
           backgroundImage: "url(graphics/hud/metal.jpg)",
-          backgroundPosition: MobileScreen ? "0px -440px" : "0px -248px", 
+          backgroundPosition: MobileScreen ? "0px " + (-292 + -36 * Math.ceil(Backpack.maxItems / 16)) + "px" : "0px " + (-172 + -36 * Math.ceil(Backpack.maxItems / 16)) + "px",
           color: "white",
         },
         SpellBookLabel: {
@@ -3202,7 +3202,7 @@ class Game extends Component {
           gridRowStart: VolumeRow,
           padding: HUDBlockPadding,
           backgroundImage: "url(graphics/hud/metal.jpg)",
-          backgroundPosition: MobileScreen ? "0px -508px" : "0px " + (-154 + -36 * Math.ceil(Backpack.maxItems / 16)) + "px",
+          backgroundPosition: MobileScreen ? "0px -508px" : "0px " + ((Player.SpellBook ? -100 : 0) -172 + -36 * Math.ceil(Backpack.maxItems / 16)) + "px",
         },
         GameState: {
           gridColumnStart: FirstColumn,
@@ -3363,9 +3363,25 @@ class Game extends Component {
   InitGameEnvironment = (InitPlayer = false) => {
 
     // Campaign assets
-    let InitState = {...Campaign}
-    // delete start text so that it does not appear in the state
-    delete InitState.StartText
+    // let InitState = {...Campaign}
+    let InitState = {
+      CreateCharacter: Campaign.CreateCharacter,
+      Player: {...Campaign.Player},
+      Backpack: {...Campaign.Backpack},
+      AvailableStartSpell: [...Campaign.AvailableStartSpell],
+      Gear: {...Campaign.Gear},
+      LootContainers: [...Campaign.LootContainers],
+      Monsters: [...Campaign.Monsters],
+      Text: {...Campaign.Text},
+      WallMap: [...Campaign.WallMap],
+    }
+
+    console.log(JSON.stringify(InitState.Monsters[0]), "\n\n---\n\n", JSON.stringify(Campaign.Monsters[0]))
+
+    // let the player go to the main screen if their character is stored in the state already
+    if (!InitPlayer) {
+      delete InitState.CreateCharacter      
+    }
 
     InitState.LootContainers = [...Campaign.LootContainers]
 
@@ -3380,6 +3396,7 @@ class Game extends Component {
       InitState.GodMode = true
     }
 
+    
     // Items
     // create the list of random items to draw from when looting, grouped by level
     InitState.RandomItems = {}
@@ -3492,26 +3509,26 @@ class Game extends Component {
       Player = {...Campaign.Player}
     }
 
-    if (Campaign.Player.Class) {
-      Player.Class = {...Campaign.Player.Class}
-    }
-    else {
-      if (!Player.Class) {
-        Player.Class = {
-          ...World.Classes[Object.keys(World.Classes)[0]],
-          Id: Object.keys(World.Classes)[0]
-        }
-      }
-    }
-
     if (Campaign.Player.Race) {
       Player.Race = {...Campaign.Player.Race}
     }
     else {
       if (!Player.Race) {
         Player.Race = {
-          ...World.Races[Object.keys(World.Races)[0]],
-          Id: Object.keys(World.Races)[0]
+          ...World.Races[Object.keys(World.Races)[2]],
+          Id: Object.keys(World.Races)[2]
+        }
+      }
+    }
+
+    if (Campaign.Player.Class) {
+      Player.Class = {...Campaign.Player.Class}
+    }
+    else {
+      if (!Player.Class) {
+        Player.Class = {
+          ...World.Classes[Object.keys(World.Classes)[3]],
+          Id: Object.keys(World.Classes)[3]
         }
       }
     }
@@ -3680,7 +3697,7 @@ class Game extends Component {
   StartPlaying = () => {
 
     this.setState({
-      CreateCharacter: false
+      CreateCharacter: false,
     }, function() {
 
       // reset the environment
@@ -4640,20 +4657,19 @@ class Game extends Component {
 
       Player.Stationary = false
 
-      // update player stats
-      if (Player.Stamina > 1) {
-        Player.Stamina--
-      }
-
     }
 
+    // update player stats
+    if (Player.Stamina > 1) {
+      Player.Stamina--
+    }
+    
     // add 1 turn to the game state
     Turn++  
 
     // catch up with other state mutations
     let NewPlayerCoordinates = {x: Player.x, y: Player.y}
     if (Player !== this.state.Player) {
-      Player = {...this.state.Player}
       Player.x = NewPlayerCoordinates.x
       Player.y = NewPlayerCoordinates.y
     }
@@ -4853,7 +4869,7 @@ class Game extends Component {
 
     let loot = []
     let LootCount = 0
-    let FreeSlots = Backpack.maxItems - Backpack.Items.length
+    let FreeSlots = Backpack.maxItems - (Backpack.Items ? Backpack.Items.length : 0)
 
     let LootEvents = currentEvent.filter(event => {
       if (event.eventType === "loot") {
@@ -4889,7 +4905,7 @@ class Game extends Component {
           return null
         })
 
-        Backpack.Items = Backpack.Items.concat(loot)
+        Backpack.Items = Backpack.Items ? Backpack.Items.concat(loot) : [...loot]
         Backpack.Weight = this.CheckInventoryWeight(loot, true)
         Player.Stationary = true  
 
@@ -4916,12 +4932,12 @@ class Game extends Component {
   TakeSingleLoot = (lootIndex, containerId) => {
     
     let LootContainers = [...this.state.LootContainers]
-    let Backpack = Object.assign({}, this.state.Backpack)
-    let Player = Object.assign({}, this.state.Player)
+    let Backpack = {...this.state.Backpack}
+    let Player = {...this.state.Player}
 
     if (Player.Dead) return false
 
-    let FreeSlots = Backpack.maxItems - Backpack.Items.length
+    let FreeSlots = Backpack.maxItems - (Backpack.Items ? Backpack.Items.length : 0)
 
     let matchLootContainer = LootContainers.filter(lootContainer => {
       return lootContainer.Id === containerId
@@ -4931,8 +4947,17 @@ class Game extends Component {
 
       if (this.CheckInventoryWeight([matchLootContainer.items[lootIndex]])) {
 
-          Backpack.Items.push(matchLootContainer.items[lootIndex])
+          if (Backpack.Items) {
+            Backpack.Items.push(matchLootContainer.items[lootIndex])
+          }
+          else {
+            Backpack.Items = []
+            Backpack.Items.push(matchLootContainer.items[lootIndex])
+          }
+
           Backpack.Weight = this.CheckInventoryWeight(matchLootContainer.items[lootIndex], true)
+
+          console.log(Backpack)
 
           this.setState({Backpack: Backpack}, function() {
             matchLootContainer.items.splice(lootIndex,1)
@@ -4966,7 +4991,7 @@ class Game extends Component {
 
     let BackpackWeight = 0
 
-    if (Backpack.Items.length > 0) {
+    if (Backpack.Items && Backpack.Items.length > 0) {
       BackpackWeight = Backpack.Items.map(Item => {
         return Item !== null ? Item.Weight || 0 : 0
       }).reduce((sum, val) => sum + val)
@@ -4999,7 +5024,7 @@ class Game extends Component {
 
     let BackpackWeight = 0
 
-    if (Backpack.Items.length > 0) {
+    if (Backpack.Items && Backpack.Items.length > 0) {
       BackpackWeight = Backpack.Items.map(Item => {
         return Item !== null ? Item.Weight || 0 : 0
       }).reduce((sum, val) => sum + val)
@@ -5339,7 +5364,7 @@ class Game extends Component {
 
         this.PlaySound("attack_hit")
 
-        this.SetText(Gameplay.PartialMessages.PlayerHit + Functions.IndefiniteArticle(Monster.Name, true) + " " + Monster.Name + Gameplay.PartialMessages.Period)
+        this.SetText(Gameplay.PartialMessages.PlayerHit + Functions.IndefiniteArticle(Monster.Name) + " " + Monster.Name + Gameplay.PartialMessages.Period)
 
         this.MonsterTakeDamage(Monster, Damage, index)
 
@@ -5494,6 +5519,9 @@ class Game extends Component {
       Player[Item.Heal] = NewHealedProperty
 
     }
+    else {
+      Message = Gameplay.Messages.Potion.NoEffect
+    }
 
     Backpack.Items = this.RemoveItemFromInventory(Item)
 
@@ -5552,7 +5580,7 @@ class Game extends Component {
       Backpack = {...this.state.Backpack}
       Backpack.Weight = this.CheckInventoryWeight(null, true)
       this.setState({Backpack: Backpack})
-      
+
     })
 
   }
