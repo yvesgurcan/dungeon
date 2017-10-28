@@ -6,6 +6,18 @@ Go to http://dungeon.yvesgurcan.com. When the page loads, a default character wi
 
 ## How to play
 
+### Create Your Character
+
+When you start the game, you can choose to create your own character or use the characteristics that were automatically generated for you. Here are the 2 main aspects that define your character: 
+- Race: The race that you choose will provide bonuses to some of your character's abilities.
+- Class: The class that you select determines which abilities are the most important to your character. Each class excels at different types of weapons. Some classes also allow your character to cast [spells](#spellbook).
+
+Your abilities (strength, dexterity, constitution, and intelligence) are generated in function of your race and your class. You may influence your ability scores by generating new base numbers randomly.
+
+Spellcasters also get to choose a [spell](#spellbook) that they will have memorized from the get-go.
+
+Whenever you are satisfied with your character, you may begin your adventure by clicking on "Let's play!". If you were to change your mind during the game, you can start again by clicking on "New Game".
+
 ### Map
 Use the directional arrows on the interface or use [keyboard shortcuts](#keyboard) to move your character on the map.
 
@@ -66,6 +78,12 @@ If you are playing on desktop, you can use your keyboard instead of clicking on 
 - right arrow: go east
 - any number between 01 (padding zero is necessary) and 28: cast the [spell](#spellbook) corresponding to the number you typed
 - t: take loot
+
+### Save/Load Game
+
+If you want to leave the game and get back to it later, you can click on "Save Game" and copy the game data to a text file or in your notes.
+
+Whenever you want to resume your game, click on "Load Game", paste the saved game data, and click on "Load Game" again.
 
 ## Developer's corner
 
