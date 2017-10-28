@@ -2193,7 +2193,7 @@ class StartGame extends Component {
         <ActionButton onClick={this.props.ResumeGame} hidden={!this.props.GameInBackground}>
         Resume Game
         </ActionButton>
-        <ActionButton onClick={this.props.StartGame}>
+        <ActionButton onClick={this.props.StartPlaying}>
         Let's play!
         </ActionButton>
       </View>
@@ -3353,57 +3353,66 @@ class Game extends Component {
   constructor(props) {
     super(props)
 
-    // keep the start text in memory and delete it so that it does not appear in the state
-    const StartText = Campaign.StartText ? Campaign.StartText.text : null
-    delete Campaign.StartText
+    this.state = this.InitGameEnvironment(true)
+    
+  }
 
-    // campaign assets
-    let initState = {...Campaign}
+  /* Init Game Environment */
 
-    // debug/cheats
+  InitGameEnvironment = (InitPlayer = false) => {
+
+    // Campaign assets
+    let InitState = {...Campaign}
+    // delete start text so that it does not appear in the state
+    delete InitState.StartText
+
+    console.log(Campaign.LootContainers)
+
+    InitState.LootContainers = [...Campaign.LootContainers]
+
+    // Debug/Cheats
     if (Utilities.ShowFullMap) {
-      initState.ShowFullMap = true
+      InitState.ShowFullMap = true
     }
     if (Utilities.NoClip) {
-      initState.NoClip = true
+      InitState.NoClip = true
     }
     if (Utilities.GodMode) {
-      initState.GodMode = true
+      InitState.GodMode = true
     }
-
-    // Story
-    // text displayed at the beginning of the campaign
-    initState.currentText = StartText
 
     // Items
     // create the list of random items to draw from when looting, grouped by level
-    initState.RandomItems = {}
+    InitState.RandomItems = {}
 
     Object.keys(World.Items).map(itemObjectName => {
       let item = World.Items[itemObjectName]
-      if (initState.RandomItems["Level" + item.Level] === undefined) {
-        initState.RandomItems["Level" + item.Level] = []
+      if (InitState.RandomItems["Level" + item.Level] === undefined) {
+        InitState.RandomItems["Level" + item.Level] = []
       }
-      initState.RandomItems["Level" + item.Level].push(item)
+      InitState.RandomItems["Level" + item.Level].push(item)
       return null
     })
 
     // Character
-    let Player = {...initState.Player}
+    if (InitPlayer) {
 
-    initState.Player = this.CreateCharacter(Player)
+      let Player = {...InitState.Player}
+      InitState.Player = this.CreateCharacter(Player)
+
+    }
 
     // Character's Backpack
-    initState.Backpack = 
-    this.CheckInventoryWeightAtStartUp(initState.Backpack)
+    InitState.Backpack = 
+    this.CheckInventoryWeightAtStartUp(InitState.Backpack)
 
     // Maps
     // create the dynamic "revealed area" map as displayed in the HUD
-    initState.WallMapRevealed = Campaign.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))
+    InitState.WallMapRevealed = Campaign.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))
 
     // create internal discovery map, given player start position
-    initState.DiscoveryMap = JSON.parse(JSON.stringify(Campaign.WallMap.map((HorizontalLine, y) => HorizontalLine.map((MapObject, x) => {
-        if ((x >= Player.x - 1 && x <= Player.x + 1) && (y >= Player.y - 1 && y <= Player.y + 1)) {
+    InitState.DiscoveryMap = JSON.parse(JSON.stringify(Campaign.WallMap.map((HorizontalLine, y) => HorizontalLine.map((MapObject, x) => {
+        if ((x >= InitState.Player.x - 1 && x <= InitState.Player.x + 1) && (y >= InitState.Player.y - 1 && y <= InitState.Player.y + 1)) {
           return Empty
         }
         else {
@@ -3424,7 +3433,7 @@ class Game extends Component {
       })
     }
 
-    initState.LootMap = LootMap
+    InitState.LootMap = LootMap
 
     // create the internal map of monster locations
     let MonsterMap = JSON.parse(JSON.stringify(Campaign.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))))
@@ -3438,19 +3447,26 @@ class Game extends Component {
 
     }
 
-    initState.MonsterMap = MonsterMap
+    InitState.MonsterMap = MonsterMap
+
+    // Story
+    // text displayed at the beginning of the campaign
+    InitState.currentText = Campaign.StartText ? Campaign.StartText.text : null
+    InitState.currentTextImage = null
+
+    // Event Log
+    InitState.EventLog = [Gameplay.Messages.NewGame]
 
     // Turn
-    initState.Turn = 0
+    InitState.Turn = 0
 
     // Sound
-    initState.Sound = {
+    InitState.Sound = {
       Volume: Utilities.DefaultSoundVolume
     }
 
-    this.state = initState
+    return InitState
 
-    
   }
 
   /* Character Creation */
@@ -3662,11 +3678,25 @@ class Game extends Component {
 
   }
 
-  StartGame = () => {
-    this.setState({CreateCharacter: false}, function() {
+  StartPlaying = () => {
+
+    this.setState({
+      CreateCharacter: false
+    }, function() {
+
+      // reset the environment
+      let State = this.InitGameEnvironment()
+      // grab the character that the player just created
+      State.Player = {...this.state.Player}
+      // keep the volume at its current level
+      State.Sound = {...this.state.Sound}
+
+      this.setState(State)
+
       this.CalculateStyles()
       
         this.forceUpdate()
+
     })
   }
 
@@ -4774,8 +4804,7 @@ class Game extends Component {
 
   CheckLootContainers = ({ x, y }) => {
 
-    // let {LootContainers} = this.state
-    let LootContainers = Object.assign([], this.state.LootContainers)
+    let LootContainers = [...this.state.LootContainers]
 
     if (LootContainers) {
 
@@ -4817,10 +4846,9 @@ class Game extends Component {
 
   TakeAllLoot = () => {
 
-    // let {currentEvent, Backpack, Player} = this.state
-    let currentEvent = Object.assign([], this.state.currentEvent)
-    let Backpack = Object.assign({}, this.state.Backpack)
-    let Player = Object.assign({}, this.state.Player)
+    let currentEvent = [...this.state.currentEvent]
+    let Backpack = {...this.state.Backpack}
+    let Player = {...this.state.Player}
 
     if (Player.Dead) return false
 
@@ -4888,8 +4916,7 @@ class Game extends Component {
 
   TakeSingleLoot = (lootIndex, containerId) => {
     
-    // let {LootContainers, Backpack, Player} = this.state
-    let LootContainers = Object.assign([], this.state.LootContainers)
+    let LootContainers = [...this.state.LootContainers]
     let Backpack = Object.assign({}, this.state.Backpack)
     let Player = Object.assign({}, this.state.Player)
 

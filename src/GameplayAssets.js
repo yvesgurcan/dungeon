@@ -3,6 +3,7 @@ import React from "react"
 export const GameplayAssets = {
 
     Messages: {
+        NewGame: "Ready for adventure!",
         LoadGameError: {
             Invalid: "The game state you entered is not valid.",
         },

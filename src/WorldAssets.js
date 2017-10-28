@@ -45,7 +45,7 @@ const WeaponClasses = {
     Crossbow: "crossbow",
 }
 
-const MeleeWeaponClasses = Object.keys(WeaponClasses).filter(Key => {return WeaponClasses[Key] !== "Bow" && WeaponClasses[Key] != "Crossbow"}).map(Key => {return WeaponClasses[Key]}),
+const MeleeWeaponClasses = Object.keys(WeaponClasses).filter(Key => {return WeaponClasses[Key] !== "Bow" && WeaponClasses[Key] !== "Crossbow"}).map(Key => {return WeaponClasses[Key]})
 
 export const WorldAssets = {
 
