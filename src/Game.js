@@ -1474,6 +1474,11 @@ class StoryBlock extends Component {
 
 class Map extends Component {
 
+  constructor(props) {
+    super(props)
+    this.state = {}
+  }
+
   // no need to re-render the map if the player or monsters haven't moved, or the area revealed has not changed
   shouldComponentUpdate(nextProps) {
     if (
@@ -1567,7 +1572,7 @@ class Map extends Component {
 
     // player marker
     if (x === Player.x && y === Player.y) {
-      return <Block style={Styles.Player} />
+      return <Block id="you-are-here" style={Styles.Player} />
     }
 
     else {
@@ -1666,7 +1671,7 @@ class Map extends Component {
 
           }
 
-          // it's somethin else
+          // it's something else
           return WallMap[y][x]
 
         }
@@ -1884,9 +1889,101 @@ class Map extends Component {
     return false
   }
   
+  onClick = (input) => {
+    
+        input.preventDefault()
+
+        let Click = {x: input.clientX, y: input.clientY}
+
+        let PlayerMarker = document.getElementById("you-are-here").getBoundingClientRect()
+
+        let Direction = {x: null, y: null}
+
+        if (Click.x - PlayerMarker.width/2 > PlayerMarker.x) {
+          Direction.x = "East"
+        }
+        else if (Click.x - PlayerMarker.width/2 <= PlayerMarker.x) {
+          Direction.x = "West"
+        }
+
+        if (Click.y - PlayerMarker.height/2 > PlayerMarker.y) {
+          Direction.y = "South"
+        }
+        else if (Click.y - PlayerMarker.height/2 <= PlayerMarker.y) {
+          Direction.y  = "North"
+        }
+
+        let Offset = {
+          x: Click.x - PlayerMarker.x - PlayerMarker.width/2,
+          y: Click.y - PlayerMarker.y - PlayerMarker.height/2,
+        }
+
+        let DecisiveDirection
+
+        if (Direction.y === "North") {
+          // player has clicked in a triangle area above the marker
+          if (Offset.x <= 0 && Offset.x > Offset.y) {
+            DecisiveDirection = Direction.y
+          }
+          if (Offset.x > 0 && Offset.x < Offset.y * -1) {
+            DecisiveDirection = Direction.y
+          }
+        }
+
+        if (Direction.y === "South") {
+          // player has clicked in a triangle area below the marker
+          if (Offset.x <= 0 && Offset.x * -1 < Offset.y) {
+            DecisiveDirection = Direction.y
+          }
+          if (Offset.x > 0 && Offset.x < Offset.y) {
+            DecisiveDirection = Direction.y
+          }
+        }
+        
+        if (Direction.x === "West") {
+          // player has clicked in a triangle area on the left of the marker
+          if (Offset.y <= 0 && Offset.x < Offset.y) {
+            DecisiveDirection = Direction.x
+          }
+          if (Offset.y > 0 && Offset.x * -1 > Offset.y) {
+            DecisiveDirection = Direction.x
+          }
+        }
+
+        if (Direction.x === "East") {
+          // player has clicked in a triangle area on the left of the marker
+          if (Offset.y <= 0 && Offset.x > Offset.y * -1) {
+            DecisiveDirection = Direction.x
+          }
+          if (Offset.y > 0 && Offset.x > Offset.y) {
+            DecisiveDirection = Direction.x
+          }
+        }
+
+        if (typeof DecisiveDirection !== undefined) {
+          this.props.MovePlayer(DecisiveDirection)
+          if (DecisiveDirection === "North") {
+            this.props.onClickArrow("ArrowUp")
+          }
+          if (DecisiveDirection === "South") {
+            this.props.onClickArrow("ArrowDown")
+          }
+          if (DecisiveDirection === "West") {
+            this.props.onClickArrow("ArrowLeft")
+          }
+          if (DecisiveDirection === "East") {
+            this.props.onClickArrow("ArrowRight")
+          }
+        }
+
+      }
+
   render() {
     return (
-      <View style={Styles.Map}>
+      <View
+        style={Styles.Map}
+        onClick={this.onClick}
+        onMouseDown={this.onMouseDown}>
         {this.DrawMap()}
       </View>
     )
@@ -4324,8 +4421,9 @@ class Game extends Component {
   onClickArrow = (key) => {
     let arrowStyle = {}
     arrowStyle[key] = Styles.ArrowBlockClick
-    this.setState({ arrowStyle: arrowStyle })
-    this.ResetArrowStyle()
+    this.setState({ arrowStyle: arrowStyle}, function() {
+      this.ResetArrowStyle()      
+    })
   }
 
   ResetArrowStyle = () => {
