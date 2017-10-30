@@ -436,7 +436,7 @@ class Volume extends Component {
 class Accessories extends Component {
   render() {
     return (
-      <View style={Styles.Accessories}>
+      <View style={Styles.Accessories} hidden={this.props.MobileScreen ? this.props.HideInventory : false}>
 
       </View>
     )
@@ -490,30 +490,17 @@ class SpellBook extends Component {
       }
     }
 
-    /*let List = Object.keys(Player.SpellBook.Spells).map(SpellObjectName => {
-      return Player.SpellBook.Spells[SpellObjectName]
-    })
-
-    let SpellImages = List.map((Spell, index) => {
-      return (
-
-      )
-    })*/
-
     return SpellSlots
-
-    // return SpellImages
   }
 
   render() {
-    // let {Player} = this.props
-    let Player = Object.assign({}, this.props.Player)
+    let Player = {...this.props.Player}
 
     if (!Player.Class.Spellcaster || !Player.SpellBook || Player.SpellBook.MaxSpells === 0) {
       return null
     }
     return (
-      <View style={Styles.SpellBook}>
+      <View style={Styles.SpellBook} hidden={this.props.MobileScreen ? this.props.HideSpellBook : false}>
         <Block style={Styles.SpellBookLabel}>Spellbook</Block>
         {this.DisplaySpellBook()}
       </View>
@@ -578,7 +565,7 @@ class Inventory extends Component {
     let Backpack = Object.assign({}, this.props.Backpack)
 
     return (
-      <View style={Styles.Inventory}>
+      <View style={Styles.Inventory} hidden={this.props.MobileScreen ? this.props.HideInventory : false}>
         <Block style={Styles.InventoryLabel}>Backpack</Block>
         {this.DisplayInventory()}
         <ClearFloat/>
@@ -752,7 +739,7 @@ class ActionButton extends Component {
 class Rest extends Component {
   render() {
     return (
-      <View style={Styles.Rest}>
+      <View style={Styles.Rest} hidden={this.props.MobileScreen ? this.props.HideStats : false}>
         {/* todo */}
         <ActionButton>
           <View style={Styles.RestButton}>
@@ -974,7 +961,7 @@ class WeaponReadyBlock extends Component {
 
 /* player stats */
 
-class PlayerStats0 extends Component {
+class PlayerNameAndWeapons extends Component {
 
   // no need to re-render stats if player has not changed
   shouldComponentUpdate(nextProps) {
@@ -991,8 +978,7 @@ class PlayerStats0 extends Component {
   }
 
   render() {
-    // let {Player} = this.props
-    let Player = Object.assign({}, this.props.Player)
+    let Player = {...this.props.Player}
     return (
       <View style={Styles.PlayerStats0}>
         <Block>
@@ -1049,7 +1035,19 @@ class PlayerVitals extends Component {
   }
 }
 
-class PlayerAttributesStacked extends Component {
+class ResponsiveTabSelector extends Component {
+  render() {
+    return (
+      <View style={Styles.TabSelector} hidden={!this.props.MobileScreen}>
+        <Block>Stats</Block>
+        <Block>Backpack</Block>
+        <Block>Spellbook</Block>
+      </View>
+    )
+  }
+}
+
+class PlayerAbilities extends Component {
 
   // no need to re-render stats if player has not changed
   shouldComponentUpdate(nextProps) {
@@ -1070,8 +1068,7 @@ class PlayerAttributesStacked extends Component {
   }
 
   render() {
-    // let {Player} = this.props
-    let Player = Object.assign({}, this.props.Player)
+    let Player = {...this.props.Player}
     return (
       <View style={MobileScreen || TabletScreen ? Styles.Hidden : Styles.PlayerAttributesStacked}>
         <Block style={Styles.PlayerStat} hidden={!TabletScreen}>
@@ -1097,7 +1094,7 @@ class PlayerAttributesStacked extends Component {
   }
 }
 
-class PlayerStats2Block1 extends Component {
+class ResponsivePlayerLevelAndArmor extends Component {
 
   // no need to re-render stats if player has not changed
   shouldComponentUpdate(nextProps) {
@@ -1115,10 +1112,9 @@ class PlayerStats2Block1 extends Component {
   }
 
   render() {
-    // let {Player} = this.props
-    let Player = Object.assign({}, this.props.Player)
+    let Player = {...this.props.Player}
     return (
-      <View style={MobileScreen || TabletScreen ? Styles.PlayerStats2Block1 : Styles.Hidden}>
+      <View style={MobileScreen || TabletScreen ? Styles.PlayerStats2Block1 : Styles.Hidden} hidden={this.props.MobileScreen ? this.props.HideStats : false}>
         <Block style={Styles.PlayerStat}>
           <Text>{MobileScreen ? <Text>LVL</Text> : <Text>Level</Text>}: </Text><Text>{Player.Level}</Text>
         </Block>
@@ -1133,7 +1129,7 @@ class PlayerStats2Block1 extends Component {
   }
 }
 
-class PlayerStats2Block2 extends Component {
+class ResponsivePlayerAbilities extends Component {
 
   // no need to re-render stats if player has not changed
   shouldComponentUpdate(nextProps) {
@@ -1152,10 +1148,9 @@ class PlayerStats2Block2 extends Component {
   }
 
   render() {
-    // let {Player} = this.props
-    let Player = Object.assign({}, this.props.Player)
+    let Player = {...this.props.Player}
     return (
-      <View style={MobileScreen || TabletScreen ? Styles.PlayerStats2Block2 : Styles.Hidden}>
+      <View style={MobileScreen || TabletScreen ? Styles.PlayerStats2Block2 : Styles.Hidden} hidden={this.props.MobileScreen ? this.props.HideStats : false}>
         <Block style={Styles.PlayerStat}>
           <Text>{MobileScreen ? <Text>STR</Text> : <Text>Strength</Text>}: </Text><Text>{Player.Strength}</Text>
         </Block>
@@ -1173,7 +1168,7 @@ class PlayerStats2Block2 extends Component {
   }
 }
 
-class PlayerStats3 extends Component {
+class PlayerLevelAndArmor extends Component {
 
   // no need to re-render stats if player has not changed
   shouldComponentUpdate(nextProps) {
@@ -3132,6 +3127,13 @@ class Game extends Component {
           padding: HUDBlockPadding,
           color: "white",
         },
+        TabSelector: {
+          gridColumnStart: FirstColumn,
+          gridColumnEnd: LastColumn,
+          gridRowStart: ControlRow2,
+          padding: HUDBlockPadding,
+          color: "white",
+        },
         PlayerStats2Block1: {
           gridColumnStart: PlayerAttributesStartColumn,
           gridColumnEnd: PlayerAttributesBlockSeparation,
@@ -3478,7 +3480,7 @@ class Game extends Component {
   constructor(props) {
     super(props)
 
-    this.state = this.InitGameEnvironment(true)
+    this.state = {...this.InitGameEnvironment(true), HideInventory: true, HideSpellBook : true, HideStats: true}
     
   }
 
@@ -5880,14 +5882,15 @@ class Game extends Component {
         <Map {... this} {... this.state}/>
         {/* row 4 */}
         <Controls />
-        <PlayerStats0 {... this.state} />
+        <PlayerNameAndWeapons {... this.state} />
         <PlayerVitals {... this.state} />
         <Arrows {... this} {... this.state} />
+        <ResponsiveTabSelector {...this} {...this.state}/>
         <Rest {... this} {... this.state}/>
-        <PlayerStats3 {... this.state} />
-        <PlayerAttributesStacked {... this.state} />
-        <PlayerStats2Block1 {... this.state} />
-        <PlayerStats2Block2 {... this.state} />
+        <PlayerLevelAndArmor {... this.state} />
+        <ResponsivePlayerLevelAndArmor {... this.state} />
+        <PlayerAbilities {... this.state} />
+        <ResponsivePlayerAbilities {... this.state} />
         <Inventory {... this} {... this.state} />
         <SpellBook {... this} {... this.state} />
         <Accessories {... this} {... this.state} />
