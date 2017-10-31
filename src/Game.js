@@ -502,7 +502,7 @@ class SpellBook extends Component {
     }
     return (
       <View style={Styles.SpellBook} hidden={this.props.MobileScreen ? this.props.HideSpellBook : false}>
-        <Block style={Styles.SpellBookLabel}>Spellbook</Block>
+        <Block style={Styles.SpellBookLabel} hidden={this.props.MobileScreen}>Spellbook</Block>
         {this.DisplaySpellBook()}
       </View>
     )
@@ -568,7 +568,7 @@ class Inventory extends Component {
 
     return (
       <View style={Styles.Inventory} hidden={this.props.MobileScreen ? this.props.HideInventory : false}>
-        <Block style={Styles.InventoryLabel}>Backpack</Block>
+        <Block style={Styles.InventoryLabel} hidden={this.props.MobileScreen}>Backpack</Block>
         {this.DisplayInventory()}
         <ClearFloat/>
         <Text>
@@ -697,24 +697,64 @@ class Arrows extends Component {
 class ActionButton extends Component {
   constructor(props) {
     super(props)
-    this.state = { style: Styles.ActionButton }
+
+    let {SmallPadding, StayClicked, Clicked} = {...this.props}
+
+    if (StayClicked && Clicked) {
+      this.state = {
+        style: SmallPadding ? Styles.ActionButtonHoverSmallPadding : Styles.ActionButtonHover 
+      } 
+    }
+    else {
+      this.state = {
+        style: SmallPadding ? Styles.ActionButtonSmallPadding : Styles.ActionButton 
+      }  
+    }
+
   }
+
+  componentWillReceiveProps(NextProps) {
+    let {StayClicked, Clicked, SmallPadding} = {...NextProps}
+    let CurrentlyClicked = {...this.props.Clicked}
+    let CurrentlySmallPadding = {...this.props.SmallPadding}
+    
+    if (StayClicked && CurrentlyClicked && !Clicked) {
+      this.setState({
+        style: SmallPadding ? Styles.ActionButtonSmallPadding : Styles.ActionButton,
+      })
+    }
+
+    if (!StayClicked && SmallPadding !== CurrentlySmallPadding) {
+      this.setState({
+        style: SmallPadding ? Styles.ActionButtonSmallPadding : Styles.ActionButton,
+      })
+    }
+
+  }
+
   NormalStyle = () => {
-    this.setState({ style: Styles.ActionButton })
+    let {SmallPadding} = {...this.props}
+    this.setState({
+      style: SmallPadding ? Styles.ActionButtonSmallPadding : Styles.ActionButton
+    })
   }
   HoverStyle = () => {
-    this.setState({ style: Styles.ActionButtonHover })
+    let {SmallPadding} = {...this.props}
+    this.setState({ style: SmallPadding ? Styles.ActionButtonHoverSmallPadding : Styles.ActionButtonHover })
   }
   onClick = () => {
 
-    this.setState({ style: Styles.ActionButtonClick })
+    let {SmallPadding} = {...this.props}
+    this.setState({
+      style: SmallPadding ? Styles.ActionButtonClickSmallPadding : Styles.ActionButtonClick
+    })
 
     let that = this
     setTimeout(function () {
-      if (that.state.style === Styles.ActionButtonClick) {
-        that.setState({ style: Styles.ActionButtonHover })
+      if (that.state.style === Styles.ActionButtonClick || that.state.style === Styles.ActionButtonClickSmallPadding) {
+        that.setState({ style: SmallPadding ? Styles.ActionButtonHoverSmallPadding : Styles.ActionButtonHover })
       }
-    }, 50)
+    }, 50)  
 
     if (!this.props.onClick) {
       console.warn("This feature is not ready yet :)")
@@ -725,12 +765,15 @@ class ActionButton extends Component {
 
   }
   render() {
+
+    let {Clicked, StayClicked} = {...this.props}
+
     return (
       <View
         hidden={this.props.hidden}
         onClick={this.onClick}
         onMouseMove={this.HoverStyle}
-        onMouseLeave={this.NormalStyle}
+        onMouseLeave={Clicked && StayClicked ? null : this.NormalStyle}
         style={this.props.hidden ? {display: "none"} : this.state.style}>
         {this.props.children}
       </View>
@@ -1016,8 +1059,7 @@ class PlayerVitals extends Component {
   }
 
   render() {
-    // let {Player} = this.props
-    let Player = Object.assign({}, this.props.Player)
+    let Player = {...this.props.Player}
     return (
       <View style={Styles.PlayerVitals}>
         <Block style={Styles.PlayerStat}>
@@ -1042,10 +1084,25 @@ class ResponsiveTabSelector extends Component {
     return (
       <View style={Styles.TabSelector} hidden={!this.props.MobileScreen}>
         <Block style={Styles.FlexBoxContainer}>
-          <Block style={this.props.HideStats ? Styles.InactiveTab : Styles.ActiveTab} onClick={this.props.ShowStats}>Stats</Block>
-          <Block style={this.props.HideInventory ? Styles.InactiveTab : Styles.ActiveTab} onClick={this.props.ShowInventory}>Backpack</Block>
-          <Block style={this.props.HideSpellBook ? Styles.InactiveTab : Styles.ActiveTab} onClick={this.props.ShowSpellBook}>Spellbook</Block>
+          <Block style={Styles.TabButton}>
+            <ActionButton SmallPadding StayClicked Clicked={!this.props.HideStats} onClick={this.props.ShowStats}>Stats</ActionButton>
+          </Block>
+          <Block style={Styles.TabButton}>
+            <ActionButton SmallPadding StayClicked Clicked={!this.props.HideInventory} onClick={this.props.ShowInventory}>Backpack</ActionButton>
+          </Block>
+          <Block style={Styles.TabButton}>
+          <ActionButton SmallPadding StayClicked Clicked={!this.props.HideSpellBook} onClick={this.props.ShowSpellBook}>Spellbook</ActionButton>
+          </Block>
         </Block>
+      </View>
+    )
+  }
+}
+
+class RepsonsiveStatsContainer extends Component {
+  render() {
+    return (
+      <View style={Styles.ResponsiveStatsContainer} hidden={!this.props.MobileScreen}>
       </View>
     )
   }
@@ -1228,8 +1285,8 @@ class ClearLog extends Component {
   render() {
     return (
       <View style={Styles.ClearLog}>
-        <ActionButton onClick={this.props.ClearLog}>
-          {this.props.MobileScreen ? <Text>Clear</Text> : <Text>Clear Log</Text>}
+        <ActionButton SmallPadding={this.props.MobileScreen} onClick={this.props.ClearLog}>
+          {this.props.MobileScreen ? <Text>X</Text> : <Text>Clear Log</Text>}
         </ActionButton>
       </View>
     )
@@ -2407,7 +2464,7 @@ class Game extends Component {
       const ButtonNormalBackground = "linear-gradient(135deg, #ccc 35%, #ddd 70%, #eee 100%)"
       
       const ButtonHoverBackground = "linear-gradient(135deg, #aaa 35%, #ccc 70%, #ccc 100%)"
-      const ButtonClickBackground = "linear-gradient(135deg, #888 35%, #aaa 70%, #ddd 100%)"
+      const ButtonClickBackground = "linear-gradient(135deg, #777 35%, #999 70%, #999 100%)"
 
       const MapBackgroundColor = "white"
 
@@ -2442,6 +2499,7 @@ class Game extends Component {
       let MapRow = MainRow
       let ControlRow = 5
       let ControlRow2 = 5
+      let ControlRow3 = null
       let InventoryRow = 6
       let SpellBookRow = 7
       let AccessoriesStartRow = 6
@@ -2459,13 +2517,14 @@ class Game extends Component {
         MapRow = 5
         ControlRow = 6
         ControlRow2 = 7
-        InventoryRow = 8
-        SpellBookRow = 9
-        AccessoriesStartRow = 10
-        AccessoriesStopRow = 11
-        VolumeRow = 12
-        BottomControlsRow = 13
-        GameStateRow = 14
+        ControlRow3 = 8
+        InventoryRow = 9
+        SpellBookRow = 10
+        AccessoriesStartRow = 11
+        AccessoriesStopRow = 12
+        VolumeRow = 13
+        BottomControlsRow = 14
+        GameStateRow = 15
 
       }
 
@@ -2826,10 +2885,12 @@ class Game extends Component {
             // story/map (row4)
             (this.state.CreateCharacter ? "auto" : StoryRowHeight + px) + " " +
             // story (row5)
-            // (MobileScreen ? StoryRowHeight + px + " " : "") +
+            (MobileScreen ? StoryRowHeight*1/2 + px + " " : "") +
             // controls (row6a)
             "auto " +
             // controls2 (row6b)
+            (MobileScreen ? "auto " : "") +
+            // controls3 (row6c)
             (MobileScreen ? "auto " : "") +
             // inventory (row7)
             "auto " +
@@ -2893,10 +2954,10 @@ class Game extends Component {
           border: HUDBorder,
           padding: HUDBlockPadding,
           backgroundImage: "url(graphics/hud/parchment.jpg)",
-          minHeight: Number(18.5 * Utilities.MaxEventLogEntries) + px,
+          minHeight: Number(18.5 * (MobileScreen ? Utilities.ResponsiveMaxEventLogEntries : Utilities.MaxEventLogEntries)) + px,
         },
         EventLogContainer: {
-          maxHeight: 18.5 * Utilities.MaxEventLogEntries + px,
+          maxHeight: 18.5 * (MobileScreen ? Utilities.ResponsiveMaxEventLogEntries : Utilities.MaxEventLogEntries) + px,
           overflow: "auto",
         },
         ClearLog: {
@@ -2922,7 +2983,8 @@ class Game extends Component {
           backgroundPosition: "0 -106px", 
         },
         StoryContainer: {
-          maxHeight: StoryRowHeight - HUDPadding * 2 + px,
+          maxHeight: MobileScreen ? null : StoryRowHeight - HUDPadding * 2 + px,
+          height: MobileScreen ? (StoryRowHeight*1/2) - HUDPadding * 2 + px : null,
           overflow: "auto",
           
         },
@@ -3124,7 +3186,7 @@ class Game extends Component {
         Rest: {
           gridColumnStart: PlayerActionStartColumn,
           gridColumnEnd: PlayerActionStopColumn,
-          gridRowStart: ControlRow2,
+          gridRowStart: MobileScreen ? ControlRow3 : ControlRow2,
           padding: HUDBlockPadding,
           margin: "auto",
           marginTop: "25px",
@@ -3140,41 +3202,37 @@ class Game extends Component {
           gridColumnStart: FirstColumn,
           gridColumnEnd: LastColumn,
           gridRowStart: ControlRow2,
-          color: "white",
         },
-        InactiveTab: {
+        TabButton: {
           flexGrow: "1",
           flexBasis: "auto",
           textAlign: "center",
           margin: "auto",
-          border: "1px solid white",
         },
-        ActiveTab: {
-          flexGrow: "1",
-          flexBasis: "auto",
-          textAlign: "center",
-          margin: "auto",
-          border: "1px solid white",
-          borderBottom: "1px solid transparent",
+        ResponsiveStatsContainer: {
+          gridColumnStart: FirstColumn,
+          gridColumnEnd: LastColumn,
+          gridRowStart: ControlRow3,
+          backgroundImage: "url(graphics/hud/metal.jpg)",
         },
         PlayerStats2Block1: {
           gridColumnStart: PlayerAttributesStartColumn,
           gridColumnEnd: PlayerAttributesBlockSeparation,
-          gridRowStart: ControlRow2,
+          gridRowStart: MobileScreen ? ControlRow3 : ControlRow2,
           padding: HUDBlockPadding,
           color: "white",
         },
         PlayerStats2Block2: {
           gridColumnStart: PlayerAttributesBlockSeparation,
           gridColumnEnd: PlayerAttributesStopColumn,
-          gridRowStart: ControlRow2,
+          gridRowStart: MobileScreen ? ControlRow3 : ControlRow2,
           padding: HUDBlockPadding,
           color: "white",
         },
         PlayerStats3: {
           gridColumnStart: PlayerStat2StartColumn,
           gridColumnEnd: PlayerStat2StopColumn,
-          gridRowStart: ControlRow2,
+          gridRowStart: MobileScreen ? ControlRow3 : ControlRow2,
           padding: HUDBlockPadding,
           color: "white",
         },
@@ -3259,6 +3317,16 @@ class Game extends Component {
           background: ButtonNormalBackground,
           boxShadow: "inset 0 0 10px gray",
         },
+        ActionButtonSmallPadding: {
+          display: "inline-block",
+          textAlign: "center",
+          border: "1px solid black",
+          padding: "3px 10px 3px 10px",
+          margin: "1px",
+          userSelect: "none",
+          background: ButtonNormalBackground,
+          boxShadow: "inset 0 0 10px gray",
+        },
         ActionButtonHover: {
           display: "inline-block",
           textAlign: "center",
@@ -3269,11 +3337,31 @@ class Game extends Component {
           background: ButtonHoverBackground,
           boxShadow: "inset 0 0 10px gray",
         },
+        ActionButtonHoverSmallPadding: {
+          display: "inline-block",
+          textAlign: "center",
+          border: "1px solid black",
+          padding: "3px 10px 3px 10px",
+          margin: "1px",
+          userSelect: "none",
+          background: ButtonHoverBackground,
+          boxShadow: "inset 0 0 10px gray",
+        },
         ActionButtonClick: {
           display: "inline-block",
           textAlign: "center",
           border: "1px solid black",
-          padding: "3px 20px 3px 20px",
+          padding: "3px 10px 3px 10px",
+          margin: "1px",
+          userSelect: "none",
+          background: ButtonClickBackground,
+          boxShadow: "inset 0 0 10px gray",
+        },
+        ActionButtonClickSmallPadding: {
+          display: "inline-block",
+          textAlign: "center",
+          border: "1px solid black",
+          padding: "3px 10px 3px 10px",
           margin: "1px",
           userSelect: "none",
           background: ButtonClickBackground,
@@ -3469,6 +3557,7 @@ class Game extends Component {
     // responsiveness
     window.addEventListener("resize", this.CalculateStyles, false)
     this.CalculateStyles()
+    this.ShowStats()
   }
 
   componentDidMount() {
@@ -5933,6 +6022,7 @@ class Game extends Component {
         <PlayerVitals {... this.state} />
         <Arrows {... this} {... this.state} />
         <ResponsiveTabSelector {...this} {...this.state}/>
+        <RepsonsiveStatsContainer {...this} {...this.state}/>
         <Rest {... this} {... this.state}/>
         <PlayerLevelAndArmor {... this.state} />
         <ResponsivePlayerLevelAndArmor {... this.state} />

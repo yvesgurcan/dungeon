@@ -44,6 +44,8 @@ export const Utilities = {
     // max
     MaxEventLogEntries: 5
     ,
+    ResponsiveMaxEventLogEntries: 3
+    ,
     MaxSoundFilesPerFolder: 10
     ,
     // default
