@@ -22,9 +22,9 @@ let TabletScreen = Utilities.ScreenSize.TabletScreen()
 const authorEmail = "gurcan.yves@gmail.com"
 const contactTemplate = "mailto:" + authorEmail +"?subject=Dungeon!"
 const repository = "https://github.com/yvesgurcan/dungeon"
-const gitHubLogo = "/graphics/misc/Octocat.png"
-const itemPath = "/graphics/items/"
-const storyPath = "/graphics/story/"
+const gitHubLogo = "./graphics/misc/Octocat.png"
+const itemPath = "./graphics/items/"
+const storyPath = "./graphics/story/"
 const imgExt = ".png"
 
 let Styles = null
