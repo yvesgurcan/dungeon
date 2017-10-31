@@ -1085,13 +1085,13 @@ class ResponsiveTabSelector extends Component {
       <View style={Styles.TabSelector} hidden={!this.props.MobileScreen}>
         <Block style={Styles.FlexBoxContainer}>
           <Block style={Styles.TabButton}>
-            <ActionButton SmallPadding StayClicked Clicked={!this.props.HideStats} onClick={this.props.ShowStats}>Stats</ActionButton>
+            <ActionButton StayClicked Clicked={!this.props.HideStats} onClick={this.props.ShowStats}>Stats</ActionButton>
           </Block>
           <Block style={Styles.TabButton}>
             <ActionButton SmallPadding StayClicked Clicked={!this.props.HideInventory} onClick={this.props.ShowInventory}>Backpack</ActionButton>
           </Block>
           <Block style={Styles.TabButton}>
-          <ActionButton SmallPadding StayClicked Clicked={!this.props.HideSpellBook} onClick={this.props.ShowSpellBook}>Spellbook</ActionButton>
+          <ActionButton SmallPadding StayClicked Clicked={!this.props.HideSpellBook} onClick={this.props.ShowSpellBook} hidden={!this.props.Player.Class.Spellcaster}>Spellbook</ActionButton>
           </Block>
         </Block>
       </View>
@@ -2629,6 +2629,8 @@ class Game extends Component {
         },
         FlexBoxContainer: {
           display: "flex",
+          justifyContent: "center",
+
         },
         // input fields
         TextEdit: {
@@ -2954,7 +2956,12 @@ class Game extends Component {
           border: HUDBorder,
           padding: HUDBlockPadding,
           backgroundImage: "url(graphics/hud/parchment.jpg)",
-          minHeight: Number(18.5 * (MobileScreen ? Utilities.ResponsiveMaxEventLogEntries : Utilities.MaxEventLogEntries)) + px,
+          minHeight:
+            Number(18.5 *
+              (MobileScreen
+                ? Utilities.ResponsiveMaxEventLogEntries
+                : Utilities.MaxEventLogEntries)
+              ) + px,
         },
         EventLogContainer: {
           maxHeight: 18.5 * (MobileScreen ? Utilities.ResponsiveMaxEventLogEntries : Utilities.MaxEventLogEntries) + px,
@@ -2980,7 +2987,12 @@ class Game extends Component {
           borderLeft: HUDBorder,
           padding: HUDBlockPadding,    
           backgroundImage: "url(graphics/hud/parchment.jpg)",
-          backgroundPosition: "0 -106px", 
+          backgroundPosition:
+            "0px " +
+            (MobileScreen
+              ? Number((18.5 * Utilities.ResponsiveMaxEventLogEntries * -1) - HUDPadding*2) + px
+              : "-106px"
+            ), 
         },
         StoryContainer: {
           maxHeight: MobileScreen ? null : StoryRowHeight - HUDPadding * 2 + px,
@@ -3005,7 +3017,11 @@ class Game extends Component {
           borderRight: HUDBorder,
           borderTop: MobileScreen ? HUDBorder : null,
           backgroundImage: "url(graphics/hud/parchment.jpg)",
-          backgroundPosition: MobileScreen ? "0px -351px" : "-514px -106px", 
+          backgroundPosition: 
+            MobileScreen
+              ? "0px " + (Number((18.5 * Utilities.ResponsiveMaxEventLogEntries * -1) - HUDPadding*2 - StoryRowHeight*1/2)) + px
+              : "-514px -106px"
+            , 
           // otherwise, the map will be distorted
           minWidth: MobileScreen ? null : "300px",
         },
@@ -3202,6 +3218,7 @@ class Game extends Component {
           gridColumnStart: FirstColumn,
           gridColumnEnd: LastColumn,
           gridRowStart: ControlRow2,
+          margin: "auto",
         },
         TabButton: {
           flexGrow: "1",
@@ -3214,6 +3231,7 @@ class Game extends Component {
           gridColumnEnd: LastColumn,
           gridRowStart: ControlRow3,
           backgroundImage: "url(graphics/hud/metal.jpg)",
+          backgroundPosition: "0px -169px",
         },
         PlayerStats2Block1: {
           gridColumnStart: PlayerAttributesStartColumn,
@@ -3374,7 +3392,7 @@ class Game extends Component {
           gridRowStart: InventoryRow,
           padding: HUDBlockPadding2,
           backgroundImage: "url(graphics/hud/metal.jpg)",
-          backgroundPosition: MobileScreen ? "0px -250px" : "0px " + (Player.Class.Spellcaster ? "-128px" : "-108px"),
+          backgroundPosition: MobileScreen ? "0px -169px" : "0px " + (Player.Class.Spellcaster ? "-128px" : "-108px"),
           color: "white",
         },
 
@@ -3389,7 +3407,10 @@ class Game extends Component {
           borderLeft: HUDBorder,
           padding: HUDBlockPadding2,
           backgroundImage: "url(graphics/hud/metal.jpg)",
-          backgroundPosition: MobileScreen ? "0px " + (-292 + -36 * Math.ceil(Backpack.maxItems / 16)) + "px" : "0px " + (-172 + -36 * Math.ceil(Backpack.maxItems / 16)) + "px",
+          backgroundPosition:
+            MobileScreen
+              ? "0px -169px"
+              : "0px " + (-172 + -36 * Math.ceil(Backpack.maxItems / 16)) + px,
           color: "white",
         },
         SpellBookLabel: {
