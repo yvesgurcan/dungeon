@@ -453,6 +453,7 @@ class SpellBook extends Component {
       nextProps.MobileScreen !== this.props.MobileScreen
       || nextProps.TabletScreen !== this.props.TabletScreen
       || nextProps.Player.SpellBook !== this.props.Player.SpellBook
+      || nextProps.HideSpellBook !== this.props.HideSpellBook
     ) {
       if (Debug) console.log("re-render: spellbook")
       return true
@@ -518,6 +519,7 @@ class Inventory extends Component {
       nextProps.MobileScreen !== this.props.MobileScreen
       || nextProps.TabletScreen !== this.props.TabletScreen
       || nextProps.Backpack !== this.props.Backpack
+      || nextProps.HideInventory !== this.props.HideInventory
     ) {
 
       if (Debug) console.log("re-render: backpack")
@@ -1039,9 +1041,11 @@ class ResponsiveTabSelector extends Component {
   render() {
     return (
       <View style={Styles.TabSelector} hidden={!this.props.MobileScreen}>
-        <Block>Stats</Block>
-        <Block>Backpack</Block>
-        <Block>Spellbook</Block>
+        <Block style={Styles.FlexBoxContainer}>
+          <Block style={this.props.HideStats ? Styles.InactiveTab : Styles.ActiveTab} onClick={this.props.ShowStats}>Stats</Block>
+          <Block style={this.props.HideInventory ? Styles.InactiveTab : Styles.ActiveTab} onClick={this.props.ShowInventory}>Backpack</Block>
+          <Block style={this.props.HideSpellBook ? Styles.InactiveTab : Styles.ActiveTab} onClick={this.props.ShowSpellBook}>Spellbook</Block>
+        </Block>
       </View>
     )
   }
@@ -1104,6 +1108,7 @@ class ResponsivePlayerLevelAndArmor extends Component {
       || nextProps.Player.Level !== this.props.Player.Level
       || nextProps.Player.XP !== this.props.Player.XP
       || nextProps.Player.ArmorClass !== this.props.Player.ArmorClass
+      || nextProps.HideStats !== this.props.HideStats
     ) {
       if (Debug) console.log("re-render: player level/XP and AC")
       return true
@@ -1140,6 +1145,7 @@ class ResponsivePlayerAbilities extends Component {
       || nextProps.Player.Dexterity !== this.props.Player.Dexterity
       || nextProps.Player.Constitution !== this.props.Player.Constitution
       || nextProps.Player.Intelligence !== this.props.Player.Intelligence
+      || nextProps.HideStats !== this.props.HideStats
     ) {
       if (Debug) console.log("re-render: player abilities")
       return true
@@ -2217,7 +2223,7 @@ class CreateCharacterBackground extends Component {
           <Text>Race:</Text>
         </Block>
         <Block style={Styles.PropertyField}>
-          <Block style={{display: "flex"}}>
+          <Block style={Styles.FlexBoxContainer}>
               <Arrow {...this.props} onClick={this.SelectRace} arrow="Left">←</Arrow>
             <Block style={{flexGrow: "1", flexBasis: "auto", textAlign: "center", margin: "auto"}}>
               <Text>{Player.Race.Name}</Text>
@@ -2229,7 +2235,7 @@ class CreateCharacterBackground extends Component {
           <Text>Class:</Text>
         </Block>
         <Block style={Styles.PropertyField}>
-        <Block style={{display: "flex"}}>
+        <Block style={Styles.FlexBoxContainer}>
             <Arrow {...this.props} onClick={this.SelectClass} arrow="Left">←</Arrow>
           <Block style={{flexGrow: "1", flexBasis: "auto", textAlign: "center", margin: "auto"}}>
             <Text>{Player.Class.Name}</Text>
@@ -2241,7 +2247,7 @@ class CreateCharacterBackground extends Component {
             <Text>Spell:</Text>
         </Block>
         <Block style={Styles.PropertyField} hidden={!Player.Class.Spellcaster || !Campaign.AvailableStartSpell}>
-          <Block style={{display: "flex"}}>
+          <Block style={Styles.FlexBoxContainer}>
             <Block style={{marginTop: "3px"}}>
               <Arrow {...this.props} onClick={this.SelectFirstSpell} arrow="Left">←</Arrow>
             </Block>
@@ -2561,6 +2567,9 @@ class Game extends Component {
         Paragraph: {
           display: "block",
           paddingBottom: "13px",
+        },
+        FlexBoxContainer: {
+          display: "flex",
         },
         // input fields
         TextEdit: {
@@ -3131,8 +3140,22 @@ class Game extends Component {
           gridColumnStart: FirstColumn,
           gridColumnEnd: LastColumn,
           gridRowStart: ControlRow2,
-          padding: HUDBlockPadding,
           color: "white",
+        },
+        InactiveTab: {
+          flexGrow: "1",
+          flexBasis: "auto",
+          textAlign: "center",
+          margin: "auto",
+          border: "1px solid white",
+        },
+        ActiveTab: {
+          flexGrow: "1",
+          flexBasis: "auto",
+          textAlign: "center",
+          margin: "auto",
+          border: "1px solid white",
+          borderBottom: "1px solid transparent",
         },
         PlayerStats2Block1: {
           gridColumnStart: PlayerAttributesStartColumn,
@@ -3926,6 +3949,30 @@ class Game extends Component {
 
     }
 
+  }
+
+  ShowStats = () => {
+    this.setState({
+      HideStats: false,
+      HideInventory: true,
+      HideSpellBook: true,
+    })
+  }
+
+  ShowInventory = () => {
+    this.setState({
+      HideStats: true,
+      HideInventory: false,
+      HideSpellBook: true,
+    })
+  }
+
+  ShowSpellBook = () => {
+    this.setState({
+      HideStats: true,
+      HideInventory: true,
+      HideSpellBook: false,
+    })
   }
 
   /* In-Game Keyboard Shortcuts */
