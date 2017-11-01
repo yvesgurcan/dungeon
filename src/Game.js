@@ -3604,6 +3604,40 @@ class Game extends Component {
 
   /* Init Game Environment */
 
+  GenerateFormattedDate = (TimeInMilliseconds) => {
+    return [
+      [
+        TimeInMilliseconds.getFullYear(),
+        TimeInMilliseconds.getMonth()+1,
+        TimeInMilliseconds.getDate(),
+      ].join("-"),
+      [
+        this.PadNumber(TimeInMilliseconds.getHours()),
+        this.PadNumber(TimeInMilliseconds.getMinutes()),
+      ].join(":")
+    ].join(" ")
+
+  }
+
+  GenerateFormattedTime = (TimeInMilliseconds) => {
+    let Time = new Date(TimeInMilliseconds)
+    return [
+      this.PadNumber(Time.getMinutes(),3),
+      this.PadNumber(Time.getSeconds(),3),
+    ].join(":")
+  }
+
+  PadNumber = (NumberToPad) => {
+
+    if (NumberToPad < 10) {
+      return "0" + NumberToPad
+    }
+    else {
+      return NumberToPad
+    }
+
+  }
+
   InitGameEnvironment = (InitPlayer = false) => {
 
     // Campaign assets
@@ -3618,6 +3652,7 @@ class Game extends Component {
       Monsters: [...Campaign.Monsters],
       Text: {...Campaign.Text},
       WallMap: [...Campaign.WallMap],
+      GameStarted: {Milliseconds: Date.now(), HumanFriendly: this.GenerateFormattedDate(new Date())},
     }
 
     // let the player go to the main screen if their character is stored in the state already
@@ -3716,7 +3751,7 @@ class Game extends Component {
     InitState.currentTextImage = null
 
     // Event Log
-    InitState.EventLog = [Gameplay.Messages.NewGame]
+    InitState.EventLog = ["00:00: " + Gameplay.Messages.NewGame]
 
     // Turn
     InitState.Turn = 0
@@ -4076,14 +4111,19 @@ class Game extends Component {
 
     let State = {...this.state}
     let Player = {...this.state.Player}
-    let Keystrokes = Object.assign([], this.state.Keystrokes)
+    let Keystrokes = this.state.Keystrokes ? [...this.state.Keystrokes] : []
     let Sound = {...this.state.Sound}
 
     // do not capture key strokes
     if (Player.Dead) return false
     if (keypress.target.tagName.toLowerCase() === "textarea" || keypress.target.tagName.toLowerCase() === "input") return false
+    
+    // do not absorb function keys
+    if (keypress.key.match(/(F[1-9]|F1[0-2])/) === null) {
+      keypress.preventDefault()      
+    }
 
-    keypress.preventDefault()
+    if (Debug) console.log("keypress: ",keypress.key)    
 
     // track subsequent key strokes
     let BreakEvent = false
@@ -4159,6 +4199,7 @@ class Game extends Component {
       }
       if (this.state.Keystrokes.join("") === "spell") {
 
+        if (State.CreateCharacter) return false        
         this.setState({CastAlwaysSucceeds: State.CastAlwaysSucceeds === undefined ? true : !State.CastAlwaysSucceeds}, function() {
           this.SetText(this.state.CastAlwaysSucceeds ? Gameplay.Messages.Cheats.CastAlwaysSucceeds.On : Gameplay.Messages.Cheats.CastAlwaysSucceeds.Off)   
         })
@@ -4184,24 +4225,28 @@ class Game extends Component {
         break
 
       case "ArrowDown":
+        if (State.CreateCharacter) return false
         this.MovePlayer("South")
         this.onClickArrow(keypress.key)
         this.FlushKeystrokeHistory()
         break
 
       case "ArrowUp":
+        if (State.CreateCharacter) return false
         this.MovePlayer("North")
         this.onClickArrow(keypress.key)
         this.FlushKeystrokeHistory()
         break
 
       case "ArrowLeft":
+        if (State.CreateCharacter) return false
         this.MovePlayer("West")
         this.onClickArrow(keypress.key)
         this.FlushKeystrokeHistory()
         break
 
       case "ArrowRight":
+        if (State.CreateCharacter) return false
         this.MovePlayer("East")
         this.onClickArrow(keypress.key)
         this.FlushKeystrokeHistory()
@@ -4220,6 +4265,7 @@ class Game extends Component {
         break
 
       case "t":
+        if (State.CreateCharacter) return false
         this.TakeAllLoot()
         this.FlushKeystrokeHistory()
         break
@@ -4530,6 +4576,7 @@ class Game extends Component {
     if (Message || Image) {
 
       let EventLog = [...this.state.EventLog]
+      let GameStarted = this.state.GameStarted.Milliseconds
 
       if (!EventLog) {
         EventLog = []
@@ -4539,7 +4586,8 @@ class Game extends Component {
         EventLog = [...EventLog, ...Message]
       }
       else {
-        EventLog.push(Message)      
+        console.log(this.GenerateFormattedTime(Date.now() - GameStarted))
+        EventLog.push([this.GenerateFormattedTime(Date.now() - GameStarted),Message].join(": "))      
       }
 
       if (EventLog.length > 20) {
