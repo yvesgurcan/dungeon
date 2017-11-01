@@ -1,7 +1,7 @@
 *Dungeon!* is an adventure game written in React.
 
 ## TL;DR
-Go to (http://dungeon.yvesgurcan.com/build/). When the page loads, a default character with random ability scores is created for you. You can start playing right away.
+Go to [http://dungeon.yvesgurcan.com/build/]. When the page loads, a default character with random ability scores is created for you. You can start playing right away.
 
 ## How to play
 
@@ -67,6 +67,9 @@ To summon magic, simply click on one of the spells you learnt or use [keyboard s
 Casting a spell is an action that consumes a certain amount of mana. If your pool of mana is not full enough, you will not be able to cast the spell.
 
 Moreover, casting a spell requires a great amount of concentration. Sometimes, your incantation will fail and the mana you gathered will dissipate without producing the effect you expected. The success or failure of your magic is determined by your intelligence and the difficulty of the spell.
+
+### Event Log
+At the top of your screen, a log keeps tracks of actions that happened in the game. The feedback is mostly about your surroundings--whether you came across a locked door, bumped into a wall, or if you were not able to pick up the loot you found. The log is also very useful in combat and for spellcasting. It tells you who is attacking you and how your spell turned out.
 
 ### <a name="keyboard"/> Keyboard Shortcuts
 
