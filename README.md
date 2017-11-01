@@ -1,8 +1,9 @@
+<head>
+<title>Dungeon!</title>
+<link rel="shortcut icon" type="image/png" href="./favicon.png">
+</head>
+
 *Dungeon!* is an adventure game written in React.
-
-<link rel="shortcut icon" type="image/png" href="http://dungeon.yvesgurcan.com/public/graphics/misc/favicon.png">
-
-
 
 ## TL;DR
 Go to <http://dungeon.yvesgurcan.com/build/>. When the page loads, a default character with random ability scores is created for you. You can start playing right away.
