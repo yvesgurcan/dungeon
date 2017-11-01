@@ -61,18 +61,20 @@ class TextEdit extends Component {
     this.state = {style: this.props.styleObject ? Styles[this.props.styleObject] : Styles.TextEdit}
   }
   onFocus = () => {
-    this.setState({style: this.props.styleObject ? Styles[this.props.styleObject + "Focus"] : Styles.TextEdit})
+    this.setState({style: this.props.styleObject ? Styles[this.props.styleObject + "Focus"] : Styles.TextEditFocus})
   }
   onBlur = () => {
     this.setState({style: this.props.styleObject ? Styles[this.props.styleObject] : Styles.TextEdit})
   }
   onChange(input) {
-      this.props.onChange(input.target)  
+    this.props.onChange(input.target)  
   }
   render() {
     return (
       <input
+        hidden={this.props.hidden}
         name={this.props.name}
+        placeholder={this.props.placeholder}
         value={this.props.value}
         style={this.state.style}
         onFocus={this.onFocus}
@@ -1302,6 +1304,7 @@ class EventLog extends Component {
       nextProps.MobileScreen !== this.props.MobileScreen
       || nextProps.TabletScreen !== this.props.TabletScreen
       || nextProps.EventLog !== this.props.EventLog
+      || nextProps.EnterCustomLogEntry !== this.props.EnterCustomLogEntry
     ) {
       if (Debug) console.log("re-render: event log")
       return true
@@ -1310,10 +1313,20 @@ class EventLog extends Component {
   }
 
   render() {
+    console.log(this.props.EnterCustomLogEntry)
     return (
-      <View style={Styles.EventLog}>
+      <View style={Styles.EventLog} onClick={this.props.DisplayCustomLogInput}>
         <Block id="EventLog" style={Styles.EventLogContainer}>
           {!this.props.EventLog ? null : this.props.EventLog.map((LogEntry, Index) => {return <View key={Index}>{LogEntry}</View>})}
+        </Block>
+        <Block style={Styles.CustomLogEntryInputContainer}>
+          <TextEdit
+              hidden={!this.props.EnterCustomLogEntry}
+              name="CustomLogEntry"
+              value={""/**/}
+              placeholder="Enter your log entry here."
+              onChange={null}          
+            />
         </Block>
       </View>
     )
@@ -2080,7 +2093,7 @@ class CreateCharacterName extends Component {
         </Block>
         <Block style={Styles.PropertyFieldForInput}>
           <TextEdit
-            styleObject="TextEditCharacterName"
+            styleObject="TextEditUnderline"
             name="Name"
             value={Player.Name}
             onChange={this.props.SavePlayerName}
@@ -2629,11 +2642,14 @@ class Game extends Component {
 
         },
         // input fields
+        // default style
         TextEdit: {
           border: "none",
           padding: "5px",
           fontFamily: "inherit",
           fontSize: "inherit",
+          width: "120px",
+          background: "transparent",
         },
         TextEditFocus: {
           border: "none",
@@ -2641,10 +2657,11 @@ class Game extends Component {
           outline: "none",
           fontFamily: "inherit",
           fontSize: "inherit",
-          textDecoration: "underline",
+          width: "120px",
+          background: "transparent",
         },
-        // input fields
-        TextEditCharacterName: {
+        // underline when focused
+        TextEditUnderline: {
           border: "none",
           padding: "5px",
           fontFamily: "inherit",
@@ -2652,15 +2669,15 @@ class Game extends Component {
           width: "120px",
           background: "transparent",
         },
-        TextEditCharacterNameFocus: {
+        TextEditUnderlineFocus: {
           border: "none",
           padding: "5px",
           outline: "none",
           fontFamily: "inherit",
           fontSize: "inherit",
-          textDecoration: "underline",
           width: "120px",
           background: "transparent",
+          textDecoration: "underline",
         },
         // Create Player Grid
         CreatePlayer: {
@@ -2982,8 +2999,11 @@ class Game extends Component {
           maxHeight: 18.5 * (MobileScreen ? Utilities.ResponsiveMaxEventLogEntries : Utilities.MaxEventLogEntries) + px,
           overflow: "auto",
         },
+        CustomLogEntryInputContainer: {
+          marginLeft: "42.5px"
+        },
         ClearLog: {
-          gridColumnStart: FirstColumn,
+          gridColumnStart: LastColumn-2,
           gridColumnEnd: LastColumn,
           gridRowStart: MessageRow,
           textAlign: "right",
@@ -3652,7 +3672,11 @@ class Game extends Component {
       Monsters: [...Campaign.Monsters],
       Text: {...Campaign.Text},
       WallMap: [...Campaign.WallMap],
-      GameStarted: {Milliseconds: Date.now(), HumanFriendly: this.GenerateFormattedDate(new Date())},
+      GameStarted: {
+        Milliseconds: Date.now(),
+        HumanFriendly: this.GenerateFormattedDate(new Date())
+      },
+      EnterCustomLogEntry: false,
     }
 
     // let the player go to the main screen if their character is stored in the state already
@@ -4608,6 +4632,10 @@ class Game extends Component {
   ClearLog = () => {
 
     this.setState({EventLog: []})
+  }
+
+  DisplayCustomLogInput = () => {
+    this.setState({EnterCustomLogEntry: true})
   }
 
   onClickArrow = (key) => {
