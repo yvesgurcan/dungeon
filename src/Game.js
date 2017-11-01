@@ -2799,6 +2799,7 @@ class Game extends Component {
         CreateCharacterDescription: {
           gridColumnStart: FirstColumn,
           gridColumnEnd: LastColumn,
+          gridRowStart: MobileScreen ? 6 : 4,
           padding: HUDPadding,
           paddingTop: "20px",
           gridRowStart: 5,
@@ -2947,6 +2948,27 @@ class Game extends Component {
           backgroundColor: "white",
           borderRadius: "25px",
         },
+        // Game Background images
+        TopGameBackgroundImage: {
+          gridColumnStart: FirstColumn,
+          gridColumnEnd: LastColumn,
+          gridRowStart: MessageRow,
+          gridRowEnd: MapRow+1,
+          backgroundImage: "url(graphics/hud/parchment.jpg)",
+        },
+        BottomGameBackgroundImage: {
+          gridColumnStart: FirstColumn,
+          gridColumnEnd: LastColumn,
+          gridRowStart: ControlRow,
+          gridRowEnd: BottomControlsRow+1,
+          backgroundImage: "url(graphics/hud/metal.jpg)",
+        },
+        GameStateBackgroundImage: {
+          gridColumnStart: FirstColumn,
+          gridColumnEnd: LastColumn,
+          gridRowStart: GameStateRow,
+          backgroundImage: "url(graphics/hud/parchment.jpg)",
+        },
         // Top-screen Messages
         EventLog: {
           gridColumnStart: FirstColumn,
@@ -2955,7 +2977,6 @@ class Game extends Component {
           fontWeight: "bold",
           border: HUDBorder,
           padding: HUDBlockPadding,
-          backgroundImage: "url(graphics/hud/parchment.jpg)",
           minHeight:
             Number(18.5 *
               (MobileScreen
@@ -2985,14 +3006,7 @@ class Game extends Component {
           userSelect: "text",
           borderRight: HUDBorder,
           borderLeft: HUDBorder,
-          padding: HUDBlockPadding,    
-          backgroundImage: "url(graphics/hud/parchment.jpg)",
-          backgroundPosition:
-            "0px " +
-            (MobileScreen
-              ? Number((18.5 * Utilities.ResponsiveMaxEventLogEntries * -1) - HUDPadding*2) + px
-              : "-106px"
-            ), 
+          padding: HUDBlockPadding,
         },
         StoryContainer: {
           maxHeight: MobileScreen ? null : StoryRowHeight - HUDPadding * 2 + px,
@@ -3016,12 +3030,6 @@ class Game extends Component {
           padding: HUDBlockPadding,
           borderRight: HUDBorder,
           borderTop: MobileScreen ? HUDBorder : null,
-          backgroundImage: "url(graphics/hud/parchment.jpg)",
-          backgroundPosition: 
-            MobileScreen
-              ? "0px " + (Number((18.5 * Utilities.ResponsiveMaxEventLogEntries * -1) - HUDPadding*2 - StoryRowHeight*1/2)) + px
-              : "-514px -106px"
-            , 
           // otherwise, the map will be distorted
           minWidth: MobileScreen ? null : "300px",
         },
@@ -3171,7 +3179,6 @@ class Game extends Component {
           gridRowStart: ControlRow,
           gridRowEnd: ControlRow2+1,
           borderTop: HUDBorder,
-          backgroundImage: "url(graphics/hud/metal.jpg)",
         },
         // Name and Ready Weapons
         PlayerStats0: {
@@ -3230,8 +3237,6 @@ class Game extends Component {
           gridColumnStart: FirstColumn,
           gridColumnEnd: LastColumn,
           gridRowStart: ControlRow3,
-          backgroundImage: "url(graphics/hud/metal.jpg)",
-          backgroundPosition: "0px -169px",
         },
         PlayerStats2Block1: {
           gridColumnStart: PlayerAttributesStartColumn,
@@ -3391,8 +3396,6 @@ class Game extends Component {
           gridColumnEnd: InventoryStopColumn,
           gridRowStart: InventoryRow,
           padding: HUDBlockPadding2,
-          backgroundImage: "url(graphics/hud/metal.jpg)",
-          backgroundPosition: MobileScreen ? "0px -169px" : "0px " + (Player.Class.Spellcaster ? "-128px" : "-108px"),
           color: "white",
         },
 
@@ -3406,11 +3409,6 @@ class Game extends Component {
           gridRowStart: SpellBookRow,
           borderLeft: HUDBorder,
           padding: HUDBlockPadding2,
-          backgroundImage: "url(graphics/hud/metal.jpg)",
-          backgroundPosition:
-            MobileScreen
-              ? "0px -169px"
-              : "0px " + (-172 + -36 * Math.ceil(Backpack.maxItems / 16)) + px,
           color: "white",
         },
         SpellBookLabel: {
@@ -3423,8 +3421,6 @@ class Game extends Component {
           gridRowStart: AccessoriesStartRow,
           gridRowEnd: AccessoriesStopRow,
           padding: HUDBlockPadding,
-          backgroundImage: "url(graphics/hud/metal.jpg)",
-          backgroundPosition: MobileScreen ? "0px -491px" : TabletScreen ? "-452px " + (Player.Class.Spellcaster ? "-128px" : "-108px") : "-604px " + (Player.Class.Spellcaster ? "-128px" : "-108px"), 
         },
         // Game settings
         BottomControls: {
@@ -3432,8 +3428,6 @@ class Game extends Component {
           gridColumnEnd: LastColumn,
           gridRowStart: VolumeRow,
           padding: HUDBlockPadding,
-          backgroundImage: "url(graphics/hud/metal.jpg)",
-          backgroundPosition: MobileScreen ? "0px -508px" : "0px " + ((Player.SpellBook ? -100 : 0) -172 + -36 * Math.ceil(Backpack.maxItems / 16)) + "px",
         },
         GameState: {
           gridColumnStart: FirstColumn,
@@ -3441,8 +3435,6 @@ class Game extends Component {
           gridRowStart: BottomControlsRow,
           padding: HUDBlockPadding,
           textAlign: MobileScreen ? "center" : null,
-          backgroundImage: MobileScreen ? "url(graphics/hud/metal.jpg)" : null,
-          backgroundPosition: MobileScreen ? "0px -546px" : null,
         },
         GameStateBoxContainer: {
           gridColumnStart: FirstColumn,
@@ -3450,7 +3442,6 @@ class Game extends Component {
           gridRowStart: GameStateRow,
           padding: HUDBlockPadding,
           borderTop: "1px solid black",
-          backgroundImage: "url(graphics/hud/parchment.jpg)",
           color: "black",
           fontWeight: "bold",
         },
@@ -4544,27 +4535,29 @@ class Game extends Component {
 
     if (Message || Image) {
 
-    let EventLog = [...this.state.EventLog]
+      let EventLog = [...this.state.EventLog]
 
-    if (!EventLog) {
-      EventLog = []
-    }
+      if (!EventLog) {
+        EventLog = []
+      }
 
-    if (Array.isArray(Message)) {
-      EventLog = [...EventLog, ...Message]
-    }
-    else {
-      EventLog.push(Message)      
-    }
+      if (Array.isArray(Message)) {
+        EventLog = [...EventLog, ...Message]
+      }
+      else {
+        EventLog.push(Message)      
+      }
 
-    if (EventLog.length > 20) {
-      EventLog = EventLog.slice(EventLog.length - 20, EventLog.length)
-    }
+      if (EventLog.length > 20) {
+        EventLog = EventLog.slice(EventLog.length - 20, EventLog.length)
+      }
 
-      this.setState({EventLog: EventLog}, function() {
-        let HtmlElement = document.getElementById("EventLog")
-        HtmlElement.scrollTop = HtmlElement.scrollHeight
-      })
+      if (document.getElementById("EventLog")) {
+        this.setState({EventLog: EventLog}, function() {
+          let HtmlElement = document.getElementById("EventLog")
+          HtmlElement.scrollTop = HtmlElement.scrollHeight
+        })
+      }
 
     }
 
@@ -6029,6 +6022,7 @@ class Game extends Component {
         <Header/>
         {/* row 2 */}
         <Contact {... this.state}/>
+        <TopBackgroundImage/>
         <EventLog {... this} {... this.state} />
         <ClearLog {... this} {... this.state} />
         {/* row 3 */}
@@ -6038,6 +6032,7 @@ class Game extends Component {
         </StoryBlock>
         <Map {... this} {... this.state}/>
         {/* row 4 */}
+        <BottomBackgroundImage/>
         <Controls />
         <PlayerNameAndWeapons {... this.state} />
         <PlayerVitals {... this.state} />
@@ -6053,10 +6048,35 @@ class Game extends Component {
         <SpellBook {... this} {... this.state} />
         <Accessories {... this} {... this.state} />
         <BottomControls/>
+        <GameStateBackgroundImage/>
         <GameStateOptions {... this} {... this.state}/>
         <GameStateBox  {... this} {... this.state}/>
         <Volume {... this} {... this.state}/>
       </View>
+    )
+  }
+}
+
+class TopBackgroundImage extends Component {
+  render() {
+    return (
+      <View style={Styles.TopGameBackgroundImage}/>
+    )
+  }
+}
+
+class BottomBackgroundImage extends Component {
+  render() {
+    return (
+      <View style={Styles.BottomGameBackgroundImage}/>
+    )
+  }
+}
+
+class GameStateBackgroundImage extends Component {
+  render() {
+    return (
+      <View style={Styles.GameStateBackgroundImage}/>
     )
   }
 }
