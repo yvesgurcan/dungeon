@@ -1,11 +1,28 @@
 *Dungeon!* is an adventure game written in React.
 
 ## TL;DR
-Go to [http://dungeon.yvesgurcan.com/build/]. When the page loads, a default character with random ability scores is created for you. You can start playing right away.
+Go to <http://dungeon.yvesgurcan.com/build/>. When the page loads, a default character with random ability scores is created for you. You can start playing right away.
 
-## How to play
+## <a name="toc"/> Guide
 
-### Create Your Character
+- [How to play](#play)
+    - [Create Your Character](#character)
+    - [Map](#map)
+    - [Locked Doors](#doors)
+    - [Combat](#combat)
+    - [Experience](#xp)
+    - [Backpack](#backpack)
+    - [Equipment](#equipment)
+    - [Spellbook](#spellbook)
+    - [Event Log](#log)
+    - [Keyboard Shortcuts](#keyboard)
+    - [Save/Load Game](#save/load)
+- [Developer's Corner](#developer)
+    - [Install *Dungeon!*](#install)
+
+## <a name="play"/> [How to play](#toc)
+
+### <a name="character"/> [Create Your Character](#toc)
 
 When you start the game, you can choose to create your own character or use the characteristics that were automatically generated for you. Here are the 2 main aspects that define your character: 
 - Race: The race that you choose will provide bonuses to some of your character's abilities.
@@ -17,7 +34,7 @@ Spellcasters also get to choose a [spell](#spellbook) that they will have memori
 
 Whenever you are satisfied with your character, you may begin your adventure by clicking on "Let's play!". If you were to change your mind during the game, you can start again by clicking on "New Game".
 
-### Map
+### <a name="map"/> [Map](#toc)
 Use the directional arrows on the interface or use [keyboard shortcuts](#keyboard) to move your character on the map.
 
 As you move, parts of the map nearby you are revealed. You are free to go wherever pleases you, unless you bump into a wall, a [locked door](#lockeddoor), or a monster.
@@ -32,11 +49,11 @@ Here is the meaning of the symbols seen on the map:
 
 The map is always centered around you.
 
-### <a name="lockeddoor"/> Locked Doors
+### <a name="doors"/> [Locked Doors](#toc)
 
 To unlock a door, you will need to find the appropriate key. Keys can be found on tables or in any sort of container. Sometimes, monsters carry a key in their pocket. When you kill them, they will drop the key on the ground and you will be able to pick it up.
 
-### Fights
+### <a name="combat"/> [Combat](#toc)
 
 When your progression is blocked by a monster, moving towards them will automatically start a fight. Your character will try to hit them with the weapon currently in their hand.
 
@@ -46,20 +63,20 @@ When you attack a monster or when a monster is close enough to you, it will try 
 
 You can also cast [spells](#spellbook) that will injure your enemies or affect their combat skills.
 
-### Experience
+### <a name="xp"/> [Experience](#toc)
 
 As you slay the monsters in this dungeon, you gain experience (XP). If you amass enough XP, your character level up. Reaching the next level means that you can learn new spells and gain bonuses that make you stronger, wiser, more vigorous or more dexterous (your choice).
 
-### Backpack
+### <a name="backpack"/> [Backpack](#toc)
 
 When you find loot, you can put it in your backpack. You can pick up as many items as your backpack allows, provided that your inventory and gear do not exceed the maximum weight (determined by your strength) you can carry.
 
-### Equipment
+### <a name="equipment"/> [Equipment](#toc)
 In addition to your inventory, you also carry items on your person. For example, items can be held in your left or right hands, worn around your neck, or on your head.
 
 Each slot can only take 1 item at a time. In order to equip an item, it must fit the part of your body that you are trying to put it on. For example, a ring can only go on your fingers, arrows can only go in the quiver on your back, and boots can only be worn on your feet.
 
-### <a name="spellbook"/> Spellbook
+### <a name="spellbook"/> [Spellbook](#toc)
 As you progress throughout your adventure, you will learn magic spells (unless your character class disallows it). Each spell you memorize is contained in your spellbook. You can only learn spells that are appropriate to your level.
 
 To summon magic, simply click on one of the spells you learnt or use [keyboard shortcuts](#keyboard).
@@ -68,10 +85,10 @@ Casting a spell is an action that consumes a certain amount of mana. If your poo
 
 Moreover, casting a spell requires a great amount of concentration. Sometimes, your incantation will fail and the mana you gathered will dissipate without producing the effect you expected. The success or failure of your magic is determined by your intelligence and the difficulty of the spell.
 
-### Event Log
+### <a name="log"/> [Event Log](#toc)
 At the top of your screen, a log keeps tracks of actions that happened in the game. The feedback is mostly about your surroundings--whether you came across a locked door, bumped into a wall, or if you were not able to pick up the loot you found. The log is also very useful in combat and for spellcasting. It tells you who is attacking you and how your spell turned out.
 
-### <a name="keyboard"/> Keyboard Shortcuts
+### <a name="keyboard"/> [Keyboard Shortcuts](#toc)
 
 If you are playing on desktop, you can use your keyboard instead of clicking on the interface. Here are the available shortcuts:
 - up arrow: go north
@@ -81,14 +98,14 @@ If you are playing on desktop, you can use your keyboard instead of clicking on 
 - any number between 01 (padding zero is necessary) and 28: cast the [spell](#spellbook) corresponding to the number you typed
 - t: take loot
 
-### Save/Load Game
+### <a name="save/load"/> [Save/Load Game](#toc)
 
 If you want to leave the game and get back to it later, you can click on "Save Game" and copy the game data to a text file or in your notes.
 
 Whenever you want to resume your game, click on "Load Game", paste the saved game data, and click on "Load Game" again.
 
-## Developer's corner
+## <a name="developer"/> [Developer's Corner](#toc)
 
-### Install your own copy of *Dungeon!*
+### <a name="install"/> [Install *Dungeon!*](#toc)
  - `npm install`
  - `npm start`
