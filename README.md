@@ -1,8 +1,3 @@
-<head>
-<title>Dungeon!</title>
-<link rel="shortcut icon" type="image/png" href="./favicon.png">
-</head>
-
 *Dungeon!* is an adventure game written in React.
 
 ## TL;DR
