@@ -2439,10 +2439,6 @@ class Game extends Component {
 
       WallMapVisibleRange = MobileScreen ? Utilities.WallMapVisibleRangeMobileScreen : Utilities.WallMapVisibleRange
 
-
-      let Player = {...this.state.Player}
-      let Backpack = {...this.state.Backpack}
-
       /* presets */
 
       // grid columns
@@ -2731,7 +2727,7 @@ class Game extends Component {
           gridColumnStart: FirstColumn,
           gridColumnEnd: LastColumn,
           gridRowStart: 3,
-          gridRowEnd: 7,
+          gridRowEnd: 9,
           backgroundImage: "url(graphics/hud/parchment.jpg)",
         },
         // Character Ability Scores
@@ -2799,18 +2795,16 @@ class Game extends Component {
         CreateCharacterDescription: {
           gridColumnStart: FirstColumn,
           gridColumnEnd: LastColumn,
-          gridRowStart: MobileScreen ? 6 : 4,
+          gridRowStart: MobileScreen ? 7 : 5,
           padding: HUDPadding,
           paddingTop: "20px",
-          gridRowStart: 5,
           minHeight: "100px",
         },
         StartGame: {
           gridColumnStart: FirstColumn,
           gridColumnEnd: LastColumn,
+          gridRowStart: 8,
           padding: HUDPadding,
-          backgroundImage: "url(graphics/hud/parchment.jpg)",
-          backgroundPosition: "0 -300px", 
           textAlign: "right",
         },
         // Create Character: Label/Value Pairs
@@ -4864,15 +4858,13 @@ class Game extends Component {
             this.SetText(Gameplay.PartialMessages.SpellSuccess + Spell.Name + Gameplay.PartialMessages.Period)
           }
 
+
           this.setState({
             Player: Caster,
             Turn: Turn,
-          },
-
-            function() {
-              this.MoveMonsters()
-            }
-          )
+          }, function() {          
+            this.MoveMonsters()
+          })
 
         }
 
@@ -4909,11 +4901,9 @@ class Game extends Component {
 
   MovePlayer = (Direction) => {
 
-
-    // let {Player, WallMap, MonsterMap, NoClip} = this.state
     let Player = {...this.state.Player}
-    let WallMap = Object.assign([], this.state.WallMap)
-    let MonsterMap = Object.assign([], this.state.MonsterMap)
+    let WallMap = [...this.state.WallMap]
+    let MonsterMap = [...this.state.MonsterMap]
     let NoClip = this.state.NoClip
 
     let FullStateUpdate = true
