@@ -1,8 +1,7 @@
-# *Dungeon!*
 *Dungeon!* is an adventure game written in React.
 
 ## TL;DR
-Go to http://dungeon.yvesgurcan.com/build/. When the page loads, a default character with random ability scores is created for you. You can start playing right away.
+Go to (http://dungeon.yvesgurcan.com/build/). When the page loads, a default character with random ability scores is created for you. You can start playing right away.
 
 ## How to play
 
