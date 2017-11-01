@@ -1,26 +1,28 @@
 *Dungeon!* is an adventure game written in React.
 
-<link rel="shortcut icon" type="image/png" href="./public/graphics/misc/favicon.png">
+<link rel="shortcut icon" type="image/png" href="http://dungeon.yvesgurcan.com/public/graphics/misc/favicon.png">
+
+
 
 ## TL;DR
 Go to <http://dungeon.yvesgurcan.com/build/>. When the page loads, a default character with random ability scores is created for you. You can start playing right away.
 
 ## <a name="toc"/> Guide
 
-- [How to play](#-how-to-play)
-    - [Create Your Character](#-create-your-character)
-    - [Map](#-map)
-    - [Locked Doors](#-locked-doors)
-    - [Combat](#-combat)
-    - [Experience](#-experience)
-    - [Backpack](#-backpack)
-    - [Equipment](#-equipment)
-    - [Spellbook](#-spellbook)
-    - [Event Log](#-event-log)
-    - [Keyboard Shortcuts](#-keyboard-shortcuts)
-    - [Save/Load Game](#-saveload-game)
-- [Developer's Corner](#-developers-corner)
-    - [Install *Dungeon!*](#-install-dungeon)
+- [How to play](#how-to-play)
+    - [Create Your Character](#create-your-character)
+    - [Map](#map)
+    - [Locked Doors](#locked-doors)
+    - [Combat](#combat)
+    - [Experience](#experience)
+    - [Backpack](#backpack)
+    - [Equipment](#equipment)
+    - [Spellbook](#spellbook)
+    - [Event Log](#event-log)
+    - [Keyboard Shortcuts](#keyboard-shortcuts)
+    - [Save/Load Game](#saveload-game)
+- [Developer's Corner](#developers-corner)
+    - [Install *Dungeon!*](#install-dungeon)
 
 ## [How to play](#toc)
 
