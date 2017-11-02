@@ -1326,8 +1326,9 @@ class EventLog extends Component {
     return (
       <View style={Styles.EventLog} onClick={this.props.DisplayCustomLogEntryInput}>
         <Block id="EventLog" style={Styles.EventLogContainer}>
-          {!this.props.EventLog ? null : this.props.EventLog.map((LogEntry, Index) => {return <View key={Index}>{LogEntry}</View>})}
-
+          <Block>
+            {!this.props.EventLog ? null : this.props.EventLog.map((LogEntry, Index) => {return <View key={Index}>{LogEntry}</View>})}
+          </Block>
           <Block style={Styles.CustomLogEntryInputContainer}>
             <TextEdit
                 style={{...Styles.TextEdit, width: "calc(100% - " + (Styles.TextEdit.padding.replace("px",""))*2 + "px)"}}
@@ -4653,7 +4654,16 @@ class Game extends Component {
         EventLog = EventLog.slice(EventLog.length - 20, EventLog.length)
       }
 
-      this.setState({EventLog: EventLog}, this.ScrollToBottom("EventLog"))
+      this.setState({EventLog: EventLog}, function() {
+        this.ScrollToBottom("EventLog")
+        let {EnterCustomLogEntry} = this.state
+        if (EnterCustomLogEntry) {
+          this.setState({
+            EnterCustomLogEntry: false,
+            CustomLogEntry: ""
+          })        
+        }
+      })
 
     }
 
@@ -4672,18 +4682,28 @@ class Game extends Component {
   }
 
   DisplayCustomLogEntryInput = () => {
-    this.setState({EnterCustomLogEntry: true}, this.ScrollToBottom("EventLog"))
+    if (!this.state.EnterCustomLogEntry && !this.state.CustomLogEntryInputRecentlyClosed) {
+      console.log("display")
+      this.setState({EnterCustomLogEntry: true}, function() {this.ScrollToBottom("EventLog")})
+    }
+    if (this.state.CustomLogEntryInputRecentlyClosed) {
+      this.setState({CustomLogEntryInputRecentlyClosed: false})
+    }
+
   }
 
   StoreCustomLogEntryInput = (LogEntry) => {
     this.setState({CustomLogEntry: LogEntry.value})
   }
 
-  SaveCustomLogEntryInput = () => {
+  SaveCustomLogEntryInput = (input) => {
+    console.log("create")
     let NewLogEntry = this.state.CustomLogEntry
     this.SetText(NewLogEntry)
     this.LookForCheats(NewLogEntry, true)
-    this.setState({EnterCustomLogEntry: false, CustomLogEntry: ""})
+    if (this.state.EnterCustomLogEntry) {
+      this.setState({EnterCustomLogEntry: false, CustomLogEntry: "", CustomLogEntryInputRecentlyClosed: true})      
+    }
   }
 
   onClickArrow = (key) => {
