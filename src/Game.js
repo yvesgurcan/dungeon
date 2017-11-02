@@ -4653,15 +4653,17 @@ class Game extends Component {
         EventLog = EventLog.slice(EventLog.length - 20, EventLog.length)
       }
 
-      if (document.getElementById("EventLog")) {
-        this.setState({EventLog: EventLog}, function() {
-          let HtmlElement = document.getElementById("EventLog")
-          HtmlElement.scrollTop = HtmlElement.scrollHeight
-        })
-      }
+      this.setState({EventLog: EventLog}, this.ScrollToBottom("EventLog"))
 
     }
 
+  }
+
+  ScrollToBottom = (ElementId) => {
+    if (document.getElementById(ElementId)) {
+      let HtmlElement = document.getElementById(ElementId)
+      HtmlElement.scrollTop = HtmlElement.scrollHeight
+    }
   }
 
   ClearLog = () => {
@@ -4670,7 +4672,7 @@ class Game extends Component {
   }
 
   DisplayCustomLogEntryInput = () => {
-    this.setState({EnterCustomLogEntry: true})
+    this.setState({EnterCustomLogEntry: true}, this.ScrollToBottom("EventLog"))
   }
 
   StoreCustomLogEntryInput = (LogEntry) => {
