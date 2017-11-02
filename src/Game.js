@@ -1336,7 +1336,7 @@ class EventLog extends Component {
                 hidden={!this.props.EnterCustomLogEntry}
                 name="CustomLogEntry"
                 value={this.props.CustomLogEntry}
-                placeholder="Enter your log entry."
+                placeholder="You can add an entry to your log here."
                 onChange={this.props.StoreCustomLogEntryInput}
                 onBlur={this.props.SaveCustomLogEntryInput}     
               />
@@ -2448,7 +2448,7 @@ class Header extends Component {
       <View style={Styles.Header}>
         <PageTitle>Dungeon!</PageTitle>
         <PageSubtitle>an adventure game in React</PageSubtitle>
-        <Version>pre-alpha (v0.5)</Version>
+        <Version>pre-alpha (v0.6 dev)</Version>
       </View>
     )
   }
