@@ -27,7 +27,9 @@ Go to <http://dungeon.yvesgurcan.com/stable/>. When the page loads, a default ch
 - a [stable release](http://dungeon.yvesgurcan.com/stable/)
 - a [dev release](http://dungeon.yvesgurcan.com/build/).
 
-To play the latest version of the game, use the [dev release](http://dungeon.yvesgurcan.com/build/). If you prefer a version of the game that is less likely to crash, use the [stable release](http://dungeon.yvesgurcan.com/stable/).
+It is recommended to play the [stable release](http://dungeon.yvesgurcan.com/stable/). Less features are available in this version of the game, but it is also less likely to crash.
+
+The [dev release](http://dungeon.yvesgurcan.com/build/) is always an option, but the game might throw errors. Also, this version is experimental, which means that some debug features might be turned ON, altering the gameplay.
 
 ## [How to play](#toc)
 
