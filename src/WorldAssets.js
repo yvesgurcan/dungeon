@@ -263,6 +263,7 @@ export const WorldAssets = {
             image: "food_leaf",
             RestoreStamina: 2,
             Action: "ConsumeFood",
+            Description: "There's probably more nutritious food that this leaf."
             Weight: 0.1,
         },
         Apple: {
@@ -271,6 +272,7 @@ export const WorldAssets = {
             image: "food_apple",
             RestoreStamina: 3,
             Action: "ConsumeFood",
+            Description: "A delicious apple.",
             Weight: 0.3,
         },
         Berries: {
@@ -279,6 +281,7 @@ export const WorldAssets = {
             image: "food_berries",
             RestoreStamina: 3,
             Action: "ConsumeFood",
+            Description: "Some sort of juicy fruit.",
             Weight: 0.2,
         },
         Grapes: {
@@ -287,6 +290,7 @@ export const WorldAssets = {
             image: "food_grapes",
             RestoreStamina: 3,
             Action: "ConsumeFood",
+            Description: "Nothing special about these grapes.",
             Weight: 0.4,
         },
         Bread: {
@@ -295,6 +299,7 @@ export const WorldAssets = {
             image: "food_bread",
             RestoreStamina: 5,
             Action: "ConsumeFood",
+            Description: "Probably freshly baked. Where's the cheese?",
             Weight: 0.5,
         },
         Chicken: {
@@ -303,6 +308,7 @@ export const WorldAssets = {
             image: "food_chicken",
             RestoreStamina: 7,
             Action: "ConsumeFood",
+            Description: "Would be even better in a soup.",
             Weight: 0.4,
         },
         Sausage: {
@@ -311,6 +317,7 @@ export const WorldAssets = {
             image: "food_sausage",
             RestoreStamina: 7,
             Action: "ConsumeFood",
+            Description: "Meat!",
             Weight: 0.3,
         },
 
@@ -483,16 +490,18 @@ export const WorldAssets = {
             // Cumulated Damage Range: 1-5
             Damage: {Min: 1, Max: 5},
             Duration: 1,
+            Description: "A low-level spell. A magic arrow shoots from your hand and pierces the flesh of your target.",
         },
         ColdTouch: {
             Level: 3,
             ManaCost: 7,
-            Name: "cold touch",
+            Name: "frost bite",
             Image: "spell_cold_touch",
             Type: SpellTypes.Attack,
             // Cumulated Damage Range: 4-8
             Damage: {Min: 2, Max: 4},
             Duration: 2,
+            Description: "This spell inflicts cold, lasting damage to the creature you touch.",
         },
         Fireball: {
             Level: 5,
@@ -504,6 +513,7 @@ export const WorldAssets = {
             // Cumulated Damage Range: 6-12
             Damage: {Min: 6, Max: 12},
             Duration: 1,
+            Description: "A burst of flame that briefly burns your enemy.",
         },
         VampiricTouch: {
             Level: 8,
@@ -516,7 +526,8 @@ export const WorldAssets = {
             Damage: {Min: 4, Max: 10},
             // Cumulated Health Restored Range: 4-10
             Vampiric: true,
-            Duration: 1,       
+            Duration: 1,
+            Description: "This spell sucks a little bit of life from your target and transfers it to the caster.",
         },
         ChainLightning: {
             Level: 12,
@@ -529,6 +540,7 @@ export const WorldAssets = {
             Duration: 1,
             Target: SpellTargets.Adjacent,
             MaxTargets: 3,
+            Description: "A lightning bolt hits a cluster of creatures that stand next to each other.",
         },
         CircleOfDeath: {
             Level: 16,
@@ -540,6 +552,7 @@ export const WorldAssets = {
             Damage: {Min: 5, Max: 10},
             Duration: 1,
             Target: SpellTargets.Surrounding,
+            Description: "A wave of necrotic energy emanates from the caster and inflicts damage to all the enemy nearby.",
         },
         Moonbeam: {
             Level: 18,
@@ -552,6 +565,7 @@ export const WorldAssets = {
             Duration: 2,
             Target: SpellTargets.Surrounding,
             MaxTargets: 5,
+            Description: "Beautiful rays of light magically appear and target the foes surrounding you."
         },
 
         // Heal
@@ -568,6 +582,7 @@ export const WorldAssets = {
                 Max: 9,
             },
             Duration: 1,
+            Description: "Slightly improves your health.",
         },
         Alertness: {
             Level: 3,
@@ -581,7 +596,8 @@ export const WorldAssets = {
                 Min: 8,
                 Max: 16,
             },
-            Duration: 3,     
+            Duration: 3,    
+            Description: "Relieves some of your fatigue.",
         },
         HealWounds: {
             Level: 6,
@@ -596,6 +612,7 @@ export const WorldAssets = {
                 Max: 16,
             },
             Duration: 1,
+            Description: "Resorbs the most superficial injuries.",
         },
         Regenerate: {
             Level: 11,
@@ -610,6 +627,7 @@ export const WorldAssets = {
                 Max: 11,
             },
             Duration: 3,
+            Description: "A powerful spell that heals you gradually.",
         },
 
         // Bonus
@@ -625,6 +643,7 @@ export const WorldAssets = {
                 Fixed: 2,
             },
             Duration: 5, 
+            Description: "Your attacks temporarily inflict a little bit more damage.",
         },
         BarkSkin: {
             Level: 1,
@@ -638,7 +657,8 @@ export const WorldAssets = {
                 Type: "Percentage",
                 Percentage: 15,
             },
-            Duration: 10, 
+            Duration: 10,
+            Description: "Your skin gets a wood-like quality that makes you more resistant to attacks for a while.",
         },
         StoneSkin: {
             Level: 3,
@@ -651,7 +671,8 @@ export const WorldAssets = {
                 Type: "Percentage",
                 Percentage: 40,
             },
-            Duration: 15, 
+            Duration: 15,
+            Description: "This spell turns the outer layer of your body into stone, making it harder to hit you for some time.",
         },
         Bless: {
             Level: 2,
@@ -664,6 +685,7 @@ export const WorldAssets = {
                 Type: "Max",
             },
             Duration: 8, 
+            Description: "This mystical spell momentarily helps you inflict the most damage to your foes.",
         },
         Blur: {
             Level: 6,
@@ -676,7 +698,7 @@ export const WorldAssets = {
                 Type: "Min",
             },
             Target: SpellTargets.Facing,
-            Duration: 6, 
+            Duration: 6,
         },
         MirrorShield: {
             Level: 10,
@@ -920,11 +942,20 @@ export const WorldAssets = {
         },
         
         // Hybrids
-            
+        Harpy: {
+        },
+        Centaur: {
+        },
+        Manticore: {
+        },
+        Minotaur: {
+        },
             
         // Fun
-            
-            
+        Flumph: {
+        },
+        AnimatedTable: {
+        },
     },
 
 }
