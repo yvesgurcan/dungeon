@@ -4683,7 +4683,6 @@ class Game extends Component {
 
   DisplayCustomLogEntryInput = () => {
     if (!this.state.EnterCustomLogEntry && !this.state.CustomLogEntryInputRecentlyClosed) {
-      console.log("display")
       this.setState({EnterCustomLogEntry: true}, function() {this.ScrollToBottom("EventLog")})
     }
     if (this.state.CustomLogEntryInputRecentlyClosed) {
@@ -4697,7 +4696,6 @@ class Game extends Component {
   }
 
   SaveCustomLogEntryInput = (input) => {
-    console.log("create")
     let NewLogEntry = this.state.CustomLogEntry
     this.SetText(NewLogEntry)
     this.LookForCheats(NewLogEntry, true)
