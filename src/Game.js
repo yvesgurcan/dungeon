@@ -4678,7 +4678,7 @@ class Game extends Component {
 
   ClearLog = () => {
 
-    this.setState({EventLog: []})
+    this.setState({EventLog: [], EnterCustomLogEntry: false, CustomLogEntry: ""})
   }
 
   DisplayCustomLogEntryInput = () => {
@@ -4688,7 +4688,9 @@ class Game extends Component {
     if (this.state.CustomLogEntryInputRecentlyClosed) {
       this.setState({CustomLogEntryInputRecentlyClosed: false})
     }
-
+    if (this.state.EnterCustomLogEntry && (this.state.CustomLogEntry === "" || !this.state.CustomLogEntry)) {
+      this.setState({EnterCustomLogEntry: false})
+    }
   }
 
   StoreCustomLogEntryInput = (LogEntry) => {
