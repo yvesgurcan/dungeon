@@ -263,7 +263,7 @@ export const WorldAssets = {
             image: "food_leaf",
             RestoreStamina: 2,
             Action: "ConsumeFood",
-            Description: "There's probably more nutritious food that this leaf."
+            Description: "There's probably more nutritious food that this leaf.",
             Weight: 0.1,
         },
         Apple: {

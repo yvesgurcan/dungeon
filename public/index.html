@@ -46,7 +46,6 @@
       }
       div::-webkit-scrollbar-thumb, textarea::-webkit-scrollbar-thumb
       {
-        /* background: linear-gradient(135deg, #e3d5b3 50%, #d5a761 100%); */
         background: rgba(0, 0, 0, 0.35);
         border-radius: 8px;
         border: 1px solid dimgray;
@@ -56,8 +55,14 @@
         background-color: transparent;
       }
 
+      /* input */
       textarea {
         resize: none;
+      }
+      ::placeholder {
+        color: inherit;
+        font-style: italic;
+        font-family: inherit;
       }
 
 

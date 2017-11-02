@@ -58,16 +58,24 @@ class Text extends Component {
 class TextEdit extends Component {
   constructor(props) {
     super(props)
-    this.state = {style: this.props.styleObject ? Styles[this.props.styleObject] : Styles.TextEdit}
+    this.state = {style: this.props.style || Styles.TextEdit}
+  }
+  onKeyPress = (keypress) => {
+    if (keypress.key === "Enter") {
+      keypress.target.blur()
+    }
   }
   onFocus = () => {
-    this.setState({style: this.props.styleObject ? Styles[this.props.styleObject + "Focus"] : Styles.TextEditFocus})
+    this.setState({style: this.props.styleFocus || Styles.TextEditFocus})
   }
-  onBlur = () => {
-    this.setState({style: this.props.styleObject ? Styles[this.props.styleObject] : Styles.TextEdit})
+  onBlur = (input) => {
+    this.setState({style: this.props.style || Styles.TextEdit})
+    if (this.props.onBlur) {
+      this.props.onBlur(input.target)
+    }
   }
   onChange(input) {
-    this.props.onChange(input.target)  
+    this.props.onChange(input.target)
   }
   render() {
     return (
@@ -75,8 +83,9 @@ class TextEdit extends Component {
         hidden={this.props.hidden}
         name={this.props.name}
         placeholder={this.props.placeholder}
-        value={this.props.value}
+        value={this.props.value || ""}
         style={this.state.style}
+        onKeyPress={this.onKeyPress}
         onFocus={this.onFocus}
         onBlur={this.onBlur}
         onChange={input => this.onChange(input)} />
@@ -1305,6 +1314,7 @@ class EventLog extends Component {
       || nextProps.TabletScreen !== this.props.TabletScreen
       || nextProps.EventLog !== this.props.EventLog
       || nextProps.EnterCustomLogEntry !== this.props.EnterCustomLogEntry
+      || nextProps.CustomLogEntry !== this.props.CustomLogEntry
     ) {
       if (Debug) console.log("re-render: event log")
       return true
@@ -1313,20 +1323,24 @@ class EventLog extends Component {
   }
 
   render() {
-    console.log(this.props.EnterCustomLogEntry)
     return (
-      <View style={Styles.EventLog} onClick={this.props.DisplayCustomLogInput}>
+      <View style={Styles.EventLog} onClick={this.props.DisplayCustomLogEntryInput}>
         <Block id="EventLog" style={Styles.EventLogContainer}>
           {!this.props.EventLog ? null : this.props.EventLog.map((LogEntry, Index) => {return <View key={Index}>{LogEntry}</View>})}
-        </Block>
-        <Block style={Styles.CustomLogEntryInputContainer}>
-          <TextEdit
-              hidden={!this.props.EnterCustomLogEntry}
-              name="CustomLogEntry"
-              value={""/**/}
-              placeholder="Enter your log entry here."
-              onChange={null}          
-            />
+
+          <Block style={Styles.CustomLogEntryInputContainer}>
+            <TextEdit
+                style={{...Styles.TextEdit, width: "calc(100% - " + (Styles.TextEdit.padding.replace("px",""))*2 + "px)"}}
+                styleFocus={{...Styles.TextEditFocus, width: "calc(100% - " + (Styles.TextEdit.padding.replace("px",""))*2 + "px)"}}
+                hidden={!this.props.EnterCustomLogEntry}
+                name="CustomLogEntry"
+                value={this.props.CustomLogEntry}
+                placeholder="Enter your log entry."
+                onChange={this.props.StoreCustomLogEntryInput}
+                onBlur={this.props.SaveCustomLogEntryInput}     
+              />
+          </Block>
+
         </Block>
       </View>
     )
@@ -2085,7 +2099,7 @@ class CreateCharacterContainer extends Component {
 class CreateCharacterName extends Component {
   render() {
     // let {Player} = this.props
-    let Player = Object.assign({}, this.props.Player)
+    let Player = {...this.props.Player}
     return (
       <View style={Styles.CharacterCreateName}>
         <Block style={Styles.PropertyLabelForInput}>
@@ -2093,8 +2107,10 @@ class CreateCharacterName extends Component {
         </Block>
         <Block style={Styles.PropertyFieldForInput}>
           <TextEdit
-            styleObject="TextEditUnderline"
+            style={Styles.TextEditUnderline}
+            styleFocus={Styles.TextEditUnderlineFocus}
             name="Name"
+            placeholder="Enter your name."
             value={Player.Name}
             onChange={this.props.SavePlayerName}
           />
@@ -2988,15 +3004,22 @@ class Game extends Component {
           fontWeight: "bold",
           border: HUDBorder,
           padding: HUDBlockPadding,
-          minHeight:
+          height:
             Number(18.5 *
               (MobileScreen
                 ? Utilities.ResponsiveMaxEventLogEntries
-                : Utilities.MaxEventLogEntries)
-              ) + px,
+                : Utilities.MaxEventLogEntries
+              )
+            ) + px,
         },
         EventLogContainer: {
-          maxHeight: 18.5 * (MobileScreen ? Utilities.ResponsiveMaxEventLogEntries : Utilities.MaxEventLogEntries) + px,
+          maxHeight:
+          Number(18.5 *
+            (MobileScreen
+              ? Utilities.ResponsiveMaxEventLogEntries
+              : Utilities.MaxEventLogEntries
+            )
+          ) + px,
           overflow: "auto",
         },
         CustomLogEntryInputContainer: {
@@ -4173,65 +4196,10 @@ class Game extends Component {
 
       }
 
-      // debug
-      if (this.state.Keystrokes.join("") === "debug") {
-
-        Debug = !Debug
-        console.log(Debug ? Gameplay.Messages.Debug.On : Gameplay.Messages.Debug.Off)
-        this.SetText(Debug ? Gameplay.Messages.Debug.On : Gameplay.Messages.Debug.Off)
-        this.FlushKeystrokeHistory()
-        BreakEvent = true
-
-      }
-      if (this.state.Keystrokes.join("") === "sound") {
-        
-        SoundDebug = !SoundDebug
-        console.log(SoundDebug ? Gameplay.Messages.SoundDebug.On : Gameplay.Messages.SoundDebug.Off)
-        this.SetText(Debug ? Gameplay.Messages.SoundDebug.On : Gameplay.Messages.SoundDebug.Off)
-        this.FlushKeystrokeHistory()
-        BreakEvent = true
-
-      }
-
       // cheats
-      if (this.state.Keystrokes.join("") === "showmap") {
-
-        this.setState({ShowFullMap: State.ShowFullMap === undefined ? true : !State.ShowFullMap}, function() {
-          this.SetText(this.state.ShowFullMap ? Gameplay.Messages.Cheats.ShowFullMap.On : Gameplay.Messages.Cheats.ShowFullMap.Off)   
-        })
-        this.FlushKeystrokeHistory()
+      if (this.LookForCheats(this.state.Keystrokes.join(""))) {
         BreakEvent = true
-
       }
-      if (this.state.Keystrokes.join("") === "noclip") {
-
-        this.setState({NoClip: State.NoClip === undefined ? true : !State.NoClip}, function() {
-          this.SetText(this.state.NoClip ? Gameplay.Messages.Cheats.NoClip.On : Gameplay.Messages.Cheats.NoClip.Off)   
-        })
-        this.FlushKeystrokeHistory()
-        BreakEvent = true
-
-      }
-      if (this.state.Keystrokes.join("") === "god") {
-
-        this.setState({GodMode: State.GodMode === undefined ? true : !State.GodMode}, function() {
-          this.SetText(this.state.GodMode ? Gameplay.Messages.Cheats.GodMode.On : Gameplay.Messages.Cheats.GodMode.Off)   
-        })
-        this.FlushKeystrokeHistory()
-        BreakEvent = true
-
-      }
-      if (this.state.Keystrokes.join("") === "spell") {
-
-        if (State.CreateCharacter) return false        
-        this.setState({CastAlwaysSucceeds: State.CastAlwaysSucceeds === undefined ? true : !State.CastAlwaysSucceeds}, function() {
-          this.SetText(this.state.CastAlwaysSucceeds ? Gameplay.Messages.Cheats.CastAlwaysSucceeds.On : Gameplay.Messages.Cheats.CastAlwaysSucceeds.Off)   
-        })
-        this.FlushKeystrokeHistory()
-        BreakEvent = true
-
-      }
-
       
     })
 
@@ -4296,6 +4264,74 @@ class Game extends Component {
 
     }
 
+  }
+
+  LookForCheats = (Input, Strict = false) => {
+
+    let Cheat = false
+    let State = {...this.state}
+    let Prefix = "d!"
+
+    // debug
+    if ((Strict && Input === Prefix + "debug") || (!Strict && Input.indexOf("debug") > -1)) {
+
+      Debug = !Debug
+      console.log(Debug ? Gameplay.Messages.Debug.On : Gameplay.Messages.Debug.Off)
+      this.SetText(Debug ? Gameplay.Messages.Debug.On : Gameplay.Messages.Debug.Off)
+      this.FlushKeystrokeHistory()
+      Cheat = true
+
+    }
+    if ((Strict && Input === Prefix + "sound") || (!Strict && Input.indexOf("sound") > -1)) {
+      
+      SoundDebug = !SoundDebug
+      console.log(SoundDebug ? Gameplay.Messages.SoundDebug.On : Gameplay.Messages.SoundDebug.Off)
+      this.SetText(Debug ? Gameplay.Messages.SoundDebug.On : Gameplay.Messages.SoundDebug.Off)
+      this.FlushKeystrokeHistory()
+      Cheat = true
+
+    }
+
+    // actual cheats
+    if ((Strict && Input === Prefix + "showmap") || (!Strict && Input.indexOf("showmap") > -1)) {
+
+      this.setState({ShowFullMap: State.ShowFullMap === undefined ? true : !State.ShowFullMap}, function() {
+        this.SetText(this.state.ShowFullMap ? Gameplay.Messages.Cheats.ShowFullMap.On : Gameplay.Messages.Cheats.ShowFullMap.Off)
+      })
+      this.FlushKeystrokeHistory()
+      Cheat = true
+
+    }
+    if ((Strict && Input === Prefix + "noclip") || (!Strict && Input.indexOf("noclip") > -1)) {
+
+      this.setState({NoClip: State.NoClip === undefined ? true : !State.NoClip}, function() {
+        this.SetText(this.state.NoClip ? Gameplay.Messages.Cheats.NoClip.On : Gameplay.Messages.Cheats.NoClip.Off)   
+      })
+      this.FlushKeystrokeHistory()
+      Cheat = true
+
+    }
+    if ((Strict && Input === Prefix + "god") || (!Strict && Input.indexOf("god") > -1)) {
+
+      this.setState({GodMode: State.GodMode === undefined ? true : !State.GodMode}, function() {
+        this.SetText(this.state.GodMode ? Gameplay.Messages.Cheats.GodMode.On : Gameplay.Messages.Cheats.GodMode.Off)   
+      })
+      this.FlushKeystrokeHistory()
+      Cheat = true
+
+    }
+    if ((Strict && Input === Prefix + "spell") || (!Strict && Input.indexOf("spell") > -1)) {
+
+      if (State.CreateCharacter) return false        
+      this.setState({CastAlwaysSucceeds: State.CastAlwaysSucceeds === undefined ? true : !State.CastAlwaysSucceeds}, function() {
+        this.SetText(this.state.CastAlwaysSucceeds ? Gameplay.Messages.Cheats.CastAlwaysSucceeds.On : Gameplay.Messages.Cheats.CastAlwaysSucceeds.Off)   
+      })
+      this.FlushKeystrokeHistory()
+      Cheat = true
+
+    }
+
+    return Cheat
   }
 
   FlushKeystrokeHistory = () => {
@@ -4610,7 +4646,6 @@ class Game extends Component {
         EventLog = [...EventLog, ...Message]
       }
       else {
-        console.log(this.GenerateFormattedTime(Date.now() - GameStarted))
         EventLog.push([this.GenerateFormattedTime(Date.now() - GameStarted),Message].join(": "))      
       }
 
@@ -4634,8 +4669,19 @@ class Game extends Component {
     this.setState({EventLog: []})
   }
 
-  DisplayCustomLogInput = () => {
+  DisplayCustomLogEntryInput = () => {
     this.setState({EnterCustomLogEntry: true})
+  }
+
+  StoreCustomLogEntryInput = (LogEntry) => {
+    this.setState({CustomLogEntry: LogEntry.value})
+  }
+
+  SaveCustomLogEntryInput = () => {
+    let NewLogEntry = this.state.CustomLogEntry
+    this.SetText(NewLogEntry)
+    this.LookForCheats(NewLogEntry, true)
+    this.setState({EnterCustomLogEntry: false, CustomLogEntry: ""})
   }
 
   onClickArrow = (key) => {

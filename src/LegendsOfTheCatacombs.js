@@ -7,10 +7,6 @@ export const CampaignAssets = {
 
     // Player start
     Player: {
-        // debug
-        Name: "Leto Seldon",
-        Level: 1,
-        //
         x: 10,
         y: 14,
         Facing: "East",
