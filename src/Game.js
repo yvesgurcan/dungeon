@@ -4644,7 +4644,8 @@ class Game extends Component {
       }
 
       if (Array.isArray(Message)) {
-        EventLog = [...EventLog, ...Message]
+        let Messages = [... Message]
+        EventLog = [...EventLog, ...Messages.map(Msg => {return [this.GenerateFormattedTime(Date.now() - GameStarted),Msg].join(": ")})]
       }
       else {
         EventLog.push([this.GenerateFormattedTime(Date.now() - GameStarted),Message].join(": "))      
@@ -4681,15 +4682,20 @@ class Game extends Component {
     this.setState({EventLog: [], EnterCustomLogEntry: false, CustomLogEntry: ""})
   }
 
-  DisplayCustomLogEntryInput = () => {
-    if (!this.state.EnterCustomLogEntry && !this.state.CustomLogEntryInputRecentlyClosed) {
+  DisplayCustomLogEntryInput = (input) => {
+
+    let {EnterCustomLogEntry, CustomLogEntry, CustomLogEntryInputRecentlyClosed} = this.state
+
+    if (!EnterCustomLogEntry && !CustomLogEntryInputRecentlyClosed) {
       this.setState({EnterCustomLogEntry: true}, function() {this.ScrollToBottom("EventLog")})
     }
-    if (this.state.CustomLogEntryInputRecentlyClosed) {
+    if (CustomLogEntryInputRecentlyClosed) {
       this.setState({CustomLogEntryInputRecentlyClosed: false})
     }
-    if (this.state.EnterCustomLogEntry && (this.state.CustomLogEntry === "" || !this.state.CustomLogEntry)) {
-      this.setState({EnterCustomLogEntry: false})
+    if (EnterCustomLogEntry && (CustomLogEntry === "" || !CustomLogEntry)) {
+      if (input.target.name !== "CustomLogEntry") {
+        this.setState({EnterCustomLogEntry: false})        
+      }
     }
   }
 

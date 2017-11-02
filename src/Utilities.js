@@ -2,7 +2,7 @@ import WorldAssets from "./WorldAssets.js"
 
 const Debug = false
 const SoundDebug = false
-const Cheats = false
+const Cheats = true
 
 const MobileScreenBreakpoint = 400
 const TabletScreenBreakpoint = 769
