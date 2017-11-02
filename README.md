@@ -5,8 +5,8 @@ Go to <http://dungeon.yvesgurcan.com/stable/>. When the page loads, a default ch
 
 ## <a name="toc"/> Guide
 
+- [Releases](#releases)
 - [How to play](#how-to-play)
-    - [Releases](#releases)
     - [Create Your Character](#create-your-character)
     - [Map](#map)
     - [Locked Doors](#locked-doors)
@@ -23,7 +23,7 @@ Go to <http://dungeon.yvesgurcan.com/stable/>. When the page loads, a default ch
 
 ## [Releases](#toc)
 
-*Dungeon!* is in pre-alpha. Since the game is constantly evolving, two different versions of *Dungeon!* are released:
+*Dungeon!* is in pre-alpha. Since the game is constantly evolving, two different versions are released:
 - a [stable release](http://dungeon.yvesgurcan.com/stable/)
 - a [dev release](http://dungeon.yvesgurcan.com/build/).
 
