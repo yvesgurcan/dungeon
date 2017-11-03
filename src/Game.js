@@ -4681,10 +4681,6 @@ class Game extends Component {
         EventLog.push([this.GenerateFormattedTime(Date.now() - GameStarted),Message].join(": "))      
       }
 
-      /*if (EventLog.length > 20) {
-        EventLog = EventLog.slice(EventLog.length - 20, EventLog.length)
-      }*/
-
       this.setState({EventLog: EventLog}, function() {
         this.ScrollToBottom("EventLog")
         let {EnterCustomLogEntry} = this.state
