@@ -283,7 +283,7 @@ class ItemImageBlock extends Component {
 
   render() {
     return (
-      <View style={Styles.ItemImageBlock} onContextMenu={this.ToggleItemDescription}>
+      <View style={Styles.ItemImageBlock} onContextMenu={this.ToggleItemDescription} onTouchStart={this.ToggleItemDescription}>
         {this.ItemDescription()}
         <ItemImage {... this.props} />
         <View style={Styles.ItemImageBlockNumber} hidden={!this.props.showIndex}>
