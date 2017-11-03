@@ -229,6 +229,7 @@ class ItemImage extends Component {
     }
 
     this.props.onClick(this.props.item)
+    this.props.HideItemDescription()
   }
 
   render() {
@@ -290,7 +291,7 @@ class ItemImageBlock extends Component {
             y: pageY,
           })          
         }
-      }.bind(this), 400)
+      }.bind(this), 600)
     }
   }
 
