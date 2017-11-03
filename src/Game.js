@@ -1322,9 +1322,27 @@ class EventLog extends Component {
     return false
   }
 
+  onClick = (input) => {
+    let HtmlElement = document.getElementById("EventLog")
+    let SeparatingLine = HtmlElement.clientHeight/2
+    let Direction  = 1
+    if (input.clientY - HtmlElement.getBoundingClientRect().y < SeparatingLine) {
+      Direction = -1
+    }
+
+    // event log does not scroll, or user has reched the bottom of the scroll
+    if ((HtmlElement.scrollHeight <= HtmlElement.getBoundingClientRect().height) || (Direction === 1 && HtmlElement.scrollTop === Math.floor(HtmlElement.scrollHeight - HtmlElement.getBoundingClientRect().height))) {
+      this.props.DisplayCustomLogEntryInput(input)
+    }
+    else {
+      this.props.Scroll("EventLog",Direction)
+    }
+
+  }
+
   render() {
     return (
-      <View style={Styles.EventLog} onClick={this.props.DisplayCustomLogEntryInput}>
+      <View style={Styles.EventLog} onClick={this.onClick}>
         <Block id="EventLog" style={Styles.EventLogContainer}>
           <Block>
             {!this.props.EventLog ? null : this.props.EventLog.map((LogEntry, Index) => {return <View key={Index}>{LogEntry}</View>})}
@@ -1545,10 +1563,21 @@ class Event extends Component {
 }
 
 class StoryBlock extends Component {
+
+  onClick = (input) => {
+    let HtmlElement = document.getElementById("Story")
+    let SeparatingLine = HtmlElement.clientHeight/10*4
+    let Direction  = 1
+    if (input.clientY - HtmlElement.getBoundingClientRect().y < SeparatingLine) {
+      Direction = -1
+    }
+    this.props.Scroll("Story",Direction)
+  }
+
   render() {
     return (
       <View style={Styles.StoryBlock}>
-        <Block style={Styles.StoryContainer}>
+        <Block id="Story" style={Styles.StoryContainer} onClick={this.onClick}>
           {this.props.children}
         </Block>
       </View>
@@ -3022,6 +3051,7 @@ class Game extends Component {
             )
           ) + px,
           overflow: "auto",
+          scrollBehavior: "smooth",
         },
         CustomLogEntryInputContainer: {
           marginLeft: "42.5px"
@@ -3050,7 +3080,7 @@ class Game extends Component {
           maxHeight: MobileScreen ? null : StoryRowHeight - HUDPadding * 2 + px,
           height: MobileScreen ? (StoryRowHeight*1/2) - HUDPadding * 2 + px : null,
           overflow: "auto",
-          
+          scrollBehavior: "smooth",
         },
         Story: {
           userSelect: "text",
@@ -4651,9 +4681,9 @@ class Game extends Component {
         EventLog.push([this.GenerateFormattedTime(Date.now() - GameStarted),Message].join(": "))      
       }
 
-      if (EventLog.length > 20) {
+      /*if (EventLog.length > 20) {
         EventLog = EventLog.slice(EventLog.length - 20, EventLog.length)
-      }
+      }*/
 
       this.setState({EventLog: EventLog}, function() {
         this.ScrollToBottom("EventLog")
@@ -4674,6 +4704,13 @@ class Game extends Component {
     if (document.getElementById(ElementId)) {
       let HtmlElement = document.getElementById(ElementId)
       HtmlElement.scrollTop = HtmlElement.scrollHeight
+    }
+  }
+
+  Scroll = (ElementId, Direction) => {
+    if (document.getElementById(ElementId)) {
+      let HtmlElement = document.getElementById(ElementId)
+      HtmlElement.scrollTop = HtmlElement.scrollTop + HtmlElement.clientHeight * Direction - (18+Direction) * Direction
     }
   }
 
@@ -6166,7 +6203,7 @@ class Game extends Component {
         <EventLog {... this} {... this.state} />
         <ClearLog {... this} {... this.state} />
         {/* row 3 */}
-        <StoryBlock>
+        <StoryBlock {... this}>
           <Story {... this.state} />
           <Event {... this} {... this.state} />
         </StoryBlock>
