@@ -308,7 +308,7 @@ class ItemImageBlock extends Component {
       let Description = (
         <Block hidden={this.state.HideItemDescription} style={{...Styles.ItemDescription, left: this.state.x, top: this.state.y}}>
           <Block style={Styles.ItemDescriptionName}>{Item.Name}</Block>
-          <Block>{Item.Description}</Block>
+          <Block style={Styles.ItemDescriptionContent} hidden={!Item.Description}>{Item.Description}</Block>
         </Block>
       )
       return Description
@@ -1404,8 +1404,8 @@ class EventLog extends Component {
       Direction = -1
     }
 
-    // event log does not scroll, or user has reched the bottom of the scroll
-    if ((HtmlElement.scrollHeight <= HtmlElement.getBoundingClientRect().height) || (Direction === 1 && HtmlElement.scrollTop === Math.floor(HtmlElement.scrollHeight - HtmlElement.getBoundingClientRect().height))) {
+    // event log does not scroll, or user has reached the bottom of the scroll
+    if ((HtmlElement.scrollHeight <= HtmlElement.getBoundingClientRect().height) || (Direction === 1 && Math.floor(HtmlElement.scrollTop) === Math.floor(HtmlElement.scrollHeight - HtmlElement.getBoundingClientRect().height))) {
       this.props.DisplayCustomLogEntryInput(input)
     }
     else {
@@ -3698,10 +3698,11 @@ class Game extends Component {
         },
         ItemDescriptionName: {
           fontWeight: "bold",
-          paddingBottom: "5px",
           textTransform: "capitalize",
-
-        }
+        },
+        ItemDescriptionContent: {
+          paddingTop: "5px",
+        },
       }
       
       // Odd-shaped walls
