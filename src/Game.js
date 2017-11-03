@@ -252,37 +252,55 @@ class ItemImageBlock extends Component {
     this.state = {HideItemDescription: true}
   }
 
+  // right click
   ToggleItemDescription = (input) => {
     if (this.state.TouchEvent) return false
     if (this.props.image || this.props.name) {
       let {pageX, pageY} = {...input}
       input.preventDefault()
-      this.setState({HideItemDescription: !this.state.HideItemDescription}, function() {
+      this.setState({HideItemDescription: !this.state.HideItemDescription, PreventHoverEvent: true}, function() {
         if (!this.state.HideItemDescription) {
           this.setState({
             x: pageX,
             y: pageY,
           })
-          document.addEventListener("click", this.HideItemDescriptionEvent, false)
-          document.addEventListener("contextmenu", this.HideItemDescriptionEvent, false)
+          document.addEventListener("click", this.HideItemDescription, false)
+          document.addEventListener("contextmenu", this.HideItemDescription, false)
         }
       })      
     }
   }
 
   HideItemDescription = () => {
-    if (this.state.TouchEvent) {
-      this.setState({HideItemDescription: true, TouchEvent: false})
-      document.removeEventListener("click", this.HideItemDescription, false) 
+    this.setState({HideItemDescription: true, PreventHoverEvent: false})
+    document.removeEventListener("click", this.HideItemDescription, false) 
+    document.removeEventListener("contextmenu", this.HideItemDescription, false) 
+  }
+
+  // hover
+  ShowItemDescriptionOnHover = (input) => {
+    if (!this.state.PreventHoverEvent) {
+      let {pageX, pageY} = {...input}
+      this.setState({HoveredOut: false})
+      setTimeout(function() {
+        if (!this.state.HoveredOut) {
+          this.setState({
+            HideItemDescription: false,
+            x: pageX,
+            y: pageY,
+          })          
+        }
+      }.bind(this), 400)
     }
   }
 
-  HideItemDescriptionEvent = () => {
-    this.setState({HideItemDescription: true})
-    document.removeEventListener("click", this.HideItemDescriptionEvent, false) 
-    document.removeEventListener("contextmenu", this.HideItemDescriptionEvent, false) 
+  HideItemDescriptionOnHover = () => {
+    if (!this.state.PreventHoverEvent) {
+      this.setState({HideItemDescription: true, HoveredOut: true})
+    }
   }
 
+  // description box
   ItemDescription = () => {
     if (this.props.item) {
       let Item = {...this.props.item}
@@ -299,7 +317,7 @@ class ItemImageBlock extends Component {
 
   render() {
     return (
-      <View style={Styles.ItemImageBlock} onContextMenu={this.ToggleItemDescription}>
+      <View style={Styles.ItemImageBlock} onContextMenu={this.ToggleItemDescription} onMouseEnter={this.ShowItemDescriptionOnHover}onMouseLeave={this.HideItemDescriptionOnHover} >
         {this.ItemDescription()}
         <ItemImage {...this} {...this.props} />
         <View style={Styles.ItemImageBlockNumber} hidden={!this.props.showIndex}>
