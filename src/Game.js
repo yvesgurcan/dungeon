@@ -253,6 +253,7 @@ class ItemImageBlock extends Component {
   }
 
   ToggleItemDescription = (input) => {
+    if (this.state.TouchEvent) return false
     if (this.props.image || this.props.name) {
       let {pageX, pageY} = {...input}
       input.preventDefault()
@@ -267,11 +268,17 @@ class ItemImageBlock extends Component {
     }
   }
 
+  HideItemDescription = (input) => {
+    if (this.state.TouchEvent) {
+      this.setState({HideItemDescription: true, TouchEvent: false})      
+    }
+  }
+
   ItemDescription = () => {
     if (this.props.item) {
       let Item = {...this.props.item}
       let Description = (
-        <Block hidden={this.state.HideItemDescription} style={{...Styles.ItemDescription, left: this.state.x, top: this.state.y}} onClick={this.ToggleItemDescription} onContextMenu={this.ToggleItemDescription}>
+        <Block hidden={this.state.HideItemDescription} style={{...Styles.ItemDescription, left: this.state.x, top: this.state.y}} onClick={this.ToggleItemDescription} onContextMenu={this.ToggleItemDescription} onMouseLeave={this.HideItemDescription}>
           <Block style={Styles.ItemDescriptionName}>{Item.Name}</Block>
           <Block>{Item.Description}</Block>
         </Block>
@@ -283,9 +290,9 @@ class ItemImageBlock extends Component {
 
   render() {
     return (
-      <View style={Styles.ItemImageBlock} onContextMenu={this.ToggleItemDescription} onTouchStart={this.ToggleItemDescription}>
+      <View style={Styles.ItemImageBlock} onContextMenu={this.ToggleItemDescription}>
         {this.ItemDescription()}
-        <ItemImage {... this.props} />
+        <ItemImage {...this} {...this.props} />
         <View style={Styles.ItemImageBlockNumber} hidden={!this.props.showIndex}>
           {this.props.index}
         </View>
