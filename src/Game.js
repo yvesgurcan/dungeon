@@ -263,22 +263,31 @@ class ItemImageBlock extends Component {
             x: pageX,
             y: pageY,
           })
+          document.addEventListener("click", this.HideItemDescriptionEvent, false)
+          document.addEventListener("contextmenu", this.HideItemDescriptionEvent, false)
         }
       })      
     }
   }
 
-  HideItemDescription = (input) => {
+  HideItemDescription = () => {
     if (this.state.TouchEvent) {
-      this.setState({HideItemDescription: true, TouchEvent: false})      
+      this.setState({HideItemDescription: true, TouchEvent: false})
+      document.removeEventListener("click", this.HideItemDescription, false) 
     }
+  }
+
+  HideItemDescriptionEvent = () => {
+    this.setState({HideItemDescription: true})
+    document.removeEventListener("click", this.HideItemDescriptionEvent, false) 
+    document.removeEventListener("contextmenu", this.HideItemDescriptionEvent, false) 
   }
 
   ItemDescription = () => {
     if (this.props.item) {
       let Item = {...this.props.item}
       let Description = (
-        <Block hidden={this.state.HideItemDescription} style={{...Styles.ItemDescription, left: this.state.x, top: this.state.y}} onClick={this.ToggleItemDescription} onContextMenu={this.ToggleItemDescription} onMouseLeave={this.HideItemDescription}>
+        <Block hidden={this.state.HideItemDescription} style={{...Styles.ItemDescription, left: this.state.x, top: this.state.y}}>
           <Block style={Styles.ItemDescriptionName}>{Item.Name}</Block>
           <Block>{Item.Description}</Block>
         </Block>
