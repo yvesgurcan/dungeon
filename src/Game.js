@@ -229,6 +229,7 @@ class ItemImage extends Component {
     }
 
     this.props.onClick(this.props.item)
+    this.props.HideItemActions()
     this.props.HideItemDescription()
   }
 
@@ -250,41 +251,44 @@ class ItemImageBlock extends Component {
   
   constructor(props) {
     super(props)
-    this.state = {HideItemDescription: true}
+    this.state = {
+      HideItemDescription: true,
+      HideItemActions: true,
+    }
   }
 
   // right click
-  ToggleItemDescription = (input) => {
+  ToggleItemActions = (input) => {
     if (this.state.TouchEvent) return false
     if (this.props.image || this.props.name) {
       let {pageX, pageY} = {...input}
       input.preventDefault()
-      this.setState({HideItemDescription: !this.state.HideItemDescription, PreventHoverEvent: true}, function() {
-        if (!this.state.HideItemDescription) {
+      this.setState({HideItemActions: !this.state.HideItemActions, HideItemDescription: true, PreventHoverEvent: true}, function() {
+        if (!this.state.HideItemActions) {
           this.setState({
             x: pageX,
             y: pageY,
           })
-          document.addEventListener("click", this.HideItemDescription, false)
-          document.addEventListener("contextmenu", this.HideItemDescription, false)
+          document.addEventListener("click", this.HideItemActions, false)
+          document.addEventListener("contextmenu", this.HideItemActions, false)
         }
       })      
     }
   }
 
-  HideItemDescription = () => {
-    this.setState({HideItemDescription: true, PreventHoverEvent: false})
-    document.removeEventListener("click", this.HideItemDescription, false) 
-    document.removeEventListener("contextmenu", this.HideItemDescription, false) 
+  HideItemActions = () => {
+    this.setState({HideItemActions: true, PreventHoverEvent: false})
+    document.removeEventListener("click", this.HideItemActions, false) 
+    document.removeEventListener("contextmenu", this.HideItemActions, false) 
   }
 
   // hover
   ShowItemDescriptionOnHover = (input) => {
-    if (!this.state.PreventHoverEvent) {
+    if (!this.state.PreventHoverEvent && this.state.HideItemActions) {
       let {pageX, pageY} = {...input}
       this.setState({HoveredOut: false})
       setTimeout(function() {
-        if (!this.state.HoveredOut) {
+        if (!this.state.HoveredOut && this.state.HideItemActions) {
           this.setState({
             HideItemDescription: false,
             x: pageX,
@@ -293,6 +297,10 @@ class ItemImageBlock extends Component {
         }
       }.bind(this), 600)
     }
+  }
+
+  HideItemDescription = () => {
+      this.setState({HideItemDescription: true, PreventHoverEvent: false, HoveredOut: true})
   }
 
   HideItemDescriptionOnHover = () => {
@@ -316,10 +324,26 @@ class ItemImageBlock extends Component {
     return null
   }
 
+  ItemActions = () => {
+    if (this.props.item) {
+      let Item = {...this.props.item}
+      let Action = (
+        <Block hidden={this.state.HideItemActions} style={{...Styles.ItemActions, left: this.state.x, top: this.state.y}}>
+        <Block style={Styles.ItemAction} hidden={!this.props.TabletScreen && !this.props.MobileScreen}>Description</Block>
+          <Block style={Styles.ItemAction}>Drop</Block>
+          <Block style={Styles.ItemAction}>Equip</Block>
+        </Block>
+      )
+      return Action
+    }
+    return null
+  }
+
   render() {
     return (
-      <View style={Styles.ItemImageBlock} onContextMenu={this.ToggleItemDescription} onMouseEnter={this.ShowItemDescriptionOnHover}onMouseLeave={this.HideItemDescriptionOnHover} >
+      <View style={Styles.ItemImageBlock} onContextMenu={this.ToggleItemActions} onMouseEnter={this.ShowItemDescriptionOnHover} onMouseLeave={this.HideItemDescriptionOnHover} >
         {this.ItemDescription()}
+        {this.ItemActions()}
         <ItemImage {...this} {...this.props} />
         <View style={Styles.ItemImageBlockNumber} hidden={!this.props.showIndex}>
           {this.props.index}
@@ -3702,6 +3726,20 @@ class Game extends Component {
         },
         ItemDescriptionContent: {
           paddingTop: "5px",
+        },
+        ItemActions: {
+          zIndex: "888",
+          position: "absolute",
+          background: "#999",
+          border: "1px solid #666",
+          padding: "5px",
+          maxWidth: "200px",
+          textAlign: "left",
+          opacity: "0.9",
+        },
+        ItemAction: {
+          paddingTop: "2.5px",
+          paddingBottom: "2.5px",
         },
       }
       
