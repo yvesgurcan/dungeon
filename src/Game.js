@@ -220,6 +220,7 @@ class ItemImagePlaceholder extends Component {
 }
 
 class ItemImage extends Component {
+
   onClick = () => {
 
     if (!this.props.onClick) {
@@ -229,6 +230,7 @@ class ItemImage extends Component {
 
     this.props.onClick(this.props.item)
   }
+
   render() {
     return (
       <Text>
@@ -237,17 +239,53 @@ class ItemImage extends Component {
           onClick={this.onClick}
           src={this.props.image ? itemPath + this.props.image + imgExt : null}
           style={Styles.ItemImage}
-          title={this.props.name} />
+        />
       </Text>
     )
   }
 }
 
 class ItemImageBlock extends Component {
+  
+  constructor(props) {
+    super(props)
+    this.state = {HideItemDescription: true}
+  }
+
+  ToggleItemDescription = (input) => {
+    if (this.props.image || this.props.name) {
+      let {pageX, pageY} = {...input}
+      input.preventDefault()
+      this.setState({HideItemDescription: !this.state.HideItemDescription}, function() {
+        if (!this.state.HideItemDescription) {
+          this.setState({
+            x: pageX,
+            y: pageY,
+          })
+        }
+      })      
+    }
+  }
+
+  ItemDescription = () => {
+    if (this.props.item) {
+      let Item = {...this.props.item}
+      let Description = (
+        <Block hidden={this.state.HideItemDescription} style={{...Styles.ItemDescription, left: this.state.x, top: this.state.y}} onClick={this.ToggleItemDescription} onContextMenu={this.ToggleItemDescription}>
+          <Block style={Styles.ItemDescriptionName}>{Item.Name}</Block>
+          <Block>{Item.Description}</Block>
+        </Block>
+      )
+      return Description
+    }
+    return null
+  }
+
   render() {
     return (
-      <View style={Styles.ItemImageBlock}>
-          <ItemImage {... this.props} />
+      <View style={Styles.ItemImageBlock} onContextMenu={this.ToggleItemDescription}>
+        {this.ItemDescription()}
+        <ItemImage {... this.props} />
         <View style={Styles.ItemImageBlockNumber} hidden={!this.props.showIndex}>
           {this.props.index}
         </View>
@@ -497,7 +535,8 @@ class SpellBook extends Component {
           image={(Spells[i] && Spells[i].Image) || null}
           name={(Spells[i] && Spells[i].Name) || null}
           item={Spells[i]}
-          onClick={this.props.CastSpell} />
+          onClick={this.props.CastSpell}
+          />
         )  
       }
     }
@@ -3612,6 +3651,22 @@ class Game extends Component {
           padding: "1px",
           margin: "1px"
         },
+        ItemDescription: {
+          zIndex: "888",
+          position: "absolute",
+          background: "#999",
+          border: "1px solid #666",
+          padding: "5px",
+          maxWidth: "200px",
+          textAlign: "left",
+          opacity: "0.9",
+        },
+        ItemDescriptionName: {
+          fontWeight: "bold",
+          paddingBottom: "5px",
+          textTransform: "capitalize",
+
+        }
       }
       
       // Odd-shaped walls
