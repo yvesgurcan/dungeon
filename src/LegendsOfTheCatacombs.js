@@ -37,7 +37,7 @@ export const CampaignAssets = {
         maxItems: 5,
         Items: [
 
-            /*
+            
             {...WorldAssets.Items.ManaPotion, Id: 80},
             {...WorldAssets.Items.ManaPotion, Id: 81},
             {...WorldAssets.Items.ManaPotion, Id: 82},
@@ -45,9 +45,9 @@ export const CampaignAssets = {
             {...WorldAssets.Items.ManaPotion, Id: 84},
             {...WorldAssets.Items.ManaPotion, Id: 85},
             {...WorldAssets.Items.ManaPotion, Id: 86},
-            */
+            
 
-            /*
+            
             {...WorldAssets.Items.HealthPotion, Id: 1},
             {...WorldAssets.Items.HealthPotion, Id: 12},
             {...WorldAssets.Items.HealthPotion, Id: 13},
@@ -62,7 +62,7 @@ export const CampaignAssets = {
             WorldAssets.Items.EntangleScroll,
             WorldAssets.Items.DetectMonsterScroll,
             {...WorldAssets.Items.Apple, Id: 5},
-            */
+            
             
         ],
     },

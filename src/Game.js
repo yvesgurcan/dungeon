@@ -259,6 +259,11 @@ class ItemImageBlock extends Component {
 
   // right click
   ToggleItemActions = (input) => {
+
+    if (this.props.NoAction) {
+      return this.ShowItemDescription(input)
+    }
+
     if (this.state.TouchEvent) return false
     if (this.props.image || this.props.name) {
       let {pageX, pageY} = {...input}
@@ -282,6 +287,21 @@ class ItemImageBlock extends Component {
     document.removeEventListener("contextmenu", this.HideItemActions, false) 
   }
 
+  // menu click
+  ShowItemDescription = (input) => {
+
+    let {pageX, pageY} = {...input}
+    this.setState({
+      HideItemActions: true,
+      HideItemDescription: false,
+      PreventHoverEvent: true,
+      x: pageX,
+      y: pageY,
+    })
+    document.addEventListener("click", this.HideItemActions, false)
+    document.addEventListener("contextmenu", this.HideItemActions, false)
+  }
+
   // hover
   ShowItemDescriptionOnHover = (input) => {
     if (!this.state.PreventHoverEvent && this.state.HideItemActions) {
@@ -297,10 +317,6 @@ class ItemImageBlock extends Component {
         }
       }.bind(this), 600)
     }
-  }
-
-  HideItemDescription = () => {
-      this.setState({HideItemDescription: true, PreventHoverEvent: false, HoveredOut: true})
   }
 
   HideItemDescriptionOnHover = () => {
@@ -324,19 +340,52 @@ class ItemImageBlock extends Component {
     return null
   }
 
+  // item action handling
+  UseItem = (Action) => {
+    if (Action === "ShowItemDescription") {
+      this.ShowItemDescription(/* enter coordinates of the click here*/)
+      return false
+    }
+    this.props.UseItem(this.props.item, Action)
+  }
+
+  // action box
   ItemActions = () => {
     if (this.props.item) {
       let Item = {...this.props.item}
       let Action = (
         <Block hidden={this.state.HideItemActions} style={{...Styles.ItemActions, left: this.state.x, top: this.state.y}}>
-        <Block style={Styles.ItemAction} hidden={!this.props.TabletScreen && !this.props.MobileScreen}>Description</Block>
-          <Block style={Styles.ItemAction}>Drop</Block>
-          <Block style={Styles.ItemAction}>Equip</Block>
+        {this.AvailableActions().map(ItemAction => {
+          return (
+            <ItemSingleAction
+              key={ItemAction.Name}
+              onClick={this.UseItem}
+              ItemAction={ItemAction}
+            />
+          )
+        })}
         </Block>
       )
       return Action
     }
     return null
+  }
+
+  // discriminate actions that are available for this item
+  AvailableActions = () => {
+    let Item = {...this.props.Item} 
+    if (Item) {
+
+      let AvailableActions =
+        TabletScreen || MobileScreen
+          ? [{Name: "Description", onClick: "ShowItemDescription", BuiltInComponent: true}]
+          : []
+      
+      AvailableActions.push({Name: "Drop", onClick: "DropItem"})
+
+      return AvailableActions
+    }
+    return []
   }
 
   render() {
@@ -348,6 +397,21 @@ class ItemImageBlock extends Component {
         <View style={Styles.ItemImageBlockNumber} hidden={!this.props.showIndex}>
           {this.props.index}
         </View>
+      </View>
+    )
+  }
+}
+
+class ItemSingleAction extends Component {
+  UseItem = () => {
+    this.props.onClick(this.props.ItemAction.onClick)
+  }
+  render() {
+    return (
+      <View
+        style={Styles.ItemAction}
+        onClick={this.UseItem}>
+        {this.props.ItemAction.Name}
       </View>
     )
   }
@@ -594,6 +658,7 @@ class SpellBook extends Component {
           image={(Spells[i] && Spells[i].Image) || null}
           name={(Spells[i] && Spells[i].Name) || null}
           item={Spells[i]}
+          NoAction
           onClick={this.props.CastSpell}
           />
         )  
@@ -663,7 +728,9 @@ class Inventory extends Component {
           image={(item && item.image) || null}
           name={(item && item.Name) || null}
           item={item}
-          onClick={this.props.UseItem} />
+          onClick={this.props.UseItem}
+          {...this.props}
+          />
       )
     })
 
@@ -3733,7 +3800,7 @@ class Game extends Component {
           background: "#999",
           border: "1px solid #666",
           padding: "5px",
-          maxWidth: "200px",
+          width: "80px",
           textAlign: "left",
           opacity: "0.9",
         },
@@ -5651,6 +5718,10 @@ class Game extends Component {
 
   }
 
+  DropItem = () => {
+    console.log("drop")
+  }
+
   CheckInventoryWeight = (Loot, Save) => {
 
     // let {Backpack, Player} = this.state
@@ -6153,7 +6224,9 @@ class Game extends Component {
 
   }
 
-  UseItem = (Item) => {
+  UseItem = (Item, Action) => {
+
+    console.log(Action, Item)
 
     if (this[Item.Action]) {
       this[Item.Action](Item)
