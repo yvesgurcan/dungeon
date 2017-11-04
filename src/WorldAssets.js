@@ -131,6 +131,7 @@ export const WorldAssets = {
         SpellBook: {
             Type: "spellbook",
             Name: "spellbook",
+            Image: "spellbook",
             Description: "This is where you keep notes on how to cast spells. Without this book, your magic is useless.",
             Weight: 4,
         },
