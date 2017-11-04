@@ -127,25 +127,38 @@ export const WorldAssets = {
 
     Items: {
 
+        // Spellbook
+        SpellBook: {
+            Type: "spellbook",
+            Name: "spellbook",
+            Image: "spellbook",
+            Description: "This is where you keep notes on how to cast spells. Without this book, your magic is useless.",
+            Weight: 4,
+        },
+        
         // Backpacks  
         BagOfHolding: {
             Type: "backpack",
             Name: "bag of holding",
+            Description: "The best backpack you could dream of. Lots of room in there.",
             MaxItems: 48,
         },
         TravelerBag: {
             Type: "backpack",
             Name: "traveler's bag",
+            Description: "A must-have for adventurers. Holds a comfortable number of items.",
             MaxItems: 32,
         },
         DuffelBag: {
             Type: "backpack",
             Name: "duffel bag",
+            Description: "This bag allows you to bring additional items with you.",
             MaxItems: 16,
         },
         Haversack: {
             Type: "backpack",
             Name: "haversack",
+            Description: "A small bag where you can carry essential items.",
             MaxItems: 10,
         },
 
@@ -185,6 +198,7 @@ export const WorldAssets = {
             Heal: "Health",
             Strength: 12,
             Action: "DrinkPotion",
+            Description: "This vial contains a precious liquid that heals your wounds immediately.",
             Weight: 0.5,
         },
         ManaPotion: {
@@ -195,6 +209,7 @@ export const WorldAssets = {
             Heal: "Mana",
             Strength: 8,
             Action: "DrinkPotion",
+            Description: "A precious item for spellcasters. This potion replenishes your magic energy without the need to rest.",
             Weight: 0.5,
         },
         StaminaPotion: {
@@ -205,6 +220,7 @@ export const WorldAssets = {
             Heal: "Stamina",
             Strength: 30,
             Action: "DrinkPotion",
+            Description: "A useful beverage for adventurers that need a boost to keep going.",
             Weight: 0.5,
         },
 
