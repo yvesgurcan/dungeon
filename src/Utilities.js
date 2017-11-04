@@ -61,9 +61,21 @@ export const Utilities = {
     // TODO: The value below should be calculated from the WorldAssets' list of spells instead of being hardcoded.
     MaxSpellLevel: 18
     ,
-    NumberOfSpells: 24 // Object.keys(WorldAssets.Spells).length
+    NumberOfSpells: Object.keys(WorldAssets.Spells).length
     ,
 
+    // Item types that can be equipped by the player
+    Equipable: [
+        "weapon",
+        "shield",
+        "helmet",
+        "necklace",
+        "ring",
+        "armor",
+        "boots",
+        "projectile",
+    ],
+    
     // determines how many elements fit on the map
     WallMapVisibleRange: {
         x: 10,
