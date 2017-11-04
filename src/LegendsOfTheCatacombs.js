@@ -34,20 +34,23 @@ export const CampaignAssets = {
     },
 
     Backpack: {
-        maxItems: 5,
+        maxItems: 10,
         Items: [
 
             
-            {...WorldAssets.Items.ManaPotion, Id: 80},
-            {...WorldAssets.Items.ManaPotion, Id: 81},
-            {...WorldAssets.Items.ManaPotion, Id: 82},
-            {...WorldAssets.Items.ManaPotion, Id: 83},
-            {...WorldAssets.Items.ManaPotion, Id: 84},
-            {...WorldAssets.Items.ManaPotion, Id: 85},
-            {...WorldAssets.Items.ManaPotion, Id: 86},
+            {...WorldAssets.Items.ManaPotion, Id: 1},
+            {...WorldAssets.Items.ManaPotion, Id: 2},
+            {...WorldAssets.Items.ManaPotion, Id: 3},
+            {...WorldAssets.Items.ManaPotion, Id: 4},
+            {...WorldAssets.Items.ManaPotion, Id: 5},
+            {...WorldAssets.Items.ManaPotion, Id: 6},
+            {...WorldAssets.Items.ManaPotion, Id: 7},
+            {...WorldAssets.Items.ManaPotion, Id: 8},
+            {...WorldAssets.Items.ManaPotion, Id: 9},
+            {...WorldAssets.Items.ManaPotion, Id: 10},
             
 
-            
+            /*
             {...WorldAssets.Items.HealthPotion, Id: 1},
             {...WorldAssets.Items.HealthPotion, Id: 12},
             {...WorldAssets.Items.HealthPotion, Id: 13},
@@ -62,7 +65,7 @@ export const CampaignAssets = {
             WorldAssets.Items.EntangleScroll,
             WorldAssets.Items.DetectMonsterScroll,
             {...WorldAssets.Items.Apple, Id: 5},
-            
+            */
             
         ],
     },

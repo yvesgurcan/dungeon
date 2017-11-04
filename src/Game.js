@@ -4,6 +4,8 @@ import Campaign from "./LegendsOfTheCatacombs.js"
 import Gameplay from "./GameplayAssets.js"
 import Utilities from "./Utilities.js"
 import Functions from "./Functions.js"
+import {URL, LineBreak, Text, View, Block, Image} from "./components/WebComponents.js"
+import {Graphics, ClearFloat, Version} from "./components/UtilityComponents.js"
 
 /* utility */
 
@@ -28,32 +30,8 @@ const storyPath = "./graphics/story/"
 const imgExt = ".png"
 
 let Styles = null
-let PreventHoverGlobally = false
 
 /* web components */
-
-// a
-class URL extends Component {
-  render() {
-    return (
-      <a {... this.props} children={this.props.children}/>
-    )
-  }
-}
-
-// br
-class LineBreak extends Component {
-  render() {
-    return <br/>
-  }
-}
-
-// span
-class Text extends Component {
-  render() {
-    return <span {...this.props} />
-  }
-}
 
 // input type=text
 class TextEdit extends Component {
@@ -94,13 +72,6 @@ class TextEdit extends Component {
   }
 }
 
-// div
-class Block extends Component {
-  render() {
-    return <div {... this.props} />
-  }
-}
-
 // h3
 class Heading extends Component {
   render() {
@@ -122,41 +93,7 @@ class PageTitle extends Component {
   }
 }
 
-// view (React Native compatibility)
-class View extends Component {
-  render() {
-    return <div {...this.props} />
-  }
-}
-
-// img
-class Image extends Component {
-  render() {
-    return (
-      <img
-        alt={this.props.alt || this.props.title || ""}
-        {...this.props} />
-    )
-  }
-}
-
 /* small components */
-
-class ClearFloat extends Component {
-  render() {
-    return  <View style={{clear: "both"}} />
-  }
-}
-
-class Version extends Component {
-  render() {
-    return (
-      <View>
-        {this.props.children}
-      </View>
-    )
-  }
-}
 
 class GitHub extends Component {
   render() {
@@ -194,19 +131,6 @@ class Link extends Component {
 
 /* images */
 
-class Graphics extends Component {
-  render() {
-    if (this.props.image === null) return null
-    else {
-      return (
-        <Image
-          title={this.props.title}
-          {... this.props} />
-      )
-    }
-  }
-}
-
 class ItemImagePlaceholder extends Component {
   render() {
     return (
@@ -222,24 +146,11 @@ class ItemImagePlaceholder extends Component {
 
 class ItemImage extends Component {
 
-  onClick = () => {
-
-    if (!this.props.onClick) {
-      console.warn("This feature is not ready yet :)")
-      return null
-    }
-
-    this.props.onClick(this.props.item)
-    this.props.HideItemActions()
-    this.props.HideItemDescription()
-  }
-
   render() {
     return (
       <Text>
         <Graphics
           draggable={this.props.draggable}
-          onClick={this.onClick}
           src={this.props.image ? itemPath + this.props.image + imgExt : null}
           style={Styles.ItemImage}
         />
@@ -258,8 +169,21 @@ class ItemImageBlock extends Component {
     }
   }
 
+  RegisterTouch = () => {
+
+    // there is no item
+    let Item = {...this.props.item}
+    if (!Object.getOwnPropertyNames(Item).length) return null
+
+    this.setState({TouchEvent: true})
+  }
+
   // right click
   ToggleItemActions = (input) => {
+
+    // there is no item
+    let Item = {...this.props.item}
+    if (!Object.getOwnPropertyNames(Item).length) return null
 
     let grabInput = {...input}
     input.preventDefault()
@@ -277,45 +201,50 @@ class ItemImageBlock extends Component {
       return false
     }
 
-    // do not toggle if it is a touch event (otherwise, the menu will show and hide at once because of clustered touches)
-    if (this.state.TouchEvent) return false
+    // get the coordinates where the action menu will be displayed
+    let {pageX, pageY} = {...grabInput}
 
-    // the item is not empty
-    if (this.props.image || this.props.name) {
+    this.setState({
+      // toggle the action menu
+      HideItemActions: !this.state.HideItemActions,
+      // hide the item description that may have appeared when hovering
+      HideItemDescription: true,
+      // block hover events so that the description does not re-appear until the user has moved out of the element
+      PreventHoverEvent: true
+    }, function() {
 
-      // get the coordinates where the action menu will be displayed
-      let {pageX, pageY} = {...grabInput}
+      // set the coordinates of the displayed menu action
+      if (!this.state.HideItemActions) {
+        this.setState({
+          x: pageX,
+          y: pageY,
+        })
 
-      this.setState({
-        // toggle the action menu
-        HideItemActions: !this.state.HideItemActions,
-        // hide the item description that may have appeared when hovering
-        HideItemDescription: true,
-        // block hover events so that the description does not re-appear until the user has moved out of the element
-        PreventHoverEvent: true
-      }, function() {
+        // attach event listeners to hide the menu when the user clicks away
+        document.addEventListener("click", this.HideItemActions, false)
+        document.addEventListener("contextmenu", this.HideItemActions, false)
 
-        // set the coordinates of the displayed menu action
-        if (!this.state.HideItemActions) {
-          this.setState({
-            x: pageX,
-            y: pageY,
-          })
+      }
 
-          // attach event listeners to hide the menu when the user clicks away
-          document.addEventListener("click", this.HideItemActions, false)
-          document.addEventListener("contextmenu", this.HideItemActions, false)
-
-          PreventHoverGlobally = true
-
-        }
-
-      })      
-    }
+    })
   }
 
   // right click -- event listener
   HideItemActions = () => {
+
+    if (this.state.DescriptionAsAction) {
+      // add item description event listener
+      document.addEventListener("click", this.HideItemDescription, false)
+      document.addEventListener("contextmenu", this.HideItemDescription, false)
+      this.setState({
+        // toggle the block on this event listener
+        DescriptionAsAction: false,
+        // let the item description event listeners remove themselves once they executed
+        CleanupDescriptionEventListener: true
+      })
+      // do not execute the rest of the code to keep preventing hover events
+      return false
+    }
 
     this.setState({
       // hide the action menu
@@ -328,15 +257,27 @@ class ItemImageBlock extends Component {
     document.removeEventListener("click", this.HideItemActions, false) 
     document.removeEventListener("contextmenu", this.HideItemActions, false) 
 
-    PreventHoverGlobally = false
+
 
   }
 
   // action menu click
   ShowItemDescription = (input) => {
-    
+
+    // there is no item
+    let Item = {...this.props.item}
+    if (!Object.getOwnPropertyNames(Item).length) return null
+
     // grab coordinates
     let {pageX, pageY} = {...input}
+
+    // the item description was called from the action menu
+    if (input === null) {
+      pageX = this.state.x
+      pageY = this.state.y
+      this.setState({DescriptionAsAction: true})
+
+    }
 
     this.setState({
       // hide the action menu
@@ -373,15 +314,29 @@ class ItemImageBlock extends Component {
     })
 
     // remove item description listeners
-    if (this.props.NoActionMenu) {
+    if (this.props.NoActionMenu || this.state.CleanupDescriptionEventListener) {
+
       document.removeEventListener("click", this.HideItemDescription, false)
       document.removeEventListener("contextmenu", this.HideItemDescription, false)
+
+      // toggle the clean up of event listeners corresponding to the item description showing as an action
+      if (this.state.CleanupDescriptionEventListener) {
+        this.setState({CleanupDescriptionEventListener: false})
+      }
+
     }
 
   }
 
   // hover
   ShowItemDescriptionOnHover = (input) => {
+
+    // there is no item
+    let Item = {...this.props.item}
+    if (!Object.getOwnPropertyNames(Item).length) return null
+
+    // do not show description on hover for touch screens
+    if (this.state.TouchEvent) return false
 
     if (
       // hover events are not blocked
@@ -390,8 +345,6 @@ class ItemImageBlock extends Component {
       && this.state.HideItemActions
       // the item description is hidden
       && this.state.HideItemDescription
-      // an action menu is open on another item
-      && !PreventHoverGlobally
     ) {
 
       // the user is hovering the item
@@ -409,8 +362,6 @@ class ItemImageBlock extends Component {
           && this.state.HideItemActions
           // the item description is still hidden
           && this.state.HideItemDescription
-          // an action menu is open on another item
-          && !PreventHoverGlobally
         ) {
 
 
@@ -429,6 +380,7 @@ class ItemImageBlock extends Component {
   }
 
   HideItemDescriptionOnHover = () => {
+
     // hover events are not blocked
     if (!this.state.PreventHoverEvent) {
       this.setState({
@@ -442,81 +394,107 @@ class ItemImageBlock extends Component {
 
   // item description
   ItemDescription = () => {
-    if (this.props.item) {
-      let Item = {...this.props.item}
-      let Description = (
-        <Block hidden={this.state.HideItemDescription} style={{...Styles.ItemDescription, left: this.state.x, top: this.state.y}}>
-          <Block style={Styles.ItemDescriptionName}>{Item.Name}</Block>
-          <Block style={Styles.ItemDescriptionContent} hidden={!Item.Description}>{Item.Description}</Block>
-        </Block>
-      )
-      return Description
-    }
-    return null
+
+    let Item = {...this.props.item}
+
+    if (!Object.getOwnPropertyNames(Item).length) return null
+
+    let Description = (
+      <Block hidden={this.state.HideItemDescription} style={{...Styles.ItemDescription, left: this.state.x, top: this.state.y}}>
+        <Block style={Styles.ItemDescriptionName}>{Item.Name}</Block>
+        <Block style={Styles.ItemDescriptionContent} hidden={!Item.Description}>{Item.Description}</Block>
+      </Block>
+    )
+    return Description
+
   }
 
   // action menu
   ItemActions = () => {
-    if (this.props.item) {
-      let Item = {...this.props.item}
-      let Action = (
-        <Block hidden={this.state.HideItemActions} style={{...Styles.ItemActions, left: this.state.x, top: this.state.y}}>
-        <Block style={Styles.ItemDescriptionName}>{Item.Name}</Block>
-        {this.AvailableActions().map(ItemAction => {
-          return (
-            <ItemSingleAction
-              key={ItemAction.Name}
-              onClick={this.UseItem}
-              ItemAction={ItemAction}
-            />
-          )
-        })}
-        </Block>
-      )
-      return Action
-    }
-    return null
+
+    let Item = {...this.props.item}
+
+    if (!Object.getOwnPropertyNames(Item).length) return null
+
+    let Action = (
+      <Block hidden={this.state.HideItemActions} style={{...Styles.ItemActions, left: this.state.x, top: this.state.y}}>
+      <Block style={Styles.ItemDescriptionName}>{Item.Name}</Block>
+      {this.AvailableActions().map(ItemAction => {
+        return (
+          <ItemSingleAction
+            key={ItemAction.Name}
+            onClick={this.UseItem}
+            ItemAction={ItemAction}
+          />
+        )
+      })}
+      </Block>
+    )
+    return Action
   }
 
   // discriminate actions that are available for this item
   AvailableActions = () => {
-    let Item = {...this.props.Item}
+    let Item = {...this.props.item}
     let Equipped = this.props.Equipped
-    if (Item) {
 
-      let AvailableActions =
-        TabletScreen || MobileScreen
-          ? [{Name: "Description", onClick: "ShowItemDescription", BuiltInComponent: true}]
-          : []
-      
-      if (Equipped) {
-        AvailableActions.push({Name: "Unequip", onClick: "UnequipItem"})
-      }
-
-      AvailableActions.push({Name: "Drop", onClick: "DropItem"})
-
-      return AvailableActions
+    let AvailableActions = [{Name: "Description", onClick: "ShowItemDescription", BuiltInComponent: true}]
+    
+    if (Equipped) {
+      AvailableActions.push({Name: "Unequip", onClick: "UnequipItem"})
     }
-    return []
+
+    AvailableActions.push({Name: "Drop", onClick: "DropItem"})
+
+    return AvailableActions
   }
 
-  // item action handling
+  // item action selected from action menu
   UseItem = (Action) => {
     if (Action === "ShowItemDescription") {
-      this.ShowItemDescription(/* enter coordinates of the click here*/)
+      this.ShowItemDescription(null)
       return false
     }
-    this.props.UseItem(this.props.item, Action)
+
+    this.setState({Clicked: true})
+    setTimeout(function () {
+      this.setState({Clicked: false})
+      this.props.UseItem(this.props.item, Action)
+    }.bind(this), 50)
+
+
+  }
+
+  // direct click on item image
+  onClick = () => {
+
+    if (!this.props.onClick) {
+      console.warn("This feature is not ready yet :)")
+      return null
+    }
+
+    this.setState({Clicked: true})
+    setTimeout(function () {
+      this.setState({Clicked: false})
+      this.props.onClick(this.props.item)
+      this.HideItemActions()
+      this.HideItemDescription()
+    }.bind(this), 50)
+
+
   }
 
   render() {
     return (
-      <View style={Styles.ItemImageBlock} onContextMenu={this.ToggleItemActions} onMouseEnter={this.ShowItemDescriptionOnHover} onMouseLeave={this.HideItemDescriptionOnHover} >
+      <View style={Styles.ItemImageBlock} onContextMenu={this.ToggleItemActions} onMouseEnter={this.ShowItemDescriptionOnHover} onMouseLeave={this.HideItemDescriptionOnHover} onTouchStart={this.RegisterTouch} onClick={this.onClick} >
         {this.ItemDescription()}
         {this.ItemActions()}
-        <ItemImage {...this} {...this.props} />
-        <View style={Styles.ItemImageBlockNumber} hidden={!this.props.showIndex}>
-          {this.props.index}
+        <View>
+          <View hidden={!this.state.Clicked} style={Styles.ItemImageBlockClick}/>
+          <ItemImage {...this} {...this.props} />
+          <View style={Styles.ItemImageBlockNumber} hidden={!this.props.showIndex}>
+            {this.props.index}
+          </View>
         </View>
       </View>
     )
@@ -524,13 +502,31 @@ class ItemImageBlock extends Component {
 }
 
 class ItemSingleAction extends Component {
+
+  constructor(props) {
+    super(props)
+
+    this.state = {style: Styles.ItemAction}
+  }
+
+  HoverStyle = () => {
+    this.setState({style: Styles.ItemActionHover})
+  }
+
+  NormalStyle = () => {
+    this.setState({style: Styles.ItemAction})
+  }
+
   UseItem = () => {
     this.props.onClick(this.props.ItemAction.onClick)
   }
+
   render() {
     return (
       <View
-        style={Styles.ItemAction}
+        style={this.state.style}
+        onMouseMove={this.HoverStyle}
+        onMouseLeave={this.NormalStyle}
         onClick={this.UseItem}>
         {this.props.ItemAction.Name}
       </View>
@@ -946,12 +942,11 @@ class Arrow extends Component {
   onClick = () => {
     this.props.onClick(this.props.arrow)
     this.setState({ style: Styles.ArrowBlockClick })
-    let that = this
     setTimeout(function () {
-      if (that.state.style === Styles.ArrowBlockClick) {
-        that.setState({ style: Styles.ArrowBlockHover })
+      if (this.state.style === Styles.ArrowBlockClick) {
+        this.setState({ style: Styles.ArrowBlockHover })
       }
-    }, 50)
+    }.bind(this), 50)
   }
   render() {
     return (
@@ -1389,7 +1384,7 @@ class ResponsiveTabSelector extends Component {
             <ActionButton SmallPadding StayClicked Clicked={!this.props.HideInventory} onClick={this.props.ShowInventory}>Backpack</ActionButton>
           </Block>
           <Block style={Styles.TabButton}>
-          <ActionButton SmallPadding StayClicked Clicked={!this.props.HideSpellBook} onClick={this.props.ShowSpellBook} hidden={!this.props.Player.Class.Spellcaster}>Spellbook</ActionButton>
+          <ActionButton SmallPadding StayClicked Clicked={!this.props.HideSpellBook} onClick={this.props.ShowSpellBook} hidden={!this.props.Player.Class.Spellcaster}>Spells</ActionButton>
           </Block>
         </Block>
       </View>
@@ -2864,8 +2859,8 @@ class Game extends Component {
         SpellBookRow = 10
         AccessoriesStartRow = 11
         AccessoriesStopRow = 12
-        VolumeRow = 13
-        BottomControlsRow = 14
+        BottomControlsRow = 13
+        VolumeRow = 14
         GameStateRow = 15
 
       }
@@ -3304,7 +3299,7 @@ class Game extends Component {
           gridColumnStart: FirstColumn,
           gridColumnEnd: LastColumn,
           gridRowStart: ControlRow,
-          gridRowEnd: BottomControlsRow+1,
+          gridRowEnd: VolumeRow+1,
           backgroundImage: "url(graphics/hud/metal.jpg)",
         },
         GameStateBackgroundImage: {
@@ -3350,7 +3345,7 @@ class Game extends Component {
           textAlign: "right",
           padding: HUDBlockPadding,
           paddingRight: "25px",
-          zIndex: "999",
+          zIndex: "1000",
           height: "18px",
         },
         // Story
@@ -3871,6 +3866,14 @@ class Game extends Component {
           background: "linear-gradient(135deg, #999 35%, #aaa 60%, lightgray 100%)",
           boxShadow: "inset 0 0 10px gray",
         },
+        ItemImageBlockClick: {
+          zIndex: "700",
+          position: "fixed",
+          height: "32px",
+          width: "32px",
+          background: "#333",
+          opacity: "0.5"
+        },
         ItemImageBlockNumber: {
           color: "black",
           background: "white",
@@ -3900,14 +3903,14 @@ class Game extends Component {
           margin: "1px"
         },
         ItemDescription: {
-          zIndex: "888",
+          zIndex: "900",
           position: "absolute",
           background: "#999",
           border: "1px solid #666",
           padding: "5px",
           maxWidth: "200px",
           textAlign: "left",
-          opacity: "0.9",
+          opacity: "0.85",
         },
         ItemDescriptionName: {
           fontWeight: "bold",
@@ -3917,18 +3920,27 @@ class Game extends Component {
           paddingTop: "5px",
         },
         ItemActions: {
-          zIndex: "888",
+          zIndex: "800",
           position: "absolute",
           background: "#999",
           border: "1px solid #666",
           padding: "5px",
-          width: "80px",
+          minWidth: "90px",
           textAlign: "left",
-          opacity: "0.9",
+          opacity: "0.85",
         },
         ItemAction: {
           paddingTop: "2.5px",
           paddingBottom: "2.5px",
+          paddingLeft: "2.5px",
+          paddingRight: "2.5px",
+        },
+        ItemActionHover: {
+          paddingTop: "2.5px",
+          paddingBottom: "2.5px",
+          paddingLeft: "2.5px",
+          paddingRight: "2.5px",
+          background: "#777",
         },
       }
       
