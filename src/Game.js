@@ -431,7 +431,6 @@ class ItemImageBlock extends Component {
   HideItemDescriptionOnHover = () => {
     // hover events are not blocked
     if (!this.state.PreventHoverEvent) {
-      console.log("goodbye")
       this.setState({
         // hide item description
         HideItemDescription: true,
@@ -481,7 +480,8 @@ class ItemImageBlock extends Component {
 
   // discriminate actions that are available for this item
   AvailableActions = () => {
-    let Item = {...this.props.Item} 
+    let Item = {...this.props.Item}
+    let Equipped = this.props.Equipped
     if (Item) {
 
       let AvailableActions =
@@ -489,6 +489,10 @@ class ItemImageBlock extends Component {
           ? [{Name: "Description", onClick: "ShowItemDescription", BuiltInComponent: true}]
           : []
       
+      if (Equipped) {
+        AvailableActions.push({Name: "Unequip", onClick: "UnequipItem"})
+      }
+
       AvailableActions.push({Name: "Drop", onClick: "DropItem"})
 
       return AvailableActions
@@ -1262,6 +1266,7 @@ class WeaponReady extends Component {
           image={(Item && Item.image) || null}
           name={Item && Item.Name ? Slot + ": " + Item.Name : null}
           item={Item}
+          Equipped
           {... this.props}/>
         </View>
       )
@@ -2759,7 +2764,7 @@ class Header extends Component {
       <View style={Styles.Header}>
         <PageTitle>Dungeon!</PageTitle>
         <PageSubtitle>an adventure game in React</PageSubtitle>
-        <Version>pre-alpha (v0.6 dev)</Version>
+        <Version>{Utilities.Version.Stage} (v{Utilities.Version.Number} {Utilities.Version.Release})</Version>
       </View>
     )
   }
