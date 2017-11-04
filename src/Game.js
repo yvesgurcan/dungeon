@@ -28,6 +28,7 @@ const storyPath = "./graphics/story/"
 const imgExt = ".png"
 
 let Styles = null
+let PreventHoverGlobally = false
 
 /* web components */
 
@@ -260,72 +261,187 @@ class ItemImageBlock extends Component {
   // right click
   ToggleItemActions = (input) => {
 
-    if (this.props.NoAction) {
-      return this.ShowItemDescription(input)
+    let grabInput = {...input}
+    input.preventDefault()
+
+    // this item does not have an action menu
+    if (this.props.NoActionMenu) {
+      // show the item description instead
+      if (this.state.HideItemDescription) {
+        this.ShowItemDescription(grabInput)
+      }
+      // hide the item description if it is already displayed
+      else {
+        this.HideItemDescription()
+      }
+      return false
     }
 
+    // do not toggle if it is a touch event (otherwise, the menu will show and hide at once because of clustered touches)
     if (this.state.TouchEvent) return false
+
+    // the item is not empty
     if (this.props.image || this.props.name) {
-      let {pageX, pageY} = {...input}
-      input.preventDefault()
-      this.setState({HideItemActions: !this.state.HideItemActions, HideItemDescription: true, PreventHoverEvent: true}, function() {
+
+      // get the coordinates where the action menu will be displayed
+      let {pageX, pageY} = {...grabInput}
+
+      this.setState({
+        // toggle the action menu
+        HideItemActions: !this.state.HideItemActions,
+        // hide the item description that may have appeared when hovering
+        HideItemDescription: true,
+        // block hover events so that the description does not re-appear until the user has moved out of the element
+        PreventHoverEvent: true
+      }, function() {
+
+        // set the coordinates of the displayed menu action
         if (!this.state.HideItemActions) {
           this.setState({
             x: pageX,
             y: pageY,
           })
+
+          // attach event listeners to hide the menu when the user clicks away
           document.addEventListener("click", this.HideItemActions, false)
           document.addEventListener("contextmenu", this.HideItemActions, false)
+
+          PreventHoverGlobally = true
+
         }
+
       })      
     }
   }
 
+  // right click -- event listener
   HideItemActions = () => {
-    this.setState({HideItemActions: true, PreventHoverEvent: false})
+
+    this.setState({
+      // hide the action menu
+      HideItemActions: true,
+      // release the block on hover events so that when the user moves back to the item, the description will appear again
+      PreventHoverEvent: false
+    })
+
+    // get rid of the event listeners
     document.removeEventListener("click", this.HideItemActions, false) 
     document.removeEventListener("contextmenu", this.HideItemActions, false) 
+
+    PreventHoverGlobally = false
+
   }
 
-  // menu click
+  // action menu click
   ShowItemDescription = (input) => {
-
+    
+    // grab coordinates
     let {pageX, pageY} = {...input}
+
     this.setState({
+      // hide the action menu
       HideItemActions: true,
+      // show the description
       HideItemDescription: false,
+      // block the hover event
       PreventHoverEvent: true,
       x: pageX,
       y: pageY,
     })
+
+    // add listeners for the item description if there is no action menu so that when the user clicks away it hides the description
+    if (this.props.NoActionMenu) {
+      document.addEventListener("click", this.HideItemDescription, false)
+      document.addEventListener("contextmenu", this.HideItemDescription, false)
+      return false
+    }
+
+    // add listeners so that when the user clicks away it hides the action menu
     document.addEventListener("click", this.HideItemActions, false)
     document.addEventListener("contextmenu", this.HideItemActions, false)
+
+  }
+
+  // no action menu -- event listener
+  HideItemDescription = () => {
+
+    this.setState({
+      // hide the description
+      HideItemDescription: true,
+      // release the block on hover events
+      PreventHoverEvent: false
+    })
+
+    // remove item description listeners
+    if (this.props.NoActionMenu) {
+      document.removeEventListener("click", this.HideItemDescription, false)
+      document.removeEventListener("contextmenu", this.HideItemDescription, false)
+    }
+
   }
 
   // hover
   ShowItemDescriptionOnHover = (input) => {
-    if (!this.state.PreventHoverEvent && this.state.HideItemActions) {
-      let {pageX, pageY} = {...input}
+
+    if (
+      // hover events are not blocked
+      !this.state.PreventHoverEvent
+      // the action menu is hidden
+      && this.state.HideItemActions
+      // the item description is hidden
+      && this.state.HideItemDescription
+      // an action menu is open on another item
+      && !PreventHoverGlobally
+    ) {
+
+      // the user is hovering the item
       this.setState({HoveredOut: false})
+
+      // grab coordinates
+      let {pageX, pageY} = {...input}
+
+      // wait before showing the item description
       setTimeout(function() {
-        if (!this.state.HoveredOut && this.state.HideItemActions) {
+        if (
+          // the user is still hovering the item
+          !this.state.HoveredOut
+          // the action menu is still hidden
+          && this.state.HideItemActions
+          // the item description is still hidden
+          && this.state.HideItemDescription
+          // an action menu is open on another item
+          && !PreventHoverGlobally
+        ) {
+
+
+          // display description
           this.setState({
             HideItemDescription: false,
             x: pageX,
             y: pageY,
-          })          
+          })
+
         }
       }.bind(this), 600)
+      
     }
+
   }
 
   HideItemDescriptionOnHover = () => {
+    // hover events are not blocked
     if (!this.state.PreventHoverEvent) {
-      this.setState({HideItemDescription: true, HoveredOut: true})
+      console.log("goodbye")
+      this.setState({
+        // hide item description
+        HideItemDescription: true,
+        // the user is not interested in this item anymore
+        HoveredOut: true
+      })
     }
   }
 
-  // description box
+  // item description
   ItemDescription = () => {
     if (this.props.item) {
       let Item = {...this.props.item}
@@ -340,21 +456,13 @@ class ItemImageBlock extends Component {
     return null
   }
 
-  // item action handling
-  UseItem = (Action) => {
-    if (Action === "ShowItemDescription") {
-      this.ShowItemDescription(/* enter coordinates of the click here*/)
-      return false
-    }
-    this.props.UseItem(this.props.item, Action)
-  }
-
-  // action box
+  // action menu
   ItemActions = () => {
     if (this.props.item) {
       let Item = {...this.props.item}
       let Action = (
         <Block hidden={this.state.HideItemActions} style={{...Styles.ItemActions, left: this.state.x, top: this.state.y}}>
+        <Block style={Styles.ItemDescriptionName}>{Item.Name}</Block>
         {this.AvailableActions().map(ItemAction => {
           return (
             <ItemSingleAction
@@ -386,6 +494,15 @@ class ItemImageBlock extends Component {
       return AvailableActions
     }
     return []
+  }
+
+  // item action handling
+  UseItem = (Action) => {
+    if (Action === "ShowItemDescription") {
+      this.ShowItemDescription(/* enter coordinates of the click here*/)
+      return false
+    }
+    this.props.UseItem(this.props.item, Action)
   }
 
   render() {
@@ -658,7 +775,7 @@ class SpellBook extends Component {
           image={(Spells[i] && Spells[i].Image) || null}
           name={(Spells[i] && Spells[i].Name) || null}
           item={Spells[i]}
-          NoAction
+          NoActionMenu
           onClick={this.props.CastSpell}
           />
         )  
