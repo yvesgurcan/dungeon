@@ -480,24 +480,54 @@ class ItemImageBlock extends Component {
 
   // discriminate actions that are available for this item
   AvailableActions = () => {
+    
     let Item = {...this.props.Item}
     let Equipped = this.props.Equipped
+    let Loot = this.props.Loot
+    
     if (Item) {
 
+      let Type = Item.Type
+      
       let AvailableActions =
         TabletScreen || MobileScreen
           ? [{Name: "Description", onClick: "ShowItemDescription", BuiltInComponent: true}]
           : []
       
+      if (Loot) {
+        AvailableActions.push({Name: "Take", onClick: "TakeSingleLoot"})
+      }
+      
+      if (Type === "potion") {
+        AvailableActions.push({Name: "Drink", onClick: "DrinkPotion"})
+      }
+      
+      if (Type === "food") {
+        AvailableActions.push({Name: "Eat", onClick: "ConsumeFood"})
+      }
+      
+      if (Type === "scroll") {
+        AvailableActions.push({Name: "Cast Spell", onClick: "UseScroll"})
+      }
+      
+      if (Utilities.Equipable.indexOf(Type) > -1) {
+        AvailableActions.push({Name: "Equip", onClick: "EquipItem
+      }
+      
       if (Equipped) {
         AvailableActions.push({Name: "Unequip", onClick: "UnequipItem"})
       }
 
-      AvailableActions.push({Name: "Drop", onClick: "DropItem"})
+      if (!Loot) {
+          AvailableActions.push({Name: "Drop", onClick: "DropItem"})
+      }
 
       return AvailableActions
+      
     }
+    
     return []
+    
   }
 
   // item action handling
