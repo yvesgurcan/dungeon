@@ -16,6 +16,12 @@ const TabletScreen = function() {
 
 export const Utilities = {
 
+    Version: {
+        Stage: "pre-alpha",
+        Number: "0.6.1",
+        Release: "dev",
+    },
+
     // debug and cheats
     ShowFullMap: Cheats || false
     ,
