@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, {Component} from "react"
 import World from "./WorldAssets.js"
 import Campaign from "./LegendsOfTheCatacombs.js"
 import Gameplay from "./GameplayAssets.js"
@@ -4035,7 +4035,7 @@ class Game extends Component {
   constructor(props) {
     super(props)
 
-    this.state = {...this.InitGameEnvironment(true), HideInventory: true, HideSpellBook : true, HideStats: true}
+    this.state = {...this.InitGameEnvironment(true), HideInventory: true, HideSpellBook : true, HideStats: false}
     
   }
 
@@ -4074,19 +4074,26 @@ class Game extends Component {
     }
 
   }
+  
+  GenerateIds = (Array) => {
+    let ArrayWithIds = [...Array]
+    return ArrayWithIds.map((ArrayElement, index) => {
+      ArrayElement.Id = index
+      return ArrayElement
+    })
+  }
 
   InitGameEnvironment = (InitPlayer = false) => {
 
     // Campaign assets
-    // let InitState = {...Campaign}
     let InitState = {
       CreateCharacter: Campaign.CreateCharacter,
       Player: {...Campaign.Player},
       Backpack: {...Campaign.Backpack},
       AvailableStartSpell: [...Campaign.AvailableStartSpell],
       Gear: {...Campaign.Gear},
-      LootContainers: [...Campaign.LootContainers],
-      Monsters: [...Campaign.Monsters],
+      LootContainers: this.GenerateIds([...Campaign.LootContainers]),
+      Monsters: this.GenerateIds([...Campaign.Monsters]),
       Text: {...Campaign.Text},
       WallMap: [...Campaign.WallMap],
       GameStarted: {
@@ -4100,8 +4107,6 @@ class Game extends Component {
     if (!InitPlayer) {
       delete InitState.CreateCharacter      
     }
-
-    InitState.LootContainers = [...Campaign.LootContainers]
 
     // Debug/Cheats
     if (Utilities.ShowFullMap) {
