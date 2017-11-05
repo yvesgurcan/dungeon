@@ -5196,7 +5196,7 @@ class Game extends Component {
   UpdateText = ({ x, y }) => {
     let currentText = this.state.currentText
     let currentTextImage = this.state.currentTextImage
-    let Text = Object.assign([], this.state.Text)
+    let Text = [...this.state.Text]
 
     let matchTextAccessPoint = false
 
@@ -5210,6 +5210,7 @@ class Game extends Component {
             currentText = text.text
             currentTextImage = text.image || null
             Text[index].Used = true
+            this.ScrollToTop("Story")
             return true
           }
           else {
