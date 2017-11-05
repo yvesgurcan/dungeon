@@ -23,6 +23,8 @@ export const GameplayAssets = {
             Gathered: "You gathered all the loot in your backpack.",
             TooHeavy: "The loot is too heavy.",
             TooMuch: "You can not take all the loot.",
+            ItemTooHeavy: "This item is too heavy.",
+            BackpackFull: "Your backpack is full.",
         },
         Potion: {
             NoEffect: "The potion had no effect.",

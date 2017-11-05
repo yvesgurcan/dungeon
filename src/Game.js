@@ -19,6 +19,12 @@ let WallMapVisibleRange = Object.assign({}, Utilities.WallMapVisibleRange)
 let MobileScreen = Utilities.ScreenSize.MobileScreen()
 let TabletScreen = Utilities.ScreenSize.TabletScreen()
 
+let NextAvailableId = {
+  Monsters: 0,
+  LootContainers: 0,
+  Items: 0,
+}
+
 /* miscellani */
 
 const authorEmail = "gurcan.yves@gmail.com"
@@ -166,7 +172,16 @@ class ItemImageBlock extends Component {
     this.state = {
       HideItemDescription: true,
       HideItemActions: true,
+      Id: Math.floor(Math.random() * 99999999999)
     }
+  }
+
+  componentDidMount() {
+    this.Mounted = true
+  }
+
+  componentWillUnmount() {
+    this.Mounted = false
   }
 
   RegisterTouch = () => {
@@ -231,6 +246,8 @@ class ItemImageBlock extends Component {
 
   // right click -- event listener
   HideItemActions = () => {
+    
+    if (!this.Mounted) return false
 
     if (this.state.DescriptionAsAction) {
       // add item description event listener
@@ -306,11 +323,13 @@ class ItemImageBlock extends Component {
   // no action menu -- event listener
   HideItemDescription = () => {
 
+    if (!this.Mounted) return false
+
     this.setState({
       // hide the description
       HideItemDescription: true,
       // release the block on hover events
-      PreventHoverEvent: false
+      PreventHoverEvent: false,
     })
 
     // remove item description listeners
@@ -364,6 +383,7 @@ class ItemImageBlock extends Component {
           && this.state.HideItemDescription
         ) {
 
+          if (!this.Mounted) return false
 
           // display description
           this.setState({
@@ -389,6 +409,13 @@ class ItemImageBlock extends Component {
         // the user is not interested in this item anymore
         HoveredOut: true
       })
+    }
+  }
+
+  ShowHoverForItemAfterClick = (input) => {
+    if (this.state.ResetHover) {
+      this.ShowItemDescriptionOnHover(input)
+      this.setState({ResetHover: false})
     }
   }
 
@@ -447,22 +474,22 @@ class ItemImageBlock extends Component {
       let AvailableActions = [{Name: "Description", onClick: "ShowItemDescription", BuiltInComponent: true}]
       
       if (Loot) {
-        AvailableActions.push({Name: "Take", onClick: "TakeSingleLoot"})
+        AvailableActions.push({Name: "Take", onClick: "TakeSingleLoot", MainAction: true})
       }
       
       if (Type === "potion") {
-        AvailableActions.push({Name: "Drink", onClick: "DrinkPotion"})
+        AvailableActions.push({Name: "Drink", onClick: "DrinkPotion", MainAction: !Loot})
       }
       
       if (Type === "food") {
-        AvailableActions.push({Name: "Eat", onClick: "ConsumeFood"})
+        AvailableActions.push({Name: "Eat", onClick: "ConsumeFood", MainAction: !Loot})
       }
       
       if (Type === "scroll") {
-        AvailableActions.push({Name: "Cast Spell", onClick: "UseScroll"})
+        AvailableActions.push({Name: "Cast Spell", onClick: "UseScroll", MainAction: !Loot})
       }
       
-      if (Utilities.Equipable.indexOf(Type) > -1) {
+      if (!Equipped && Utilities.Equipable.indexOf(Type) > -1) {
         AvailableActions.push({Name: "Equip", onClick: "EquipItem"})
       }
       
@@ -484,15 +511,19 @@ class ItemImageBlock extends Component {
 
   // item action selected from action menu
   UseItem = (Action) => {
-    if (Action === "ShowItemDescription") {
+    if (Action.onClick === "ShowItemDescription") {
       this.ShowItemDescription(null)
       return false
     }
 
     this.setState({Clicked: true})
     setTimeout(function () {
-      this.setState({Clicked: false})
-      this.props.UseItem(this.props.item, Action)
+      this.setState({Clicked: false, ResetHover: true})
+      if (Action.MainAction) {
+        this.props.onClick(this.props.item)
+        return false
+      }
+      this.props.UseItem(this.props.item, Action.onClick)
     }.bind(this), 50)
 
 
@@ -501,6 +532,9 @@ class ItemImageBlock extends Component {
   // direct click on item image
   onClick = () => {
 
+    let Item = {...this.props.item}    
+    if (!Object.getOwnPropertyNames(Item).length) return null
+
     if (!this.props.onClick) {
       console.warn("This feature is not ready yet :)")
       return null
@@ -508,23 +542,32 @@ class ItemImageBlock extends Component {
 
     this.setState({Clicked: true})
     setTimeout(function () {
-      this.setState({Clicked: false})
+      this.setState({Clicked: false, ResetHover: true})
       this.props.onClick(this.props.item)
       this.HideItemActions()
       this.HideItemDescription()
     }.bind(this), 50)
 
-
   }
 
   render() {
+
     return (
-      <View style={Styles.ItemImageBlock} onContextMenu={this.ToggleItemActions} onMouseEnter={this.ShowItemDescriptionOnHover} onMouseLeave={this.HideItemDescriptionOnHover} onTouchStart={this.RegisterTouch} onClick={this.onClick} >
+      <View
+        id={this.state.Id}
+        style={Styles.ItemImageBlock}
+        onContextMenu={this.ToggleItemActions}
+        onMouseEnter={this.ShowItemDescriptionOnHover}
+        onMouseLeave={this.HideItemDescriptionOnHover}
+        onMouseMove={this.ShowHoverForItemAfterClick}
+        onTouchStart={this.RegisterTouch}>
         {this.ItemDescription()}
         {this.ItemActions()}
         <View>
-          <View hidden={!this.state.Clicked} style={Styles.ItemImageBlockClick}/>
-          <ItemImage {...this} {...this.props} />
+          <View hidden={!this.state.Clicked} style={this.props.Loot ? {...Styles.ItemImageBlockClick, top: document.getElementById(this.state.Id) ?document.getElementById(this.state.Id).getBoundingClientRect().y+1 : null} : Styles.ItemImageBlockClick}/>
+          <View onClick={this.onClick}>
+            <ItemImage {...this} {...this.props} />
+          </View>
           <View style={Styles.ItemImageBlockNumber} hidden={!this.props.showIndex}>
             {this.props.index}
           </View>
@@ -551,7 +594,7 @@ class ItemSingleAction extends Component {
   }
 
   UseItem = () => {
-    this.props.onClick(this.props.ItemAction.onClick)
+    this.props.onClick(this.props.ItemAction)
   }
 
   render() {
@@ -1739,6 +1782,7 @@ class Loot extends Component {
         image={(item && item.image) || null}
         name={(item && item.Name) || null}
         item={item}
+        Loot
         {... this.props}/>      
     )
   }
@@ -3757,7 +3801,7 @@ class Game extends Component {
           display: "inline-block",
           textAlign: "center",
           border: "1px solid black",
-          padding: "3px 10px 3px 10px",
+          padding: "3px 20px 3px 20px",
           margin: "1px",
           userSelect: "none",
           background: ButtonClickBackground,
@@ -3900,12 +3944,11 @@ class Game extends Component {
           boxShadow: "inset 0 0 10px gray",
         },
         ItemImageBlockClick: {
-          zIndex: "700",
           position: "fixed",
           height: "32px",
           width: "32px",
           background: "#333",
-          opacity: "0.5"
+          opacity: "0.5",
         },
         ItemImageBlockNumber: {
           color: "black",
@@ -3944,6 +3987,7 @@ class Game extends Component {
           maxWidth: "200px",
           textAlign: "left",
           opacity: "0.85",
+          color: "white",
         },
         ItemDescriptionName: {
           fontWeight: "bold",
@@ -3961,6 +4005,7 @@ class Game extends Component {
           minWidth: "90px",
           textAlign: "left",
           opacity: "0.85",
+          color: "white",
         },
         ItemAction: {
           paddingTop: "2.5px",
@@ -4075,10 +4120,17 @@ class Game extends Component {
 
   }
   
-  GenerateIds = (Array) => {
-    let ArrayWithIds = [...Array]
+  GenerateIds = (ArrayToId, IdType) => {
+
+    let ArrayWithIds = [...ArrayToId]
     return ArrayWithIds.map((ArrayElement, index) => {
-      ArrayElement.Id = index
+      if (!NextAvailableId[IdType]) {
+        NextAvailableId[IdType] = 0
+      }
+      ArrayElement.Id = NextAvailableId[IdType]++
+      
+      if (Debug) console.log("NextAvailableId:",NextAvailableId)
+
       return ArrayElement
     })
   }
@@ -4092,8 +4144,8 @@ class Game extends Component {
       Backpack: {...Campaign.Backpack},
       AvailableStartSpell: [...Campaign.AvailableStartSpell],
       Gear: {...Campaign.Gear},
-      LootContainers: this.GenerateIds([...Campaign.LootContainers]),
-      Monsters: this.GenerateIds([...Campaign.Monsters]),
+      LootContainers: this.GenerateIds([...Campaign.LootContainers], "LootContainers"),
+      Monsters: this.GenerateIds([...Campaign.Monsters], "Monsters"),
       Text: {...Campaign.Text},
       WallMap: [...Campaign.WallMap],
       GameStarted: {
@@ -4147,6 +4199,7 @@ class Game extends Component {
     // Character's Backpack
     InitState.Backpack = 
     this.CheckInventoryWeightAtStartUp(InitState.Backpack)
+    InitState.Backpack.Items = this.GenerateIds([...InitState.Backpack.Items], "Items")
 
     // Maps
     // create the dynamic "revealed area" map as displayed in the HUD
@@ -4166,12 +4219,16 @@ class Game extends Component {
     // create the internal map of loot containers
     let LootMap = JSON.parse(JSON.stringify(Campaign.WallMap.map(HorizontalLine => HorizontalLine.map(x => " "))))
 
-    if (Campaign.LootContainers) {
-      Campaign.LootContainers.map(Container => {
+    if (InitState.LootContainers) {
+      InitState.LootContainers = InitState.LootContainers.map(Container => {
         if (Container.x && Container.y) {
           LootMap[Container.y][Container.x] = LootContainer
         }
-        return null
+        // give ids to the loot container items
+        if (Container.items) {
+          Container.items = this.GenerateIds([...Container.items],"Items")          
+        }
+        return Container
       })
     }
 
@@ -5874,17 +5931,12 @@ class Game extends Component {
 
       }
       else {
-
-        this.SetMessage("This item is too heavy.")
-        this.ResetMessage()
-
+        this.SetText(Gameplay.Messages.Loot.ItemTooHeavy)
       }
 
     }
     else {
-
-      this.SetMessage("Your backpack is full.")
-      this.ResetMessage()
+      this.SetText(Gameplay.Messages.Loot.BackpackFull)
 
     }
 

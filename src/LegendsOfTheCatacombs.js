@@ -38,24 +38,26 @@ export const CampaignAssets = {
         Items: [
 
             
-            {...WorldAssets.Items.ManaPotion, Id: 1},
-            {...WorldAssets.Items.ManaPotion, Id: 2},
-            {...WorldAssets.Items.ManaPotion, Id: 3},
-            {...WorldAssets.Items.ManaPotion, Id: 4},
-            {...WorldAssets.Items.ManaPotion, Id: 5},
-            {...WorldAssets.Items.ManaPotion, Id: 6},
-            {...WorldAssets.Items.ManaPotion, Id: 7},
-            {...WorldAssets.Items.ManaPotion, Id: 8},
-            {...WorldAssets.Items.ManaPotion, Id: 9},
-            {...WorldAssets.Items.ManaPotion, Id: 10},
+            {...WorldAssets.Items.ManaPotion},
+            {...WorldAssets.Items.ManaPotion},
+            {...WorldAssets.Items.ManaPotion},
+            {...WorldAssets.Items.ManaPotion},
+            {...WorldAssets.Items.ManaPotion},
+            {...WorldAssets.Items.ManaPotion},
+            {...WorldAssets.Items.ManaPotion},
+            /*
+            {...WorldAssets.Items.ManaPotion},
+            {...WorldAssets.Items.ManaPotion},
+            {...WorldAssets.Items.ManaPotion},
+            */
             
 
             /*
-            {...WorldAssets.Items.HealthPotion, Id: 1},
-            {...WorldAssets.Items.HealthPotion, Id: 12},
-            {...WorldAssets.Items.HealthPotion, Id: 13},
-            {...WorldAssets.Items.HealthPotion, Id: 14},
-            {...WorldAssets.Items.StaminaPotion, Id: 4},
+            {...WorldAssets.Items.HealthPotion},
+            {...WorldAssets.Items.HealthPotion},
+            {...WorldAssets.Items.HealthPotion},
+            {...WorldAssets.Items.HealthPotion},
+            {...WorldAssets.Items.StaminaPotion},
             WorldAssets.Items.AmuletOfMagic,
             WorldAssets.Items.SkullAmulet,
             WorldAssets.Items.Sword,
@@ -64,7 +66,7 @@ export const CampaignAssets = {
             WorldAssets.Items.HealWoundsScroll,
             WorldAssets.Items.EntangleScroll,
             WorldAssets.Items.DetectMonsterScroll,
-            {...WorldAssets.Items.Apple, Id: 5},
+            {...WorldAssets.Items.Apple},
             */
             
         ],
@@ -76,47 +78,43 @@ export const CampaignAssets = {
 
     LootContainers: [
         {
-            Id: 1,
             x: 10,
             y: 13,
             Name: "skeleton",
             items: [
                 // WorldAssets.UniqueItems.IronKey,
-                {...WorldAssets.Items.HealthPotion, Id: 1},
-                {...WorldAssets.Items.ManaPotion, Id: 2},
-                {...WorldAssets.Items.ManaPotion, Id: 3},
+                {...WorldAssets.Items.HealthPotion},
+                {...WorldAssets.Items.ManaPotion},
+                {...WorldAssets.Items.ManaPotion},
             ]
         },
         {
-            Id: 2,
             x: 17,
             y: 9,
             Name: "dead body",
             items: [
-                {...WorldAssets.Items.Apple, Id: 4},
-                {...WorldAssets.Items.Bread, Id: 5},
+                {...WorldAssets.Items.Apple},
+                {...WorldAssets.Items.Bread},
             ]
         },
         {
-            Id: 3,
             x: 16,
             y: 15,
             Name: "small bag",
             items: [
-                {...WorldAssets.Items.Rock, Id: 6},
-                {...WorldAssets.Items.StaminaPotion, Id: 7},
+                {...WorldAssets.Items.Rock},
+                {...WorldAssets.Items.StaminaPotion},
             ]
         },
         {
-            Id: 4,
             x: 11,
             y: 20,
             Name: "chest",
             items: [
-                {...WorldAssets.Items.HealthPotion, Id: 8},
-                {...WorldAssets.Items.ManaPotion, Id: 9},
-                {...WorldAssets.Items.Chicken, Id: 10},
-                {...WorldAssets.Items.Bow, Id: 11},
+                {...WorldAssets.Items.HealthPotion},
+                {...WorldAssets.Items.ManaPotion},
+                {...WorldAssets.Items.Chicken},
+                {...WorldAssets.Items.Bow},
             ]
         },
     ],
@@ -127,7 +125,6 @@ export const CampaignAssets = {
         /*{...WorldAssets.Bestiary.Orc,
             x: 12,
             y: 13,
-            Id: 2,
             Name: "cell keeper1",
             Damage: {Min: 1, Max: 4},
             Stationary: true,
@@ -135,14 +132,12 @@ export const CampaignAssets = {
         {...WorldAssets.Bestiary.Orc,
             x: 12,
             y: 14,
-            Id: 1,
             Name: "cell keeper",
             Stationary: true,
         },
         /*{...WorldAssets.Bestiary.Orc,
             x: 12,
             y: 15,
-            Id: 3,
             Name: "cell keeper3",
             Damage: {Min: 1, Max: 4},
             Stationary: true,
@@ -150,13 +145,11 @@ export const CampaignAssets = {
         {...WorldAssets.Bestiary.Goblin,
             x: 14,
             y: 7,
-            Id: 2,
             Damage: {Min: 5, Max: 10},
         },
         {...WorldAssets.Bestiary.Orc,
             x: 15,
             y: 21,
-            Id: 3,
             Health: 70,
             Damage: {Min: 15, Max: 20},
         },
