@@ -6554,13 +6554,12 @@ class Game extends Component {
 
   RemoveItemFromInventory = (Item) => {
 
-    // let {Backpack} = this.state
-    let Backpack = Object.assign({}, this.state.Backpack)
+    let Backpack = {...this.state.Backpack}
 
     let UpdatedBackpackItems = []
 
     Backpack.Items.map((BackpackItem, index) => {
-      if (BackpackItem.Id !== Item.Id || !BackpackItem.Id) {
+      if (BackpackItem.Id !== Item.Id || typeof BackpackItem.Id === undefined) {
         UpdatedBackpackItems.push(BackpackItem)
       }
       return null
