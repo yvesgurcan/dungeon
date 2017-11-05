@@ -5127,6 +5127,13 @@ class Game extends Component {
       HtmlElement.scrollTop = HtmlElement.scrollHeight
     }
   }
+  
+  ScrollToTop = (ElementId) => {
+    if (document.getElementById(ElementId)) {
+      let HtmlElement = document.getElementById(ElementId)
+      HtmlElement.scrollTop = 0
+    }
+  }
 
   Scroll = (ElementId, Direction) => {
     if (document.getElementById(ElementId)) {
