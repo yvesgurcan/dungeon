@@ -4413,7 +4413,7 @@ class Game extends Component {
       Gear: {...Campaign.Gear},
       LootContainers: this.GenerateIds([...Campaign.LootContainers], "LootContainers"),
       Monsters: this.GenerateIds([...Campaign.Monsters], "Monsters"),
-      Text: {...Campaign.Text},
+      Text: [...Campaign.Text],
       WallMap: [...Campaign.WallMap],
       GameStarted: {
         Milliseconds: Date.now(),
@@ -5397,6 +5397,7 @@ class Game extends Component {
   }
   
   ScrollToTop = (ElementId) => {
+    console.log("go")
     if (document.getElementById(ElementId)) {
       let HtmlElement = document.getElementById(ElementId)
       HtmlElement.scrollTop = 0
@@ -5464,21 +5465,20 @@ class Game extends Component {
   UpdateText = ({ x, y }) => {
     let currentText = this.state.currentText
     let currentTextImage = this.state.currentTextImage
-    let Text = [...this.state.Text]
+    let StoryTexts = [...this.state.Text]
 
     let matchTextAccessPoint = false
 
-    if (Text) {
+    if (StoryTexts) {
 
-      Text.map((text, index) => {
+      StoryTexts.map((text, index) => {
         if (text.Used) return null
         return !text.accessPoints ? null : text.accessPoints.filter(accessPoint => {
           if (accessPoint.x === x && accessPoint.y === y) {
             matchTextAccessPoint = true
             currentText = text.text
             currentTextImage = text.image || null
-            Text[index].Used = true
-            this.ScrollToTop("Story")
+            StoryTexts[index].Used = true
             return true
           }
           else {
@@ -5488,7 +5488,11 @@ class Game extends Component {
 
       })
 
-      this.setState({currentText: currentText, currentTextImage: currentTextImage, Text: Text})
+      if (currentText !== this.state.currentText) {
+        this.ScrollToTop("Story")
+      }
+
+      this.setState({currentText: currentText, currentTextImage: currentTextImage, Text: StoryTexts})
 
     }
 
