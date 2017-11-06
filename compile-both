@@ -1,2 +1,2 @@
-bash compile-dev
 bash compile-stable
+bash compile-dev
