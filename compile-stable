@@ -5,3 +5,4 @@ echo "REACT_APP_STAGE=pre-alpha" >> .env
 cat .env
 npm run build
 mv build stable
+echo "build folder moved to /stable"
