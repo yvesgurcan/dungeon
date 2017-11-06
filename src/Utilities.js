@@ -3,7 +3,6 @@ import WorldAssets from "./WorldAssets.js"
 const Debug = true
 const SoundDebug = false
 const Cheats = false
-const EmptyBackpack = process.env.REACT_APP_RELEASE === "stable" ? true : false
 
 const MobileScreenBreakpoint = 400
 const TabletScreenBreakpoint = 769

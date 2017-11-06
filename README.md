@@ -25,7 +25,7 @@ Go to <http://dungeon.yvesgurcan.com/stable/>. When the page loads, a default ch
 
 *Dungeon!* is in pre-alpha. Since the game is constantly evolving, two different versions are released:
 - a [stable release](http://dungeon.yvesgurcan.com/stable/)
-- a [dev release](http://dungeon.yvesgurcan.com/build/).
+- a [dev release](http://dungeon.yvesgurcan.com/dev/).
 
 It is recommended to play the [stable release](http://dungeon.yvesgurcan.com/stable/). Less features are available in this version of the game, but it is also less likely to crash.
 
@@ -118,7 +118,7 @@ Whenever you want to resume your game, click on "Load Game", paste the saved gam
 ## [Developer's Corner](#toc)
 
 ### [Install *Dungeon!*](#toc)
-You can install all the dependencies necessary to run this program with npm by typing:
+You can install all the dependencies necessary to run this program with `npm` by typing:
  - `npm install`
 
 To run the game on a local server, type:
@@ -126,5 +126,5 @@ To run the game on a local server, type:
 
 ### [Build](#toc)
 To build the project, type one of the following command:
-- `bash compile-dev` (UNIX only; creates a dated dev build where debug flags are not altered on load)
-- `bash compile-stable` (UNIX only; creates a stable build where debug is automatically deactivated on load)
+- `bash compile-dev` (UNIX only; creates a dated dev build at `/dev` where debug flags are not altered on load)
+- `bash compile-stable` (UNIX only; creates a stable build at `/stable`where debug is automatically deactivated on load)

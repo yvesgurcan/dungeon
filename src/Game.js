@@ -11,6 +11,7 @@ import {Graphics, ClearFloat, Version} from "./components/UtilityComponents.js"
 
 let Debug = process.env.REACT_APP_RELEASE === "stable" ? false : Utilities.Debug 
 let SoundDebug = process.env.REACT_APP_RELEASE === "stable" ? false : Utilities.SoundDebug
+const EmptyBackpack = process.env.REACT_APP_RELEASE === "stable" ? true : false
 
 const {North, South, West, East} = Utilities.Directions
 const {Wall, Door, LootContainer, Undiscovered, Empty} = Utilities.MapObjects
@@ -4188,7 +4189,7 @@ class Game extends Component {
     if (Utilities.CastAlwaysSucceeds) {
       InitState.CastAlwaysSucceeds = process.env.REACT_APP_RELEASE === "stable" ? false : true
     }
-    if (Utilities.EmptyBackpack) {
+    if (EmptyBackpack) {
       InitState.Backpack.Items = []
     }
     
