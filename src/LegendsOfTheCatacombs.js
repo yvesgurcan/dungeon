@@ -39,12 +39,12 @@ export const CampaignAssets = {
 
             
             {...WorldAssets.Items.ManaPotion},
+            {...WorldAssets.Items.HealthPotion},
+            {...WorldAssets.Items.StaminaPotion},
             {...WorldAssets.Items.ManaPotion},
-            {...WorldAssets.Items.ManaPotion},
-            {...WorldAssets.Items.ManaPotion},
-            {...WorldAssets.Items.ManaPotion},
-            {...WorldAssets.Items.ManaPotion},
-            {...WorldAssets.Items.ManaPotion},
+            {...WorldAssets.Items.HealthPotion},
+            {...WorldAssets.Items.StaminaPotion},
+            
             /*
             {...WorldAssets.Items.ManaPotion},
             {...WorldAssets.Items.ManaPotion},

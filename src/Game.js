@@ -184,6 +184,19 @@ class ItemImageBlock extends Component {
     this.Mounted = false
   }
 
+  shouldComponentUpdate(NextProps) {
+
+    console.log(NextProps)
+
+    if (
+      NextProps.item === this.props.item
+    ) {
+      return false
+    }
+    if (Debug) console.log("re-render: image", NextProps.item)
+    return true
+  }
+
   RegisterTouch = () => {
 
     // there is no item
@@ -932,8 +945,8 @@ class Inventory extends Component {
 
   render() {
     // let {Player, Backpack} = this.props
-    let Player = Object.assign({}, this.props.Player)
-    let Backpack = Object.assign({}, this.props.Backpack)
+    let Player = {...this.props.Player}
+    let Backpack = {...this.props.Backpack}
 
     return (
       <View style={Styles.Inventory} hidden={this.props.MobileScreen ? this.props.HideInventory : false}>

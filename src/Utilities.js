@@ -1,6 +1,6 @@
 import WorldAssets from "./WorldAssets.js"
 
-const Debug = false
+const Debug = true
 const SoundDebug = false
 const Cheats = false
 
