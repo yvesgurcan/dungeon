@@ -2849,7 +2849,7 @@ class Header extends Component {
       <View style={Styles.Header}>
         <PageTitle>Dungeon!</PageTitle>
         <PageSubtitle>an adventure game in React</PageSubtitle>
-        <Version>{Utilities.Version.Stage} (v{Utilities.Version.Number} {Utilities.Version.Release})</Version>
+        <Version>{Utilities.Version.Stage} (v{Utilities.Version.Number} {Utilities.Version.Release}; build: {process.env.REACT_APP_BUILD_TIME})</Version>
       </View>
     )
   }

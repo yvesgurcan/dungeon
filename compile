@@ -1,0 +1,2 @@
+echo "REACT_APP_BUILD_TIME="`date "+%Y/%m/%d %H:%M"` > .env
+npm run build

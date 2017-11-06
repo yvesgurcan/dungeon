@@ -118,5 +118,12 @@ Whenever you want to resume your game, click on "Load Game", paste the saved gam
 ## [Developer's Corner](#toc)
 
 ### [Install *Dungeon!*](#toc)
+You can install all the dependencies necessary to run this program with npm by typing:
  - `npm install`
+
+To run the game on a local server, type:
  - `npm start`
+
+### [Build](#toc)
+To build the project, type the following command:
+- `bash compile` (UNIX only)
