@@ -1,6 +1,6 @@
 echo ""
 echo "REACT_APP_RELEASE=dev" > .env
-echo "REACT_APP_VERSION=0.6.1" >> .env
+echo "REACT_APP_VERSION=0.6.2" >> .env
 echo "REACT_APP_STAGE=pre-alpha" >> .env
 echo "REACT_APP_BUILD_TIME="`date "+%Y/%m/%d %H:%M"` >> .env
 cat .env

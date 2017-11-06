@@ -572,7 +572,25 @@ class ItemImageBlock extends Component {
         {this.ItemDescription()}
         {this.ItemActions()}
         <View>
-          <View hidden={!this.state.Clicked} style={this.props.Loot ? {...Styles.ItemImageBlockClick, top: document.getElementById(this.state.Id) ?document.getElementById(this.state.Id).getBoundingClientRect().y+1 : null} : Styles.ItemImageBlockClick}/>
+          <View
+            hidden={!this.state.Clicked}
+            style={this.props.Loot
+              ? {...Styles.ItemImageBlockClick,
+                top: document.getElementById(this.state.Id)
+                  ? document.getElementById(this.state.Id).getBoundingClientRect().y+1
+                  : null,
+                left: document.getElementById(this.state.Id)
+                  ? document.getElementById(this.state.Id).getBoundingClientRect().x+1
+                  : null
+                }
+              : {...Styles.ItemImageBlockClick,
+                top: document.getElementById(this.state.Id)
+                  ? document.getElementById(this.state.Id).getBoundingClientRect().y+1
+                  : null,
+                left: document.getElementById(this.state.Id)
+                  ? document.getElementById(this.state.Id).getBoundingClientRect().x+1 - document.getElementById(this.state.Id).scrollLeft
+                  : null
+                }}/>
           <View onClick={this.onClick}>
             <ItemImage {...this} {...this.props} />
           </View>
