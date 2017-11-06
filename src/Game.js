@@ -9,8 +9,8 @@ import {Graphics, ClearFloat, Version} from "./components/UtilityComponents.js"
 
 /* utility */
 
-let Debug = Utilities.Debug || false
-let SoundDebug = Utilities.SoundDebug || false
+let Debug = process.env.REACT_APP_RELEASE === "stable" ? false : Utilities.Debug 
+let SoundDebug = process.env.REACT_APP_RELEASE === "stable" ? false : Utilities.SoundDebug
 
 const {North, South, West, East} = Utilities.Directions
 const {Wall, Door, LootContainer, Undiscovered, Empty} = Utilities.MapObjects
@@ -184,17 +184,18 @@ class ItemImageBlock extends Component {
     this.Mounted = false
   }
 
-  shouldComponentUpdate(NextProps) {
-
-    console.log(NextProps)
+  shouldComponentUpdate(NextProps, NextState) {
 
     if (
-      NextProps.item === this.props.item
+      NextProps.item !== this.props.item
+      || NextState.HideItemDescription !== this.state.HideItemDescription
+      || NextState.HideItemActions !== this.state.HideItemActions
+      || NextState.Clicked !== this.state.Clicked
     ) {
-      return false
+      if (Debug) console.log("re-render: image", NextProps.item)
+      return true
     }
-    if (Debug) console.log("re-render: image", NextProps.item)
-    return true
+    return false
   }
 
   RegisterTouch = () => {
@@ -238,21 +239,14 @@ class ItemImageBlock extends Component {
       // hide the item description that may have appeared when hovering
       HideItemDescription: true,
       // block hover events so that the description does not re-appear until the user has moved out of the element
-      PreventHoverEvent: true
+      PreventHoverEvent: true,
+      x: pageX+5,
+      y: pageY+5,
     }, function() {
-
-      // set the coordinates of the displayed menu action
-      if (!this.state.HideItemActions) {
-        this.setState({
-          x: pageX,
-          y: pageY,
-        })
 
         // attach event listeners to hide the menu when the user clicks away
         document.addEventListener("click", this.HideItemActions, false)
         document.addEventListener("contextmenu", this.HideItemActions, false)
-
-      }
 
     })
   }
@@ -303,8 +297,8 @@ class ItemImageBlock extends Component {
 
     // the item description was called from the action menu
     if (input === null) {
-      pageX = this.state.x
-      pageY = this.state.y
+      pageX = this.state.x-5
+      pageY = this.state.y-5
       this.setState({DescriptionAsAction: true})
 
     }
@@ -316,8 +310,8 @@ class ItemImageBlock extends Component {
       HideItemDescription: false,
       // block the hover event
       PreventHoverEvent: true,
-      x: pageX,
-      y: pageY,
+      x: pageX+5,
+      y: pageY+5,
     })
 
     // add listeners for the item description if there is no action menu so that when the user clicks away it hides the description
@@ -401,8 +395,8 @@ class ItemImageBlock extends Component {
           // display description
           this.setState({
             HideItemDescription: false,
-            x: pageX,
-            y: pageY,
+            x: pageX+5,
+            y: pageY+5,
           })
 
         }
@@ -2849,7 +2843,16 @@ class Header extends Component {
       <View style={Styles.Header}>
         <PageTitle>Dungeon!</PageTitle>
         <PageSubtitle>an adventure game in React</PageSubtitle>
-        <Version>{Utilities.Version.Stage} (v{Utilities.Version.Number} {Utilities.Version.Release}; build: {process.env.REACT_APP_BUILD_TIME})</Version>
+        <Version>
+          {process.env.REACT_APP_STAGE}
+          {process.env.REACT_APP_VERSION
+            ? <Text> (v{process.env.REACT_APP_VERSION} {process.env.REACT_APP_RELEASE}{process.env.REACT_APP_BUILD_TIME
+              ? <Text>; build: {process.env.REACT_APP_BUILD_TIME}</Text>
+              : null}
+            )</Text>
+            : <Text>Dev Mode</Text>
+          }
+        </Version>
       </View>
     )
   }
@@ -4064,13 +4067,12 @@ class Game extends Component {
   componentDidMount() {
 
     let State = {...this.state}
-    let Debug = Utilities.Debug
     let DebugEventMessages = []
 
-    if (Utilities.Debug) {
+    if (Debug) {
       DebugEventMessages.push(Gameplay.Messages.Debug.On)
     }
-    if (Utilities.SoundDebug) {
+    if (SoundDebug) {
       DebugEventMessages.push(Gameplay.Messages.SoundDebug.On)
     }
     if (State.ShowFullMap) {
@@ -4175,18 +4177,20 @@ class Game extends Component {
 
     // Debug/Cheats
     if (Utilities.ShowFullMap) {
-      InitState.ShowFullMap = true
+      InitState.ShowFullMap = process.env.REACT_APP_RELEASE === "stable" ? false : true
     }
     if (Utilities.NoClip) {
-      InitState.NoClip = true
+      InitState.NoClip = process.env.REACT_APP_RELEASE === "stable" ? false : true
     }
     if (Utilities.GodMode) {
-      InitState.GodMode = true
+      InitState.GodMode = process.env.REACT_APP_RELEASE === "stable" ? false : true
     }
     if (Utilities.CastAlwaysSucceeds) {
-      InitState.CastAlwaysSucceeds = true
+      InitState.CastAlwaysSucceeds = process.env.REACT_APP_RELEASE === "stable" ? false : true
     }
-
+    if (Utilities.EmptyBackpack) {
+      InitState.Backpack.Items = []
+    }
     
     // Items
     // create the list of random items to draw from when looting, grouped by level
@@ -5112,7 +5116,7 @@ class Game extends Component {
       }
 
       if (Array.isArray(Message)) {
-        let Messages = [... Message]
+        let Messages = [...Message]
         EventLog = [...EventLog, ...Messages.map(Msg => {return [this.GenerateFormattedTime(Date.now() - GameStarted),Msg].join(": ")})]
       }
       else {

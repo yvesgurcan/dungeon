@@ -1,0 +1,7 @@
+echo "REACT_APP_RELEASE=stable" > .env
+echo "REACT_APP_VERSION=0.6.1" >> .env
+echo "REACT_APP_STAGE=pre-alpha" >> .env
+
+cat .env
+npm run build
+mv build stable

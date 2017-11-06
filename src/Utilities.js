@@ -3,6 +3,7 @@ import WorldAssets from "./WorldAssets.js"
 const Debug = true
 const SoundDebug = false
 const Cheats = false
+const EmptyBackpack = process.env.REACT_APP_RELEASE === "stable" ?true : false
 
 const MobileScreenBreakpoint = 400
 const TabletScreenBreakpoint = 769
@@ -16,12 +17,6 @@ const TabletScreen = function() {
 
 export const Utilities = {
 
-    Version: {
-        Stage: "pre-alpha",
-        Number: "0.6.1",
-        Release: "dev",
-    },
-
     // debug and cheats
     ShowFullMap: Cheats || false
     ,
@@ -34,6 +29,8 @@ export const Utilities = {
     Debug: Debug
     ,
     SoundDebug: SoundDebug
+    ,
+    EmptyBackpack: EmptyBackpack
     ,
 
     // responsiveness
