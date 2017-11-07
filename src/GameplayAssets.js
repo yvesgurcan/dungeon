@@ -84,12 +84,56 @@ export const GameplayAssets = {
     },
 
     Help: {
+        Vitals: {
+            Health: "",
+            Mana: "",
+            Stamina: "",
+        },
+        Arrows: {
+            Race: "",
+            Class: "",
+            Spell: "",
+            North: "",
+            West: "",
+            East: "",
+            South: "",
+        },
         Abilities: {
             Strength: "Strength dictates the force of your attacks.",
             Constitution: "Your constitution determines how much effort you can sustain and how good you are at taking damage.",
             Dexterity: "Dexterity influences how able you are to hit your target.",
             Intelligence: "Your intelligence affects your ability to successfully cast spells.",
         },
+        Level: "",
+        XP: "",
+        ArmorClass: "",
+        Backpack: "",
+        BackpackWeight: "",
+        BackpackMaxWeight: "",
+        Spellbook: "",
+        Buttons: {
+            Reroll: "",
+            Play: "",
+            Resume: "",
+            NewGame: "",
+            SaveGame: "",
+            LoadGame: "",
+            Close: "",
+            ClearLog: "",
+            Rest: "",
+            Take: "",
+        },
+        GameStateBox: {
+            SaveGame: "",
+            LoadGame: ""
+        },
+        CharacterName: "",
+        Race: "",
+        RaceDescription: "",
+        Class: "",
+        ClassDescription: "",
+        FirstSpell: "",
+
     },
 
     LevelXP: {
