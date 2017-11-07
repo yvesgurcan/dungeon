@@ -5025,7 +5025,7 @@ class Game extends Component {
       
       SoundDebug = !SoundDebug
       console.log(SoundDebug ? Gameplay.Messages.SoundDebug.On : Gameplay.Messages.SoundDebug.Off)
-      this.SetText(Debug ? Gameplay.Messages.SoundDebug.On : Gameplay.Messages.SoundDebug.Off)
+      this.SetText(SoundDebug ? Gameplay.Messages.SoundDebug.On : Gameplay.Messages.SoundDebug.Off)
       this.FlushKeystrokeHistory()
       Cheat = true
 
@@ -5177,7 +5177,7 @@ class Game extends Component {
 
         CountTest++
 
-        SoundArray.push("/sounds/" +
+        SoundArray.push("./sounds/" +
         SoundFileFolders[i] +
         SoundName + (p || "") + SoundFileExtensions[x])
 
@@ -5221,10 +5221,10 @@ class Game extends Component {
           // Try numbered file names (e.g.: /drink_potion/drink_potion1.wav)
           for (let p = 0; p <= Utilities.MaxSoundFilesPerFolder; p++) {
 
-            if (SoundDebug) console.log("Inspecting:", "/sounds/" + SoundFileFolders[i] + SoundName + (p || "") + SoundFileExtensions[x])
+            if (SoundDebug) console.log("Inspecting:", "./sounds/" + SoundFileFolders[i] + SoundName + (p || "") + SoundFileExtensions[x])
 
             AudioObject = new Audio(
-              "/sounds/" +
+              "./sounds/" +
               SoundFileFolders[i] +
               SoundName + (p || "") + SoundFileExtensions[x]
             )
@@ -5246,10 +5246,10 @@ class Game extends Component {
 
           CountTest++
 
-          if (SoundDebug) console.log("Inspecting:", "/sounds/" + SoundName + SoundFileExtensions[x])
+          if (SoundDebug) console.log("Inspecting:", "./sounds/" + SoundName + SoundFileExtensions[x])
 
           AudioObject = new Audio(
-            "/sounds/" +
+            "./sounds/" +
             SoundName + SoundFileExtensions[x]
           )
 
