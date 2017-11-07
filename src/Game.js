@@ -963,7 +963,7 @@ class Inventory extends Component {
         <Block style={Styles.InventoryLabel} hidden={this.props.MobileScreen}>Backpack</Block>
         {this.DisplayInventory()}
         <ClearFloat/>
-        <Text>
+        <Text style={Styles.InventoryWeightLabel}>
           Weight: {Number(Backpack.Weight).toFixed(2)} / {Player.MaxWeight} lbs
         </Text>
       </View>
@@ -3972,6 +3972,7 @@ class Game extends Component {
         },
         // Directional Arrows
         ArrowRow: {
+          fontFamily: "MedievalSharp, cursive",
           width: "72px",
         },
         ArrowBlock: {
@@ -4009,6 +4010,7 @@ class Game extends Component {
         },
         // Actions
         ActionButton: {
+          fontFamily: "MedievalSharp, cursive",
           display: "inline-block",
           textAlign: "center",
           border: "1px solid black",
@@ -4019,6 +4021,7 @@ class Game extends Component {
           boxShadow: "inset 0 0 10px gray",
         },
         ActionButtonSmallPadding: {
+          fontFamily: "MedievalSharp, cursive",
           display: "inline-block",
           textAlign: "center",
           border: "1px solid black",
@@ -4029,6 +4032,7 @@ class Game extends Component {
           boxShadow: "inset 0 0 10px gray",
         },
         ActionButtonHover: {
+          fontFamily: "MedievalSharp, cursive",
           display: "inline-block",
           textAlign: "center",
           border: "1px solid black",
@@ -4039,6 +4043,7 @@ class Game extends Component {
           boxShadow: "inset 0 0 10px gray",
         },
         ActionButtonHoverSmallPadding: {
+          fontFamily: "MedievalSharp, cursive",
           display: "inline-block",
           textAlign: "center",
           border: "1px solid black",
@@ -4049,6 +4054,7 @@ class Game extends Component {
           boxShadow: "inset 0 0 10px gray",
         },
         ActionButtonClick: {
+          fontFamily: "MedievalSharp, cursive",
           display: "inline-block",
           textAlign: "center",
           border: "1px solid black",
@@ -4059,6 +4065,7 @@ class Game extends Component {
           boxShadow: "inset 0 0 10px gray",
         },
         ActionButtonClickSmallPadding: {
+          fontFamily: "MedievalSharp, cursive",
           display: "inline-block",
           textAlign: "center",
           border: "1px solid black",
@@ -4078,6 +4085,9 @@ class Game extends Component {
         },
 
         InventoryLabel: {
+          marginBottom: HUDBlockPadding2,
+        },
+        InventoryWeightLabel: {
           marginBottom: HUDBlockPadding2,
         },
         // SpellBook
@@ -4118,12 +4128,14 @@ class Game extends Component {
           gridColumnStart: FirstColumn,
           gridColumnEnd: LastColumn,
           gridRowStart: GameStateRow,
+          fontFamily: "Indie Flower, cursive",
           padding: HUDBlockPadding,
           borderTop: "1px solid black",
           color: "black",
           fontWeight: "bold",
         },
         GameStateBox: {
+          fontFamily: "Indie Flower, cursive",
           width: "100%",
           height: "500px",
           cursor: "pointer",
@@ -5348,14 +5360,6 @@ class Game extends Component {
     if (Message) {
       this.setState({ currentMessage: Message})      
     }
-  }
-
-  ResetMessage = () => {
-    /*setTimeout(function () {
-      if (this.state.currentMessage !== "") {
-        this.setState({ currentMessage: "" })
-      }
-    }.bind(this), 2000)*/
   }
 
   SetText = (Message = "", Image = null) => {
