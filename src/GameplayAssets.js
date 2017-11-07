@@ -84,6 +84,7 @@ export const GameplayAssets = {
     },
 
     Help: {
+        // Player stats and controls + Character creation
         Vitals: {
             Health: "",
             Mana: "",
@@ -107,10 +108,13 @@ export const GameplayAssets = {
         Level: "",
         XP: "",
         ArmorClass: "",
+        // Backpack
         Backpack: "",
         BackpackWeight: "",
         BackpackMaxWeight: "",
+        // Spellbook
         Spellbook: "",
+        // Action buttons
         Buttons: {
             Reroll: "",
             Play: "",
@@ -123,11 +127,14 @@ export const GameplayAssets = {
             Rest: "",
             Take: "",
         },
+        // Save/Load game
         GameStateBox: {
             SaveGame: "",
             LoadGame: ""
         },
+        // Specific to character creation
         CharacterName: "",
+        AbilityBonus: "",
         Race: "",
         RaceDescription: "",
         Class: "",
