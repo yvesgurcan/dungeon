@@ -99,6 +99,7 @@ export const GameplayAssets = {
             East: "Click here to go east.",
             South: "Click here to go south.",
         },
+        Stats: "", // only shows on small screens
         Abilities: {
             Strength: "Strength dictates the force of your attacks.",
             Constitution: "Your constitution determines how much effort you can sustain and how good you are at taking damage.",
