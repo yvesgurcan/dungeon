@@ -1304,7 +1304,6 @@ class HoverToolTip extends Component {
   shouldComponentUpdate(NextProps, NextState) {
 
     if (NextState.HideToolTip !== this.state.HideToolTip || NextProps.children !== this.props.children) {
-      if (Debug) console.log("re-render:", this.props.Metric, "stat bar")
       return true
     }
     return false
@@ -1464,7 +1463,12 @@ class StatBar extends Component {
   render() {
     return (
       <View>
-        <HoverToolTip FlexibleWidth ToolTip={<Text>{this.props.Metric}: {this.props.ratio || (this.props.current + "/" + this.props.max)}</Text>}>
+        <HoverToolTip FlexibleWidth ToolTip={
+          <View>
+            <View>{this.props.Metric}: {this.props.ratio || (this.props.current + "/" + this.props.max)}</View>
+            <View>{this.props.Description}</View>
+          </View>
+        }>
           <View style={Styles.StatBar}>
             <View style={this.props.style}/>
           </View>
@@ -1479,7 +1483,12 @@ class HealthBar extends Component {
     let style = {...Styles.HealthBar, width: Math.min(100, this.props.current/this.props.max * 100) + "%"}
     return (
       <View>
-        <StatBar Metric="Health" style={style} max={this.props.max} current={this.props.current}/>
+        <StatBar
+          Metric="Health"
+          style={style}
+          max={this.props.max}
+          current={this.props.current}
+          Description={Gameplay.Help.Vitals.Health}/>
       </View>
     )
   }
