@@ -1315,6 +1315,7 @@ class HoverToolTip extends Component {
   // on click
   ShowToolTipOnClick = (input) => {
 
+    // do not show a tooltip on click
     if (this.props.DisabledOnClick) {
       this.HideToolTipOnClick()
       input.preventDefault()
@@ -1435,6 +1436,9 @@ class HoverToolTip extends Component {
   }
 
   render() {
+    if (!this.props.ToolTip || this.props.ToolTip === "") {
+      return <View>{this.props.children}</View>
+    }
     return (
       <View
         style={this.props.style}
@@ -1700,12 +1704,6 @@ class PlayerAbilities extends Component {
     let Player = {...this.props.Player}
     return (
       <View style={MobileScreen || TabletScreen ? Styles.Hidden : Styles.PlayerAttributesStacked}>
-        <View style={Styles.PlayerStat} hidden={!TabletScreen}>
-          <Text>Level: </Text><Text>{Player.Level}</Text>
-        </View>
-        <View style={Styles.PlayerStat} hidden={!TabletScreen}>
-          <Text>XP: </Text><Text>{Player.XP}</Text>
-        </View>
         <View style={Styles.PlayerStat}>
           <HoverToolTip ToolTip={Gameplay.Help.Abilities.Strength} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
             <Text>Strength: </Text><Text>{Player.Strength}</Text>
@@ -1733,15 +1731,21 @@ class PlayerAbilities extends Component {
 
 class ResponsivePlayerLevelAndArmor extends Component {
 
+  constructor(props) {
+    super(props)
+    this.state = {ShowToolTip: false}
+  }
+
   // no need to re-render stats if player has not changed
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(NextProps, NextState) {
     if (
-      nextProps.MobileScreen !== this.props.MobileScreen
-      || nextProps.TabletScreen !== this.props.TabletScreen
-      || nextProps.Player.Level !== this.props.Player.Level
-      || nextProps.Player.XP !== this.props.Player.XP
-      || nextProps.Player.ArmorClass !== this.props.Player.ArmorClass
-      || nextProps.HideStats !== this.props.HideStats
+      NextProps.MobileScreen !== this.props.MobileScreen
+      || NextProps.TabletScreen !== this.props.TabletScreen
+      || NextProps.Player.Level !== this.props.Player.Level
+      || NextProps.Player.XP !== this.props.Player.XP
+      || NextProps.Player.ArmorClass !== this.props.Player.ArmorClass
+      || NextProps.HideStats !== this.props.HideStats
+      || NextState.ShowToolTip !== this.state.ShowToolTip
     ) {
       if (Debug) console.log("re-render: player level/XP and AC")
       return true
@@ -1749,12 +1753,18 @@ class ResponsivePlayerLevelAndArmor extends Component {
     return false
   }
 
+  ToggleToolTip = (Bool) => {
+    this.setState({ShowToolTip: Bool})
+  }
+
   render() {
     let Player = {...this.props.Player}
     return (
       <View style={MobileScreen || TabletScreen ? Styles.PlayerStats2Block1 : Styles.Hidden} hidden={this.props.MobileScreen ? this.props.HideStats : false}>
         <View style={Styles.PlayerStat}>
-          <Text>{MobileScreen ? <Text>LVL</Text> : <Text>Level</Text>}: </Text><Text>{Player.Level}</Text>
+          <HoverToolTip ToolTip={Gameplay.Help.Level} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+            <Text>{MobileScreen ? <Text>LVL</Text> : <Text>Level</Text>}: </Text><Text>{Player.Level}</Text>
+            </HoverToolTip>
         </View>
         <View style={Styles.PlayerStat}>
           <Text>XP: </Text><Text>{Player.XP}</Text>
@@ -2969,6 +2979,7 @@ class CreateCharacterBackground extends Component {
                 image={(FirstSpell && FirstSpell.Image) || null}
                 name={(FirstSpell && FirstSpell.Name) || null}
                 item={FirstSpell}
+                NoActionMenu
                 onClick={null} />
             </Block>
             <Block style={{marginTop: "3px"}}>
@@ -5129,7 +5140,10 @@ class Game extends Component {
       AudioObject.play()
       .then(function() {
 
-        if (SoundDebug) console.log("Played:",AudObj.src)
+        if (SoundDebug) {
+          // this.props.SetText("Sound played:", AudObj.src)
+          console.log("Played:",AudObj.src)
+        }
 
         AudObj.volume = Sound.Volume
         SoundPlaying = true
@@ -5192,7 +5206,9 @@ class Game extends Component {
           AudObj.play()
           .then(function() {
 
-            if (SoundDebug) console.log("Played:",AudObj.src)
+            if (SoundDebug) {
+              console.log("Played:", AudObj.src)
+            }
 
             AudObj.volume = Sound.Volume
             SoundPlaying = true
