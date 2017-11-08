@@ -1437,7 +1437,9 @@ class HoverToolTip extends Component {
 
   render() {
     if (!this.props.ToolTip || this.props.ToolTip === "") {
-      return <View>{this.props.children}</View>
+      if (!Debug) {
+        return <View>{this.props.children}</View>        
+      }
     }
     return (
       <View
@@ -1670,66 +1672,7 @@ class RepsonsiveStatsContainer extends Component {
   }
 }
 
-class PlayerAbilities extends Component {
-
-  constructor(props) {
-    super(props)
-    this.state = {ShowToolTip: false}
-  }
-
-  // no need to re-render stats if player has not changed
-  shouldComponentUpdate(NextProps, NextState) {
-    if (
-      NextProps.MobileScreen !== this.props.MobileScreen
-      || NextProps.TabletScreen !== this.props.TabletScreen
-      || NextProps.Player.Level !== this.props.Player.Level
-      || NextProps.Player.XP !== this.props.Player.XP
-      || NextProps.Player.Strength !== this.props.Player.Strength
-      || NextProps.Player.Dexterity !== this.props.Player.Dexterity
-      || NextProps.Player.Constitution !== this.props.Player.Constitution
-      || NextProps.Player.Intelligence !== this.props.Player.Intelligence
-      || NextState.ShowToolTip !== this.state.ShowToolTip
-    ) {
-      if (Debug) console.log("re-render: player level/XP + abilities")
-      return true
-    }
-    return false
-  }
-
-  ToggleToolTip = (Bool) => {
-    this.setState({ShowToolTip: Bool})
-  }
-
-  render() {
-    let Player = {...this.props.Player}
-    return (
-      <View style={MobileScreen || TabletScreen ? Styles.Hidden : Styles.PlayerAttributesStacked}>
-        <View style={Styles.PlayerStat}>
-          <HoverToolTip ToolTip={Gameplay.Help.Abilities.Strength} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
-            <Text>Strength: </Text><Text>{Player.Strength}</Text>
-          </HoverToolTip>
-        </View>
-        <View style={Styles.PlayerStat}>
-          <HoverToolTip ToolTip={Gameplay.Help.Abilities.Dexterity} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
-            <Text>Dexterity: </Text><Text>{Player.Dexterity}</Text>
-          </HoverToolTip>
-        </View>
-        <View style={Styles.PlayerStat}>
-          <HoverToolTip ToolTip={Gameplay.Help.Abilities.Constitution} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
-            <Text>Constitution: </Text><Text>{Player.Constitution}</Text>
-          </HoverToolTip>
-        </View>
-        <View style={Styles.PlayerStat}>
-          <HoverToolTip ToolTip={Gameplay.Help.Abilities.Intelligence} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
-            <Text>Intelligence: </Text><Text>{Player.Intelligence}</Text>
-          </HoverToolTip>
-        </View>
-      </View>
-    )
-  }
-}
-
-class ResponsivePlayerLevelAndArmor extends Component {
+class PlayerLevelAndArmor extends Component {
 
   constructor(props) {
     super(props)
@@ -1760,24 +1703,28 @@ class ResponsivePlayerLevelAndArmor extends Component {
   render() {
     let Player = {...this.props.Player}
     return (
-      <View style={MobileScreen || TabletScreen ? Styles.PlayerStats2Block1 : Styles.Hidden} hidden={this.props.MobileScreen ? this.props.HideStats : false}>
+      <View style={MobileScreen || TabletScreen ? Styles.PlayerStats2Block1 : Styles.PlayerStats3} hidden={this.props.MobileScreen ? this.props.HideStats : false}>
         <View style={Styles.PlayerStat}>
-          <HoverToolTip ToolTip={Gameplay.Help.Level} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+          <HoverToolTip ToolTip={Player.Class.Spellcaster ? Gameplay.Help.LevelSpellcaster : Gameplay.Help.LevelNotSpellcaster} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
             <Text>{MobileScreen ? <Text>LVL</Text> : <Text>Level</Text>}: </Text><Text>{Player.Level}</Text>
-            </HoverToolTip>
+          </HoverToolTip>
         </View>
         <View style={Styles.PlayerStat}>
-          <Text>XP: </Text><Text>{Player.XP}</Text>
+          <HoverToolTip ToolTip={Gameplay.Help.XP} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+            <Text>XP: </Text><Text>{Player.XP}</Text>
+          </HoverToolTip>
         </View>
         <View style={Styles.PlayerStat}>
-          <Text>AC: </Text><Text>{Player.ArmorClass}</Text>
+          <HoverToolTip ToolTip={Gameplay.Help.ArmorClass} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+            <Text>AC: </Text><Text>{Player.ArmorClass}</Text>
+          </HoverToolTip>
         </View>
       </View>
     )
   }
 }
 
-class ResponsivePlayerAbilities extends Component {
+class PlayerAbilities extends Component {
 
   constructor(props) {
     super(props)
@@ -1809,7 +1756,7 @@ class ResponsivePlayerAbilities extends Component {
   render() {
     let Player = {...this.props.Player}
     return (
-      <View style={MobileScreen || TabletScreen ? Styles.PlayerStats2Block2 : Styles.Hidden} hidden={this.props.MobileScreen ? this.props.HideStats : false}>
+      <View style={MobileScreen || TabletScreen ? Styles.PlayerStats2Block2 : Styles.PlayerAttributesStacked} hidden={this.props.MobileScreen ? this.props.HideStats : false}>
         <View style={Styles.PlayerStat}>
           <HoverToolTip ToolTip={Gameplay.Help.Abilities.Strength} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
             <Text>{MobileScreen
@@ -1842,42 +1789,6 @@ class ResponsivePlayerAbilities extends Component {
             <Text>{Player.Intelligence}</Text>
           </HoverToolTip>
         </View>
-      </View>
-    )
-  }
-}
-
-class PlayerLevelAndArmor extends Component {
-
-  // no need to re-render stats if player has not changed
-  shouldComponentUpdate(nextProps) {
-    if (
-      nextProps.MobileScreen !== this.props.MobileScreen
-      || nextProps.TabletScreen !== this.props.TabletScreen
-      || nextProps.Player.Level !== this.props.Player.Level
-      || nextProps.Player.XP !== this.props.Player.XP
-      || nextProps.Player.ArmorClass !== this.props.Player.ArmorClass
-    ) {
-      if (Debug) console.log("re-render: player level/XP + AC")
-      return true
-    }
-    return false
-  }
-
-  render() {
-    // let {Player} = this.props
-    let Player = Object.assign({}, this.props.Player)
-    return (
-      <View style={TabletScreen ? Styles.Hidden : Styles.PlayerStats3}>
-        <Block style={Styles.PlayerStat}>
-          <Text>Level: </Text><Text>{Player.Level}</Text>
-        </Block>
-        <Block style={Styles.PlayerStat}>
-          <Text>XP: </Text><Text>{Player.XP}</Text>
-        </Block>
-        <Block style={Styles.PlayerStat}>
-          <Text>Armor Class: </Text><Text>{Player.ArmorClass}</Text>
-        </Block>
       </View>
     )
   }
@@ -6942,9 +6853,7 @@ class Game extends Component {
         <RepsonsiveStatsContainer {...this} {...this.state}/>
         <Rest {... this} {... this.state}/>
         <PlayerLevelAndArmor {... this.state} />
-        <ResponsivePlayerLevelAndArmor {... this.state} />
         <PlayerAbilities {... this.state} />
-        <ResponsivePlayerAbilities {... this.state} />
         <Inventory {... this} {... this.state} />
         <SpellBook {... this} {... this.state} />
         <Accessories {... this} {... this.state} />

@@ -109,7 +109,7 @@ export const GameplayAssets = {
         LevelSpellcaster: "Your level represents how seasoned you are. Every time you level up, you become more able and you learn new spells.",
         LevelNotSpellcaster: "Your level represents how seasoned you are. Every time you level up, you become more able.",
         XP: "You gain experience points as you progress in your adventure. When you reach a certain amount, you level up.",
-        ArmorClass: "Your AC shows how well protected you are against the attacks of enemies",
+        ArmorClass: "Your Armor Class (AC) shows how well protected you are against the attacks of enemies",
         // Backpack
         Backpack: "You can carry items that are not equipped in your backpack. Depending on the type of backpack you own, you can travel with more or less items.",
         BackpackWeight: "This is the current weight of your backpack and your equipment.",
