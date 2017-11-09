@@ -86,9 +86,9 @@ export const GameplayAssets = {
     Help: {
         // Player stats and controls + Character creation
         Vitals: {
-            Health: "",
-            Mana: "",
-            Stamina: "",
+            Health: "Your health determines how much damage you can take before you fall unconscious.",
+            Mana: "Mana is a pool of energy that is necessary to cast spells.",
+            Stamina: "As your stamina decreases, you are more likely to fail at your actions.",
         },
         Arrows: {
             Race: "Click here to choose a different race.",
@@ -99,7 +99,7 @@ export const GameplayAssets = {
             East: "Click here to go east.",
             South: "Click here to go south.",
         },
-        Stats: "", // only shows on small screens
+        Stats: "Your stats define the kind of adventurer you are.", // only shows on small screens
         Abilities: {
             Strength: "Strength dictates the force of your attacks.",
             Constitution: "Your constitution determines how much effort you can sustain and how good you are at taking damage.",
@@ -116,33 +116,30 @@ export const GameplayAssets = {
         BackpackWeight: "This is the current weight of your backpack and your equipment.",
         BackpackMaxWeight: "This is the maximum weight you can hold without being immobilized. The stronger you are, the more weight you can bear.",
         // Spellbook
-        Spellbook: "",
+        Spellbook: "Your spellbook contains all the spells that you can cast.",
         // Action buttons
         Buttons: {
-            Reroll: "",
-            PlayGame: "",
-            ResumeGame: "",
-            NewGame: "",
-            SaveGame: "",
-            LoadGame: "",
-            Close: "",
-            ClearLog: "",
-            Rest: "",
-            Take: "",
+            Reroll: "Generate a new set of numbers.",
+            PlayGame: "Ready? Let's get started!",
+            ResumeGame: "Changed your mind? Click here to stop the creation of a new character and resume your adventure where you left it.",
+            NewGame: "Start a game with a different character.",
+            SaveGame: "Copy the current state of your game.",
+            LoadGame: "Insert a game state to resume playing.",
+            ClearLog: "Remove all log entries until now.",
+            Rest: "Take a long rest to restore your health, your mana, and your stamina. Be careful, enemies might attack you in your sleep!",
+            Take: "Put the loot in your backpack.",
         },
         // Save/Load game
         GameStateBox: {
-            SaveGame: "",
-            LoadGame: ""
+            SaveGame: "Copy this text and store it in a file in order to resume your game later.",
+            LoadGame: "Copy here a previously saved game to keep playing it.",
         },
         // Specific to character creation
-        CharacterName: "",
-        AbilityBonus: "",
-        Race: "",
-        RaceDescription: "",
-        Class: "",
-        ClassDescription: "",
-        FirstSpell: "",
+        CharacterName: "Enter the name of your character.",
+        AbilityBonus: "The race you selected has a bonus for this ability.",
+        Race: "Each race has slightly different natural traits.",
+        Class: "A class determines what your talent are and what type of combat you trained for.",
+        FirstSpell: "Choose the first spell that will go into your spellbook.",
 
     },
 
