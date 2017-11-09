@@ -120,7 +120,7 @@ export const GameplayAssets = {
         // Action buttons
         Buttons: {
             Reroll: "",
-            Play: "",
+            PlayGame: "",
             ResumeGame: "",
             NewGame: "",
             SaveGame: "",
