@@ -668,10 +668,18 @@ class GameStateOptions extends Component {
   render() {
     return (
       <View style={Styles.GameState}>
-        <ActionButton onClick={this.props.ShowCharacterScreen}>New Game</ActionButton>
-        <ActionButton onClick={this.ToggleSaveGameStateBox}>Save Game</ActionButton>
-        <ActionButton onClick={this.ToggleLoadGameStateBox}>Load Game</ActionButton>
-        <ActionButton onClick={this.ToggleCancelGameStateBox} hidden={!this.props.ShowGameStateBox}>Close</ActionButton>
+        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.NewGame} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+          <ActionButton onClick={this.props.ShowCharacterScreen}>New Game</ActionButton>
+        </HoverToolTip>
+        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.SaveGame} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+          <ActionButton onClick={this.ToggleSaveGameStateBox}>Save Game</ActionButton>
+        </HoverToolTip>
+        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.LoadGame} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+          <ActionButton onClick={this.ToggleLoadGameStateBox}>Load Game</ActionButton>
+        </HoverToolTip>
+        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Close} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+          <ActionButton onClick={this.ToggleCancelGameStateBox} hidden={!this.props.ShowGameStateBox}>Close</ActionButton>
+        </HoverToolTip>
       </View>
     )
   }
@@ -1176,12 +1184,13 @@ class Rest extends Component {
   render() {
     return (
       <View style={Styles.Rest} hidden={this.props.MobileScreen ? this.props.HideStats : false}>
-        {/* todo */}
-        <ActionButton>
-          <View style={Styles.RestButton}>
-              Rest
-          </View>
-        </ActionButton>
+        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Rest} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+          <ActionButton>
+            <View style={Styles.RestButton}>
+                Rest
+            </View>
+          </ActionButton>
+        </HoverToolTip>
       </View>
     )
   }
@@ -1288,6 +1297,7 @@ class Slider extends Component {
 /* tooltips */
 
 class HoverToolTip extends Component {
+  
   constructor(props) {
     super(props)
     this.state = {HideToolTip: true}
@@ -1653,18 +1663,50 @@ class PlayerVitals extends Component {
 }
 
 class ResponsiveTabSelector extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {ShowToolTip: false}
+  }
+  
+  shouldComponentUpdate(NextProps, NextState) {
+
+    if (
+      NextProps.MobileScreen !== this.props.MobileScreen
+      || NextProps.TabletScreen !== this.props.TabletScreen
+      || NextProps.HideStats !== this.props.HideStats
+      || NextProps.HideInventory !== this.props.HideInventory
+      || NextProps.HideSpellBook !== this.props.HideSpellBook
+      || NextState.ShowToolTip !== this.state.ShowToolTip
+    ) {
+      if (Debug) console.log("re-render: mobile screen tab selector")
+      return true
+    }
+    return false
+  }
+
+  ToggleToolTip = (Bool) => {
+    this.setState({ShowToolTip: Bool})
+  }
+
   render() {
     return (
       <View style={Styles.TabSelector} hidden={!this.props.MobileScreen}>
         <View style={Styles.FlexBoxContainer}>
           <View style={Styles.TabButton}>
-            <ActionButton StayClicked Clicked={!this.props.HideStats} onClick={this.props.ShowStats}>Stats</ActionButton>
+            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Stats} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+              <ActionButton StayClicked Clicked={!this.props.HideStats} onClick={this.props.ShowStats}>Stats</ActionButton>
+            </HoverToolTip>
           </View>
           <View style={Styles.TabButton}>
-            <ActionButton SmallPadding StayClicked Clicked={!this.props.HideInventory} onClick={this.props.ShowInventory}>Backpack</ActionButton>
+            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Backpack} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+              <ActionButton SmallPadding StayClicked Clicked={!this.props.HideInventory} onClick={this.props.ShowInventory}>Backpack</ActionButton>
+            </HoverToolTip>
           </View>
           <View style={Styles.TabButton}>
-          <ActionButton SmallPadding StayClicked Clicked={!this.props.HideSpellBook} onClick={this.props.ShowSpellBook} hidden={!this.props.Player.Class.Spellcaster}>Spells</ActionButton>
+            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Spellbook} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+              <ActionButton SmallPadding StayClicked Clicked={!this.props.HideSpellBook} onClick={this.props.ShowSpellBook} hidden={!this.props.Player.Class.Spellcaster}>Spells</ActionButton>
+            </HoverToolTip>
           </View>
         </View>
       </View>
@@ -1821,9 +1863,11 @@ class ClearLog extends Component {
   render() {
     return (
       <View style={Styles.ClearLog}>
-        <ActionButton SmallPadding={this.props.MobileScreen} onClick={this.props.ClearLog}>
-          {this.props.MobileScreen ? <Text>X</Text> : <Text>Clear Log</Text>}
-        </ActionButton>
+        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.ClearLog} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+          <ActionButton SmallPadding={this.props.MobileScreen} onClick={this.props.ClearLog}>
+            {this.props.MobileScreen ? <Text>X</Text> : <Text>Clear Log</Text>}
+          </ActionButton>
+        </HoverToolTip>
       </View>
     )
   }
@@ -2058,18 +2102,22 @@ class Event extends Component {
       if (lootCount === 1) {
         eventText.push(
           <Block key="Take">
-            <ActionButton onClick={this.props.TakeAllLoot}>
-              Take
-            </ActionButton>
+            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Take} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+              <ActionButton onClick={this.props.TakeAllLoot}>
+                Take
+              </ActionButton>
+            </HoverToolTip>
           </Block>
         )
       }
       else {
         eventText.push(
           <Block key="TakeAll">
-            <ActionButton onClick={this.props.TakeAllLoot}>
-              Take All
-            </ActionButton>
+            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Take} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+              <ActionButton onClick={this.props.TakeAllLoot}>
+                Take All
+              </ActionButton>
+            </HoverToolTip>
           </Block>
         )
       }
@@ -2726,9 +2774,11 @@ class CreateCharacterAbilities extends Component {
         </Block>
         <Block />
         <Block style={Styles.RollAbilities}>
-          <ActionButton onClick={this.props.GeneratePlayerStats}>
-            Reroll
-          </ActionButton>
+          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Reroll} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+            <ActionButton onClick={this.props.GeneratePlayerStats}>
+              Reroll
+            </ActionButton>
+          </HoverToolTip>
         </Block>
         <Block />
       </View>
@@ -2932,12 +2982,16 @@ class StartGame extends Component {
   render() {
     return (
       <View style={Styles.StartGame}>
-        <ActionButton onClick={this.props.ResumeGame} hidden={!this.props.GameInBackground}>
-        Resume Game
-        </ActionButton>
-        <ActionButton onClick={this.props.StartPlaying}>
-        Let's play!
-        </ActionButton>
+        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.ResumeGame} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+          <ActionButton onClick={this.props.ResumeGame} hidden={!this.props.GameInBackground}>
+            Resume Game
+          </ActionButton>
+        </HoverToolTip>
+        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.PlayGame} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+          <ActionButton onClick={this.props.StartPlaying}>
+            Let's play
+          </ActionButton>
+        </HoverToolTip>
       </View>
     )
   }
