@@ -3065,7 +3065,18 @@ class Header extends Component {
               ? <Text>; build: {process.env.REACT_APP_BUILD_TIME}</Text>
               : null}
             )</Text>
-            : <Text>Dev Mode</Text>
+            :
+              <Text>Dev Mode
+                (
+                  <Text>
+                    <Link href={Utilities.DevBuild[Utilities.UserOS]}>dev build url</Link>;
+                  </Text>
+                  {' '}
+                  <Text>
+                    <Link href={Utilities.StableBuild[Utilities.UserOS]}>stable build url</Link>
+                  </Text>
+                )
+                </Text>
           }
         </Version>
       </View>

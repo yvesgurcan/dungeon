@@ -16,6 +16,17 @@ const TabletScreen = function() {
 
 export const Utilities = {
 
+    // builds
+    UserOS: window.navigator.userAgent.indexOf("Mac") ? "Mac" : "Win",
+    DevBuild: {
+        Mac: "file:///Users/owner/Sites/dungeon/dev/index.html",
+        Win: "",
+    },
+    StableBuild: {
+        Mac: "file:///Users/owner/Sites/dungeon/stable/index.html",
+        Win: "",
+    },
+
     // debug and cheats
     ShowFullMap: Cheats || false
     ,
