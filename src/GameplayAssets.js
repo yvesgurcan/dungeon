@@ -77,9 +77,15 @@ export const GameplayAssets = {
         UnlockDoor: "You unlocked the door with the ",
         MonsterNoticed: " noticed your presence.",
         MonsterAttacking: " is attacking you.",
-        MonsterMissed: " tried to attack you and missed their target.",
+        MonsterMissed: " missed their attack.",
         MonsterKilled: "You killed ",
         PlayerHit: "You hit ",
+        PlayerHealth: {
+            Weak: "You feel very weak.",
+            BadlyInjured: "You are badly injured.",
+            ThatHurt: "That hurt a little.",
+            JustAScratch: "No worries, just a scratch.",
+        },
         SpellSuccess: "You successfully cast ",
     },
 
