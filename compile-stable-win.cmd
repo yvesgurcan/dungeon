@@ -1,7 +1,7 @@
 @echo off
 echo.
 echo REACT_APP_RELEASE=stable > .env
-echo REACT_APP_VERSION=0.6.2 >> .env
+echo REACT_APP_VERSION=0.6.3 >> .env
 echo REACT_APP_STAGE=pre-alpha >> .env
 
 
