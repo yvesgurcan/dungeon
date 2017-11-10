@@ -77,9 +77,15 @@ export const GameplayAssets = {
         UnlockDoor: "You unlocked the door with the ",
         MonsterNoticed: " noticed your presence.",
         MonsterAttacking: " is attacking you.",
-        MonsterMissed: " tried to attack you and missed their target.",
+        MonsterMissed: " missed their attack.",
         MonsterKilled: "You killed ",
         PlayerHit: "You hit ",
+        PlayerHealth: {
+            Weak: "You feel very weak.",
+            BadlyInjured: "You are badly injured.",
+            ThatHurt: "That hurt a little.",
+            JustAScratch: "No worries, just a scratch.",
+        },
         SpellSuccess: "You successfully cast ",
     },
 
@@ -116,7 +122,7 @@ export const GameplayAssets = {
         BackpackWeight: "This is the current weight of your backpack and your equipment.",
         BackpackMaxWeight: "This is the maximum weight you can hold without being immobilized. The stronger you are, the more weight you can bear.",
         // Spellbook
-        Spellbook: "Your spellbook contains all the spells that you can cast.",
+        SpellBook: "Your spellbook contains all the spells that you can cast.",
         // Action buttons
         Buttons: {
             Reroll: "Generate a new set of numbers.",
@@ -140,7 +146,7 @@ export const GameplayAssets = {
         Race: "Each race has slightly different natural traits.",
         Class: "A class determines what your talent are and what type of combat you trained for.",
         FirstSpell: "Choose the first spell that will go into your spellbook.",
-
+        Sound: "lol!",
     },
 
     LevelXP: {

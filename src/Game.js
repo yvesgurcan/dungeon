@@ -668,18 +668,16 @@ class GameStateOptions extends Component {
   render() {
     return (
       <View style={Styles.GameState}>
-        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.NewGame} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.NewGame} style={Styles.Inline}>
           <ActionButton onClick={this.props.ShowCharacterScreen}>New Game</ActionButton>
         </HoverToolTip>
-        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.SaveGame} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.SaveGame} style={Styles.Inline}>
           <ActionButton onClick={this.ToggleSaveGameStateBox}>Save Game</ActionButton>
         </HoverToolTip>
-        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.LoadGame} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.LoadGame} style={Styles.Inline}>
           <ActionButton onClick={this.ToggleLoadGameStateBox}>Load Game</ActionButton>
         </HoverToolTip>
-        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Close} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
-          <ActionButton onClick={this.ToggleCancelGameStateBox} hidden={!this.props.ShowGameStateBox}>Close</ActionButton>
-        </HoverToolTip>
+        <ActionButton onClick={this.ToggleCancelGameStateBox} hidden={!this.props.ShowGameStateBox}>Close</ActionButton>
       </View>
     )
   }
@@ -788,13 +786,15 @@ class GameStateBox extends Component {
         <Block hidden={this.props.EditableGameStateBox}>
           <input type="checkbox" checked={this.state.IncludeStaticAssets} onChange={this.ToggleSaveStaticAsset}/> include static assets
         </Block>
-        <textarea
-          readOnly={!this.props.EditableGameStateBox}
-          style={{...Styles.GameStateBox}}
-          onChange={this.onChange}
-          onClick={this.onClick}
-          value={this.state.GameState}
-        />
+        <HoverToolTip DisabledOnClick ToolTip={this.props.EditableGameStateBox ? Gameplay.Help.GameStateBox.LoadGame : Gameplay.Help.GameStateBox.SaveGame} style={Styles.Inline}>
+          <textarea
+            readOnly={!this.props.EditableGameStateBox}
+            style={{...Styles.GameStateBox}}
+            onChange={this.onChange}
+            onClick={this.onClick}
+            value={this.state.GameState}
+          />
+        </HoverToolTip>
       </View>
     )
   }
@@ -817,11 +817,12 @@ class Volume extends Component {
           Sound:
         </Block>
         <Slider
+          Metric="Volume"
+          Description={Gameplay.Help.Sound}
           Percentage
           CurrentValue={this.props.Sound.Volume}
           onClick={this.onClick}
-          style={style}
-        />
+          style={style}/>
       </View>
     )
   }
@@ -900,7 +901,11 @@ class SpellBook extends Component {
     }
     return (
       <View style={Styles.SpellBook} hidden={this.props.MobileScreen ? this.props.HideSpellBook : false}>
-        <Block style={Styles.SpellBookLabel} hidden={this.props.MobileScreen}>Spellbook</Block>
+        <Block style={Styles.SpellBookLabel} hidden={this.props.MobileScreen}>
+          <HoverToolTip ToolTip={Gameplay.Help.SpellBook} style={Styles.Inline}>
+            Spellbook
+          </HoverToolTip>
+        </Block>
         {this.DisplaySpellBook()}
       </View>
     )
@@ -968,11 +973,21 @@ class Inventory extends Component {
 
     return (
       <View style={Styles.Inventory} hidden={this.props.MobileScreen ? this.props.HideInventory : false}>
-        <Block style={Styles.InventoryLabel} hidden={this.props.MobileScreen}>Backpack</Block>
+        <Block style={Styles.InventoryLabel} hidden={this.props.MobileScreen}>
+          <HoverToolTip ToolTip={Gameplay.Help.Backpack} style={Styles.Inline}>
+          Backpack
+          </HoverToolTip>
+        </Block>
         {this.DisplayInventory()}
         <ClearFloat/>
         <Text style={Styles.InventoryWeightLabel}>
-          Weight: {Number(Backpack.Weight).toFixed(2)} / {Player.MaxWeight} lbs
+          <HoverToolTip ToolTip={Gameplay.Help.BackpackWeight} style={Styles.Inline}>
+            Weight: {Number(Backpack.Weight).toFixed(2)}
+          </HoverToolTip>
+          {' '}/{' '}
+          <HoverToolTip ToolTip={Gameplay.Help.BackpackMaxWeight} style={Styles.Inline}>
+            {Player.MaxWeight} lbs
+          </HoverToolTip>
         </Text>
       </View>
     )
@@ -1077,14 +1092,22 @@ class Arrows extends Component {
     return (
       <View style={Styles.ArrowContainer}>
         <Block style={Styles.ArrowRow}>
-          <GoNorth {... this.props} />
+          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.North} style={Styles.Inline}>
+            <GoNorth {... this.props} />
+          </HoverToolTip>
         </Block>
         <Block style={Styles.ArrowRow}>
-          <GoWest {... this.props} />
-          <GoEast {... this.props} />
+          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.West} style={Styles.Inline}>
+            <GoWest {... this.props} />
+          </HoverToolTip>
+          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.East} style={Styles.Inline}>
+            <GoEast {... this.props} />
+          </HoverToolTip>
         </Block>
         <Block style={Styles.ArrowRow}>
-          <GoSouth {... this.props} />
+          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.South} style={Styles.Inline}>
+            <GoSouth {... this.props} />
+          </HoverToolTip>
         </Block>
       </View>
     )
@@ -1184,7 +1207,7 @@ class Rest extends Component {
   render() {
     return (
       <View style={Styles.Rest} hidden={this.props.MobileScreen ? this.props.HideStats : false}>
-        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Rest} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Rest} style={Styles.Inline}>
           <ActionButton>
             <View style={Styles.RestButton}>
                 Rest
@@ -1275,7 +1298,12 @@ class Slider extends Component {
     let Ratio = Percentage ? null : (CurrentValue - MinValue)/(MaxValue-MinValue)
     return (
       <View style={style}>
-        <HoverToolTip FlexibleWidth DisabledOnClick ToolTip={<Text>{this.props.Percentage ? CurrentValue * 100 + "%" : CurrentValue}</Text>}>
+        <HoverToolTip FlexibleWidth DisabledOnClick ToolTip={
+          <View>
+            <View>{this.props.Metric ? <Text>{this.props.Metric}: </Text> : null}
+            {this.props.Percentage ? CurrentValue * 100 + "%" : CurrentValue}</View>
+            <View>{this.props.Description}</View>
+          </View>}>
           <View
             id={this.state.Id}
             onClick={this.onClick}
@@ -1344,9 +1372,6 @@ class HoverToolTip extends Component {
       x: pageX+5,
       y: pageY+5,
     })
-
-    // return the status of the tooltip to the parent
-    if (this.props.ToggleToolTip) this.props.ToggleToolTip(true)
 
     // add event listeners
     document.addEventListener("click", this.HideToolTipOnClick, false)
@@ -1446,8 +1471,8 @@ class HoverToolTip extends Component {
 
   render() {
     if (!this.props.ToolTip || this.props.ToolTip === "") {
-      if (!Debug) {
-        return <View>{this.props.children}</View>        
+      if (!Debug || (Debug && !this.props.ToolTip)) {
+        return <View style={this.props.style}>{this.props.children}</View>        
       }
     }
     return (
@@ -1479,6 +1504,7 @@ class StatBar extends Component {
             <View>{this.props.Description}</View>
           </View>
         }>
+          {this.props.ShowLabel ? this.props.Metric : null}
           <View style={Styles.StatBar}>
             <View style={this.props.style}/>
           </View>
@@ -1495,6 +1521,7 @@ class HealthBar extends Component {
       <View>
         <StatBar
           Metric="Health"
+          ShowLabel
           style={style}
           max={this.props.max}
           current={this.props.current}
@@ -1509,7 +1536,12 @@ class ManaBar extends Component {
     let style = {...Styles.ManaBar, width: Math.min(100, this.props.current/this.props.max * 100) + "%"}
     return (
       <View>
-        <StatBar Metric="Mana" style={style} max={this.props.max} current={this.props.current}/>
+        <StatBar
+          Metric="Mana"
+          ShowLabel
+          style={style}
+          max={this.props.max}
+          current={this.props.current}/>
       </View>
     )
   }
@@ -1520,7 +1552,11 @@ class StaminaBar extends Component {
     let style = {...Styles.StaminaBar, width: Math.min(100, Math.ceil(this.props.current/this.props.max * 100)) + "%"}
     return (
       <View>
-        <StatBar Metric="Stamina" style={style} ratio={style.width}/>
+        <StatBar
+          Metric="Stamina"
+          ShowLabel
+          style={style}
+          ratio={style.width}/>
       </View>
     )
   }
@@ -1646,15 +1682,12 @@ class PlayerVitals extends Component {
     return (
       <View style={Styles.PlayerVitals}>
         <View style={Styles.PlayerStat}>
-          Health
           <HealthBar current={Player.Health} max={Player.MaxHealth}/>
         </View>
         <View style={Styles.PlayerStat} hidden={!Player.Class || !Player.Class.Spellcaster}>
-          Mana:
           <ManaBar current={Player.Mana} max={Player.MaxMana}/>
         </View>
         <View style={Styles.PlayerStat}>
-          Stamina:
           <StaminaBar current={Player.Stamina} max={Player.MaxStamina}/>
         </View>
       </View>
@@ -1663,13 +1696,8 @@ class PlayerVitals extends Component {
 }
 
 class ResponsiveTabSelector extends Component {
-
-  constructor(props) {
-    super(props)
-    this.state = {ShowToolTip: false}
-  }
   
-  shouldComponentUpdate(NextProps, NextState) {
+  shouldComponentUpdate(NextProps) {
 
     if (
       NextProps.MobileScreen !== this.props.MobileScreen
@@ -1677,7 +1705,6 @@ class ResponsiveTabSelector extends Component {
       || NextProps.HideStats !== this.props.HideStats
       || NextProps.HideInventory !== this.props.HideInventory
       || NextProps.HideSpellBook !== this.props.HideSpellBook
-      || NextState.ShowToolTip !== this.state.ShowToolTip
     ) {
       if (Debug) console.log("re-render: mobile screen tab selector")
       return true
@@ -1685,26 +1712,22 @@ class ResponsiveTabSelector extends Component {
     return false
   }
 
-  ToggleToolTip = (Bool) => {
-    this.setState({ShowToolTip: Bool})
-  }
-
   render() {
     return (
       <View style={Styles.TabSelector} hidden={!this.props.MobileScreen}>
         <View style={Styles.FlexBoxContainer}>
           <View style={Styles.TabButton}>
-            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Stats} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Stats} style={Styles.Inline}>
               <ActionButton StayClicked Clicked={!this.props.HideStats} onClick={this.props.ShowStats}>Stats</ActionButton>
             </HoverToolTip>
           </View>
           <View style={Styles.TabButton}>
-            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Backpack} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Backpack} style={Styles.Inline}>
               <ActionButton SmallPadding StayClicked Clicked={!this.props.HideInventory} onClick={this.props.ShowInventory}>Backpack</ActionButton>
             </HoverToolTip>
           </View>
           <View style={Styles.TabButton}>
-            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Spellbook} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.SpellBook} style={Styles.Inline}>
               <ActionButton SmallPadding StayClicked Clicked={!this.props.HideSpellBook} onClick={this.props.ShowSpellBook} hidden={!this.props.Player.Class.Spellcaster}>Spells</ActionButton>
             </HoverToolTip>
           </View>
@@ -1725,13 +1748,8 @@ class RepsonsiveStatsContainer extends Component {
 
 class PlayerLevelAndArmor extends Component {
 
-  constructor(props) {
-    super(props)
-    this.state = {ShowToolTip: false}
-  }
-
   // no need to re-render stats if player has not changed
-  shouldComponentUpdate(NextProps, NextState) {
+  shouldComponentUpdate(NextProps) {
     if (
       NextProps.MobileScreen !== this.props.MobileScreen
       || NextProps.TabletScreen !== this.props.TabletScreen
@@ -1739,7 +1757,6 @@ class PlayerLevelAndArmor extends Component {
       || NextProps.Player.XP !== this.props.Player.XP
       || NextProps.Player.ArmorClass !== this.props.Player.ArmorClass
       || NextProps.HideStats !== this.props.HideStats
-      || NextState.ShowToolTip !== this.state.ShowToolTip
     ) {
       if (Debug) console.log("re-render: player level/XP and AC")
       return true
@@ -1747,26 +1764,22 @@ class PlayerLevelAndArmor extends Component {
     return false
   }
 
-  ToggleToolTip = (Bool) => {
-    this.setState({ShowToolTip: Bool})
-  }
-
   render() {
     let Player = {...this.props.Player}
     return (
       <View style={MobileScreen || TabletScreen ? Styles.PlayerStats2Block1 : Styles.PlayerStats3} hidden={this.props.MobileScreen ? this.props.HideStats : false}>
         <View style={Styles.PlayerStat}>
-          <HoverToolTip ToolTip={Player.Class.Spellcaster ? Gameplay.Help.LevelSpellcaster : Gameplay.Help.LevelNotSpellcaster} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+          <HoverToolTip ToolTip={Player.Class.Spellcaster ? Gameplay.Help.LevelSpellcaster : Gameplay.Help.LevelNotSpellcaster} style={Styles.Inline}>
             <Text>{MobileScreen ? <Text>LVL</Text> : <Text>Level</Text>}: </Text><Text>{Player.Level}</Text>
           </HoverToolTip>
         </View>
         <View style={Styles.PlayerStat}>
-          <HoverToolTip ToolTip={Gameplay.Help.XP} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+          <HoverToolTip ToolTip={Gameplay.Help.XP} style={Styles.Inline}>
             <Text>XP: </Text><Text>{Player.XP}</Text>
           </HoverToolTip>
         </View>
         <View style={Styles.PlayerStat}>
-          <HoverToolTip ToolTip={Gameplay.Help.ArmorClass} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+          <HoverToolTip ToolTip={Gameplay.Help.ArmorClass} style={Styles.Inline}>
             <Text>AC: </Text><Text>{Player.ArmorClass}</Text>
           </HoverToolTip>
         </View>
@@ -1777,13 +1790,8 @@ class PlayerLevelAndArmor extends Component {
 
 class PlayerAbilities extends Component {
 
-  constructor(props) {
-    super(props)
-    this.state = {ShowToolTip: false}
-  }
-
   // no need to re-render stats if player has not changed
-  shouldComponentUpdate(NextProps, NextState) {
+  shouldComponentUpdate(NextProps) {
     if (
       NextProps.MobileScreen !== this.props.MobileScreen
       || NextProps.TabletScreen !== this.props.TabletScreen
@@ -1792,7 +1800,6 @@ class PlayerAbilities extends Component {
       || NextProps.Player.Constitution !== this.props.Player.Constitution
       || NextProps.Player.Intelligence !== this.props.Player.Intelligence
       || NextProps.HideStats !== this.props.HideStats
-      || NextState.ShowToolTip !== this.state.ShowToolTip
     ) {
       if (Debug) console.log("re-render: player abilities")
       return true
@@ -1800,16 +1807,12 @@ class PlayerAbilities extends Component {
     return false
   }
 
-  ToggleToolTip = (Bool) => {
-    this.setState({ShowToolTip: Bool})
-  }
-
   render() {
     let Player = {...this.props.Player}
     return (
       <View style={MobileScreen || TabletScreen ? Styles.PlayerStats2Block2 : Styles.PlayerAttributesStacked} hidden={this.props.MobileScreen ? this.props.HideStats : false}>
         <View style={Styles.PlayerStat}>
-          <HoverToolTip ToolTip={Gameplay.Help.Abilities.Strength} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+          <HoverToolTip ToolTip={Gameplay.Help.Abilities.Strength} style={Styles.Inline}>
             <Text>{MobileScreen
               ? <Text>STR</Text>
               : <Text>Strength</Text>}: </Text>
@@ -1817,7 +1820,7 @@ class PlayerAbilities extends Component {
           </HoverToolTip>
         </View>
         <View style={Styles.PlayerStat}>
-          <HoverToolTip ToolTip={Gameplay.Help.Abilities.Constitution} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+          <HoverToolTip ToolTip={Gameplay.Help.Abilities.Constitution} style={Styles.Inline}>
             <Text>{MobileScreen
               ? <Text>CON</Text>
               : <Text>Constitution</Text>}: </Text>
@@ -1825,7 +1828,7 @@ class PlayerAbilities extends Component {
           </HoverToolTip>
         </View>
         <View style={Styles.PlayerStat}>
-          <HoverToolTip ToolTip={Gameplay.Help.Abilities.Dexterity} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+          <HoverToolTip ToolTip={Gameplay.Help.Abilities.Dexterity} style={Styles.Inline}>
             <Text>{MobileScreen
               ? <Text>DEX</Text>
               : <Text>Dexterity</Text>}: </Text>
@@ -1833,7 +1836,7 @@ class PlayerAbilities extends Component {
           </HoverToolTip>
         </View>
         <View style={Styles.PlayerStat}>
-          <HoverToolTip ToolTip={Gameplay.Help.Abilities.Intelligence} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+          <HoverToolTip ToolTip={Gameplay.Help.Abilities.Intelligence} style={Styles.Inline}>
             <Text>{MobileScreen
               ? <Text>INT</Text>
               : <Text>Intelligence</Text>}: </Text>
@@ -1863,7 +1866,7 @@ class ClearLog extends Component {
   render() {
     return (
       <View style={Styles.ClearLog}>
-        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.ClearLog} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.ClearLog} style={Styles.Inline}>
           <ActionButton SmallPadding={this.props.MobileScreen} onClick={this.props.ClearLog}>
             {this.props.MobileScreen ? <Text>X</Text> : <Text>Clear Log</Text>}
           </ActionButton>
@@ -2102,7 +2105,7 @@ class Event extends Component {
       if (lootCount === 1) {
         eventText.push(
           <Block key="Take">
-            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Take} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Take} style={Styles.Inline}>
               <ActionButton onClick={this.props.TakeAllLoot}>
                 Take
               </ActionButton>
@@ -2113,7 +2116,7 @@ class Event extends Component {
       else {
         eventText.push(
           <Block key="TakeAll">
-            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Take} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Take} style={Styles.Inline}>
               <ActionButton onClick={this.props.TakeAllLoot}>
                 Take All
               </ActionButton>
@@ -2774,7 +2777,7 @@ class CreateCharacterAbilities extends Component {
         </Block>
         <Block />
         <Block style={Styles.RollAbilities}>
-          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Reroll} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Reroll} style={Styles.Inline}>
             <ActionButton onClick={this.props.GeneratePlayerStats}>
               Reroll
             </ActionButton>
@@ -2916,11 +2919,15 @@ class CreateCharacterBackground extends Component {
         </Block>
         <Block style={Styles.PropertyField}>
           <Block style={Styles.FlexBoxContainer}>
+            <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.Race} style={Styles.Inline}>
               <Arrow {...this.props} onClick={this.SelectRace} arrow="Left">←</Arrow>
+            </HoverToolTip>
             <Block style={{flexGrow: "1", flexBasis: "auto", textAlign: "center", margin: "auto"}}>
               <Text>{Player.Race.Name}</Text>
             </Block>
+            <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.Race} style={Styles.Inline}>
               <Arrow {...this.props} onClick={this.SelectRace} arrow="Right">→</Arrow>  
+            </HoverToolTip>
           </Block>
         </Block>
         <Block style={{...Styles.PropertyLabel, paddingTop: "8px"}}>
@@ -2928,11 +2935,15 @@ class CreateCharacterBackground extends Component {
         </Block>
         <Block style={Styles.PropertyField}>
         <Block style={Styles.FlexBoxContainer}>
-            <Arrow {...this.props} onClick={this.SelectClass} arrow="Left">←</Arrow>
+          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.Class} style={Styles.Inline}>
+            <Arrow {...this.props} onClick={this.SelectClass} arrow="Left">←</Arrow> 
+          </HoverToolTip>
           <Block style={{flexGrow: "1", flexBasis: "auto", textAlign: "center", margin: "auto"}}>
             <Text>{Player.Class.Name}</Text>
           </Block>
-            <Arrow {...this.props} onClick={this.SelectClass} arrow="Right">→</Arrow>  
+          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.Class} style={Styles.Inline}>
+            <Arrow {...this.props} onClick={this.SelectClass} arrow="Right">→</Arrow>   
+          </HoverToolTip>
         </Block>
       </Block>
         <Block style={{...Styles.PropertyLabel, paddingTop: "10px"}} hidden={!Player.Class.Spellcaster || !Campaign.AvailableStartSpell}>
@@ -2940,9 +2951,11 @@ class CreateCharacterBackground extends Component {
         </Block>
         <Block style={Styles.PropertyField} hidden={!Player.Class.Spellcaster || !Campaign.AvailableStartSpell}>
           <Block style={Styles.FlexBoxContainer}>
-            <Block style={{marginTop: "3px"}}>
-              <Arrow {...this.props} onClick={this.SelectFirstSpell} arrow="Left">←</Arrow>
-            </Block>
+            <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.Spell} style={Styles.Inline}>
+              <Block style={{marginTop: "3px"}}>
+                <Arrow {...this.props} onClick={this.SelectFirstSpell} arrow="Left">←</Arrow>
+              </Block>
+            </HoverToolTip>
             <Block style={{flexGrow: "1", flexBasis: "auto", marginLeft: "8px"}}>
               <ItemImageBlock
                 draggable={false}
@@ -2952,9 +2965,11 @@ class CreateCharacterBackground extends Component {
                 NoActionMenu
                 onClick={null} />
             </Block>
-            <Block style={{marginTop: "3px"}}>
-              <Arrow {...this.props} onClick={this.SelectFirstSpell} arrow="Right">→</Arrow>
-            </Block>
+            <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.Spell} style={Styles.Inline}>
+              <Block style={{marginTop: "3px"}}>
+                <Arrow {...this.props} onClick={this.SelectFirstSpell} arrow="Right">→</Arrow>
+              </Block>
+            </HoverToolTip>
           </Block> 
         </Block>
       </View>
@@ -2982,12 +2997,12 @@ class StartGame extends Component {
   render() {
     return (
       <View style={Styles.StartGame}>
-        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.ResumeGame} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.ResumeGame} style={Styles.Inline}>
           <ActionButton onClick={this.props.ResumeGame} hidden={!this.props.GameInBackground}>
             Resume Game
           </ActionButton>
         </HoverToolTip>
-        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.PlayGame} ToggleToolTip={this.ToggleToolTip} style={Styles.Inline}>
+        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.PlayGame} style={Styles.Inline}>
           <ActionButton onClick={this.props.StartPlaying}>
             Let's play
           </ActionButton>
@@ -4289,6 +4304,8 @@ class Game extends Component {
           textAlign: "left",
           opacity: "0.85",
           color: "white",
+          fontFamily: "initial",
+          fontWeight: "normal",
         },
         ToolTip: {
           zIndex: "900",
@@ -4300,6 +4317,8 @@ class Game extends Component {
           textAlign: "left",
           opacity: "0.85",
           color: "white",
+          fontFamily: "initial",
+          fontWeight: "normal",
         },
       }
       
@@ -5385,7 +5404,6 @@ class Game extends Component {
       // FIXME: It looks like sometimes setState is not called when the event log get updated with multiple messages in separate functions.
 
       this.setState({EventLog: EventLogEntries}, function() {
-        let test = this.state.EventLog
 
         this.ScrollToBottom("EventLog")
         let {EnterCustomLogEntry} = this.state
