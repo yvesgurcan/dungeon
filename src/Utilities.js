@@ -27,7 +27,17 @@ export const Utilities = {
         Win: "",
     },
 
-    // debug and cheats
+    // debug
+    Debug: Debug
+    ,
+    DebugCreateCharacter: true
+    ,
+    SoundDebug: SoundDebug
+    ,
+    DebugVolume: 0
+    ,
+
+    // cheats
     ShowFullMap: Cheats || false
     ,
     NoClip: Cheats || false
@@ -35,12 +45,6 @@ export const Utilities = {
     GodMode: Cheats || false
     ,
     CastAlwaysSucceeds : Cheats || false
-    ,
-    Debug: Debug
-    ,
-    SoundDebug: SoundDebug
-    ,
-    DebugVolume: 0
     ,
 
     // responsiveness

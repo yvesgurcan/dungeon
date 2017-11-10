@@ -3,7 +3,7 @@ import WorldAssets from "./WorldAssets.js"
 export const CampaignAssets = {
 
     // Let the player create their character at the beginning of the campaign
-    CreateCharacter: process.env.REACT_APP_RELEASE === "stable" ? true : false,
+    CreateCharacter: true,
 
     // Player start
     Player: {

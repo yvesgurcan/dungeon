@@ -2723,22 +2723,34 @@ class CreateCharacterName extends Component {
           />
         </Block>
         <Block style={Styles.PropertyLabel}>
-          <Text>Health:</Text>
+          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Vitals.Health} style={Styles.Inline}>
+            <Text>Health:</Text>
+          </HoverToolTip>
         </Block>
         <Block style={Styles.PropertyField}>
-        <Text>{Player.MaxHealth}</Text>        
+          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Vitals.Health} style={Styles.Inline}>
+            <Text>{Player.MaxHealth}</Text> 
+          </HoverToolTip>       
         </Block>
         <Block style={Styles.PropertyLabel}>
-          <Text>Mana:</Text>
+          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Vitals.Mana} style={Styles.Inline}>
+            <Text>Mana:</Text>
+          </HoverToolTip>       
         </Block>
         <Block style={Styles.PropertyField}>
-        <Text>{Player.MaxMana}</Text>        
+          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Vitals.Mana} style={Styles.Inline}>
+            <Text>{Player.MaxMana}</Text>    
+          </HoverToolTip>          
         </Block>
         <Block style={Styles.PropertyLabel}>
-          <Text>Stamina:</Text>
+          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Vitals.Stamina} style={Styles.Inline}>
+            <Text>Stamina:</Text>
+          </HoverToolTip>          
         </Block>
         <Block style={Styles.PropertyField}>
-        <Text>{Player.MaxStamina}</Text>        
+          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Vitals.Stamina} style={Styles.Inline}>
+            <Text>{Player.MaxStamina}</Text>   
+          </HoverToolTip>               
         </Block>
       </View>
     )
@@ -4436,7 +4448,6 @@ class Game extends Component {
 
     // Campaign assets
     let InitState = {
-      CreateCharacter: Campaign.CreateCharacter,
       Player: {...Campaign.Player},
       Backpack: {...Campaign.Backpack},
       AvailableStartSpell: [...Campaign.AvailableStartSpell],
@@ -4451,10 +4462,15 @@ class Game extends Component {
       },
       EnterCustomLogEntry: false,
     }
-
+    
     // let the player go to the main screen if their character is stored in the state already
-    if (!InitPlayer) {
-      delete InitState.CreateCharacter      
+    if (InitPlayer) {
+      InitState.CreateCharacter =
+        process.env.REACT_APP_RELEASE === "stable"
+          ? Campaign.CreateCharacter
+          : Debug
+            ? Utilities.DebugCreateCharacter
+            : Campaign.CreateCharacter
     }
 
     // Debug/Cheats
