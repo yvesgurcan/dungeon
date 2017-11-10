@@ -5367,22 +5367,26 @@ class Game extends Component {
 
     if (Message || Image) {
 
-      let EventLog = [...this.state.EventLog]
+      let EventLogEntries = [...this.state.EventLog]
       let GameStarted = this.state.GameStarted.Milliseconds
 
-      if (!EventLog) {
-        EventLog = []
+      if (!EventLogEntries) {
+        EventLogEntries = []
       }
 
       if (Array.isArray(Message)) {
         let Messages = [...Message]
-        EventLog = [...EventLog, ...Messages.map(Msg => {return [this.GenerateFormattedTime(Date.now() - GameStarted),Msg].join(": ")})]
+        EventLogEntries = [...EventLogEntries, ...Messages.map(Msg => {return [this.GenerateFormattedTime(Date.now() - GameStarted),Msg].join(": ")})]
       }
       else {
-        EventLog.push([this.GenerateFormattedTime(Date.now() - GameStarted),Message].join(": "))      
+        EventLogEntries.push([this.GenerateFormattedTime(Date.now() - GameStarted),Message].join(": "))      
       }
 
-      this.setState({EventLog: EventLog}, function() {
+      // FIXME: It looks like sometimes setState is not called when the event log get updated with multiple messages in separate functions.
+
+      this.setState({EventLog: EventLogEntries}, function() {
+        let test = this.state.EventLog
+
         this.ScrollToBottom("EventLog")
         let {EnterCustomLogEntry} = this.state
         if (EnterCustomLogEntry) {
@@ -5394,6 +5398,7 @@ class Game extends Component {
       })
 
     }
+
 
   }
 
@@ -6615,7 +6620,11 @@ class Game extends Component {
 
         this.PlaySound("attack_hit")
 
+        debugger
+
         this.SetText(Gameplay.PartialMessages.PlayerHit + Functions.IndefiniteArticle(Monster.Name) + " " + Monster.Name + Gameplay.PartialMessages.Period)
+
+        debugger
 
         this.MonsterTakeDamage(Monster, Damage, index)
 
