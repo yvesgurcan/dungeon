@@ -4529,8 +4529,16 @@ class Game extends Component {
     InitState.Turn = 0
 
     // Sound
-    InitState.Sound = {
-      Volume: Utilities.DefaultSoundVolume
+    if ((Debug || SoundDebug) && Utilities.DebugVolume !== undefined) {
+      InitState.Sound = {
+        Volume: Utilities.DebugVolume
+      }
+      InitState.EventLog.push("00:00: Debug volume is " + Utilities.DebugVolume + ".")
+    }
+    else {
+      InitState.Sound = {
+        Volume: Utilities.DefaultSoundVolume || 0.3
+      }
     }
 
     return InitState

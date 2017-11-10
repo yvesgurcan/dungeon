@@ -29,6 +29,8 @@ export const Utilities = {
     ,
     SoundDebug: SoundDebug
     ,
+    DebugVolume: 0
+    ,
 
     // responsiveness
     ScreenSize: {
