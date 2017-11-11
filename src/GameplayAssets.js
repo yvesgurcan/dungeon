@@ -90,6 +90,8 @@ export const GameplayAssets = {
     },
 
     Help: {
+        ContactMe: "",
+        GitHub: "",
         // Player stats and controls + Character creation
         Vitals: {
             Health: "Your health determines how much damage you can take before you fall unconscious.",

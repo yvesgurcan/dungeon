@@ -71,6 +71,7 @@ class TextEdit extends Component {
         placeholder={this.props.placeholder}
         value={this.props.value || ""}
         style={this.state.style}
+        maxLength={this.props.maxLength}
         onKeyPress={this.onKeyPress}
         onFocus={this.onFocus}
         onBlur={this.onBlur}
@@ -1479,6 +1480,7 @@ class HoverToolTip extends Component {
       <View
         style={this.props.style}
         onClick={this.ShowToolTipOnClick}
+        onKeyUp={this.ShowToolTipOnClick}
         onContextMenu={this.ShowToolTipOnClick}
         onMouseEnter={this.ShowToolTipOnHover}
         onMouseLeave={this.HideToolTipOnHover}
@@ -2710,17 +2712,21 @@ class CreateCharacterName extends Component {
     return (
       <View style={Styles.CharacterCreateName}>
         <Block style={Styles.PropertyLabelForInput}>
-          <Text>Name:</Text>
+          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.CharacterName} style={Styles.Inline}>
+            <Text>Name:</Text>
+          </HoverToolTip>
         </Block>
         <Block style={Styles.PropertyFieldForInput}>
-          <TextEdit
-            style={Styles.TextEditUnderline}
-            styleFocus={Styles.TextEditUnderlineFocus}
-            name="Name"
-            placeholder="Enter your name."
-            value={Player.Name}
-            onChange={this.props.SavePlayerName}
-          />
+          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.CharacterName} style={Styles.Inline}>
+            <TextEdit
+              style={Styles.TextEditUnderline}
+              styleFocus={Styles.TextEditUnderlineFocus}
+              name="Name"
+              placeholder="Enter your name."
+              value={Player.Name}
+              maxLength={13}
+              onChange={this.props.SavePlayerName}/>
+          </HoverToolTip>
         </Block>
         <Block style={Styles.PropertyLabel}>
           <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Vitals.Health} style={Styles.Inline}>
@@ -2764,28 +2770,64 @@ class CreateCharacterAbilities extends Component {
     return (
       <View style={Styles.CharacterCreateView}>
         <Block style={Styles.PropertyLabel}>
-          <Text>Strength:</Text>
+          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Strength} style={Styles.Inline}>
+            <Text>Strength:</Text>
+          </HoverToolTip>
         </Block>
         <Block style={Styles.PropertyField}>
-          <Text>{Player.Strength - (Player.Race.AbilityBoost.Strength || 0)} {Player.Race.AbilityBoost.Strength ? "+" + Player.Race.AbilityBoost.Strength : null}</Text>
+          <Text>
+            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Strength} style={Styles.Inline}>
+            {Player.Strength - (Player.Race.AbilityBoost.Strength || 0)}
+            </HoverToolTip>
+            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.AbilityBonus} style={Styles.Inline}>
+              {Player.Race.AbilityBoost.Strength ? " +" + Player.Race.AbilityBoost.Strength : null}
+            </HoverToolTip>
+          </Text>
         </Block>
         <Block style={Styles.PropertyLabel}>
-          <Text>Dexterity:</Text>
+          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Dexterity} style={Styles.Inline}>
+            <Text>Dexterity:</Text>
+          </HoverToolTip>
         </Block>
         <Block style={Styles.PropertyField}>
-          <Text>{Player.Dexterity - (Player.Race.AbilityBoost.Dexterity || 0)} {Player.Race.AbilityBoost.Dexterity ? "+" + Player.Race.AbilityBoost.Dexterity : null}</Text>
+          <Text>
+            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Dexterity} style={Styles.Inline}>
+              {Player.Dexterity - (Player.Race.AbilityBoost.Dexterity || 0)}
+            </HoverToolTip>
+            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.AbilityBonus} style={Styles.Inline}>
+              {Player.Race.AbilityBoost.Dexterity ? " +" + Player.Race.AbilityBoost.Dexterity : null}
+            </HoverToolTip>
+          </Text>
         </Block>
         <Block style={Styles.PropertyLabel}>
-          <Text>Constitution:</Text>
+          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Constitution} style={Styles.Inline}>
+            <Text>Constitution:</Text>
+          </HoverToolTip>
         </Block>
         <Block style={Styles.PropertyField}>
-          <Text>{Player.Constitution - (Player.Race.AbilityBoost.Constitution || 0)} {Player.Race.AbilityBoost.Constitution ? "+" + Player.Race.AbilityBoost.Constitution : null}</Text>
+          <Text>
+            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Constitution} style={Styles.Inline}>
+              {Player.Constitution - (Player.Race.AbilityBoost.Constitution || 0)} 
+            </HoverToolTip>
+            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.AbilityBonus} style={Styles.Inline}>
+              {Player.Race.AbilityBoost.Constitution ? " +" + Player.Race.AbilityBoost.Constitution : null}
+            </HoverToolTip>
+          </Text>
         </Block>
         <Block style={Styles.PropertyLabel}>
-          <Text>Intelligence:</Text>
+          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Intelligence} style={Styles.Inline}>
+            <Text>Intelligence:</Text>
+          </HoverToolTip>
         </Block>
         <Block style={Styles.PropertyField}>
-          <Text>{Player.Intelligence - (Player.Race.AbilityBoost.Intelligence || 0)} {Player.Race.AbilityBoost.Intelligence ? "+" + Player.Race.AbilityBoost.Intelligence : null}</Text>
+          <Text>
+            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Intelligence} style={Styles.Inline}>
+              {Player.Intelligence - (Player.Race.AbilityBoost.Intelligence || 0)}
+            </HoverToolTip>
+            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.AbilityBonus} style={Styles.Inline}>
+              {Player.Race.AbilityBoost.Intelligence ? " +" + Player.Race.AbilityBoost.Intelligence : null}
+            </HoverToolTip>
+          </Text>
         </Block>
         <Block />
         <Block style={Styles.RollAbilities}>
@@ -2927,15 +2969,22 @@ class CreateCharacterBackground extends Component {
     return (
       <View style={Styles.CharacterCreateBackground}>
         <Block style={{...Styles.PropertyLabel, paddingTop: "8px"}}>
+          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Race} style={Styles.Inline}>
           <Text>Race:</Text>
+          </HoverToolTip>
         </Block>
         <Block style={Styles.PropertyField}>
           <Block style={Styles.FlexBoxContainer}>
             <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.Race} style={Styles.Inline}>
               <Arrow {...this.props} onClick={this.SelectRace} arrow="Left">←</Arrow>
             </HoverToolTip>
+          
             <Block style={{flexGrow: "1", flexBasis: "auto", textAlign: "center", margin: "auto"}}>
-              <Text>{Player.Race.Name}</Text>
+              <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Race} style={Styles.Inline}>
+                <Text>
+                  {Player.Race.Name}
+                </Text>
+              </HoverToolTip>
             </Block>
             <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.Race} style={Styles.Inline}>
               <Arrow {...this.props} onClick={this.SelectRace} arrow="Right">→</Arrow>  
@@ -2943,7 +2992,9 @@ class CreateCharacterBackground extends Component {
           </Block>
         </Block>
         <Block style={{...Styles.PropertyLabel, paddingTop: "8px"}}>
-          <Text>Class:</Text>
+          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Class} style={Styles.Inline}>
+            <Text>Class:</Text>
+          </HoverToolTip>
         </Block>
         <Block style={Styles.PropertyField}>
         <Block style={Styles.FlexBoxContainer}>
@@ -2951,7 +3002,11 @@ class CreateCharacterBackground extends Component {
             <Arrow {...this.props} onClick={this.SelectClass} arrow="Left">←</Arrow> 
           </HoverToolTip>
           <Block style={{flexGrow: "1", flexBasis: "auto", textAlign: "center", margin: "auto"}}>
-            <Text>{Player.Class.Name}</Text>
+            <Text>
+              <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Class} style={Styles.Inline}>
+                {Player.Class.Name}
+              </HoverToolTip>
+            </Text>
           </Block>
           <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.Class} style={Styles.Inline}>
             <Arrow {...this.props} onClick={this.SelectClass} arrow="Right">→</Arrow>   
@@ -2959,7 +3014,9 @@ class CreateCharacterBackground extends Component {
         </Block>
       </Block>
         <Block style={{...Styles.PropertyLabel, paddingTop: "10px"}} hidden={!Player.Class.Spellcaster || !Campaign.AvailableStartSpell}>
+          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.FirstSpell} style={Styles.Inline}>
             <Text>Spell:</Text>
+          </HoverToolTip>
         </Block>
         <Block style={Styles.PropertyField} hidden={!Player.Class.Spellcaster || !Campaign.AvailableStartSpell}>
           <Block style={Styles.FlexBoxContainer}>
@@ -2995,10 +3052,14 @@ class CreateCharacterDescription extends Component {
     return (
       <View style={Styles.CreateCharacterDescription}>
         <Block style={Styles.Paragraph}>
-          {Player.Race.Description}
+          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Race} style={Styles.Inline}>
+            {Player.Race.Description}
+          </HoverToolTip>
         </Block>
         <Block style={Styles.Paragraph}>
-          {Player.Class.Description}
+          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Race} style={Styles.Inline}>
+            {Player.Class.Description}
+          </HoverToolTip>
         </Block>
       </View>
     )
