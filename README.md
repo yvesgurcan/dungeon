@@ -1,7 +1,9 @@
 *Dungeon!* is an adventure game written in React.
 
+You can play the [latest stable version](http://dungeon.yvesgurcan.com/stable/) or the [dev release](http://dungeon.yvesgurcan.com/dev/).
+
 ## TL;DR
-Go to <http://dungeon.yvesgurcan.com/stable/>. When the page loads, a default character with random ability scores is created for you. You can start playing right away.
+To play, click [here](http://dungeon.yvesgurcan.com/stable/). When the page loads, a default character with random ability scores is created for you. You can start playing right away.
 
 ## <a name="toc"/> Guide
 
@@ -29,7 +31,7 @@ Go to <http://dungeon.yvesgurcan.com/stable/>. When the page loads, a default ch
 
 It is recommended to play the [stable release](http://dungeon.yvesgurcan.com/stable/). Less features are available in this version of the game, but it is also less likely to crash.
 
-The [dev release](http://dungeon.yvesgurcan.com/build/) is always an option, but the game might throw errors. Also, this version is experimental, which means that some debug features might be turned ON, altering the gameplay.
+The [dev release](http://dungeon.yvesgurcan.com/dev/) is always an option, but the game might throw errors. Also, this version is experimental, which means that some debug features might be turned ON, altering the gameplay.
 
 ## [How to play](#toc)
 

@@ -17,14 +17,14 @@ const TabletScreen = function() {
 export const Utilities = {
 
     // builds
-    UserOS: window.navigator.userAgent.indexOf("Mac") ? "Mac" : "Win",
+    UserOS: window.navigator.userAgent.indexOf("Mac") > -1 ? "Mac" : "Win",
     DevBuild: {
         Mac: "file:///Users/owner/Sites/dungeon/dev/index.html",
-        Win: "",
+        Win: "file:///C:/Users/gurca/Documents/Projects/dungeon/dev/index.html",
     },
     StableBuild: {
         Mac: "file:///Users/owner/Sites/dungeon/stable/index.html",
-        Win: "",
+        Win: "file:///C:/Users/gurca/Documents/Projects/dungeon/stable/index.html",
     },
 
     // debug
