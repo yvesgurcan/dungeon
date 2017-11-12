@@ -1,4 +1,6 @@
 import React, {Component} from "react"
+import {createStore} from 'redux'
+import {Provider, connect} from 'react-redux'
 import World from "./WorldAssets.js"
 import Campaign from "./LegendsOfTheCatacombs.js"
 import Gameplay from "./GameplayAssets.js"
@@ -6,6 +8,23 @@ import Utilities from "./Utilities.js"
 import Functions from "./Functions.js"
 import {URL, LineBreak, Text, View, Block, Image} from "./components/WebComponents.js"
 import {Graphics, ClearFloat, Version} from "./components/UtilityComponents.js"
+import Reducers from './Reducers'
+
+/* store */
+
+const store = createStore(
+  Reducers,
+  {},
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+)
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    ...state,
+    ...ownProps
+    // dispatch is automatically added to the list of props passed to the component
+  }
+}
 
 /* utility */
 
@@ -1660,29 +1679,10 @@ class PlayerNameAndWeapons extends Component {
 
 class PlayerVitals extends Component {
 
-  // no need to re-render stats if player has not changed
-  shouldComponentUpdate(nextProps) {
-    if (
-      
-      nextProps.MobileScreen !== this.props.MobileScreen
-      || nextProps.TabletScreen !== this.props.TabletScreen
-      || nextProps.Player.Health !== this.props.Player.Health
-      || nextProps.Player.MaxHealth !== this.props.Player.MaxHealth
-      || nextProps.Player.Mana !== this.props.Player.Mana
-      || nextProps.Player.MaxMana !== this.props.Player.MaxMana
-      || nextProps.Player.Stamina !== this.props.Player.Stamina
-      || nextProps.Player.MaxStamina !== this.props.Player.MaxStamina
-    ) {
-      if (Debug) console.log("re-render: player vitals")
-      return true
-    }
-    return false
-  }
-
   render() {
     let Player = {...this.props.Player}
     return (
-      <View style={Styles.PlayerVitals}>
+      <View style={Styles.PlayerVitals} onClick={this.test}>
         <View style={Styles.PlayerStat}>
           <HealthBar current={Player.Health} max={Player.MaxHealth}/>
         </View>
@@ -1696,6 +1696,7 @@ class PlayerVitals extends Component {
     )
   }
 }
+const PlayerVitalsContainer = connect(mapStateToProps)(PlayerVitals)
 
 class ResponsiveTabSelector extends Component {
   
@@ -4498,8 +4499,6 @@ class Game extends Component {
         NextAvailableId[IdType] = 0
       }
       ArrayElement.Id = NextAvailableId[IdType]++
-      
-      if (Debug) console.log("NextAvailableId:",NextAvailableId)
 
       return ArrayElement
     })
@@ -4647,6 +4646,16 @@ class Game extends Component {
         Volume: Utilities.DefaultSoundVolume || 0.3
       }
     }
+
+    store.dispatch({type: "INIT_PLAYER", Player: InitState.Player})
+    store.dispatch({
+      type: "INIT_MAPS",
+      WallMap: InitState.WallMap,
+      WallMapRevealed: InitState.WallMapRevealed,
+      DiscoveryMap: InitState.DiscoveryMap,
+      LootMap: InitState.LootMap,
+      MonsterMap: InitState.MonsterMap,
+    })
 
     return InitState
 
@@ -7013,42 +7022,43 @@ class Game extends Component {
         </View>
       )
     }
-    // play mode
     return (
-      <View style={Styles.Game}>
-        {/* row 1 */}
-        <Header/>
-        {/* row 2 */}
-        <Contact {... this.state}/>
-        <TopBackgroundImage/>
-        <EventLog {... this} {... this.state} />
-        <ClearLog {... this} {... this.state} />
-        {/* row 3 */}
-        <StoryBlock {... this}>
-          <Story {... this.state} />
-          <Event {... this} {... this.state} />
-        </StoryBlock>
-        <Map {... this} {... this.state}/>
-        {/* row 4 */}
-        <BottomBackgroundImage/>
-        <Controls />
-        <PlayerNameAndWeapons {... this.state} />
-        <PlayerVitals {... this.state} />
-        <Arrows {... this} {... this.state} />
-        <ResponsiveTabSelector {...this} {...this.state}/>
-        <RepsonsiveStatsContainer {...this} {...this.state}/>
-        <Rest {... this} {... this.state}/>
-        <PlayerLevelAndArmor {... this.state} />
-        <PlayerAbilities {... this.state} />
-        <Inventory {... this} {... this.state} />
-        <SpellBook {... this} {... this.state} />
-        <Accessories {... this} {... this.state} />
-        <BottomControls/>
-        <GameStateBackgroundImage/>
-        <GameStateOptions {... this} {... this.state}/>
-        <GameStateBox  {... this} {... this.state}/>
-        <Volume {... this} {... this.state}/>
-      </View>
+      <Provider store={store}>
+        <View style={Styles.Game}>
+          {/* row 1 */}
+          <Header/>
+          {/* row 2 */}
+          <Contact {... this.state}/>
+          <TopBackgroundImage/>
+          <EventLog {... this} {... this.state} />
+          <ClearLog {... this} {... this.state} />
+          {/* row 3 */}
+          <StoryBlock {... this}>
+            <Story {... this.state} />
+            <Event {... this} {... this.state} />
+          </StoryBlock>
+          <Map {... this} {... this.state}/>
+          {/* row 4 */}
+          <BottomBackgroundImage/>
+          <Controls />
+          <PlayerNameAndWeapons {... this.state} />
+          <PlayerVitalsContainer/>
+          <Arrows {... this} {... this.state} />
+          <ResponsiveTabSelector {...this} {...this.state}/>
+          <RepsonsiveStatsContainer {...this} {...this.state}/>
+          <Rest {... this} {... this.state}/>
+          <PlayerLevelAndArmor {... this.state} />
+          <PlayerAbilities {... this.state} />
+          <Inventory {... this} {... this.state} />
+          <SpellBook {... this} {... this.state} />
+          <Accessories {... this} {... this.state} />
+          <BottomControls/>
+          <GameStateBackgroundImage/>
+          <GameStateOptions {... this} {... this.state}/>
+          <GameStateBox  {... this} {... this.state}/>
+          <Volume {... this} {... this.state}/>
+        </View>
+      </Provider>
     )
   }
 }

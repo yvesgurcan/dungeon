@@ -30,7 +30,7 @@ export const Utilities = {
     // debug
     Debug: Debug
     ,
-    DebugCreateCharacter: true
+    DebugCreateCharacter: false
     ,
     SoundDebug: SoundDebug
     ,
