@@ -1647,21 +1647,6 @@ class WeaponReadyBlock extends Component {
 /* player stats */
 
 class PlayerNameAndWeapons extends Component {
-
-  // no need to re-render stats if player has not changed
-  shouldComponentUpdate(nextProps) {
-    if (
-      nextProps.MobileScreen !== this.props.MobileScreen
-      || nextProps.TabletScreen !== this.props.TabletScreen
-      || nextProps.Player.Name !== this.props.Player.Name
-      ||  nextProps.Gear !== this.props.Gear
-    ) {
-      if (Debug) console.log("re-render: player name and gear")
-      return true
-    }
-    return false
-  }
-
   render() {
     let Player = {...this.props.Player}
     return (
@@ -1676,6 +1661,7 @@ class PlayerNameAndWeapons extends Component {
     )
   }
 }
+const PlayerNameAndWeaponsContainer = connect(mapStateToProps)(PlayerNameAndWeapons)
 
 class PlayerVitals extends Component {
 
@@ -7040,7 +7026,7 @@ class Game extends Component {
         {/* row 4 */}
         <BottomBackgroundImage/>
         <Controls />
-        <PlayerNameAndWeapons {... this.state} />
+        <PlayerNameAndWeaponsContainer/>
         <PlayerVitalsContainer/>
         <Arrows {... this} {... this.state} />
         <ResponsiveTabSelector {...this} {...this.state}/>
