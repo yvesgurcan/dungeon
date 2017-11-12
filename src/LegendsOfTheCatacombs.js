@@ -11,27 +11,27 @@ export const CampaignAssets = {
         y: 14,
         Facing: "East",
         Health: 19,
+        Name: "Leto",
+        Gear: {
+            // top
+            Head: null,
+            Neck: null,
+            // middle
+            Chest: null,
+            LeftHand: WorldAssets.Items.Sword,
+            RightHand: null,
+            LeftFinger: null,
+            RightFinger: null,
+            // bottom
+            Feet: null,
+            // back
+            Quiver: null,
+        },    
     },
 
     AvailableStartSpell:
         Object.keys(WorldAssets.Spells).map(Key => {return WorldAssets.Spells[Key]}).filter(Spell => {return Spell.Level === 1})
     ,
-
-    Gear: {
-        // top
-        Head: null,
-        Neck: null,
-        // middle
-        Chest: null,
-        LeftHand: WorldAssets.Items.Sword,
-        RightHand: null,
-        LeftFinger: null,
-        RightFinger: null,
-        // bottom
-        Feet: null,
-        // back
-        Quiver: null,
-    },
 
     Backpack: {
         maxItems: 10,

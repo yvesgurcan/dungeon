@@ -30,7 +30,6 @@ const mapStateToProps = (state, ownProps) => {
 
 let Debug = process.env.REACT_APP_RELEASE === "stable" ? false : Utilities.Debug 
 let SoundDebug = process.env.REACT_APP_RELEASE === "stable" ? false : Utilities.SoundDebug
-const EmptyBackpack = process.env.REACT_APP_RELEASE === "stable" ? true : false
 
 const {North, South, West, East} = Utilities.Directions
 const {Wall, Door, LootContainer, Undiscovered, Empty} = Utilities.MapObjects
@@ -1588,7 +1587,7 @@ class StaminaBar extends Component {
 class WeaponReady extends Component {
   render() {
     // let {Item, Slot} = this.props
-    let Item = Object.assign({}, this.props.Item)
+    let Item = {...this.props.Item}
     let Slot = this.props.Slot
 
     if (!Item) {
@@ -1617,24 +1616,8 @@ class WeaponReady extends Component {
 }
 
 class WeaponReadyBlock extends Component {
-
-  // no need to re-render gear if it has not changed
-  shouldComponentUpdate(nextProps) {
-    if (
-      nextProps.MobileScreen !== this.props.MobileScreen
-      || nextProps.TabletScreen !== this.props.TabletScreen
-      || nextProps.Gear !== this.props.Gear
-    ) {
-      if (Debug) console.log("re-render: weapon ready")
-      return true
-    }
-    return false
-  }
-
   render() {
-    // let {Gear} = this.props
-    let Gear = Object.assign({}, this.props.Gear)
-
+    let Gear = {...this.props.Player.Gear}
     return (
       <View>
         <WeaponReady Slot="Left hand" Item={Gear.LeftHand} />
@@ -1643,8 +1626,7 @@ class WeaponReadyBlock extends Component {
     )
   }
 }
-
-/* player stats */
+const WeaponReadyBlockContainer = connect(mapStateToProps)(WeaponReadyBlock)
 
 class PlayerNameAndWeapons extends Component {
   render() {
@@ -1655,7 +1637,7 @@ class PlayerNameAndWeapons extends Component {
           <Text>{Player.Name}</Text>
         </View>
         <View style={Styles.ReadyItemBlock}>
-          <WeaponReadyBlock {... this.props} />
+          <WeaponReadyBlockContainer/>
         </View>
       </View>
     )
@@ -4492,12 +4474,19 @@ class Game extends Component {
 
   InitGameEnvironment = (InitPlayer = false) => {
 
+    // Deactivate cheats at startup in production
+    let Cheats = {...Utilities.Cheats}
+    if (process.env.REACT_APP_RELEASE === "stable") {
+      Object.keys(Utilities.Cheats).map(Key => {
+        Cheats[Key] = false
+      })
+    }
+
     // Campaign assets
     let InitState = {
       Player: {...Campaign.Player},
       Backpack: {...Campaign.Backpack},
       AvailableStartSpell: [...Campaign.AvailableStartSpell],
-      Gear: {...Campaign.Gear},
       LootContainers: this.GenerateIds([...Campaign.LootContainers], "LootContainers"),
       Monsters: this.GenerateIds([...Campaign.Monsters], "Monsters"),
       Text: [...Campaign.Text],
@@ -4507,6 +4496,7 @@ class Game extends Component {
         HumanFriendly: this.GenerateFormattedDate(new Date())
       },
       EnterCustomLogEntry: false,
+      Cheats: Cheats,
     }
     
     // let the player go to the main screen if their character is stored in the state already
@@ -4519,20 +4509,8 @@ class Game extends Component {
             : Campaign.CreateCharacter
     }
 
-    // Debug/Cheats
-    if (Utilities.ShowFullMap) {
-      InitState.ShowFullMap = process.env.REACT_APP_RELEASE === "stable" ? false : true
-    }
-    if (Utilities.NoClip) {
-      InitState.NoClip = process.env.REACT_APP_RELEASE === "stable" ? false : true
-    }
-    if (Utilities.GodMode) {
-      InitState.GodMode = process.env.REACT_APP_RELEASE === "stable" ? false : true
-    }
-    if (Utilities.CastAlwaysSucceeds) {
-      InitState.CastAlwaysSucceeds = process.env.REACT_APP_RELEASE === "stable" ? false : true
-    }
-    if (EmptyBackpack) {
+    // Force startup with an empty backpack
+    if (process.env.REACT_APP_RELEASE === "stable") {
       InitState.Backpack.Items = []
     }
     
@@ -4610,9 +4588,15 @@ class Game extends Component {
     InitState.MonsterMap = MonsterMap
 
     // Story
-    // text displayed at the beginning of the campaign
+    // these two are deprecated
     InitState.currentText = Campaign.StartText ? Campaign.StartText.text : null
     InitState.currentTextImage = null
+    // text displayed at the beginning of the campaign
+    InitState.Story = {
+      Text: Campaign.StartText ? Campaign.StartText.text : null,
+      Image: Campaign.StartText ? Campaign.StartText.image : null,
+    }
+
 
     // Event Log
     InitState.EventLog = ["00:00: " + Gameplay.Messages.NewGame]
@@ -4634,6 +4618,11 @@ class Game extends Component {
     }
 
     this.props.dispatch({type: "UPDATE_PLAYER", Player: InitState.Player})
+    this.props.dispatch({type: "UPDATE_MONSTERS", Monsters: InitState.Monsters})
+    this.props.dispatch({type: "UPDATE_CHEATS", Cheats: InitState.Cheats})
+    this.props.dispatch({type: "UPDATE_EVENT_LOG", EventLog: InitState.EventLog})
+    this.props.dispatch({type: "UPDATE_STORY", Story: InitState.Story})
+    this.props.dispatch({type: "UPDATE_SOUND", Sound: InitState.Sound})
     this.props.dispatch({
       type: "UPDATE_MAPS",
       WallMap: InitState.WallMap,
@@ -4642,6 +4631,8 @@ class Game extends Component {
       LootMap: InitState.LootMap,
       MonsterMap: InitState.MonsterMap,
     })
+    this.props.dispatch({type: "UPDATE_TURN", Turn: 0})
+    this.props.dispatch({type: "UPDATE_TIMESTAMP", Milliseconds: InitState.GameStarted.Milliseconds, HumanFriendly: InitState.GameStarted.HumanFriendly})
 
     return InitState
 
@@ -6692,7 +6683,7 @@ class Game extends Component {
   AttackMonster = (MonsterCoordinates) => {
 
     let Player = {...this.state.Player}
-    let Gear = Object.assign({}, this.state.Gear)
+    let Gear = {...this.props.Player.Gear}
     let Monsters = Object.assign([], this.state.Monsters)
     let index = 0
 
@@ -6718,11 +6709,7 @@ class Game extends Component {
 
         this.PlaySound("attack_hit")
 
-        debugger
-
         this.SetText(Gameplay.PartialMessages.PlayerHit + Functions.IndefiniteArticle(Monster.Name) + " " + Monster.Name + Gameplay.PartialMessages.Period)
-
-        debugger
 
         this.MonsterTakeDamage(Monster, Damage, index)
 
@@ -7046,12 +7033,13 @@ class Game extends Component {
     )
   }
 }
+const GameContainer = connect(mapStateToProps)(Game)
 
-class GameContainer extends Component {
+class GameStore extends Component {
   render() {
     return (
       <Provider store={store}>
-        <Game dispatch={store.dispatch}/>
+        <GameContainer/>
       </Provider>
     )
   }
@@ -7081,4 +7069,4 @@ class GameStateBackgroundImage extends Component {
   }
 }
 
-export default GameContainer
+export default GameStore
