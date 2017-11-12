@@ -6,7 +6,7 @@ function Player (State, Action) {
 
     switch (Action.type) {
 
-        case "INIT_PLAYER":
+        case "UPDATE_PLAYER":
             NewState = {...NewState, ...Action.Player}
             
         default:
@@ -22,7 +22,7 @@ function Maps (State, Action) {
 
     switch (Action.type) {
 
-        case "INIT_MAPS":
+        case "UPDATE_MAPS":
             NewState = {
                 ...NewState,
                 WallMap: [...Action.WallMap],

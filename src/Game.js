@@ -1682,7 +1682,7 @@ class PlayerVitals extends Component {
   render() {
     let Player = {...this.props.Player}
     return (
-      <View style={Styles.PlayerVitals} onClick={this.test}>
+      <View style={Styles.PlayerVitals}>
         <View style={Styles.PlayerStat}>
           <HealthBar current={Player.Health} max={Player.MaxHealth}/>
         </View>
@@ -4647,9 +4647,9 @@ class Game extends Component {
       }
     }
 
-    store.dispatch({type: "INIT_PLAYER", Player: InitState.Player})
-    store.dispatch({
-      type: "INIT_MAPS",
+    this.props.dispatch({type: "UPDATE_PLAYER", Player: InitState.Player})
+    this.props.dispatch({
+      type: "UPDATE_MAPS",
       WallMap: InitState.WallMap,
       WallMapRevealed: InitState.WallMapRevealed,
       DiscoveryMap: InitState.DiscoveryMap,
@@ -7023,41 +7023,49 @@ class Game extends Component {
       )
     }
     return (
+      <View style={Styles.Game}>
+        {/* row 1 */}
+        <Header/>
+        {/* row 2 */}
+        <Contact {... this.state}/>
+        <TopBackgroundImage/>
+        <EventLog {... this} {... this.state} />
+        <ClearLog {... this} {... this.state} />
+        {/* row 3 */}
+        <StoryBlock {... this}>
+          <Story {... this.state} />
+          <Event {... this} {... this.state} />
+        </StoryBlock>
+        <Map {... this} {... this.state}/>
+        {/* row 4 */}
+        <BottomBackgroundImage/>
+        <Controls />
+        <PlayerNameAndWeapons {... this.state} />
+        <PlayerVitalsContainer/>
+        <Arrows {... this} {... this.state} />
+        <ResponsiveTabSelector {...this} {...this.state}/>
+        <RepsonsiveStatsContainer {...this} {...this.state}/>
+        <Rest {... this} {... this.state}/>
+        <PlayerLevelAndArmor {... this.state} />
+        <PlayerAbilities {... this.state} />
+        <Inventory {... this} {... this.state} />
+        <SpellBook {... this} {... this.state} />
+        <Accessories {... this} {... this.state} />
+        <BottomControls/>
+        <GameStateBackgroundImage/>
+        <GameStateOptions {... this} {... this.state}/>
+        <GameStateBox  {... this} {... this.state}/>
+        <Volume {... this} {... this.state}/>
+      </View>
+    )
+  }
+}
+
+class GameContainer extends Component {
+  render() {
+    return (
       <Provider store={store}>
-        <View style={Styles.Game}>
-          {/* row 1 */}
-          <Header/>
-          {/* row 2 */}
-          <Contact {... this.state}/>
-          <TopBackgroundImage/>
-          <EventLog {... this} {... this.state} />
-          <ClearLog {... this} {... this.state} />
-          {/* row 3 */}
-          <StoryBlock {... this}>
-            <Story {... this.state} />
-            <Event {... this} {... this.state} />
-          </StoryBlock>
-          <Map {... this} {... this.state}/>
-          {/* row 4 */}
-          <BottomBackgroundImage/>
-          <Controls />
-          <PlayerNameAndWeapons {... this.state} />
-          <PlayerVitalsContainer/>
-          <Arrows {... this} {... this.state} />
-          <ResponsiveTabSelector {...this} {...this.state}/>
-          <RepsonsiveStatsContainer {...this} {...this.state}/>
-          <Rest {... this} {... this.state}/>
-          <PlayerLevelAndArmor {... this.state} />
-          <PlayerAbilities {... this.state} />
-          <Inventory {... this} {... this.state} />
-          <SpellBook {... this} {... this.state} />
-          <Accessories {... this} {... this.state} />
-          <BottomControls/>
-          <GameStateBackgroundImage/>
-          <GameStateOptions {... this} {... this.state}/>
-          <GameStateBox  {... this} {... this.state}/>
-          <Volume {... this} {... this.state}/>
-        </View>
+        <Game dispatch={store.dispatch}/>
       </Provider>
     )
   }
@@ -7087,4 +7095,4 @@ class GameStateBackgroundImage extends Component {
   }
 }
 
-export default Game
+export default GameContainer
