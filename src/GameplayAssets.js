@@ -148,7 +148,7 @@ export const GameplayAssets = {
         Race: "Each race has slightly different natural traits.",
         Class: "A class determines what your talent are and what type of combat you trained for.",
         FirstSpell: "Choose the first spell that will go into your spellbook.",
-        Sound: "lol!",
+        Sound: "",
     },
 
     LevelXP: {

@@ -10,8 +10,14 @@ function GameTime (State, Action) {
             NewState = {...NewState, Turn: Action.Turn}
             break
 
-        case "UPDATE_TIMESTAMP":
-        NewState = {...NewState, Milliseconds: Action.Milliseconds, HumanFriendly: Action.HumanFriendly}
+        case "ADD_TIMESTAMP":
+        if (!NewState.GameTime) {
+            NewState = {...NewState, Start: []}
+        }
+        NewState = {
+            ...NewState,
+            Start: [...NewState.Start, {Milliseconds: Action.Milliseconds, HumanFriendly: Action.HumanFriendly}]
+        }
             break
 
         default:
@@ -79,6 +85,23 @@ function Maps (State, Action) {
     return NewState
 }
 
+function Loot (State, Action) {
+
+    let NewState = {...State}
+
+    switch (Action.type) {
+
+        case "UPDATE_LOOT":
+            NewState = {...NewState, ...Action.LootContainers}
+            break
+
+        default:
+            break
+    }
+
+    return NewState
+}
+
 function EventLog (State, Action) {
 
     let NewState = {...State}
@@ -86,7 +109,7 @@ function EventLog (State, Action) {
     switch (Action.type) {
 
         case "UPDATE_EVENT_LOG":
-            NewState = {...NewState, EventLog: [...Action.EventLog]}
+            NewState = {...NewState, ...Action.EventLog}
             break
 
         default:
@@ -132,28 +155,99 @@ function Cheats (State, Action) {
 
 function Sound (State, Action) {
     
-        let NewState = {...State}
-    
-        switch (Action.type) {
-    
-            case "UPDATE_SOUND":
-                NewState = {...NewState, ...Action.Sound}
-                break
-    
-            default:
-                break
-        }
-    
-        return NewState
+    let NewState = {...State}
+
+    switch (Action.type) {
+
+        case "UPDATE_SOUND":
+            NewState = {...NewState, ...Action.Sound}
+            break
+
+        case "UPDATE_VOLUME":
+            NewState = {...NewState, Volume: Math.max(0,Math.min(1,Math.floor(Action.Volume*100)/100))}
+            break
+
+        case "MUTE_VOLUME":
+            NewState = {...NewState, Volume: 0}
+            break
+
+        case "INCREASE_VOLUME":
+            NewState = {...NewState, Volume: Math.min(1,Math.floor((NewState.Volume+0.1)*100)/100)}
+            break
+
+        case "DECREASE_VOLUME":
+            NewState = {...NewState, Volume: Math.max(0,Math.floor((NewState.Volume-0.1)*100)/100)}
+            break
+
+        default:
+            break
     }
+
+    return NewState
+}
+
+function Debug (State, Action) {
+
+    let NewState = {...State}
+
+    switch (Action.type) {
+
+        case "UPDATE_DEBUG":
+            NewState = {...NewState, Debug: Action.Debug, SoundDebug: Action.SoundDebug}
+            break
+
+        default:
+            break
+    }
+
+    return NewState
+}
+
+function Responsiveness (State, Action) {
+
+    let NewState = {...State}
+
+    switch (Action.type) {
+
+        case "UPDATE_SCREEN_SIZE":
+            NewState = {...NewState, MobileScreen: Action.MobileScreen, TabletScreen: Action.TabletScreen}
+            break
+
+        default:
+            break
+    }
+
+    return NewState
+}
+
+function Styles (State, Action) {
+
+    let NewState = {...State}
+
+    switch (Action.type) {
+
+        case "UPDATE_STYLES":
+            NewState = {...NewState, ...Action.Styles}
+            break
+
+        default:
+            break
+    }
+
+    return NewState
+}
 
 export default combineReducers({
     GameTime,
     Player,
     Monsters,
     Maps,
+    Loot,
     EventLog,
     Story,
     Cheats,
     Sound,
+    Debug,
+    Responsiveness,
+    Styles,
 })

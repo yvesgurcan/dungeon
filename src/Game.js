@@ -1,14 +1,24 @@
 import React, {Component} from "react"
 import {createStore} from 'redux'
 import {Provider, connect} from 'react-redux'
+import Reducers from './Reducers'
+
 import World from "./WorldAssets.js"
 import Campaign from "./LegendsOfTheCatacombs.js"
 import Gameplay from "./GameplayAssets.js"
 import Utilities from "./Utilities.js"
+
 import Functions from "./Functions.js"
-import {URL, LineBreak, Text, View, Block, Image} from "./components/WebComponents.js"
-import {Graphics, ClearFloat, Version} from "./components/UtilityComponents.js"
-import Reducers from './Reducers'
+
+import {LineBreak, Text, View, Block, Image, HeadingContainer as Heading} from "./components/Web.js"
+import {ItemImagePlaceholderContainer as ItemImagePlaceholder, ItemImageBlockContainer as ItemImage} from "./components/ItemImage.js"
+import {ActionButtonContainer as Button} from "./components/Button.js"
+import {ArrowContainer as Arrow} from "./components/Arrow.js"
+import {SliderContainer as Slider} from "./components/Slider.js"
+import {ToolTipContainer as ToolTip} from "./components/ToolTip.js"
+import {TextEditContainer as TextEdit, TextAreaContainer as TextArea} from "./components/Input.js"
+import {ClearFloat, ContactContainer as Contact, HeaderContainer as Header} from "./components/Misc.js"
+import {TopBackgroundImageContainer as TopBackgroundImage, BottomBackgroundImageContainer as BottomBackgroundImage, GameStateBackgroundImageContainer as GameStateBackgroundImage} from "./components/BackgroundImages.js"
 
 /* store */
 
@@ -46,623 +56,20 @@ let NextAvailableId = {
 
 /* miscellani */
 
-const authorEmail = "gurcan.yves@gmail.com"
-const contactTemplate = "mailto:" + authorEmail +"?subject=Dungeon!"
-const repository = "https://github.com/yvesgurcan/dungeon"
-const gitHubLogo = "./graphics/misc/Octocat.png"
-const itemPath = "./graphics/items/"
 const storyPath = "./graphics/story/"
 const imgExt = ".png"
 
 let Styles = null
 
-/* web components */
-
-// input type=text
-class TextEdit extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {style: this.props.style || Styles.TextEdit}
-  }
-  onKeyPress = (keypress) => {
-    if (keypress.key === "Enter") {
-      keypress.target.blur()
-    }
-  }
-  onFocus = () => {
-    this.setState({style: this.props.styleFocus || Styles.TextEditFocus})
-  }
-  onBlur = (input) => {
-    this.setState({style: this.props.style || Styles.TextEdit})
-    if (this.props.onBlur) {
-      this.props.onBlur(input.target)
-    }
-  }
-  onChange(input) {
-    this.props.onChange(input.target)
-  }
-  render() {
-    return (
-      <input
-        hidden={this.props.hidden}
-        name={this.props.name}
-        placeholder={this.props.placeholder}
-        value={this.props.value || ""}
-        style={this.state.style}
-        maxLength={this.props.maxLength}
-        onKeyPress={this.onKeyPress}
-        onFocus={this.onFocus}
-        onBlur={this.onBlur}
-        onChange={input => this.onChange(input)} />
-      )
-  }
-}
-
-// h3
-class Heading extends Component {
-  render() {
-    return <h3 {...this.props} style={Styles.H3} children={this.props.children} />
-  }
-}
-
-// h2
-class PageSubtitle extends Component {
-  render() {
-    return <h2 {...this.props} style={Styles.H2} children={this.props.children} />
-  }
-}
-
-// h1
-class PageTitle extends Component {
-  render() {
-    return <h1 {...this.props} style={Styles.H1} children={this.props.children} />
-  }
-}
-
-/* small components */
-
-class GitHub extends Component {
-  render() {
-    return (
-      <Graphics
-        draggable={false}
-        src={gitHubLogo}
-        style={Styles.GitHubLogo}
-        title="GitHub repository"/>
-    )
-  }
-}
-
-class Link extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {}
-  }
-  NormalStyle = () => {
-    this.setState({ style: Styles.Link})
-  }
-  HoverStyle = () => {
-    this.setState({ style: Styles.LinkHover})
-  }
-  render() {
-    return (
-      <URL
-        onMouseMove={this.HoverStyle}
-        onMouseLeave={this.NormalStyle}
-        style={this.state.style || Styles.Link}
-        {...this.props}/>
-    )
-  }
-}
-
-/* images */
-
-class ItemImagePlaceholder extends Component {
-  render() {
-    return (
-      <Text>
-      <Block
-        onClick={this.props.onClick}
-        style={Styles.ItemImagePlaceholder}
-        title={this.props.name} />
-      </Text>   
-    )
-  }
-}
-
-class ItemImage extends Component {
-
-  render() {
-    return (
-      <Text>
-        <Graphics
-          draggable={this.props.draggable}
-          src={this.props.image ? itemPath + this.props.image + imgExt : null}
-          style={Styles.ItemImage}
-        />
-      </Text>
-    )
-  }
-}
-
-class ItemImageBlock extends Component {
-  
-  constructor(props) {
-    super(props)
-    this.state = {
-      HideItemDescription: true,
-      HideItemActions: true,
-      Id: Math.floor(Math.random() * 99999999999)
-    }
-  }
-
-  componentDidMount() {
-    this.Mounted = true
-  }
-
-  componentWillUnmount() {
-    this.Mounted = false
-  }
-
-  shouldComponentUpdate(NextProps, NextState) {
-
-    if (
-      NextProps.item !== this.props.item
-      || NextState.HideItemDescription !== this.state.HideItemDescription
-      || NextState.HideItemActions !== this.state.HideItemActions
-      || NextState.Clicked !== this.state.Clicked
-    ) {
-      if (Debug) console.log("re-render: image", NextProps.item)
-      return true
-    }
-    return false
-  }
-
-  RegisterTouch = () => {
-
-    // there is no item
-    let Item = {...this.props.item}
-    if (!Object.getOwnPropertyNames(Item).length) return null
-
-    this.setState({TouchEvent: true})
-  }
-
-  // right click
-  ToggleItemActions = (input) => {
-
-    // there is no item
-    let Item = {...this.props.item}
-    if (!Object.getOwnPropertyNames(Item).length) return null
-
-    let grabInput = {...input}
-    input.preventDefault()
-
-    // this item does not have an action menu
-    if (this.props.NoActionMenu) {
-      // show the item description instead
-      if (this.state.HideItemDescription) {
-        this.ShowItemDescription(grabInput)
-      }
-      // hide the item description if it is already displayed
-      else {
-        this.HideItemDescription()
-      }
-      return false
-    }
-
-    // get the coordinates where the action menu will be displayed
-    let {pageX, pageY} = {...grabInput}
-
-    this.setState({
-      // toggle the action menu
-      HideItemActions: !this.state.HideItemActions,
-      // hide the item description that may have appeared when hovering
-      HideItemDescription: true,
-      // block hover events so that the description does not re-appear until the user has moved out of the element
-      PreventHoverEvent: true,
-      x: pageX+5,
-      y: pageY+5,
-    }, function() {
-
-        // attach event listeners to hide the menu when the user clicks away
-        document.addEventListener("click", this.HideItemActions, false)
-        document.addEventListener("contextmenu", this.HideItemActions, false)
-
-    })
-  }
-
-  // right click -- event listener
-  HideItemActions = () => {
-    
-    if (!this.Mounted) return false
-
-    if (this.state.DescriptionAsAction) {
-      // add item description event listener
-      document.addEventListener("click", this.HideItemDescription, false)
-      document.addEventListener("contextmenu", this.HideItemDescription, false)
-      this.setState({
-        // toggle the block on this event listener
-        DescriptionAsAction: false,
-        // let the item description event listeners remove themselves once they executed
-        CleanupDescriptionEventListener: true
-      })
-      // do not execute the rest of the code to keep preventing hover events
-      return false
-    }
-
-    this.setState({
-      // hide the action menu
-      HideItemActions: true,
-      // release the block on hover events so that when the user moves back to the item, the description will appear again
-      PreventHoverEvent: false
-    })
-
-    // get rid of the event listeners
-    document.removeEventListener("click", this.HideItemActions, false) 
-    document.removeEventListener("contextmenu", this.HideItemActions, false) 
-
-
-
-  }
-
-  // action menu click
-  ShowItemDescription = (input) => {
-
-    // there is no item
-    let Item = {...this.props.item}
-    if (!Object.getOwnPropertyNames(Item).length) return null
-
-    // grab coordinates
-    let {pageX, pageY} = {...input}
-
-    // the item description was called from the action menu
-    if (input === null) {
-      pageX = this.state.x-5
-      pageY = this.state.y-5
-      this.setState({DescriptionAsAction: true})
-
-    }
-
-    this.setState({
-      // hide the action menu
-      HideItemActions: true,
-      // show the description
-      HideItemDescription: false,
-      // block the hover event
-      PreventHoverEvent: true,
-      x: pageX+5,
-      y: pageY+5,
-    })
-
-    // add listeners for the item description if there is no action menu so that when the user clicks away it hides the description
-    if (this.props.NoActionMenu) {
-      document.addEventListener("click", this.HideItemDescription, false)
-      document.addEventListener("contextmenu", this.HideItemDescription, false)
-      return false
-    }
-
-    // add listeners so that when the user clicks away it hides the action menu
-    document.addEventListener("click", this.HideItemActions, false)
-    document.addEventListener("contextmenu", this.HideItemActions, false)
-
-  }
-
-  // no action menu -- event listener
-  HideItemDescription = () => {
-
-    if (!this.Mounted) return false
-
-    this.setState({
-      // hide the description
-      HideItemDescription: true,
-      // release the block on hover events
-      PreventHoverEvent: false,
-    })
-
-    // remove item description listeners
-    if (this.props.NoActionMenu || this.state.CleanupDescriptionEventListener) {
-
-      document.removeEventListener("click", this.HideItemDescription, false)
-      document.removeEventListener("contextmenu", this.HideItemDescription, false)
-
-      // toggle the clean up of event listeners corresponding to the item description showing as an action
-      if (this.state.CleanupDescriptionEventListener) {
-        this.setState({CleanupDescriptionEventListener: false})
-      }
-
-    }
-
-  }
-
-  // hover
-  ShowItemDescriptionOnHover = (input) => {
-
-    // there is no item
-    let Item = {...this.props.item}
-    if (!Object.getOwnPropertyNames(Item).length) return null
-
-    // do not show description on hover for touch screens
-    if (this.state.TouchEvent) return false
-
-    if (
-      // hover events are not blocked
-      !this.state.PreventHoverEvent
-      // the action menu is hidden
-      && this.state.HideItemActions
-      // the item description is hidden
-      && this.state.HideItemDescription
-    ) {
-
-      // the user is hovering the item
-      this.setState({HoveredOut: false})
-
-      // grab coordinates
-      let {pageX, pageY} = {...input}
-
-      // wait before showing the item description
-      setTimeout(function() {
-        if (
-          // the user is still hovering the item
-          !this.state.HoveredOut
-          // the action menu is still hidden
-          && this.state.HideItemActions
-          // the item description is still hidden
-          && this.state.HideItemDescription
-        ) {
-
-          if (!this.Mounted) return false
-
-          // display description
-          this.setState({
-            HideItemDescription: false,
-            x: pageX+5,
-            y: pageY+5,
-          })
-
-        }
-      }.bind(this), 600)
-      
-    }
-
-  }
-
-  HideItemDescriptionOnHover = () => {
-
-    // hover events are not blocked
-    if (!this.state.PreventHoverEvent) {
-      this.setState({
-        // hide item description
-        HideItemDescription: true,
-        // the user is not interested in this item anymore
-        HoveredOut: true
-      })
-    }
-  }
-
-  ShowHoverForItemAfterClick = (input) => {
-    if (this.state.ResetHover) {
-      this.ShowItemDescriptionOnHover(input)
-      this.setState({ResetHover: false})
-    }
-  }
-
-  // item description
-  ItemDescription = () => {
-
-    let Item = {...this.props.item}
-
-    if (!Object.getOwnPropertyNames(Item).length) return null
-
-    let Description = (
-      <View hidden={this.state.HideItemDescription} style={{...Styles.ItemDescription, left: this.state.x, top: this.state.y}}>
-        <View style={Styles.ItemDescriptionName}>{Item.Name}</View>
-        <View style={Styles.ItemDescriptionContent} hidden={!Item.Description}>{Item.Description}</View>
-      </View>
-    )
-    return Description
-
-  }
-
-  // action menu
-  ItemActions = () => {
-
-    let Item = {...this.props.item}
-
-    if (!Object.getOwnPropertyNames(Item).length) return null
-
-    let Action = (
-      <View hidden={this.state.HideItemActions} style={{...Styles.ItemActions, left: this.state.x, top: this.state.y}}>
-        <View style={Styles.ItemDescriptionName}>{Item.Name}</View>
-        {this.AvailableActions().map(ItemAction => {
-          return (
-            <ItemSingleAction
-              key={ItemAction.Name}
-              onClick={this.UseItem}
-              ItemAction={ItemAction}
-            />
-          )
-        })}
-      </View>
-    )
-    return Action
-  }
-
-  // discriminate actions that are available for this item
-  AvailableActions = () => {
-    
-    let Item = {...this.props.Item}
-    let Equipped = this.props.Equipped
-    let Loot = this.props.Loot
-    
-    if (Item) {
-
-      let Type = Item.Type
-      
-      let AvailableActions = [{Name: "Description", onClick: "ShowItemDescription", BuiltInComponent: true}]
-      
-      if (Loot) {
-        AvailableActions.push({Name: "Take", onClick: "TakeSingleLoot", MainAction: true})
-      }
-      
-      if (Type === "potion") {
-        AvailableActions.push({Name: "Drink", onClick: "DrinkPotion", MainAction: !Loot})
-      }
-      
-      if (Type === "food") {
-        AvailableActions.push({Name: "Eat", onClick: "ConsumeFood", MainAction: !Loot})
-      }
-      
-      if (Type === "scroll") {
-        AvailableActions.push({Name: "Cast Spell", onClick: "UseScroll", MainAction: !Loot})
-      }
-      
-      if (!Equipped && Utilities.Equipable.indexOf(Type) > -1) {
-        AvailableActions.push({Name: "Equip", onClick: "EquipItem"})
-      }
-      
-      if (Equipped) {
-        AvailableActions.push({Name: "Unequip", onClick: "UnequipItem"})
-      }
-
-      if (!Loot) {
-          AvailableActions.push({Name: "Drop", onClick: "DropItem"})
-      }
-
-      return AvailableActions
-      
-    }
-    
-    return []
-  
-  }
-
-  // item action selected from action menu
-  UseItem = (Action) => {
-    if (Action.onClick === "ShowItemDescription") {
-      this.ShowItemDescription(null)
-      return false
-    }
-
-    this.setState({Clicked: true})
-    setTimeout(function () {
-      this.setState({Clicked: false, ResetHover: true})
-      if (Action.MainAction) {
-        this.props.onClick(this.props.item)
-        return false
-      }
-      this.props.UseItem(this.props.item, Action.onClick)
-    }.bind(this), 50)
-
-
-  }
-
-  // direct click on item image
-  onClick = () => {
-
-    let Item = {...this.props.item}    
-    if (!Object.getOwnPropertyNames(Item).length) return null
-
-    if (!this.props.onClick) {
-      console.warn("This feature is not ready yet :)")
-      return null
-    }
-
-    this.setState({Clicked: true})
-    setTimeout(function () {
-      this.setState({Clicked: false, ResetHover: true})
-      this.props.onClick(this.props.item)
-      this.HideItemActions()
-      this.HideItemDescription()
-    }.bind(this), 50)
-
-  }
-
-  render() {
-
-    return (
-      <View
-        id={this.state.Id}
-        style={Styles.ItemImageBlock}
-        onContextMenu={this.ToggleItemActions}
-        onMouseEnter={this.ShowItemDescriptionOnHover}
-        onMouseLeave={this.HideItemDescriptionOnHover}
-        onMouseMove={this.ShowHoverForItemAfterClick}
-        onTouchStart={this.RegisterTouch}>
-        {this.ItemDescription()}
-        {this.ItemActions()}
-        <View>
-          <View
-            hidden={!this.state.Clicked}
-            style={this.props.Loot
-              ? {...Styles.ItemImageBlockClick,
-                top: document.getElementById(this.state.Id)
-                  ? document.getElementById(this.state.Id).getBoundingClientRect().y+1
-                  : null,
-                left: document.getElementById(this.state.Id)
-                  ? document.getElementById(this.state.Id).getBoundingClientRect().x+1
-                  : null
-                }
-              : {...Styles.ItemImageBlockClick,
-                top: document.getElementById(this.state.Id)
-                  ? document.getElementById(this.state.Id).getBoundingClientRect().y+1
-                  : null,
-                left: document.getElementById(this.state.Id)
-                  ? document.getElementById(this.state.Id).getBoundingClientRect().x+1 - document.getElementById(this.state.Id).scrollLeft
-                  : null
-                }}/>
-          <View onClick={this.onClick}>
-            <ItemImage {...this} {...this.props} />
-          </View>
-          <View style={Styles.ItemImageBlockNumber} hidden={!this.props.showIndex}>
-            {this.props.index}
-          </View>
-        </View>
-      </View>
-    )
-  }
-}
-
-class ItemSingleAction extends Component {
-
-  constructor(props) {
-    super(props)
-
-    this.state = {style: Styles.ItemAction}
-  }
-
-  HoverStyle = () => {
-    this.setState({style: Styles.ItemActionHover})
-  }
-
-  NormalStyle = () => {
-    this.setState({style: Styles.ItemAction})
-  }
-
-  UseItem = () => {
-    this.props.onClick(this.props.ItemAction)
-  }
-
-  render() {
-    return (
-      <View
-        style={this.state.style}
-        onMouseMove={this.HoverStyle}
-        onMouseLeave={this.NormalStyle}
-        onClick={this.UseItem}>
-        {this.props.ItemAction.Name}
-      </View>
-    )
-  }
-}
-
 class BottomControls extends Component {
   render() {
+    let Styles = {...this.props.Styles}
     return (
-      <View style={Styles.BottomControls}>
-      </View>
+      <View style={Styles.BottomControls}/>
     )
   }
 }
+const BottomControlsContainer = connect(mapStateToProps)(BottomControls)
 
 /* game state manipulations (save/load) */
 class GameStateOptions extends Component {
@@ -687,16 +94,16 @@ class GameStateOptions extends Component {
   render() {
     return (
       <View style={Styles.GameState}>
-        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.NewGame} style={Styles.Inline}>
-          <ActionButton onClick={this.props.ShowCharacterScreen}>New Game</ActionButton>
-        </HoverToolTip>
-        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.SaveGame} style={Styles.Inline}>
-          <ActionButton onClick={this.ToggleSaveGameStateBox}>Save Game</ActionButton>
-        </HoverToolTip>
-        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.LoadGame} style={Styles.Inline}>
-          <ActionButton onClick={this.ToggleLoadGameStateBox}>Load Game</ActionButton>
-        </HoverToolTip>
-        <ActionButton onClick={this.ToggleCancelGameStateBox} hidden={!this.props.ShowGameStateBox}>Close</ActionButton>
+        <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.NewGame} style={Styles.Inline}>
+          <Button onClick={this.props.ShowCharacterScreen}>New Game</Button>
+        </ToolTip>
+        <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.SaveGame} style={Styles.Inline}>
+          <Button onClick={this.ToggleSaveGameStateBox}>Save Game</Button>
+        </ToolTip>
+        <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.LoadGame} style={Styles.Inline}>
+          <Button onClick={this.ToggleLoadGameStateBox}>Load Game</Button>
+        </ToolTip>
+        <Button onClick={this.ToggleCancelGameStateBox} hidden={!this.props.ShowGameStateBox}>Close</Button>
       </View>
     )
   }
@@ -782,8 +189,8 @@ class GameStateBox extends Component {
   onChange = (input) => {
 
     if (this.props.EditableGameStateBox) {
-      this.props.UpdateGameStateToLoad(input.target.value)
-      this.setState({GameState: input.target.value})
+      this.props.UpdateGameStateToLoad(input.value)
+      this.setState({GameState: input.value})
     }
 
   }
@@ -791,7 +198,7 @@ class GameStateBox extends Component {
   onClick = (input) => {
 
     if (!this.props.EditableGameStateBox) {
-      input.target.select()
+      input.select()
     }
   }
 
@@ -805,15 +212,15 @@ class GameStateBox extends Component {
         <Block hidden={this.props.EditableGameStateBox}>
           <input type="checkbox" checked={this.state.IncludeStaticAssets} onChange={this.ToggleSaveStaticAsset}/> include static assets
         </Block>
-        <HoverToolTip DisabledOnClick ToolTip={this.props.EditableGameStateBox ? Gameplay.Help.GameStateBox.LoadGame : Gameplay.Help.GameStateBox.SaveGame} style={Styles.Inline}>
-          <textarea
+        <ToolTip DisabledOnClick ToolTip={this.props.EditableGameStateBox ? Gameplay.Help.GameStateBox.LoadGame : Gameplay.Help.GameStateBox.SaveGame} style={Styles.Inline}>
+          <TextArea
             readOnly={!this.props.EditableGameStateBox}
             style={{...Styles.GameStateBox}}
             onChange={this.onChange}
             onClick={this.onClick}
             value={this.state.GameState}
           />
-        </HoverToolTip>
+        </ToolTip>
       </View>
     )
   }
@@ -823,12 +230,11 @@ class GameStateBox extends Component {
 
 class Volume extends Component {
   onClick = (NewValueRatio) => {
-
-    this.props.SetVolume(Math.min(1,Math.max(0,Math.floor(NewValueRatio*100)/100)))
-
+    this.props.dispatch({type: "UPDATE_VOLUME", Volume: NewValueRatio})
   }
 
   render() {
+    let Styles = {...this.props.Styles}
     let style = {...Styles.Slider, ...Styles.VolumeSlider}    
     return (
       <View style={Styles.VolumeControl}>
@@ -846,6 +252,7 @@ class Volume extends Component {
     )
   }
 }
+const VolumeContainer = connect(mapStateToProps)(Volume)
 
 /* accessories */
 
@@ -888,13 +295,13 @@ class SpellBook extends Component {
     for (let i = 0; i < Utilities.NumberOfSpells; i++) {
       if (!Spells || Spells.length <= i) {
         SpellSlots.push(
-          <ItemImageBlock
+          <ItemImage
             key={i}/>
         )     
       }
       else {
         SpellSlots.push(
-          <ItemImageBlock
+          <ItemImage
           draggable={false}
           key={i}
           index={i <= 99 ? ("0" + Number(i+1)).slice(-2) : i}
@@ -921,9 +328,9 @@ class SpellBook extends Component {
     return (
       <View style={Styles.SpellBook} hidden={this.props.MobileScreen ? this.props.HideSpellBook : false}>
         <Block style={Styles.SpellBookLabel} hidden={this.props.MobileScreen}>
-          <HoverToolTip ToolTip={Gameplay.Help.SpellBook} style={Styles.Inline}>
+          <ToolTip ToolTip={Gameplay.Help.SpellBook} style={Styles.Inline}>
             Spellbook
-          </HoverToolTip>
+          </ToolTip>
         </Block>
         {this.DisplaySpellBook()}
       </View>
@@ -968,7 +375,7 @@ class Inventory extends Component {
 
     let inventory = list.map((item, index) => {
       return (
-        <ItemImageBlock
+        <ItemImage
           draggable={true}
           key={index}
           index={item && item.image ? "B" + (index <= 99 ? ("0" + Number(index+1)).slice(-2) : index) : null}
@@ -993,20 +400,20 @@ class Inventory extends Component {
     return (
       <View style={Styles.Inventory} hidden={this.props.MobileScreen ? this.props.HideInventory : false}>
         <Block style={Styles.InventoryLabel} hidden={this.props.MobileScreen}>
-          <HoverToolTip ToolTip={Gameplay.Help.Backpack} style={Styles.Inline}>
+          <ToolTip ToolTip={Gameplay.Help.Backpack} style={Styles.Inline}>
           Backpack
-          </HoverToolTip>
+          </ToolTip>
         </Block>
         {this.DisplayInventory()}
         <ClearFloat/>
         <Text style={Styles.InventoryWeightLabel}>
-          <HoverToolTip ToolTip={Gameplay.Help.BackpackWeight} style={Styles.Inline}>
+          <ToolTip ToolTip={Gameplay.Help.BackpackWeight} style={Styles.Inline}>
             Weight: {Number(Backpack.Weight).toFixed(2)}
-          </HoverToolTip>
+          </ToolTip>
           {' '}/{' '}
-          <HoverToolTip ToolTip={Gameplay.Help.BackpackMaxWeight} style={Styles.Inline}>
+          <ToolTip ToolTip={Gameplay.Help.BackpackMaxWeight} style={Styles.Inline}>
             {Player.MaxWeight} lbs
-          </HoverToolTip>
+          </ToolTip>
         </Text>
       </View>
     )
@@ -1054,79 +461,28 @@ class GoSouth extends Component {
   }
 }
 
-class Arrow extends Component {
-
-  // no need to re-render the arrow if its style has not changed
-  shouldComponentUpdate(nextProps, nextState) {
-    if (
-      nextProps.MobileScreen !== this.props.MobileScreen
-      || nextProps.TabletScreen !== this.props.TabletScreen
-      || nextState.style !== this.state.style
-      || nextProps.arrowStyle !== this.props.arrowStyle
-    ) {
-      if (Debug) console.log("re-render: directional arrow")
-      return true
-    }
-    return false
-  }
-
-  constructor(props) {
-    super(props)
-    this.state = { style: Styles.ArrowBlock }
-  }
-  NormalStyle = () => {
-    this.setState({ style: Styles.ArrowBlock })
-  }
-  HoverStyle = () => {
-    this.setState({ style: Styles.ArrowBlockHover })
-  }
-  onClick = () => {
-    this.props.onClick(this.props.arrow)
-    this.setState({ style: Styles.ArrowBlockClick })
-    setTimeout(function () {
-      if (this.state.style === Styles.ArrowBlockClick) {
-        this.setState({ style: Styles.ArrowBlockHover })
-      }
-    }.bind(this), 50)
-  }
-  render() {
-    return (
-      <Text
-        onClick={this.onClick}
-        onMouseMove={this.HoverStyle}
-        onMouseLeave={this.NormalStyle}
-        style={
-          this.props.arrowStyle && this.props.arrowStyle[this.props.arrow]
-            ? this.props.arrowStyle[this.props.arrow]
-            : null || this.state.style}>
-        {this.props.children}
-      </Text>
-    )
-  }
-}
-
 class Arrows extends Component {
 
   render() {
     return (
       <View style={Styles.ArrowContainer}>
         <Block style={Styles.ArrowRow}>
-          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.North} style={Styles.Inline}>
+          <ToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.North} style={Styles.Inline}>
             <GoNorth {... this.props} />
-          </HoverToolTip>
+          </ToolTip>
         </Block>
         <Block style={Styles.ArrowRow}>
-          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.West} style={Styles.Inline}>
+          <ToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.West} style={Styles.Inline}>
             <GoWest {... this.props} />
-          </HoverToolTip>
-          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.East} style={Styles.Inline}>
+          </ToolTip>
+          <ToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.East} style={Styles.Inline}>
             <GoEast {... this.props} />
-          </HoverToolTip>
+          </ToolTip>
         </Block>
         <Block style={Styles.ArrowRow}>
-          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.South} style={Styles.Inline}>
+          <ToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.South} style={Styles.Inline}>
             <GoSouth {... this.props} />
-          </HoverToolTip>
+          </ToolTip>
         </Block>
       </View>
     )
@@ -1135,377 +491,17 @@ class Arrows extends Component {
 
 /* player actions */
 
-class ActionButton extends Component {
-  constructor(props) {
-    super(props)
-
-    let {SmallPadding, StayClicked, Clicked} = {...this.props}
-
-    if (StayClicked && Clicked) {
-      this.state = {
-        style: SmallPadding ? Styles.ActionButtonHoverSmallPadding : Styles.ActionButtonHover 
-      } 
-    }
-    else {
-      this.state = {
-        style: SmallPadding ? Styles.ActionButtonSmallPadding : Styles.ActionButton 
-      }  
-    }
-
-  }
-
-  componentWillReceiveProps(NextProps) {
-    let {StayClicked, Clicked, SmallPadding} = {...NextProps}
-    let CurrentlyClicked = {...this.props.Clicked}
-    let CurrentlySmallPadding = {...this.props.SmallPadding}
-    
-    if (StayClicked && CurrentlyClicked && !Clicked) {
-      this.setState({
-        style: SmallPadding ? Styles.ActionButtonSmallPadding : Styles.ActionButton,
-      })
-    }
-
-    if (!StayClicked && SmallPadding !== CurrentlySmallPadding) {
-      this.setState({
-        style: SmallPadding ? Styles.ActionButtonSmallPadding : Styles.ActionButton,
-      })
-    }
-
-  }
-
-  NormalStyle = () => {
-    let {SmallPadding} = {...this.props}
-    this.setState({
-      style: SmallPadding ? Styles.ActionButtonSmallPadding : Styles.ActionButton
-    })
-  }
-  HoverStyle = () => {
-    let {SmallPadding} = {...this.props}
-    this.setState({ style: SmallPadding ? Styles.ActionButtonHoverSmallPadding : Styles.ActionButtonHover })
-  }
-  onClick = () => {
-
-    let {SmallPadding} = {...this.props}
-    this.setState({
-      style: SmallPadding ? Styles.ActionButtonClickSmallPadding : Styles.ActionButtonClick
-    })
-
-    let that = this
-    setTimeout(function () {
-      if (that.state.style === Styles.ActionButtonClick || that.state.style === Styles.ActionButtonClickSmallPadding) {
-        that.setState({ style: SmallPadding ? Styles.ActionButtonHoverSmallPadding : Styles.ActionButtonHover })
-      }
-    }, 50)  
-
-    if (!this.props.onClick) {
-      console.warn("This feature is not ready yet :)")
-      return null
-    }
-
-    this.props.onClick()
-
-  }
-  render() {
-
-    let {Clicked, StayClicked} = {...this.props}
-
-    return (
-      <View
-        hidden={this.props.hidden}
-        onClick={this.onClick}
-        onMouseMove={this.HoverStyle}
-        onMouseLeave={Clicked && StayClicked ? null : this.NormalStyle}
-        style={this.props.hidden ? {display: "none"} : this.state.style}>
-        {this.props.children}
-      </View>
-    )
-  }
-}
-
 class Rest extends Component {
   render() {
     return (
       <View style={Styles.Rest} hidden={this.props.MobileScreen ? this.props.HideStats : false}>
-        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Rest} style={Styles.Inline}>
-          <ActionButton>
+        <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Rest} style={Styles.Inline}>
+          <Button>
             <View style={Styles.RestButton}>
                 Rest
             </View>
-          </ActionButton>
-        </HoverToolTip>
-      </View>
-    )
-  }
-}
-
-/* slider */
-
-class Slider extends Component {
-
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      Dragging: false,
-      Id: Math.floor(Math.random() * 99999999999)
-    }
-
-  }
-
-  onClick = (input) => {
-
-    input.preventDefault()
-
-    let State = {...this.state}
-
-    let {style} = this.props
-    let SliderWidth = style.width.replace("px","")
-
-    this.props.onClick((document.getElementById(this.state.Id).getBoundingClientRect().x - input.clientX) / SliderWidth * -1)
-
-    delete State.x
-    delete State.y
-    State.Dragging = false
-
-    this.setState(State)
-
-  }
-  
-  onMouseDown = (input) => {
-
-  input.preventDefault()
-
-  if (!this.state.Dragging) {
-    this.setState({
-      Dragging: true,
-      x: input.clientX,
-      y: input.clientY,
-    })
-  }
-
-  var that = this
-  document.addEventListener("mouseup", that.onMouseUp)
-
-  }
-
-  onMouseUp = (input) => {
-
-    input.preventDefault()
-
-    let State = {...this.state}
-
-    let {style, Percentage, CurrentValue, MaxValue, MinValue} = this.props
-    let SliderWidth = style.width.replace("px","")
-    let Ratio = Percentage ? CurrentValue : (CurrentValue - MinValue)/(MaxValue-MinValue)
-
-    this.props.onClick((State.x - SliderWidth * Ratio - input.clientX) / SliderWidth * -1)
-
-    delete State.x
-    delete State.y
-    State.Dragging = false
-
-    this.setState(State)
-
-    document.removeEventListener("mouseup", this.onMouseUp)
-
-  }
-
-  render() {
-    let {style, Percentage, CurrentValue, MaxValue, MinValue} = this.props
-    let SliderWidth = style.width.replace("px","")
-    let CursorWidth = Number(Styles.SliderCursor.width.replace("px","")) + Number(Styles.SliderCursor.border.replace(/[^0-9]/g, "") * 2)
-    let Ratio = Percentage ? null : (CurrentValue - MinValue)/(MaxValue-MinValue)
-    return (
-      <View style={style}>
-        <HoverToolTip FlexibleWidth DisabledOnClick ToolTip={
-          <View>
-            <View>{this.props.Metric ? <Text>{this.props.Metric}: </Text> : null}
-            {this.props.Percentage ? CurrentValue * 100 + "%" : CurrentValue}</View>
-            <View>{this.props.Description}</View>
-          </View>}>
-          <View
-            id={this.state.Id}
-            onClick={this.onClick}
-            onMouseDown={this.onMouseDown}>
-            <View style={Styles.SliderTrack}/>
-            <View style={Styles.SliderInside}/>
-            <View
-              style={{
-              ...Styles.SliderCursor,
-              left: (((SliderWidth-CursorWidth*2) * (Ratio || CurrentValue)) + CursorWidth/2 + "px")
-            }}/>
-          </View>
-        </HoverToolTip>
-      </View>    
-    )
-  }
-}
-
-/* tooltips */
-
-class HoverToolTip extends Component {
-  
-  constructor(props) {
-    super(props)
-    this.state = {HideToolTip: true}
-  }
-
-  componentDidMount() {
-    this.Mounted = true
-  }
-
-  componentWillUnmount() {
-    this.Mounted = false
-  }
-
-  shouldComponentUpdate(NextProps, NextState) {
-
-    if (NextState.HideToolTip !== this.state.HideToolTip || NextProps.children !== this.props.children) {
-      return true
-    }
-    return false
-  }
-
-  RegisterTouch = () => {this.setState({TouchEvent: true})}
-
-  // on click
-  ShowToolTipOnClick = (input) => {
-
-    // do not show a tooltip on click
-    if (this.props.DisabledOnClick) {
-      this.HideToolTipOnClick()
-      input.preventDefault()
-      return false
-    }
-
-    // grab coordinates
-    let {pageX, pageY} = {...input}
-
-    input.preventDefault()
-
-    this.setState({
-      // show the tooltip
-      HideToolTip: false,
-      // block the hover event
-      PreventHoverEvent: true,
-      x: pageX+5,
-      y: pageY+5,
-    })
-
-    // add event listeners
-    document.addEventListener("click", this.HideToolTipOnClick, false)
-    document.addEventListener("contextmenu", this.HideToolTipOnClick, false)
-
-  }
-
-  HideToolTipOnClick = () => {
-
-    if (!this.Mounted) return false
-
-    this.setState({
-      // hide the tooltip
-      HideToolTip: true,
-      // release the block on hover events
-      PreventHoverEvent: false,
-    })
-
-    // remove event listeners
-    document.removeEventListener("click", this.HideToolTipOnClick, false)
-    document.removeEventListener("contextmenu", this.HideToolTipOnClick, false)
-
-  }
-
-  // hover
-  ShowToolTipOnHover = (input) => {
-
-    // do not show description on hover for touch screens
-    if (this.state.TouchEvent) return false
-
-    if (
-      // hover events are not blocked
-      !this.state.PreventHoverEvent
-      // the tooltip is hidden
-      && this.state.HideToolTip
-    ) {
-
-      // the user is hovering the item
-      this.setState({HoveredOut: false})
-
-      // grab coordinates
-      let {pageX, pageY} = {...input}
-
-      // wait before showing the tooltip
-      setTimeout(function() {
-        if (
-          // the user is still hovering the stats
-          !this.state.HoveredOut
-          // the tooltip is still hidden
-          && this.state.HideToolTip
-        ) {
-
-          if (!this.Mounted) return false
-
-          // display tooltip
-          this.setState({
-            HideToolTip: false,
-            x: pageX+5,
-            y: pageY+5,
-          })
-
-        }
-      }.bind(this), 600)
-      
-    }
-
-  }
-
-  HideToolTipOnHover = () => {
-
-    // hover events are not blocked
-    if (!this.state.PreventHoverEvent) {
-      this.setState({
-        // hide tooltip
-        HideToolTip: true,
-        // the user is not interested in this stat
-        HoveredOut: true
-      })
-    }
-  }
-
-  ShowHoverAfterClick = (input) => {
-    this.ShowToolTipOnHover(input)
-  }
-
-  // stat tooltip
-  ToolTip = () => {
-
-    let Tip = (
-      <View hidden={this.state.HideToolTip} style={this.props.FlexibleWidth ? {...Styles.ToolTipFlexibleWidth, left: this.state.x, top: this.state.y} : {...Styles.ToolTip, left: this.state.x, top: this.state.y}}>
-        <View>{this.props.ToolTip}</View>
-      </View>
-    )
-    return Tip
-
-  }
-
-  render() {
-    if (!this.props.ToolTip || this.props.ToolTip === "") {
-      if (!Debug || (Debug && !this.props.ToolTip)) {
-        return <View style={this.props.style}>{this.props.children}</View>        
-      }
-    }
-    return (
-      <View
-        style={this.props.style}
-        onClick={this.ShowToolTipOnClick}
-        onKeyUp={this.ShowToolTipOnClick}
-        onContextMenu={this.ShowToolTipOnClick}
-        onMouseEnter={this.ShowToolTipOnHover}
-        onMouseLeave={this.HideToolTipOnHover}
-        onMouseMove={this.ShowHoverAfterClick}
-        onTouchStart={this.RegisterTouch}>
-        {this.ToolTip()}
-        {this.props.children}
+          </Button>
+        </ToolTip>
       </View>
     )
   }
@@ -1518,7 +514,7 @@ class StatBar extends Component {
   render() {
     return (
       <View>
-        <HoverToolTip FlexibleWidth ToolTip={
+        <ToolTip FlexibleWidth ToolTip={
           <View>
             <View>{this.props.Metric}: {this.props.ratio || (this.props.current + "/" + this.props.max)}</View>
             <View>{this.props.Description}</View>
@@ -1528,7 +524,7 @@ class StatBar extends Component {
           <View style={Styles.StatBar}>
             <View style={this.props.style}/>
           </View>
-        </HoverToolTip>
+        </ToolTip>
       </View>
     )
   }
@@ -1536,40 +532,46 @@ class StatBar extends Component {
 
 class HealthBar extends Component {
   render() {
-    let style = {...Styles.HealthBar, width: Math.min(100, this.props.current/this.props.max * 100) + "%"}
+    let {Player} = {...this.props}
+    let style = {...Styles.HealthBar, width: Math.min(100, Player.Health.Current/Player.Health.Max * 100) + "%"}
     return (
       <View>
         <StatBar
           Metric="Health"
           ShowLabel
           style={style}
-          max={this.props.max}
-          current={this.props.current}
+          max={Player.Health.Max}
+          current={Player.Health.Current}
           Description={Gameplay.Help.Vitals.Health}/>
       </View>
     )
   }
 }
+const HealthBarContainer = connect(mapStateToProps)(HealthBar)
+
 
 class ManaBar extends Component {
   render() {
-    let style = {...Styles.ManaBar, width: Math.min(100, this.props.current/this.props.max * 100) + "%"}
+    let {Player} = {...this.props}
+    let style = {...Styles.ManaBar, width: Math.min(100, Player.Mana.Current/Player.Mana.Max * 100) + "%"}
     return (
       <View>
         <StatBar
           Metric="Mana"
           ShowLabel
           style={style}
-          max={this.props.max}
-          current={this.props.current}/>
+          max={Player.Mana.Max}
+          current={Player.Mana.Current}/>
       </View>
     )
   }
 }
+const ManaBarContainer = connect(mapStateToProps)(ManaBar)
 
 class StaminaBar extends Component {
   render() {
-    let style = {...Styles.StaminaBar, width: Math.min(100, Math.ceil(this.props.current/this.props.max * 100)) + "%"}
+    let {Player} = {...this.props}
+    let style = {...Styles.StaminaBar, width: Math.min(100, Math.ceil(Player.Stamina.Current/Player.Stamina.Max * 100)) + "%"}
     return (
       <View>
         <StatBar
@@ -1581,6 +583,7 @@ class StaminaBar extends Component {
     )
   }
 }
+const StaminaBarContainer = connect(mapStateToProps)(StaminaBar)
 
 /* weapons at hand */
 
@@ -1602,7 +605,7 @@ class WeaponReady extends Component {
     else {
       return (
         <View style={Styles.ReadyItem}>
-          <ItemImageBlock
+          <ItemImage
           onClick={this.onClick}
           image={(Item && Item.image) || null}
           name={Item && Item.Name ? Slot + ": " + Item.Name : null}
@@ -1648,17 +651,17 @@ const PlayerNameAndWeaponsContainer = connect(mapStateToProps)(PlayerNameAndWeap
 class PlayerVitals extends Component {
 
   render() {
-    let Player = {...this.props.Player}
+    let {Styles, Player} = {...this.props}
     return (
       <View style={Styles.PlayerVitals}>
         <View style={Styles.PlayerStat}>
-          <HealthBar current={Player.Health} max={Player.MaxHealth}/>
+          <HealthBarContainer/>
         </View>
         <View style={Styles.PlayerStat} hidden={!Player.Class || !Player.Class.Spellcaster}>
-          <ManaBar current={Player.Mana} max={Player.MaxMana}/>
+          <ManaBarContainer/>
         </View>
         <View style={Styles.PlayerStat}>
-          <StaminaBar current={Player.Stamina} max={Player.MaxStamina}/>
+          <StaminaBarContainer/>
         </View>
       </View>
     )
@@ -1688,19 +691,19 @@ class ResponsiveTabSelector extends Component {
       <View style={Styles.TabSelector} hidden={!this.props.MobileScreen}>
         <View style={Styles.FlexBoxContainer}>
           <View style={Styles.TabButton}>
-            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Stats} style={Styles.Inline}>
-              <ActionButton StayClicked Clicked={!this.props.HideStats} onClick={this.props.ShowStats}>Stats</ActionButton>
-            </HoverToolTip>
+            <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Stats} style={Styles.Inline}>
+              <Button StayClicked Clicked={!this.props.HideStats} onClick={this.props.ShowStats}>Stats</Button>
+            </ToolTip>
           </View>
           <View style={Styles.TabButton}>
-            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Backpack} style={Styles.Inline}>
-              <ActionButton SmallPadding StayClicked Clicked={!this.props.HideInventory} onClick={this.props.ShowInventory}>Backpack</ActionButton>
-            </HoverToolTip>
+            <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Backpack} style={Styles.Inline}>
+              <Button SmallPadding StayClicked Clicked={!this.props.HideInventory} onClick={this.props.ShowInventory}>Backpack</Button>
+            </ToolTip>
           </View>
           <View style={Styles.TabButton}>
-            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.SpellBook} style={Styles.Inline}>
-              <ActionButton SmallPadding StayClicked Clicked={!this.props.HideSpellBook} onClick={this.props.ShowSpellBook} hidden={!this.props.Player.Class.Spellcaster}>Spells</ActionButton>
-            </HoverToolTip>
+            <ToolTip DisabledOnClick ToolTip={Gameplay.Help.SpellBook} style={Styles.Inline}>
+              <Button SmallPadding StayClicked Clicked={!this.props.HideSpellBook} onClick={this.props.ShowSpellBook} hidden={!this.props.Player.Class.Spellcaster}>Spells</Button>
+            </ToolTip>
           </View>
         </View>
       </View>
@@ -1740,19 +743,19 @@ class PlayerLevelAndArmor extends Component {
     return (
       <View style={MobileScreen || TabletScreen ? Styles.PlayerStats2Block1 : Styles.PlayerStats3} hidden={this.props.MobileScreen ? this.props.HideStats : false}>
         <View style={Styles.PlayerStat}>
-          <HoverToolTip ToolTip={Player.Class.Spellcaster ? Gameplay.Help.LevelSpellcaster : Gameplay.Help.LevelNotSpellcaster} style={Styles.Inline}>
+          <ToolTip ToolTip={Player.Class.Spellcaster ? Gameplay.Help.LevelSpellcaster : Gameplay.Help.LevelNotSpellcaster} style={Styles.Inline}>
             <Text>{MobileScreen ? <Text>LVL</Text> : <Text>Level</Text>}: </Text><Text>{Player.Level}</Text>
-          </HoverToolTip>
+          </ToolTip>
         </View>
         <View style={Styles.PlayerStat}>
-          <HoverToolTip ToolTip={Gameplay.Help.XP} style={Styles.Inline}>
+          <ToolTip ToolTip={Gameplay.Help.XP} style={Styles.Inline}>
             <Text>XP: </Text><Text>{Player.XP}</Text>
-          </HoverToolTip>
+          </ToolTip>
         </View>
         <View style={Styles.PlayerStat}>
-          <HoverToolTip ToolTip={Gameplay.Help.ArmorClass} style={Styles.Inline}>
+          <ToolTip ToolTip={Gameplay.Help.ArmorClass} style={Styles.Inline}>
             <Text>AC: </Text><Text>{Player.ArmorClass}</Text>
-          </HoverToolTip>
+          </ToolTip>
         </View>
       </View>
     )
@@ -1783,36 +786,36 @@ class PlayerAbilities extends Component {
     return (
       <View style={MobileScreen || TabletScreen ? Styles.PlayerStats2Block2 : Styles.PlayerAttributesStacked} hidden={this.props.MobileScreen ? this.props.HideStats : false}>
         <View style={Styles.PlayerStat}>
-          <HoverToolTip ToolTip={Gameplay.Help.Abilities.Strength} style={Styles.Inline}>
+          <ToolTip ToolTip={Gameplay.Help.Abilities.Strength} style={Styles.Inline}>
             <Text>{MobileScreen
               ? <Text>STR</Text>
               : <Text>Strength</Text>}: </Text>
             <Text>{Player.Strength}</Text>
-          </HoverToolTip>
+          </ToolTip>
         </View>
         <View style={Styles.PlayerStat}>
-          <HoverToolTip ToolTip={Gameplay.Help.Abilities.Constitution} style={Styles.Inline}>
+          <ToolTip ToolTip={Gameplay.Help.Abilities.Constitution} style={Styles.Inline}>
             <Text>{MobileScreen
               ? <Text>CON</Text>
               : <Text>Constitution</Text>}: </Text>
             <Text>{Player.Constitution}</Text>
-          </HoverToolTip>
+          </ToolTip>
         </View>
         <View style={Styles.PlayerStat}>
-          <HoverToolTip ToolTip={Gameplay.Help.Abilities.Dexterity} style={Styles.Inline}>
+          <ToolTip ToolTip={Gameplay.Help.Abilities.Dexterity} style={Styles.Inline}>
             <Text>{MobileScreen
               ? <Text>DEX</Text>
               : <Text>Dexterity</Text>}: </Text>
             <Text>{Player.Dexterity}</Text>
-          </HoverToolTip>
+          </ToolTip>
         </View>
         <View style={Styles.PlayerStat}>
-          <HoverToolTip ToolTip={Gameplay.Help.Abilities.Intelligence} style={Styles.Inline}>
+          <ToolTip ToolTip={Gameplay.Help.Abilities.Intelligence} style={Styles.Inline}>
             <Text>{MobileScreen
               ? <Text>INT</Text>
               : <Text>Intelligence</Text>}: </Text>
             <Text>{Player.Intelligence}</Text>
-          </HoverToolTip>
+          </ToolTip>
         </View>
       </View>
     )
@@ -1837,11 +840,11 @@ class ClearLog extends Component {
   render() {
     return (
       <View style={Styles.ClearLog}>
-        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.ClearLog} style={Styles.Inline}>
-          <ActionButton SmallPadding={this.props.MobileScreen} onClick={this.props.ClearLog}>
+        <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.ClearLog} style={Styles.Inline}>
+          <Button SmallPadding={this.props.MobileScreen} onClick={this.props.ClearLog}>
             {this.props.MobileScreen ? <Text>X</Text> : <Text>Clear Log</Text>}
-          </ActionButton>
-        </HoverToolTip>
+          </Button>
+        </ToolTip>
       </View>
     )
   }
@@ -1962,7 +965,7 @@ class Loot extends Component {
     let item = Object.assign({}, this.props.item)
 
     return (
-      <ItemImageBlock
+      <ItemImage
         onClick={this.onClick}
         image={(item && item.image) || null}
         name={(item && item.Name) || null}
@@ -2076,22 +1079,22 @@ class Event extends Component {
       if (lootCount === 1) {
         eventText.push(
           <Block key="Take">
-            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Take} style={Styles.Inline}>
-              <ActionButton onClick={this.props.TakeAllLoot}>
+            <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Take} style={Styles.Inline}>
+              <Button onClick={this.props.TakeAllLoot}>
                 Take
-              </ActionButton>
-            </HoverToolTip>
+              </Button>
+            </ToolTip>
           </Block>
         )
       }
       else {
         eventText.push(
           <Block key="TakeAll">
-            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Take} style={Styles.Inline}>
-              <ActionButton onClick={this.props.TakeAllLoot}>
+            <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Take} style={Styles.Inline}>
+              <Button onClick={this.props.TakeAllLoot}>
                 Take All
-              </ActionButton>
-            </HoverToolTip>
+              </Button>
+            </ToolTip>
           </Block>
         )
       }
@@ -2681,12 +1684,12 @@ class CreateCharacterName extends Component {
     return (
       <View style={Styles.CharacterCreateName}>
         <Block style={Styles.PropertyLabelForInput}>
-          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.CharacterName} style={Styles.Inline}>
+          <ToolTip DisabledOnClick ToolTip={Gameplay.Help.CharacterName} style={Styles.Inline}>
             <Text>Name:</Text>
-          </HoverToolTip>
+          </ToolTip>
         </Block>
         <Block style={Styles.PropertyFieldForInput}>
-          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.CharacterName} style={Styles.Inline}>
+          <ToolTip DisabledOnClick ToolTip={Gameplay.Help.CharacterName} style={Styles.Inline}>
             <TextEdit
               style={Styles.TextEditUnderline}
               styleFocus={Styles.TextEditUnderlineFocus}
@@ -2695,37 +1698,37 @@ class CreateCharacterName extends Component {
               value={Player.Name}
               maxLength={13}
               onChange={this.props.SavePlayerName}/>
-          </HoverToolTip>
+          </ToolTip>
         </Block>
         <Block style={Styles.PropertyLabel}>
-          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Vitals.Health} style={Styles.Inline}>
+          <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Vitals.Health} style={Styles.Inline}>
             <Text>Health:</Text>
-          </HoverToolTip>
+          </ToolTip>
         </Block>
         <Block style={Styles.PropertyField}>
-          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Vitals.Health} style={Styles.Inline}>
+          <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Vitals.Health} style={Styles.Inline}>
             <Text>{Player.MaxHealth}</Text> 
-          </HoverToolTip>       
+          </ToolTip>       
         </Block>
         <Block style={Styles.PropertyLabel}>
-          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Vitals.Mana} style={Styles.Inline}>
+          <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Vitals.Mana} style={Styles.Inline}>
             <Text>Mana:</Text>
-          </HoverToolTip>       
+          </ToolTip>       
         </Block>
         <Block style={Styles.PropertyField}>
-          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Vitals.Mana} style={Styles.Inline}>
+          <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Vitals.Mana} style={Styles.Inline}>
             <Text>{Player.MaxMana}</Text>    
-          </HoverToolTip>          
+          </ToolTip>          
         </Block>
         <Block style={Styles.PropertyLabel}>
-          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Vitals.Stamina} style={Styles.Inline}>
+          <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Vitals.Stamina} style={Styles.Inline}>
             <Text>Stamina:</Text>
-          </HoverToolTip>          
+          </ToolTip>          
         </Block>
         <Block style={Styles.PropertyField}>
-          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Vitals.Stamina} style={Styles.Inline}>
+          <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Vitals.Stamina} style={Styles.Inline}>
             <Text>{Player.MaxStamina}</Text>   
-          </HoverToolTip>               
+          </ToolTip>               
         </Block>
       </View>
     )
@@ -2739,72 +1742,72 @@ class CreateCharacterAbilities extends Component {
     return (
       <View style={Styles.CharacterCreateView}>
         <Block style={Styles.PropertyLabel}>
-          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Strength} style={Styles.Inline}>
+          <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Strength} style={Styles.Inline}>
             <Text>Strength:</Text>
-          </HoverToolTip>
+          </ToolTip>
         </Block>
         <Block style={Styles.PropertyField}>
           <Text>
-            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Strength} style={Styles.Inline}>
+            <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Strength} style={Styles.Inline}>
             {Player.Strength - (Player.Race.AbilityBoost.Strength || 0)}
-            </HoverToolTip>
-            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.AbilityBonus} style={Styles.Inline}>
+            </ToolTip>
+            <ToolTip DisabledOnClick ToolTip={Gameplay.Help.AbilityBonus} style={Styles.Inline}>
               {Player.Race.AbilityBoost.Strength ? " +" + Player.Race.AbilityBoost.Strength : null}
-            </HoverToolTip>
+            </ToolTip>
           </Text>
         </Block>
         <Block style={Styles.PropertyLabel}>
-          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Dexterity} style={Styles.Inline}>
+          <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Dexterity} style={Styles.Inline}>
             <Text>Dexterity:</Text>
-          </HoverToolTip>
+          </ToolTip>
         </Block>
         <Block style={Styles.PropertyField}>
           <Text>
-            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Dexterity} style={Styles.Inline}>
+            <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Dexterity} style={Styles.Inline}>
               {Player.Dexterity - (Player.Race.AbilityBoost.Dexterity || 0)}
-            </HoverToolTip>
-            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.AbilityBonus} style={Styles.Inline}>
+            </ToolTip>
+            <ToolTip DisabledOnClick ToolTip={Gameplay.Help.AbilityBonus} style={Styles.Inline}>
               {Player.Race.AbilityBoost.Dexterity ? " +" + Player.Race.AbilityBoost.Dexterity : null}
-            </HoverToolTip>
+            </ToolTip>
           </Text>
         </Block>
         <Block style={Styles.PropertyLabel}>
-          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Constitution} style={Styles.Inline}>
+          <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Constitution} style={Styles.Inline}>
             <Text>Constitution:</Text>
-          </HoverToolTip>
+          </ToolTip>
         </Block>
         <Block style={Styles.PropertyField}>
           <Text>
-            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Constitution} style={Styles.Inline}>
+            <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Constitution} style={Styles.Inline}>
               {Player.Constitution - (Player.Race.AbilityBoost.Constitution || 0)} 
-            </HoverToolTip>
-            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.AbilityBonus} style={Styles.Inline}>
+            </ToolTip>
+            <ToolTip DisabledOnClick ToolTip={Gameplay.Help.AbilityBonus} style={Styles.Inline}>
               {Player.Race.AbilityBoost.Constitution ? " +" + Player.Race.AbilityBoost.Constitution : null}
-            </HoverToolTip>
+            </ToolTip>
           </Text>
         </Block>
         <Block style={Styles.PropertyLabel}>
-          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Intelligence} style={Styles.Inline}>
+          <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Intelligence} style={Styles.Inline}>
             <Text>Intelligence:</Text>
-          </HoverToolTip>
+          </ToolTip>
         </Block>
         <Block style={Styles.PropertyField}>
           <Text>
-            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Intelligence} style={Styles.Inline}>
+            <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Abilities.Intelligence} style={Styles.Inline}>
               {Player.Intelligence - (Player.Race.AbilityBoost.Intelligence || 0)}
-            </HoverToolTip>
-            <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.AbilityBonus} style={Styles.Inline}>
+            </ToolTip>
+            <ToolTip DisabledOnClick ToolTip={Gameplay.Help.AbilityBonus} style={Styles.Inline}>
               {Player.Race.AbilityBoost.Intelligence ? " +" + Player.Race.AbilityBoost.Intelligence : null}
-            </HoverToolTip>
+            </ToolTip>
           </Text>
         </Block>
         <Block />
         <Block style={Styles.RollAbilities}>
-          <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Reroll} style={Styles.Inline}>
-            <ActionButton onClick={this.props.GeneratePlayerStats}>
+          <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.Reroll} style={Styles.Inline}>
+            <Button onClick={this.props.GeneratePlayerStats}>
               Reroll
-            </ActionButton>
-          </HoverToolTip>
+            </Button>
+          </ToolTip>
         </Block>
         <Block />
       </View>
@@ -2938,64 +1941,64 @@ class CreateCharacterBackground extends Component {
     return (
       <View style={Styles.CharacterCreateBackground}>
         <Block style={{...Styles.PropertyLabel, paddingTop: "8px"}}>
-          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Race} style={Styles.Inline}>
+          <ToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Race} style={Styles.Inline}>
           <Text>Race:</Text>
-          </HoverToolTip>
+          </ToolTip>
         </Block>
         <Block style={Styles.PropertyField}>
           <Block style={Styles.FlexBoxContainer}>
-            <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.Race} style={Styles.Inline}>
+            <ToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.Race} style={Styles.Inline}>
               <Arrow {...this.props} onClick={this.SelectRace} arrow="Left">←</Arrow>
-            </HoverToolTip>
+            </ToolTip>
           
             <Block style={{flexGrow: "1", flexBasis: "auto", textAlign: "center", margin: "auto"}}>
-              <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Race} style={Styles.Inline}>
+              <ToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Race} style={Styles.Inline}>
                 <Text>
                   {Player.Race.Name}
                 </Text>
-              </HoverToolTip>
+              </ToolTip>
             </Block>
-            <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.Race} style={Styles.Inline}>
+            <ToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.Race} style={Styles.Inline}>
               <Arrow {...this.props} onClick={this.SelectRace} arrow="Right">→</Arrow>  
-            </HoverToolTip>
+            </ToolTip>
           </Block>
         </Block>
         <Block style={{...Styles.PropertyLabel, paddingTop: "8px"}}>
-          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Class} style={Styles.Inline}>
+          <ToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Class} style={Styles.Inline}>
             <Text>Class:</Text>
-          </HoverToolTip>
+          </ToolTip>
         </Block>
         <Block style={Styles.PropertyField}>
         <Block style={Styles.FlexBoxContainer}>
-          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.Class} style={Styles.Inline}>
+          <ToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.Class} style={Styles.Inline}>
             <Arrow {...this.props} onClick={this.SelectClass} arrow="Left">←</Arrow> 
-          </HoverToolTip>
+          </ToolTip>
           <Block style={{flexGrow: "1", flexBasis: "auto", textAlign: "center", margin: "auto"}}>
             <Text>
-              <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Class} style={Styles.Inline}>
+              <ToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Class} style={Styles.Inline}>
                 {Player.Class.Name}
-              </HoverToolTip>
+              </ToolTip>
             </Text>
           </Block>
-          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.Class} style={Styles.Inline}>
+          <ToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.Class} style={Styles.Inline}>
             <Arrow {...this.props} onClick={this.SelectClass} arrow="Right">→</Arrow>   
-          </HoverToolTip>
+          </ToolTip>
         </Block>
       </Block>
         <Block style={{...Styles.PropertyLabel, paddingTop: "10px"}} hidden={!Player.Class.Spellcaster || !Campaign.AvailableStartSpell}>
-          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.FirstSpell} style={Styles.Inline}>
+          <ToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.FirstSpell} style={Styles.Inline}>
             <Text>Spell:</Text>
-          </HoverToolTip>
+          </ToolTip>
         </Block>
         <Block style={Styles.PropertyField} hidden={!Player.Class.Spellcaster || !Campaign.AvailableStartSpell}>
           <Block style={Styles.FlexBoxContainer}>
-            <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.Spell} style={Styles.Inline}>
+            <ToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.Spell} style={Styles.Inline}>
               <Block style={{marginTop: "3px"}}>
                 <Arrow {...this.props} onClick={this.SelectFirstSpell} arrow="Left">←</Arrow>
               </Block>
-            </HoverToolTip>
+            </ToolTip>
             <Block style={{flexGrow: "1", flexBasis: "auto", marginLeft: "8px"}}>
-              <ItemImageBlock
+              <ItemImage
                 draggable={false}
                 image={(FirstSpell && FirstSpell.Image) || null}
                 name={(FirstSpell && FirstSpell.Name) || null}
@@ -3003,11 +2006,11 @@ class CreateCharacterBackground extends Component {
                 NoActionMenu
                 onClick={null} />
             </Block>
-            <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.Spell} style={Styles.Inline}>
+            <ToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Arrows.Spell} style={Styles.Inline}>
               <Block style={{marginTop: "3px"}}>
                 <Arrow {...this.props} onClick={this.SelectFirstSpell} arrow="Right">→</Arrow>
               </Block>
-            </HoverToolTip>
+            </ToolTip>
           </Block> 
         </Block>
       </View>
@@ -3021,14 +2024,14 @@ class CreateCharacterDescription extends Component {
     return (
       <View style={Styles.CreateCharacterDescription}>
         <Block style={Styles.Paragraph}>
-          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Race} style={Styles.Inline}>
+          <ToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Race} style={Styles.Inline}>
             {Player.Race.Description}
-          </HoverToolTip>
+          </ToolTip>
         </Block>
         <Block style={Styles.Paragraph}>
-          <HoverToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Race} style={Styles.Inline}>
+          <ToolTip DisabledOnClick FlexibleWidth ToolTip={Gameplay.Help.Race} style={Styles.Inline}>
             {Player.Class.Description}
-          </HoverToolTip>
+          </ToolTip>
         </Block>
       </View>
     )
@@ -3039,103 +2042,16 @@ class StartGame extends Component {
   render() {
     return (
       <View style={Styles.StartGame}>
-        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.ResumeGame} style={Styles.Inline}>
-          <ActionButton onClick={this.props.ResumeGame} hidden={!this.props.GameInBackground}>
+        <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.ResumeGame} style={Styles.Inline}>
+          <Button onClick={this.props.ResumeGame} hidden={!this.props.GameInBackground}>
             Resume Game
-          </ActionButton>
-        </HoverToolTip>
-        <HoverToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.PlayGame} style={Styles.Inline}>
-          <ActionButton onClick={this.props.StartPlaying}>
+          </Button>
+        </ToolTip>
+        <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.PlayGame} style={Styles.Inline}>
+          <Button onClick={this.props.StartPlaying}>
             Let's play
-          </ActionButton>
-        </HoverToolTip>
-      </View>
-    )
-  }
-}
-
-/* top */
-
-class Contact extends Component {
-
-  // content is static
-  shouldComponentUpdate(nextProps) {
-    if (
-        nextProps.CreateCharacter !== this.props.CreateCharacter
-        || nextProps.MobileScreen !== this.props.MobileScreen
-        || nextProps.TabletScreen !== this.props.TabletScreen
-      ) {
-      return true
-    }
-    return false
-  }
-
-  render() {
-    return (
-      <View style={Styles.Contact}>
-        <Text>
-          <Text>
-          written by&nbsp;
-          </Text>
-          <Text>
-            <Link
-              href={contactTemplate}
-              title={authorEmail}
-              target="_blank">
-              Yves Gurcan
-            </Link>
-            <Link
-              href={repository}
-              target="_blank">
-              <GitHub/>
-            </Link>
-          </Text>
-        </Text>
-      </View>
-    )
-  }
-}
-
-class Header extends Component {
-
-  // content is static
-  shouldComponentUpdate(nextProps) {
-    if (
-        nextProps.CreateCharacter !== this.props.CreateCharacter
-        || nextProps.MobileScreen !== this.props.MobileScreen
-        || nextProps.TabletScreen !== this.props.TabletScreen
-      ) {
-      return true
-    }
-    return false
-  }
-
-  render() {
-    return (
-      <View style={Styles.Header}>
-        <PageTitle>Dungeon!</PageTitle>
-        <PageSubtitle>an adventure game in React</PageSubtitle>
-        <Version>
-          {process.env.REACT_APP_STAGE}
-          {process.env.REACT_APP_VERSION
-            ? <Text> (v{process.env.REACT_APP_VERSION} {process.env.REACT_APP_RELEASE}{process.env.REACT_APP_BUILD_TIME
-              ? <Text>; build: {process.env.REACT_APP_BUILD_TIME}</Text>
-              : null}
-            )</Text>
-            :
-              <Text>Dev Mode
-                (
-                  <Text>
-                    <Link href={Utilities.DevBuild[Utilities.UserOS]}>dev build url</Link>;
-                  </Text>
-                  {' '}
-                  <Text>
-                    <Link href={Utilities.StableBuild[Utilities.UserOS]}>stable build url</Link>
-                  </Text>
-                )
-                </Text>
-          }
-        </Version>
+          </Button>
+        </ToolTip>
       </View>
     )
   }
@@ -3152,7 +2068,7 @@ class Game extends Component {
     MobileScreen = Utilities.ScreenSize.MobileScreen()
     TabletScreen = Utilities.ScreenSize.TabletScreen()
 
-    if (MobileScreen !== this.state.MobileScreen || TabletScreen !== this.state.TabletScreen) {
+    if (MobileScreen !== this.props.MobileScreen || TabletScreen !== this.props.TabletScreen) {
 
       WallMapVisibleRange = MobileScreen ? Utilities.WallMapVisibleRangeMobileScreen : Utilities.WallMapVisibleRange
 
@@ -4373,6 +3289,12 @@ class Game extends Component {
         TabletScreen: TabletScreen,
       }, this.forceUpdate())
 
+      this.props.dispatch({type: "UPDATE_SCREEN_SIZE",
+        MobileScreen: MobileScreen,
+        TabletScreen: TabletScreen
+      })
+      this.props.dispatch({type: "UPDATE_STYLES", Styles: Styles})
+
     }
 
   }
@@ -4386,6 +3308,7 @@ class Game extends Component {
     window.addEventListener("resize", this.CalculateStyles, false)
     this.CalculateStyles()
     this.ShowStats()
+
   }
 
   componentDidMount() {
@@ -4479,6 +3402,7 @@ class Game extends Component {
     if (process.env.REACT_APP_RELEASE === "stable") {
       Object.keys(Utilities.Cheats).map(Key => {
         Cheats[Key] = false
+        return null
       })
     }
 
@@ -4539,6 +3463,10 @@ class Game extends Component {
     InitState.Backpack = 
     this.CheckInventoryWeightAtStartUp(InitState.Backpack)
     InitState.Backpack.Items = this.GenerateIds([...InitState.Backpack.Items], "Items")
+    InitState.Player.Backpack = {...InitState.Backpack}
+    InitState.Player.Backpack.Weight = {Current: InitState.Player.Backpack.Weight, Max: InitState.Player.MaxWeight}
+    InitState.Player.Backpack.ItemCount.Current = InitState.Player.Backpack.Items.length
+
 
     // Maps
     // create the dynamic "revealed area" map as displayed in the HUD
@@ -4631,8 +3559,20 @@ class Game extends Component {
       LootMap: InitState.LootMap,
       MonsterMap: InitState.MonsterMap,
     })
+    this.props.dispatch({type: "UPDATE_LOOT", LootContainers: InitState.LootContainers})
     this.props.dispatch({type: "UPDATE_TURN", Turn: 0})
-    this.props.dispatch({type: "UPDATE_TIMESTAMP", Milliseconds: InitState.GameStarted.Milliseconds, HumanFriendly: InitState.GameStarted.HumanFriendly})
+    this.props.dispatch({type: "ADD_TIMESTAMP",
+      Milliseconds: InitState.GameStarted.Milliseconds,
+      HumanFriendly: InitState.GameStarted.HumanFriendly
+    })
+    this.props.dispatch({type: "UPDATE_DEBUG",
+      Debug: Utilities.Debug,
+      SoundDebug: Utilities.SoundDebug,
+    })
+    this.props.dispatch({type: "UPDATE_SCREEN_SIZE",
+      MobileScreen: MobileScreen,
+      TabletScreen: TabletScreen
+    })
 
     return InitState
 
@@ -4738,6 +3678,17 @@ class Game extends Component {
       Player.MaxMana = Player.Mana = 0
       Player.Intelligence = 5
     }
+
+    Player.Abilities = {
+      Strength: Player.Strength,
+      Constitution: Player.Constitution,
+      Dexterity: Player.Dexterity,
+      Intelligence: Player.Intelligence,
+    }
+
+    Player.Health = {Current: Player.Health, Max: Player.MaxHealth}
+    Player.Mana = {Current: Player.Mana, Max: Player.MaxMana}
+    Player.Stamina = {Current: Player.Stamina, Max: Player.MaxStamina}
 
     // Spellbook
     if (!Player.Class.Spellcaster) {
@@ -4984,7 +3935,6 @@ class Game extends Component {
     let State = {...this.state}
     let Player = {...this.state.Player}
     let Keystrokes = this.state.Keystrokes ? [...this.state.Keystrokes] : []
-    let Sound = {...this.state.Sound}
 
     // do not capture key strokes
     if (Player.Dead) return false
@@ -5070,15 +4020,17 @@ class Game extends Component {
         break
 
       case "+":
-        this.SetVolume(Math.min(1, Sound.Volume + .1), "sound_control")
+        this.props.dispatch({type: "INCREASE_VOLUME"})
+        this.PlaySound("sound_control")
         break
 
       case "-":
-        this.SetVolume(Math.max(0, Sound.Volume - .1), "sound_control")
+        this.props.dispatch({type: "DECREASE_VOLUME"})
+        this.PlaySound("sound_control")
         break
 
       case "m":
-        this.SetVolume(0)
+        this.props.dispatch({type: "MUTE_VOLUME"})
         break
 
       case "t":
@@ -5163,35 +4115,9 @@ class Game extends Component {
     this.setState({Keystrokes: []})
   }
 
-  /* Sound */
-
-  SetVolume = (Volume, SoundName = null) => {
-
-    let Sound = {...this.state.Sound}
-
-    // Create sound object
-    if (!Object.getOwnPropertyNames(Sound).length) {
-      Sound = {
-        Volume: Volume,
-      }
-    }
-    // Update sound object
-    else {
-      Sound.Volume = Volume      
-    }
-
-    let that = this
-    this.setState({Sound: Sound}, function() {
-      if (SoundName) {
-        that.PlaySound(SoundName)        
-      }
-    })
-
-  }
-
   PlaySound = (SoundName, Precedence) => {
 
-    let Sound = {...this.state.Sound}
+    let Sound = {...this.props.Sound}
 
     if (!Object.getOwnPropertyNames(Sound).length || Sound.Volume === 0) return false
 
@@ -6980,7 +5906,7 @@ class Game extends Component {
           {/* row 1 */}
           <Header/>
           {/* row 2 */}
-          <Contact {... this.state}/>
+          <Contact/>
           {/* container */}
           <CreateCharacterContainer/>
           {/* row 3 */}
@@ -7000,7 +5926,7 @@ class Game extends Component {
         {/* row 1 */}
         <Header/>
         {/* row 2 */}
-        <Contact {... this.state}/>
+        <Contact/>
         <TopBackgroundImage/>
         <EventLog {... this} {... this.state} />
         <ClearLog {... this} {... this.state} />
@@ -7024,11 +5950,11 @@ class Game extends Component {
         <Inventory {... this} {... this.state} />
         <SpellBook {... this} {... this.state} />
         <Accessories {... this} {... this.state} />
-        <BottomControls/>
+        <BottomControlsContainer/>
         <GameStateBackgroundImage/>
         <GameStateOptions {... this} {... this.state}/>
         <GameStateBox  {... this} {... this.state}/>
-        <Volume {... this} {... this.state}/>
+        <VolumeContainer/>
       </View>
     )
   }
@@ -7041,30 +5967,6 @@ class GameStore extends Component {
       <Provider store={store}>
         <GameContainer/>
       </Provider>
-    )
-  }
-}
-
-class TopBackgroundImage extends Component {
-  render() {
-    return (
-      <View style={Styles.TopGameBackgroundImage}/>
-    )
-  }
-}
-
-class BottomBackgroundImage extends Component {
-  render() {
-    return (
-      <View style={Styles.BottomGameBackgroundImage}/>
-    )
-  }
-}
-
-class GameStateBackgroundImage extends Component {
-  render() {
-    return (
-      <View style={Styles.GameStateBackgroundImage}/>
     )
   }
 }

@@ -35,6 +35,7 @@ export const CampaignAssets = {
 
     Backpack: {
         maxItems: 10,
+        ItemCount: {Max: 10},
         Items: [
 
             
