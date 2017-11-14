@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import {connect} from 'react-redux'
 import {SliderContainer as Slider} from "./../components/Slider.js"
-import {Text, View} from "./../components/Web.js"
+import {View} from "./../components/Web.js"
 import Gameplay from "./../GameplayAssets.js"
 
 const mapStateToProps = (state, ownProps) => {
@@ -35,4 +35,4 @@ class Volume extends Component {
       )
     }
   }
-  export const VolumeContainer = connect(mapStateToProps)(Volume)
+export const VolumeContainer = connect(mapStateToProps)(Volume)

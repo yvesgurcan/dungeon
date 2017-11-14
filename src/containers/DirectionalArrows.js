@@ -1,6 +1,6 @@
 import React, {Component} from "react"
 import {connect} from 'react-redux'
-import {Text, View} from "./../components/Web.js"
+import {View} from "./../components/Web.js"
 import {ArrowContainer as Arrow} from "./../components/Arrow.js"
 import {ToolTipContainer as ToolTip} from "./../components/ToolTip.js"
 import Gameplay from "./../GameplayAssets.js"
@@ -18,7 +18,6 @@ class GoNorth extends Component {
     MovePlayer("North")
   }
   render() {
-    let {Styles} = {...this.props.Styles}
     return <Arrow {... this.props} onClick={this.MovePlayer} arrow="ArrowUp">↑</Arrow>
   }
 }
@@ -29,7 +28,6 @@ class GoWest extends Component {
     MovePlayer("West")
   }
   render() {
-    let {Styles} = {...this.props.Styles}
     return <Arrow {... this.props} onClick={this.MovePlayer} arrow="ArrowLeft">←</Arrow>
   }
 }

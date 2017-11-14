@@ -11,7 +11,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const {North, South, West, East} = Utilities.Directions
-const {Wall, Door, LootContainer, Undiscovered, Empty} = Utilities.MapObjects
+const {Wall, Door, LootContainer, Empty} = Utilities.MapObjects
 let WallMapVisibleRange = {...Utilities.WallMapVisibleRange}
 
 class Map extends Component {

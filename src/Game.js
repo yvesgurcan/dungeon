@@ -11,11 +11,10 @@ import Utilities from "./Utilities.js"
 import Functions from "./Functions.js"
 
 // Components
-import {LineBreak, Text, View, Block, Image, HeadingContainer as Heading} from "./components/Web.js"
+import {Text, View, Block, HeadingContainer as Heading} from "./components/Web.js"
 import {ItemImagePlaceholderContainer as ItemImagePlaceholder, ItemImageBlockContainer as ItemImage} from "./components/ItemImage.js"
 import {ActionButtonContainer as Button} from "./components/Button.js"
 import {ArrowContainer as Arrow} from "./components/Arrow.js"
-import {SliderContainer as Slider} from "./components/Slider.js"
 import {ToolTipContainer as ToolTip} from "./components/ToolTip.js"
 import {TextEditContainer as TextEdit, TextAreaContainer as TextArea} from "./components/Input.js"
 import {ClearFloat, ContactContainer as Contact, HeaderContainer as Header} from "./components/Misc.js"
@@ -27,6 +26,9 @@ import {VolumeContainer as Volume} from "./containers/Volume.js"
 import {GearContainer as Gear} from "./containers/Gear.js"
 import {MapContainer as Map} from "./containers/Map.js"
 import {SpellBookContainer as SpellBook} from "./containers/SpellBook.js"
+import {StoryContainer as Story} from "./containers/Story.js"
+import {InventoryContainer as Inventory} from "./containers/Inventory.js"
+import {EventLogContainer as EventLog, ClearLogContainer as ClearLog} from "./containers/EventLog.js"
 
 /* store */
 
@@ -49,9 +51,8 @@ const mapStateToProps = (state, ownProps) => {
 let Debug = process.env.REACT_APP_RELEASE === "stable" ? false : Utilities.Debug 
 let SoundDebug = process.env.REACT_APP_RELEASE === "stable" ? false : Utilities.SoundDebug
 
-const {North, South, West, East} = Utilities.Directions
 const {Wall, Door, LootContainer, Undiscovered, Empty} = Utilities.MapObjects
-let WallMapVisibleRange = Object.assign({}, Utilities.WallMapVisibleRange)
+let WallMapVisibleRange = {...Utilities.WallMapVisibleRange}
 
 let MobileScreen = Utilities.ScreenSize.MobileScreen()
 let TabletScreen = Utilities.ScreenSize.TabletScreen()
@@ -61,11 +62,6 @@ let NextAvailableId = {
   LootContainers: 0,
   Items: 0,
 }
-
-/* miscellani */
-
-const storyPath = "./graphics/story/"
-const imgExt = ".png"
 
 let Styles = null
 
@@ -236,85 +232,7 @@ class GameStateBox extends Component {
 
 /* inventory */
 
-class Inventory extends Component {
-  
-  // no need to re-render backpack content if it has not changed
-  shouldComponentUpdate(nextProps) {
-    if (
-      nextProps.MobileScreen !== this.props.MobileScreen
-      || nextProps.TabletScreen !== this.props.TabletScreen
-      || nextProps.Backpack !== this.props.Backpack
-      || nextProps.HideInventory !== this.props.HideInventory
-    ) {
 
-      if (Debug) console.log("re-render: backpack")
-      return true
-    }
-    return false
-  }
-
-  DisplayInventory = () => {
-
-    // let {Backpack} = this.props
-    let Backpack = Object.assign({}, this.props.Backpack)
-
-    let list = []
-
-    for (let i = 0; i < Backpack.maxItems; i++) {
-      if (Backpack.Items && Backpack.Items[i] !== undefined) {
-        list.push(Backpack.Items[i])
-      }
-      else {
-        list.push(null)
-      }
-    }
-
-    let inventory = list.map((item, index) => {
-      return (
-        <ItemImage
-          draggable={true}
-          key={index}
-          index={item && item.image ? "B" + (index <= 99 ? ("0" + Number(index+1)).slice(-2) : index) : null}
-          showIndex
-          image={(item && item.image) || null}
-          name={(item && item.Name) || null}
-          item={item}
-          onClick={this.props.UseItem}
-          {...this.props}
-          />
-      )
-    })
-
-    return inventory
-  }
-
-  render() {
-    // let {Player, Backpack} = this.props
-    let Player = {...this.props.Player}
-    let Backpack = {...this.props.Backpack}
-
-    return (
-      <View style={Styles.Inventory} hidden={this.props.MobileScreen ? this.props.HideInventory : false}>
-        <Block style={Styles.InventoryLabel} hidden={this.props.MobileScreen}>
-          <ToolTip ToolTip={Gameplay.Help.Backpack} style={Styles.Inline}>
-          Backpack
-          </ToolTip>
-        </Block>
-        {this.DisplayInventory()}
-        <ClearFloat/>
-        <Text style={Styles.InventoryWeightLabel}>
-          <ToolTip ToolTip={Gameplay.Help.BackpackWeight} style={Styles.Inline}>
-            Weight: {Number(Backpack.Weight).toFixed(2)}
-          </ToolTip>
-          {' '}/{' '}
-          <ToolTip ToolTip={Gameplay.Help.BackpackMaxWeight} style={Styles.Inline}>
-            {Player.MaxWeight} lbs
-          </ToolTip>
-        </Text>
-      </View>
-    )
-  }
-}
 
 /* player actions */
 
@@ -662,123 +580,6 @@ class Controls extends Component {
 }
 
 /* story and events */
-
-class ClearLog extends Component {
-  render() {
-    return (
-      <View style={Styles.ClearLog}>
-        <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.ClearLog} style={Styles.Inline}>
-          <Button SmallPadding={this.props.MobileScreen} onClick={this.props.ClearLog}>
-            {this.props.MobileScreen ? <Text>X</Text> : <Text>Clear Log</Text>}
-          </Button>
-        </ToolTip>
-      </View>
-    )
-  }
-}
-
-// a set of brief messages that provides feedback on the user's actions (example: "you can't go there")
-class EventLog extends Component {
-
-  // no need to re-render the log if it has not changed
-  shouldComponentUpdate(nextProps) {
-    if (
-      nextProps.MobileScreen !== this.props.MobileScreen
-      || nextProps.TabletScreen !== this.props.TabletScreen
-      || nextProps.EventLog !== this.props.EventLog
-      || nextProps.EnterCustomLogEntry !== this.props.EnterCustomLogEntry
-      || nextProps.CustomLogEntry !== this.props.CustomLogEntry
-    ) {
-      if (Debug) console.log("re-render: event log")
-      return true
-    }
-    return false
-  }
-
-  onClick = (input) => {
-    let HtmlElement = document.getElementById("EventLog")
-    let SeparatingLine = HtmlElement.clientHeight/2
-    let Direction  = 1
-    if (input.clientY - HtmlElement.getBoundingClientRect().y < SeparatingLine) {
-      Direction = -1
-    }
-
-    // event log does not scroll, or user has reached the bottom of the scroll
-    if ((HtmlElement.scrollHeight <= HtmlElement.getBoundingClientRect().height) || (Direction === 1 && Math.floor(HtmlElement.scrollTop) === Math.floor(HtmlElement.scrollHeight - HtmlElement.getBoundingClientRect().height))) {
-      this.props.DisplayCustomLogEntryInput(input)
-    }
-    else {
-      this.props.Scroll("EventLog",Direction)
-    }
-
-  }
-
-  render() {
-    return (
-      <View style={Styles.EventLog} onClick={this.onClick}>
-        <Block id="EventLog" style={Styles.EventLogContainer}>
-          <Block>
-            {!this.props.EventLog ? null : this.props.EventLog.map((LogEntry, Index) => {return <View key={Index}>{LogEntry}</View>})}
-          </Block>
-          <Block style={Styles.CustomLogEntryInputContainer}>
-            <TextEdit
-                style={{...Styles.TextEdit, width: "calc(100% - " + (Styles.TextEdit.padding.replace("px",""))*2 + "px)"}}
-                styleFocus={{...Styles.TextEditFocus, width: "calc(100% - " + (Styles.TextEdit.padding.replace("px",""))*2 + "px)"}}
-                hidden={!this.props.EnterCustomLogEntry}
-                name="CustomLogEntry"
-                value={this.props.CustomLogEntry}
-                placeholder="You can add an entry to your log here."
-                onChange={this.props.StoreCustomLogEntryInput}
-                onBlur={this.props.SaveCustomLogEntryInput}     
-              />
-          </Block>
-
-        </Block>
-      </View>
-    )
-  }
-}
-
-// a descriptive paragraph about the surroundings of the user, to set the mood :)
-class Story extends Component {
-
-  // no need to re-render story text if it has not changed
-  shouldComponentUpdate(nextProps) {
-    if (  
-      nextProps.MobileScreen !== this.props.MobileScreen
-      || nextProps.TabletScreen !== this.props.TabletScreen
-      || nextProps.currentText !== this.props.currentText
-    ) {
-      if (Debug) console.log("re-render: story")
-      return true
-    }
-    return false
-  }
-
-  render() {
-
-    // let {currentText, currentTextImage, currentEvent} = this.props
-    let currentText = this.props.currentText
-    let currentTextImage = this.props.currentTextImage
-    let currentEvent = Object.assign([], this.props.currentEvent)
-
-    return (
-      <View style={Styles.Story} hidden={currentEvent.length > 0 && currentText === ""}>
-        <Block style={Styles.Paragraph}>
-          {!currentText ? null : typeof currentText.split !== "function" ? currentText : currentText.split("\n").map((paragraph, index) => {
-            return <Text key={index}>{paragraph}<LineBreak/></Text>
-          })}
-        </Block>
-        <Block hidden={!currentTextImage}>
-          <Image
-            draggable={false}
-            src={storyPath + currentTextImage + imgExt}
-            style={Styles.Paragraph}/>
-        </Block>
-      </View>
-    )
-  }
-}
 
 // single loot item
 class Loot extends Component {
@@ -5239,11 +5040,11 @@ class Game extends Component {
         {/* row 2 */}
         <Contact/>
         <TopBackgroundImage/>
-        <EventLog {... this} {... this.state} />
-        <ClearLog {... this} {... this.state} />
+        <EventLog />
+        <ClearLog />
         {/* row 3 */}
         <StoryBlock {... this}>
-          <Story {... this.state} />
+          <Story />
           <Event {... this} {... this.state} />
         </StoryBlock>
         <Map {... this} {... this.state}/>
@@ -5258,7 +5059,7 @@ class Game extends Component {
         <Rest {... this} {... this.state}/>
         <PlayerLevelAndArmor {... this.state} />
         <PlayerAbilities {... this.state} />
-        <Inventory {... this} {... this.state} />
+        <Inventory />
         <SpellBook/>
         <Gear />
         <BottomControlsContainer/>
