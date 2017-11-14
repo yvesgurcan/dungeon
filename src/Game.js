@@ -29,6 +29,8 @@ import {SpellBookContainer as SpellBook} from "./containers/SpellBook.js"
 import {StoryContainer as Story} from "./containers/Story.js"
 import {InventoryContainer as Inventory} from "./containers/Inventory.js"
 import {EventLogContainer as EventLog, ClearLogContainer as ClearLog} from "./containers/EventLog.js"
+import {PlayerVitalsContainer} from "./containers/Vitals.js"
+import {BottomControlsContainer, GameStateOptionsContainer as GameStateOptions, GameStateBoxContainer as GameStateBox} from "./containers/SaveAndLoad.js"
 
 /* store */
 
@@ -65,175 +67,6 @@ let NextAvailableId = {
 
 let Styles = null
 
-class BottomControls extends Component {
-  render() {
-    let Styles = {...this.props.Styles}
-    return (
-      <View style={Styles.BottomControls}/>
-    )
-  }
-}
-const BottomControlsContainer = connect(mapStateToProps)(BottomControls)
-
-/* game state manipulations (save/load) */
-class GameStateOptions extends Component {
-
-  ToggleSaveGameStateBox = () => {
-
-    this.props.ToggleGameStateBox("Save")
-  }
-
-  ToggleLoadGameStateBox = () => {
-
-    this.props.ToggleGameStateBox("Load")
-
-  }
-
-  ToggleCancelGameStateBox = () => {
-
-    this.props.ToggleGameStateBox("Cancel")
-    
-  }
-
-  render() {
-    return (
-      <View style={Styles.GameState}>
-        <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.NewGame} style={Styles.Inline}>
-          <Button onClick={this.props.ShowCharacterScreen}>New Game</Button>
-        </ToolTip>
-        <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.SaveGame} style={Styles.Inline}>
-          <Button onClick={this.ToggleSaveGameStateBox}>Save Game</Button>
-        </ToolTip>
-        <ToolTip DisabledOnClick ToolTip={Gameplay.Help.Buttons.LoadGame} style={Styles.Inline}>
-          <Button onClick={this.ToggleLoadGameStateBox}>Load Game</Button>
-        </ToolTip>
-        <Button onClick={this.ToggleCancelGameStateBox} hidden={!this.props.ShowGameStateBox}>Close</Button>
-      </View>
-    )
-  }
-}
-
-class GameStateBox extends Component {
-
-  constructor(props) {
-    super(props)
-    this.state = {
-      IncludeStaticAssets: false,
-      GameState: this.GenerateSaveGameState({...this.props.state}, false)
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.ShowGameStateBox === true) {
-      if (!this.props.EditableGameStateBox && nextProps.EditableGameStateBox) {
-        this.props.UpdateGameStateToLoad("")
-        this.setState({GameState: ""})  
-      }
-      else if (!nextProps.EditableGameStateBox && nextProps.state !== this.props.state) {
-        this.setState({GameState: this.GenerateSaveGameState({...nextProps.state})})  
-      }
-    }
-  }
-
-  GenerateSaveGameState = (GameState, IncludeStaticAssets = null) => {
-
-    if (IncludeStaticAssets === null) {
-      IncludeStaticAssets = this.state.IncludeStaticAssets      
-    }
-
-    delete GameState.Keystrokes
-    delete GameState.ShowGameStateBox
-    delete GameState.EditableGameStateBox
-    delete GameState.MobileScreen
-    delete GameState.TabletScreen
-    delete GameState.LoadGameError
-    delete GameState.GameStateToLoad
-    delete GameState.CreateCharacter
-    delete GameState.RandomItems
-
-    // remove debug state
-    delete GameState.ShowFullMap
-    delete GameState.NoClip
-    delete GameState.GodMode
-    delete GameState.CastAlwaysSucceeds
-
-    if (!IncludeStaticAssets) {
-      GameState = this.StripStaticAssets(GameState)      
-    }
-
-    let DisplayState = JSON.stringify(
-      GameState,
-      null,
-      `\t`,
-    )
-
-
-    return DisplayState
-  }
-
-  StripStaticAssets = (GameState) => {
-
-    // does nothing
-
-    return GameState
-  }
-
-  ToggleSaveStaticAsset = () => {
-    
-    let GameState = {...this.props.state}
-    let IncludeStaticAssets = !this.state.IncludeStaticAssets
-
-    this.setState({
-      GameState: this.GenerateSaveGameState(GameState, IncludeStaticAssets),
-      IncludeStaticAssets: IncludeStaticAssets,
-    })  
-
-  }
-
-  onChange = (input) => {
-
-    if (this.props.EditableGameStateBox) {
-      this.props.UpdateGameStateToLoad(input.value)
-      this.setState({GameState: input.value})
-    }
-
-  }
-
-  onClick = (input) => {
-
-    if (!this.props.EditableGameStateBox) {
-      input.select()
-    }
-  }
-
-  render() {
-    return (
-      <View style={Styles.GameStateBoxContainer} 
-      hidden={!this.props.ShowGameStateBox}>
-        <Block hidden={!this.props.EditableGameStateBox}>
-          {this.props.LoadGameError}
-        </Block>
-        <Block hidden={this.props.EditableGameStateBox}>
-          <input type="checkbox" checked={this.state.IncludeStaticAssets} onChange={this.ToggleSaveStaticAsset}/> include static assets
-        </Block>
-        <ToolTip DisabledOnClick ToolTip={this.props.EditableGameStateBox ? Gameplay.Help.GameStateBox.LoadGame : Gameplay.Help.GameStateBox.SaveGame} style={Styles.Inline}>
-          <TextArea
-            readOnly={!this.props.EditableGameStateBox}
-            style={{...Styles.GameStateBox}}
-            onChange={this.onChange}
-            onClick={this.onClick}
-            value={this.state.GameState}
-          />
-        </ToolTip>
-      </View>
-    )
-  }
-}
-
-/* inventory */
-
-
-
 /* player actions */
 
 class Rest extends Component {
@@ -251,84 +84,6 @@ class Rest extends Component {
     )
   }
 }
-
-/* stat bar */
-
-class StatBar extends Component {
-
-  render() {
-    return (
-      <View>
-        <ToolTip FlexibleWidth ToolTip={
-          <View>
-            <View>{this.props.Metric}: {this.props.ratio || (this.props.current + "/" + this.props.max)}</View>
-            <View>{this.props.Description}</View>
-          </View>
-        }>
-          {this.props.ShowLabel ? this.props.Metric : null}
-          <View style={Styles.StatBar}>
-            <View style={this.props.style}/>
-          </View>
-        </ToolTip>
-      </View>
-    )
-  }
-}
-
-class HealthBar extends Component {
-  render() {
-    let {Player} = {...this.props}
-    let style = {...Styles.HealthBar, width: Math.min(100, Player.Health.Current/Player.Health.Max * 100) + "%"}
-    return (
-      <View>
-        <StatBar
-          Metric="Health"
-          ShowLabel
-          style={style}
-          max={Player.Health.Max}
-          current={Player.Health.Current}
-          Description={Gameplay.Help.Vitals.Health}/>
-      </View>
-    )
-  }
-}
-const HealthBarContainer = connect(mapStateToProps)(HealthBar)
-
-
-class ManaBar extends Component {
-  render() {
-    let {Player} = {...this.props}
-    let style = {...Styles.ManaBar, width: Math.min(100, Player.Mana.Current/Player.Mana.Max * 100) + "%"}
-    return (
-      <View>
-        <StatBar
-          Metric="Mana"
-          ShowLabel
-          style={style}
-          max={Player.Mana.Max}
-          current={Player.Mana.Current}/>
-      </View>
-    )
-  }
-}
-const ManaBarContainer = connect(mapStateToProps)(ManaBar)
-
-class StaminaBar extends Component {
-  render() {
-    let {Player} = {...this.props}
-    let style = {...Styles.StaminaBar, width: Math.min(100, Math.ceil(Player.Stamina.Current/Player.Stamina.Max * 100)) + "%"}
-    return (
-      <View>
-        <StatBar
-          Metric="Stamina"
-          ShowLabel
-          style={style}
-          ratio={style.width}/>
-      </View>
-    )
-  }
-}
-const StaminaBarContainer = connect(mapStateToProps)(StaminaBar)
 
 /* weapons at hand */
 
@@ -393,26 +148,7 @@ class PlayerNameAndWeapons extends Component {
 }
 const PlayerNameAndWeaponsContainer = connect(mapStateToProps)(PlayerNameAndWeapons)
 
-class PlayerVitals extends Component {
 
-  render() {
-    let {Styles, Player} = {...this.props}
-    return (
-      <View style={Styles.PlayerVitals}>
-        <View style={Styles.PlayerStat}>
-          <HealthBarContainer/>
-        </View>
-        <View style={Styles.PlayerStat} hidden={!Player.Class || !Player.Class.Spellcaster}>
-          <ManaBarContainer/>
-        </View>
-        <View style={Styles.PlayerStat}>
-          <StaminaBarContainer/>
-        </View>
-      </View>
-    )
-  }
-}
-const PlayerVitalsContainer = connect(mapStateToProps)(PlayerVitals)
 
 class ResponsiveTabSelector extends Component {
   
@@ -5064,8 +4800,8 @@ class Game extends Component {
         <Gear />
         <BottomControlsContainer/>
         <GameStateBackgroundImage/>
-        <GameStateOptions {... this} {... this.state}/>
-        <GameStateBox  {... this} {... this.state}/>
+        <GameStateOptions/>
+        <GameStateBox/>
         <Volume/>
       </View>
     )
