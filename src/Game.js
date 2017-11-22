@@ -12,7 +12,7 @@ import Functions from "./Functions.js"
 
 // Components
 import {Text, View, Block, HeadingContainer as Heading} from "./components/Web.js"
-import {ItemImagePlaceholderContainer as ItemImagePlaceholder, ItemImageBlockContainer as ItemImage} from "./components/ItemImage.js"
+import {ItemImageBlockContainer as ItemImage} from "./components/ItemImage.js"
 import {ActionButtonContainer as Button} from "./components/Button.js"
 import {ArrowContainer as Arrow} from "./components/Arrow.js"
 import {ToolTipContainer as ToolTip} from "./components/ToolTip.js"
@@ -23,13 +23,14 @@ import {TopBackgroundImageContainer as TopBackgroundImage, BottomBackgroundImage
 // Containers
 import {DirectionalArrows} from "./containers/DirectionalArrows.js"
 import {VolumeContainer as Volume} from "./containers/Volume.js"
-import {GearContainer as Gear} from "./containers/Gear.js"
+import {GearContainer as Gear, WeaponReadyContainer as WeaponReady, WeaponReadyBlockContainer as WeaponReadyBlock, PlayerNameAndWeaponsContainer as PlayerNameAndWeapons} from "./containers/GearAndWeapons.js"
 import {MapContainer as Map} from "./containers/Map.js"
 import {SpellBookContainer as SpellBook} from "./containers/SpellBook.js"
 import {StoryContainer as Story} from "./containers/Story.js"
 import {InventoryContainer as Inventory} from "./containers/Inventory.js"
 import {EventLogContainer as EventLog, ClearLogContainer as ClearLog} from "./containers/EventLog.js"
-import {PlayerVitalsContainer} from "./containers/Vitals.js"
+import {PlayerVitalsContainer as PlayerVitals} from "./containers/Vitals.js"
+import {PlayerAbilitiesContainer as PlayerAbilities} from "./containers/Abilities.js"
 import {BottomControlsContainer, GameStateOptionsContainer as GameStateOptions, GameStateBoxContainer as GameStateBox} from "./containers/SaveAndLoad.js"
 
 /* store */
@@ -84,71 +85,6 @@ class Rest extends Component {
     )
   }
 }
-
-/* weapons at hand */
-
-class WeaponReady extends Component {
-  render() {
-    // let {Item, Slot} = this.props
-    let Item = {...this.props.Item}
-    let Slot = this.props.Slot
-
-    if (!Item) {
-      return (
-        <View style={Styles.ReadyItem}>
-          <ItemImagePlaceholder
-            image={null}
-            name={Slot + ": none"}/>
-        </View>
-      )
-    }
-    else {
-      return (
-        <View style={Styles.ReadyItem}>
-          <ItemImage
-          onClick={this.onClick}
-          image={(Item && Item.image) || null}
-          name={Item && Item.Name ? Slot + ": " + Item.Name : null}
-          item={Item}
-          Equipped
-          {... this.props}/>
-        </View>
-      )
-    }
-  }
-}
-
-class WeaponReadyBlock extends Component {
-  render() {
-    let Gear = {...this.props.Player.Gear}
-    return (
-      <View>
-        <WeaponReady Slot="Left hand" Item={Gear.LeftHand} />
-        <WeaponReady Slot="Right hand" Item={Gear.RightHand} />
-      </View>
-    )
-  }
-}
-const WeaponReadyBlockContainer = connect(mapStateToProps)(WeaponReadyBlock)
-
-class PlayerNameAndWeapons extends Component {
-  render() {
-    let Player = {...this.props.Player}
-    return (
-      <View style={Styles.PlayerStats0}>
-        <View>
-          <Text>{Player.Name}</Text>
-        </View>
-        <View style={Styles.ReadyItemBlock}>
-          <WeaponReadyBlockContainer/>
-        </View>
-      </View>
-    )
-  }
-}
-const PlayerNameAndWeaponsContainer = connect(mapStateToProps)(PlayerNameAndWeapons)
-
-
 
 class ResponsiveTabSelector extends Component {
   
@@ -236,66 +172,6 @@ class PlayerLevelAndArmor extends Component {
         <View style={Styles.PlayerStat}>
           <ToolTip ToolTip={Gameplay.Help.ArmorClass} style={Styles.Inline}>
             <Text>AC: </Text><Text>{Player.ArmorClass}</Text>
-          </ToolTip>
-        </View>
-      </View>
-    )
-  }
-}
-
-class PlayerAbilities extends Component {
-
-  // no need to re-render stats if player has not changed
-  shouldComponentUpdate(NextProps) {
-    if (
-      NextProps.MobileScreen !== this.props.MobileScreen
-      || NextProps.TabletScreen !== this.props.TabletScreen
-      || NextProps.Player.Strength !== this.props.Player.Strength
-      || NextProps.Player.Dexterity !== this.props.Player.Dexterity
-      || NextProps.Player.Constitution !== this.props.Player.Constitution
-      || NextProps.Player.Intelligence !== this.props.Player.Intelligence
-      || NextProps.HideStats !== this.props.HideStats
-    ) {
-      if (Debug) console.log("re-render: player abilities")
-      return true
-    }
-    return false
-  }
-
-  render() {
-    let Player = {...this.props.Player}
-    return (
-      <View style={MobileScreen || TabletScreen ? Styles.PlayerStats2Block2 : Styles.PlayerAttributesStacked} hidden={this.props.MobileScreen ? this.props.HideStats : false}>
-        <View style={Styles.PlayerStat}>
-          <ToolTip ToolTip={Gameplay.Help.Abilities.Strength} style={Styles.Inline}>
-            <Text>{MobileScreen
-              ? <Text>STR</Text>
-              : <Text>Strength</Text>}: </Text>
-            <Text>{Player.Strength}</Text>
-          </ToolTip>
-        </View>
-        <View style={Styles.PlayerStat}>
-          <ToolTip ToolTip={Gameplay.Help.Abilities.Constitution} style={Styles.Inline}>
-            <Text>{MobileScreen
-              ? <Text>CON</Text>
-              : <Text>Constitution</Text>}: </Text>
-            <Text>{Player.Constitution}</Text>
-          </ToolTip>
-        </View>
-        <View style={Styles.PlayerStat}>
-          <ToolTip ToolTip={Gameplay.Help.Abilities.Dexterity} style={Styles.Inline}>
-            <Text>{MobileScreen
-              ? <Text>DEX</Text>
-              : <Text>Dexterity</Text>}: </Text>
-            <Text>{Player.Dexterity}</Text>
-          </ToolTip>
-        </View>
-        <View style={Styles.PlayerStat}>
-          <ToolTip ToolTip={Gameplay.Help.Abilities.Intelligence} style={Styles.Inline}>
-            <Text>{MobileScreen
-              ? <Text>INT</Text>
-              : <Text>Intelligence</Text>}: </Text>
-            <Text>{Player.Intelligence}</Text>
           </ToolTip>
         </View>
       </View>
@@ -2050,13 +1926,6 @@ class Game extends Component {
           // placeholder style when asset is missing
           overflow: "hidden",
           fontSize: "10px",
-        },
-        ItemImagePlaceholder: {
-          height: "30px",
-          width: "30px",
-          background: "lightgray",
-          padding: "1px",
-          margin: "1px"
         },
         ItemDescription: {
           zIndex: "900",
@@ -4783,12 +4652,12 @@ class Game extends Component {
           <Story />
           <Event {... this} {... this.state} />
         </StoryBlock>
-        <Map {... this} {... this.state}/>
+        <Map {... this.state}/>
         {/* row 4 */}
         <BottomBackgroundImage/>
         <Controls />
-        <PlayerNameAndWeaponsContainer/>
-        <PlayerVitalsContainer/>
+        <PlayerNameAndWeapons/>
+        <PlayerVitals/>
         <DirectionalArrows/>
         <ResponsiveTabSelector {...this} {...this.state}/>
         <RepsonsiveStatsContainer {...this} {...this.state}/>

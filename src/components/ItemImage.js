@@ -14,21 +14,6 @@ const mapStateToProps = (state, ownProps) => {
     }
 }
 
-class ItemImagePlaceholder extends Component {
-  render() {
-    let Styles = {...this.props.Styles}
-    return (
-      <Text>
-        <View
-          onClick={this.props.onClick}
-          style={Styles.ItemImagePlaceholder}
-          title={this.props.name} />
-      </Text>   
-    )
-  }
-}
-export const ItemImagePlaceholderContainer = connect(mapStateToProps)(ItemImagePlaceholder)
-
 class ItemImage extends Component {
   render() {
     let Styles = {...this.props.Styles}
@@ -111,7 +96,8 @@ class ItemImageBlock extends Component {
 
     // there is no item
     let Item = {...this.props.item}
-    if (!Object.getOwnPropertyNames(Item).length) return null
+    let {Slot} = {...this.props}
+    if (!Object.getOwnPropertyNames(Item).length && !Slot) return null
 
     let grabInput = {...input}
     input.preventDefault()
@@ -189,7 +175,8 @@ class ItemImageBlock extends Component {
 
     // there is no item
     let Item = {...this.props.item}
-    if (!Object.getOwnPropertyNames(Item).length) return null
+    let {Slot} = {...this.props}
+    if (!Object.getOwnPropertyNames(Item).length && !Slot) return null
 
     // grab coordinates
     let {pageX, pageY} = {...input}
@@ -258,7 +245,8 @@ class ItemImageBlock extends Component {
 
     // there is no item
     let Item = {...this.props.item}
-    if (!Object.getOwnPropertyNames(Item).length) return null
+    let {Slot} = {...this.props}
+    if (!Object.getOwnPropertyNames(Item).length && !Slot) return null
 
     // do not show description on hover for touch screens
     if (this.state.TouchEvent) return false
@@ -329,13 +317,12 @@ class ItemImageBlock extends Component {
   ItemDescription = () => {
 
     let Item = {...this.props.item}
-    let Styles = {...this.props.Styles}
-
-    if (!Object.getOwnPropertyNames(Item).length) return null
+    let {Slot, Styles} = {...this.props}
+    if (!Object.getOwnPropertyNames(Item).length && !Slot) return null
 
     let Description = (
       <View hidden={this.state.HideItemDescription} style={{...Styles.ItemDescription, left: this.state.x, top: this.state.y}}>
-        <View style={Styles.ItemDescriptionName}>{Item.Name}</View>
+        <View style={Styles.ItemDescriptionName}>{(Slot ? Slot + ": " + (Item.Name || "Empty") : Item.Name)}</View>
         <View style={Styles.ItemDescriptionContent} hidden={!Item.Description}>{Item.Description}</View>
       </View>
     )
@@ -347,13 +334,11 @@ class ItemImageBlock extends Component {
   ItemActions = () => {
 
     let Item = {...this.props.item}
-    let Styles = {...this.props.Styles}
-
-    if (!Object.getOwnPropertyNames(Item).length) return null
-
+    let {Slot, Styles} = {...this.props}
+    if (!Object.getOwnPropertyNames(Item).length && !Slot) return null
     let Action = (
       <View hidden={this.state.HideItemActions} style={{...Styles.ItemActions, left: this.state.x, top: this.state.y}}>
-        <View style={Styles.ItemDescriptionName}>{Item.Name}</View>
+        <View style={Styles.ItemDescriptionName}>{(Slot ? Slot + ": " + (Item.Name || "Empty") : Item.Name)}</View>
         {this.AvailableActions().map(ItemAction => {
           return (
             <ItemSingleAction
