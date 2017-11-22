@@ -11,6 +11,33 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
+class PlayerLevelAndArmor extends Component {
+
+  render() {
+    let {Player, Styles, MobileScreen, TabletScreen} = {...this.props}
+    return (
+      <View style={MobileScreen || TabletScreen ? Styles.PlayerStats2Block1 : Styles.PlayerStats3} hidden={this.props.MobileScreen ? this.props.HideStats : false}>
+        <View style={Styles.PlayerStat}>
+          <ToolTip ToolTip={Player.Class.Spellcaster ? Gameplay.Help.LevelSpellcaster : Gameplay.Help.LevelNotSpellcaster} style={Styles.Inline}>
+            <Text>{MobileScreen ? <Text>LVL</Text> : <Text>Level</Text>}: </Text><Text>{Player.Level}</Text>
+          </ToolTip>
+        </View>
+        <View style={Styles.PlayerStat}>
+          <ToolTip ToolTip={Gameplay.Help.XP} style={Styles.Inline}>
+            <Text>XP: </Text><Text>{Player.XP}</Text>
+          </ToolTip>
+        </View>
+        <View style={Styles.PlayerStat}>
+          <ToolTip ToolTip={Gameplay.Help.ArmorClass} style={Styles.Inline}>
+            <Text>AC: </Text><Text>{Player.ArmorClass}</Text>
+          </ToolTip>
+        </View>
+      </View>
+    )
+  }
+}
+export const PlayerLevelAndArmorContainer = connect(mapStateToProps)(PlayerLevelAndArmor)
+
 class PlayerAbilities extends Component {
 
   render() {

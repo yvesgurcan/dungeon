@@ -21,17 +21,27 @@ import {ClearFloat, ContactContainer as Contact, HeaderContainer as Header} from
 import {TopBackgroundImageContainer as TopBackgroundImage, BottomBackgroundImageContainer as BottomBackgroundImage, GameStateBackgroundImageContainer as GameStateBackgroundImage} from "./components/BackgroundImages.js"
 
 // Containers
-import {DirectionalArrows} from "./containers/DirectionalArrows.js"
-import {VolumeContainer as Volume} from "./containers/Volume.js"
-import {GearContainer as Gear, WeaponReadyContainer as WeaponReady, WeaponReadyBlockContainer as WeaponReadyBlock, PlayerNameAndWeaponsContainer as PlayerNameAndWeapons} from "./containers/GearAndWeapons.js"
-import {MapContainer as Map} from "./containers/Map.js"
-import {SpellBookContainer as SpellBook} from "./containers/SpellBook.js"
-import {StoryContainer as Story} from "./containers/Story.js"
-import {InventoryContainer as Inventory} from "./containers/Inventory.js"
 import {EventLogContainer as EventLog, ClearLogContainer as ClearLog} from "./containers/EventLog.js"
+
+import {StoryContainer as Story} from "./containers/Story.js"
+
+import {MapContainer as Map} from "./containers/Map.js"
+
+import {GearContainer as Gear, WeaponReadyContainer as WeaponReady, WeaponReadyBlockContainer as WeaponReadyBlock, PlayerNameAndWeaponsContainer as PlayerNameAndWeapons} from "./containers/GearAndWeapons.js"
+
 import {PlayerVitalsContainer as PlayerVitals} from "./containers/Vitals.js"
-import {PlayerAbilitiesContainer as PlayerAbilities} from "./containers/Abilities.js"
+
+import {DirectionalArrows} from "./containers/DirectionalArrows.js"
+
+import {PlayerAbilitiesContainer as PlayerAbilities, PlayerLevelAndArmorContainer as PlayerLevelAndArmor} from "./containers/Abilities.js"
+
+import {InventoryContainer as Inventory} from "./containers/Inventory.js"
+
+import {SpellBookContainer as SpellBook} from "./containers/SpellBook.js"
+
 import {BottomControlsContainer, GameStateOptionsContainer as GameStateOptions, GameStateBoxContainer as GameStateBox} from "./containers/SaveAndLoad.js"
+
+import {VolumeContainer as Volume} from "./containers/Volume.js"
 
 /* store */
 
@@ -132,48 +142,6 @@ class RepsonsiveStatsContainer extends Component {
   render() {
     return (
       <View style={Styles.ResponsiveStatsContainer} hidden={!this.props.MobileScreen}>
-      </View>
-    )
-  }
-}
-
-class PlayerLevelAndArmor extends Component {
-
-  // no need to re-render stats if player has not changed
-  shouldComponentUpdate(NextProps) {
-    if (
-      NextProps.MobileScreen !== this.props.MobileScreen
-      || NextProps.TabletScreen !== this.props.TabletScreen
-      || NextProps.Player.Level !== this.props.Player.Level
-      || NextProps.Player.XP !== this.props.Player.XP
-      || NextProps.Player.ArmorClass !== this.props.Player.ArmorClass
-      || NextProps.HideStats !== this.props.HideStats
-    ) {
-      if (Debug) console.log("re-render: player level/XP and AC")
-      return true
-    }
-    return false
-  }
-
-  render() {
-    let Player = {...this.props.Player}
-    return (
-      <View style={MobileScreen || TabletScreen ? Styles.PlayerStats2Block1 : Styles.PlayerStats3} hidden={this.props.MobileScreen ? this.props.HideStats : false}>
-        <View style={Styles.PlayerStat}>
-          <ToolTip ToolTip={Player.Class.Spellcaster ? Gameplay.Help.LevelSpellcaster : Gameplay.Help.LevelNotSpellcaster} style={Styles.Inline}>
-            <Text>{MobileScreen ? <Text>LVL</Text> : <Text>Level</Text>}: </Text><Text>{Player.Level}</Text>
-          </ToolTip>
-        </View>
-        <View style={Styles.PlayerStat}>
-          <ToolTip ToolTip={Gameplay.Help.XP} style={Styles.Inline}>
-            <Text>XP: </Text><Text>{Player.XP}</Text>
-          </ToolTip>
-        </View>
-        <View style={Styles.PlayerStat}>
-          <ToolTip ToolTip={Gameplay.Help.ArmorClass} style={Styles.Inline}>
-            <Text>AC: </Text><Text>{Player.ArmorClass}</Text>
-          </ToolTip>
-        </View>
       </View>
     )
   }
