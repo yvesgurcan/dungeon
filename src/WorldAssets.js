@@ -298,6 +298,12 @@ export const WorldAssets = {
             Type: "armor",
             Image: "armor_titanium",
         },
+        // Boots
+        LeatherBoots: {
+            Name: "leather boots",
+            Type: "boots",
+            Image: "boots_leather",
+        },
         
         // Food
         Leaf: {
