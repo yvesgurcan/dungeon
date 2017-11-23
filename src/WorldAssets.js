@@ -253,13 +253,25 @@ export const WorldAssets = {
             Type: "weapon",
             image: "weapon_staff",
         },
-        // Shield
-        Shield: {
-            Name: "simple staff",
-            Type: "shield",
-            image: "shield",
+        BurningStaff: {
+            Name: "burning staff",
+            Type: "staff",
+            Image: "staff_burning", // rename weapon_Staff2
         },
-
+        StaffOfLife: {
+            
+        },
+        // Shield
+        CrusaderShield: {
+            Name: "crusader shield",
+            Type: "shield",
+            Image: "shield_crusader",
+        },
+        TitaniumShield: {
+            Name: "titanium_shield",
+            Type: "shield",
+            Image: "shield_titanium",
+        },
         // Gear
         // Necklaces
         AmuletOfMagic: {
@@ -304,7 +316,23 @@ export const WorldAssets = {
             Type: "boots",
             Image: "boots_leather",
         },
-        
+        // Gloves
+        LeatherGloves: {
+            Name: "leather gloves",
+            Type: "gloves",
+            Image: "gloves_leather",
+        },
+        // Helm
+        SteelHelm: {
+            Name: "steel helm",
+            Type: "helm",
+            Image: "steel_helm", // rename helm_01.png
+        },
+        KnightHelm: {
+            Name: "knight helm",
+            Type: "helm",
+            Image: "helm_knight",
+        },
         // Food
         Leaf: {
             Level: 1,
