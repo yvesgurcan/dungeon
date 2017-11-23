@@ -2,6 +2,8 @@
 
 You can play the [latest stable version](http://dungeon.yvesgurcan.com/stable/) or the [dev release](http://dungeon.yvesgurcan.com/dev/).
 
+The source code is available [here](https://github.com/yvesgurcan/dungeon).
+
 ## TL;DR
 To play, click [here](http://dungeon.yvesgurcan.com/stable/). When the page loads, a default character with random ability scores is created for you. You can start playing right away.
 
