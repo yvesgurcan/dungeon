@@ -256,10 +256,17 @@ export const WorldAssets = {
         BurningStaff: {
             Name: "burning staff",
             Type: "staff",
-            Image: "staff_burning", // rename weapon_Staff2
+            Image: "weapon_staff_burning", // rename weapon_Staff2
         },
         StaffOfLife: {
-            
+            Name: "staff of life",
+            Type: "staff",
+            Image: "weapon_staff_life", // rename weapon_Staff3
+        },
+        StaffOfintelligence: {
+            Name: "staff of intelligence",
+            Type: "staff",
+            Image: "weapon_staff_intelligence", // staff0
         },
         // Shield
         CrusaderShield: {
