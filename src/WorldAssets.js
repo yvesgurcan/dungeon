@@ -140,12 +140,14 @@ export const WorldAssets = {
         BagOfHolding: {
             Type: "backpack",
             Name: "bag of holding",
+            Image: "backpack_holding", // rename backpack_Sack2.png
             Description: "The best backpack you could dream of. Lots of room in there.",
             MaxItems: 48,
         },
         TravelerBag: {
             Type: "backpack",
             Name: "traveler's bag",
+            Image: "backpack_traveler",
             Description: "A must-have for adventurers. Holds a comfortable number of items.",
             MaxItems: 32,
         },
