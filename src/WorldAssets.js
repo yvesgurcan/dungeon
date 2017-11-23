@@ -227,7 +227,6 @@ export const WorldAssets = {
         // Weapons
         // Swords
         EmeraldDagger: {
-            Level: 2,
             Name: "emerald dagger",
             Type: "weapon",
             image: "weapon_dagger_emerald",
@@ -259,7 +258,7 @@ export const WorldAssets = {
             image: "shield",
         },
 
-        // Accesories
+        // Gear
         // Necklaces
         AmuletOfMagic: {
             Name: "amulet of magic",
@@ -271,9 +270,36 @@ export const WorldAssets = {
             Type: "necklace",
             image: "amulet_skull",
         },
-
+        // Armors
+        ChainmailArmor: {
+            Name: "chainmail armor",
+            Type: "armor",
+            Image: "armor_chainmail", // delete original; rename armor_ChestH1.png
+        },
+        SteelArmor: {
+            Name: "steel armor",
+            Type: "armor",
+            Image: "armor_steel", // rename armor_ChestG1.png
+        },
+        GoldArmor: {
+            Name: "gold armor",
+            Type: "armor",
+            Image: "armor_gold",
+        },
+        MithrilArmor: {
+            Name: "mithril armor",
+            Type: "armor",
+            Image: "armor_mithril",
+        },
+        TitaniumArmor: {
+            Name: "titanium armor",
+            Type: "armor",
+            Image: "armor_titanium",
+        },
+        
         // Food
         Leaf: {
+            Level: 1,
             Name: "leaf",
             Type: "food",
             image: "food_leaf",
@@ -283,6 +309,7 @@ export const WorldAssets = {
             Weight: 0.1,
         },
         Apple: {
+            Level: 1,
             Name: "apple",
             Type: "food",
             image: "food_apple",
@@ -292,6 +319,7 @@ export const WorldAssets = {
             Weight: 0.3,
         },
         Berries: {
+            Level: 1,
             Name: "berries",
             Type: "food",
             image: "food_berries",
@@ -301,6 +329,7 @@ export const WorldAssets = {
             Weight: 0.2,
         },
         Grapes: {
+            Level: 1,
             Name: "grapes",
             Type: "food",
             image: "food_grapes",
@@ -310,6 +339,7 @@ export const WorldAssets = {
             Weight: 0.4,
         },
         Bread: {
+            Level: 1,
             Name: "bread",
             Type: "food",
             image: "food_bread",
@@ -319,6 +349,7 @@ export const WorldAssets = {
             Weight: 0.5,
         },
         Chicken: {
+            Level: 1,
             Name: "chicken",
             Type: "food",
             image: "food_chicken",
@@ -328,6 +359,7 @@ export const WorldAssets = {
             Weight: 0.4,
         },
         Sausage: {
+            Level: 1,
             Name: "sausage",
             Type: "food",
             image: "food_sausage",
@@ -340,6 +372,7 @@ export const WorldAssets = {
         // Scrolls
         // Attack
         MagicArrowScroll: {
+            Level: 1,
             Name: "scroll of magic arrow",
             Spell: "MagicArrow",
             ...ScrollItemTypes.AttackSpell,
@@ -376,6 +409,7 @@ export const WorldAssets = {
         },
         // Heal
         FirstAidScroll: {
+            Level: 1,
             Name: "scroll of first aid",
             Spell: "FirstAid",
             ...ScrollItemTypes.BonusSpell,
@@ -402,6 +436,7 @@ export const WorldAssets = {
             ...ScrollItemTypes.BonusSpell,
         },
         BarkSkinScroll: {
+            Level: 1,
             Name: "scroll of bark sin",
             Spell: "BarkSkin",
             ...ScrollItemTypes.BonusSpell,
