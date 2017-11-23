@@ -37,65 +37,47 @@
       }
         
       // grid columns
-      let StoryStartColumn = FirstColumn
-      let StoryEndColumn = 6
-      let MapStartColumn = StoryEndColumn
-      let MapEndColumn = LastColumn
-      let ContactColumnStart = 5
-      let ContactColumnStop = LastColumn
-      let PlayerWeaponStartColumn = FirstColumn
-      let PlayerWeaponStopColumn = 2
-      let PlayerVitalsStartColumn = PlayerWeaponStopColumn
-      let PlayerVitalsStopColumn = 3
-      let DirectionalArrowStartColumn = PlayerVitalsStopColumn
-      let DirectionalArrowStopColumn = 4
-      let PlayerActionStartColumn = DirectionalArrowStopColumn
-      let PlayerActionStopColumn = 6
-      let PlayerStat2StartColumn = PlayerActionStopColumn
-      let PlayerStat2StopColumn = 7
-      let PlayerAttributesStartColumn = PlayerStat2StopColumn
-      let PlayerAttributesBlockSeparation = PlayerAttributesStartColumn
-      let PlayerAttributesStopColumn = LastColumn
-      let InventoryStartColumn = FirstColumn
-      let InventoryStopColumn = 7
-      let SpellBookStartColumn = FirstColumn
-      let SpellBookStopColumn = 7
-      let AccessoriesStartColumn = 7
-      let AccessoriesStopColumn = LastColumn
+      
+      let Columns: {
+          Contact: {Start: 5, End: LastColumn},
+          Story: {Start: FirstColumn, End: 6},
+          Map: {Start: 6, End: LastColumn},
+          Weapons: {Start: Firstcolumn, End: 2},
+          Vitals: {Start: 2, End: 3},
+          Arrows: {Start: 3, End:4},
+          Actions: {Start: 4, End: 6},
+          Experience: {Start:6, End:7},
+          Abilities: {Start: 6, End: LastColumn},
+          Backpack: {Start: FirstColumn, End: 7},
+          SpellBook: {Start: FirstColumn, End: 7}
+          Gear: {Start: 7, End: LastColumn},
+      }
+      
       if (MobileScreen) {
-        StoryStartColumn = FirstColumn
-        StoryEndColumn = LastColumn
-        MapStartColumn = FirstColumn
-        MapEndColumn = LastColumn
-        ContactColumnStart = FirstColumn
-        ContactColumnStop = LastColumn
-        PlayerWeaponStartColumn = FirstColumn
-        PlayerWeaponStopColumn = 4
-        PlayerVitalsStartColumn = PlayerWeaponStopColumn
-        PlayerVitalsStopColumn = 7
-        DirectionalArrowStartColumn = PlayerVitalsStopColumn
-        DirectionalArrowStopColumn = 9
-        PlayerActionStartColumn = FirstColumn
-        PlayerActionStopColumn = 4
-        PlayerAttributesStartColumn = PlayerActionStopColumn
-        PlayerAttributesStopColumn = 4
-        PlayerAttributesBlockSeparation = 7
-        PlayerAttributesStopColumn = LastColumn
-        InventoryStartColumn = FirstColumn
-        InventoryStopColumn = LastColumn
-        SpellBookStartColumn = FirstColumn
-        SpellBookStopColumn = LastColumn
-        AccessoriesStartColumn = FirstColumn
-        AccessoriesStopColumn = LastColumn
+            
+      
+      Columns: {
+          Contact: {Start: FirstColumn, End: LastColumn},
+          Story: {Start: FirstColumn, End: LastColumn},
+          Map: {Start: FirstColumn, End: LastColumn},
+          Weapons: {Start: Firstcolumn, End: 4},
+          Vitals: {Start: 4, End: 7},
+          Arrows: {Start: 7, End: LastColumn},
+          Actions: {Start: FirstColumn, End: 4},
+          Experience: {Start: 4, End: 7},
+          Abilities: {Start: 7, End: LastColumn},
+          Backpack: {Start: FirstColumn, End: LastColumn},
+          SpellBook: {Start: FirstColumn, End: LastColumn}
+          Gear: {Start: FirstColumn, End: LastColumn},
+      } 
+            
+            
+        
       }
       else if (TabletScreen) {
-        PlayerVitalsStartColumn = PlayerWeaponStopColumn
-        PlayerVitalsStopColumn = 4
-        DirectionalArrowStartColumn = PlayerVitalsStopColumn
-        DirectionalArrowStopColumn = 5
-        PlayerActionStartColumn = DirectionalArrowStopColumn
-        PlayerActionStopColumn = 6
-        PlayerAttributesStartColumn = PlayerActionStopColumn
-        PlayerAttributesBlockSeparation = 7
-        PlayerAttributesStopColumn = LastColumn
+        
+        Columns.Vitals = {Start: 2, End:4}
+        Columns.Arrows = {Start: 4, End:5}
+        Columns.Actions = {Start: 5, End: 6}
+        
       }
