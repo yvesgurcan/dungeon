@@ -783,28 +783,34 @@ class Game extends Component {
       const HUDStatBarHeight = "10px"
 
       const ButtonNormalBackground = "linear-gradient(135deg, #ccc 35%, #ddd 70%, #eee 100%)"
-      
       const ButtonHoverBackground = "linear-gradient(135deg, #aaa 35%, #ccc 70%, #ccc 100%)"
       const ButtonClickBackground = "linear-gradient(135deg, #777 35%, #999 70%, #999 100%)"
 
-      const MapBackgroundColor = "white"
 
-      const BorderThickness = 1.5
-      const BorderColor = "black"
-      const WallLine = BorderThickness + "px solid " + BorderColor
 
+
+      // map
+      // tile size (might want to keep these)
       const WallBoxWidth = 15
       const WallBoxHeight = 15
 
-      const WallBoxWidthWithBorder = WallBoxWidth - BorderThickness
-      const WallBoxHeightWithBorder = WallBoxHeight - BorderThickness
+      // css borders of walls
+      const BorderThickness = 1.5
+      const BorderColor = "black"
+      const WallLine = BorderThickness + "px solid " + BorderColor
+      const MapBackgroundColor = "white"
 
+      // css drawing of pillars
       const PillarBoxWidth = WallBoxWidth - 5
       const PillarBoxHeight = WallBoxHeight - 5
 
+      // css drawing of walls
+      const WallBoxWidthWithBorder = WallBoxWidth - BorderThickness
+      const WallBoxHeightWithBorder = WallBoxHeight - BorderThickness
       const WallBoxWidthCentered = WallBoxWidthWithBorder/2
       const WallBoxHeightCentered = WallBoxHeightWithBorder/2
 
+      // css drawing of doors
       const DoorLine = Math.max(1,BorderThickness-BorderThickness/2) + "px solid " + BorderColor
       const DoorColor = "lightsteelblue"
       const DoorLongSize = 7

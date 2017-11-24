@@ -3,6 +3,8 @@ import {connect} from 'react-redux'
 import {View, Text} from "./Web.js"
 import {Graphics} from "./Misc.js"
 import Utilities from "./../Utilities.js"
+import deepFreeze from "deep-freeze"
+import update from "immutability-helper"
 
 const itemPath = "./graphics/items/"
 const imgExt = ".png"
@@ -427,6 +429,25 @@ class ItemImageBlock extends Component {
 
     let Item = {...this.props.item}    
     if (!Object.getOwnPropertyNames(Item).length) return null
+
+    // TODO: experimenting with reducers.....
+    // copy the prop to prevent mutating it
+    let Player = update(this.props.Player, {$merge: {}})
+    // do mutation of the copied prop
+    Player = update(Player, {$merge:
+      {
+        Health: {
+          ...Player.Health,
+          Current: 2}
+        }
+      })
+
+    console.log(
+      this.props.Player,
+      Player
+    )
+    // put the new object in the state
+    this.props.dispatch({type: "USE_ITEM", Item: this.props.Player.Backpack.Items[0]})
 
     if (!this.props.onClick) {
       console.warn("This feature is not ready yet :)")

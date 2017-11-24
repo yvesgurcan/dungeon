@@ -1,9 +1,10 @@
 import {combineReducers} from 'redux'
+import deepFreeze from "deep-freeze"
+import update from "immutability-helper"
 
 function GameTime (State, Action) {
 
     let NewState = {...State}
-
     switch (Action.type) {
 
         case "UPDATE_TURN":
@@ -27,21 +28,49 @@ function GameTime (State, Action) {
     return NewState
 }
 
-function Player (State, Action) {
+function Player (PlayerState, Action) {
 
-    let NewState = {...State}
+    let NewPlayerState = {...PlayerState}
 
     switch (Action.type) {
 
         case "UPDATE_PLAYER":
-            NewState = {...NewState, ...Action.Player}
+            NewPlayerState = {...PlayerState, ...Action.Player}
+            break
+
+        case "USE_ITEM":
+            
+            // do mutations of the copied state
+            debugger
+            NewPlayerState = update(PlayerState, {$merge:
+                {
+                Health: {
+                    ...PlayerState.Health,
+                    Current: 2}
+                }
+            })
+        
+            console.log(
+                PlayerState,
+                NewPlayerState
+            )
+        
+            // dispatch({type: "REMOVE_ITEM", Item: []})
+
+            let Item = Action.Item
+
+            break
+
+        case "REMOVE_ITEM":
+
+            debugger
             break
 
         default:
             break
     }
 
-    return NewState
+    return NewPlayerState
 }
 
 function Monsters (State, Action) {
@@ -237,7 +266,7 @@ function Styles (State, Action) {
     return NewState
 }
 
-export default combineReducers({
+var dispatch = combineReducers({
     GameTime,
     Player,
     Monsters,
@@ -251,3 +280,5 @@ export default combineReducers({
     Responsiveness,
     Styles,
 })
+
+export default dispatch
