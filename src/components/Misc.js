@@ -1,19 +1,12 @@
 import React, {Component} from "react"
-import {Image, View, Text, URL, PageSubtitleContainer as PageSubtitle, PageTitleContainer as PageTitle} from "./Web.js"
 import {connect} from 'react-redux'
-import Utilities from "./../Utilities.js"
+import mapStateToProps from "./../mapStateToProps"
+import {Image, View, Text, URL, PageSubtitleContainer as PageSubtitle, PageTitleContainer as PageTitle} from "./Web"
+import Utilities from "./../Utilities"
 
 const authorEmail = "gurcan.yves@gmail.com"
 const contactTemplate = "mailto:" + authorEmail +"?subject=Dungeon!"
 const repository = "https://github.com/yvesgurcan/dungeon"
-
-// these components only get Styles as a prop, or no prop at all
-const mapStateToProps = (state, ownProps) => {
-  return {
-    Styles: {...state.Styles},
-    ...ownProps,
-  }
-}
 
 export class Graphics extends Component {
     render() {

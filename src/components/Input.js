@@ -1,13 +1,6 @@
 import React, {Component} from "react"
 import {connect} from 'react-redux'
-
-// these components only get Styles as a prop, or no prop at all
-const mapStateToProps = (state, ownProps) => {
-    return {
-      Styles: {...state.Styles},
-      ...ownProps,
-    }
-}
+import mapStateToProps from "./../mapStateToProps"
 
 class TextEdit extends Component {
     constructor(props) {

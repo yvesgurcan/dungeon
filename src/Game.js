@@ -4636,7 +4636,7 @@ class Game extends Component {
         <ResponsiveTabSelector {...this} {...this.state}/>
         <RepsonsiveStatsContainer {...this} {...this.state}/>
         <Rest {... this} {... this.state}/>
-        <PlayerLevelAndArmor {... this.state} />
+        <PlayerLevelAndArmor />
         <PlayerAbilities {... this.state} />
         <Inventory />
         <SpellBook/>

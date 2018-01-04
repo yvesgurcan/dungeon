@@ -1,18 +1,12 @@
 import React, {Component} from "react"
 import {connect} from 'react-redux'
-
-// these components only get Styles as a prop, or no prop at all
-const mapStateToProps = (state, ownProps) => {
-  return {
-    Styles: {...state.Styles},
-  }
-}
+import mapStateToProps from "./../mapStateToProps"
 
 // a
 export class URL extends Component {
     render() {
         return (
-            <a {... this.props} children={this.props.children}/>
+            <a href={this.props.href} onMouseLeave={this.props.onMouseLeave} onMouseMove={this.props.onMouseMove} style={this.props.style} target={this.props.target} title={this.props.title} children={this.props.children}/>
         )
     }
 }

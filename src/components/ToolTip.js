@@ -1,13 +1,7 @@
 import React, {Component} from "react"
 import {connect} from 'react-redux'
-import {View} from "./Web.js"
-
-const mapStateToProps = (state, ownProps) => {
-    return {
-        Styles: {...state.Styles},
-        ...ownProps,
-    }
-}
+import mapStateToProps from "./../mapStateToProps"
+import {View} from "./Web"
 
 class HoverToolTip extends Component {
   

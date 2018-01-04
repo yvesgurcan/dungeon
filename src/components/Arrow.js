@@ -1,13 +1,7 @@
 import React, {Component} from "react"
 import {connect} from 'react-redux'
-import {Text} from "./Web.js"
-
-const mapStateToProps = (state, ownProps) => {
-    return {
-        Styles: {...state.Styles},
-        ...ownProps,
-    }
-}
+import mapStateToProps from "./../mapStateToProps"
+import {Text} from "./Web"
 
 class Arrow extends Component {
 

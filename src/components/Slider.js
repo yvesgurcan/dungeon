@@ -1,14 +1,8 @@
 import React, {Component} from "react"
 import {connect} from 'react-redux'
-import {View, Text} from "./Web.js"
-import {ToolTipContainer as ToolTip} from "./ToolTip.js"
-
-const mapStateToProps = (state, ownProps) => {
-    return {
-        Styles: {...state.Styles},
-        ...ownProps,
-    }
-}
+import mapStateToProps from "./../mapStateToProps"
+import {View, Text} from "./Web"
+import {ToolTipContainer as ToolTip} from "./ToolTip"
 
 class Slider extends Component {
 

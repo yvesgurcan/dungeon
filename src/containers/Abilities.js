@@ -1,15 +1,9 @@
 import React, {Component} from "react"
 import {connect} from 'react-redux'
-import {View, Text} from "./../components/Web.js"
-import {ToolTipContainer as ToolTip} from "./../components/ToolTip.js"
-import Gameplay from "./../GameplayAssets.js"
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    ...state,
-    ...ownProps,
-  }
-}
+import mapStateToProps from "./../mapStateToProps"
+import {View, Text} from "./../components/Web"
+import {ToolTipContainer as ToolTip} from "./../components/ToolTip"
+import Gameplay from "./../GameplayAssets"
 
 class PlayerLevelAndArmor extends Component {
 

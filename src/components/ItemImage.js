@@ -1,20 +1,13 @@
 import React, {Component} from "react"
 import {connect} from 'react-redux'
-import {View, Text} from "./Web.js"
-import {Graphics} from "./Misc.js"
-import Utilities from "./../Utilities.js"
-import deepFreeze from "deep-freeze"
-import update from "immutability-helper"
+import mapStateToProps from "./../mapStateToProps"
+import {View, Text} from "./Web"
+import {Graphics} from "./Misc"
+import Utilities from "./../Utilities"
+import update from "immutability-helper" // experimental
 
 const itemPath = "./graphics/items/"
 const imgExt = ".png"
-
-const mapStateToProps = (state, ownProps) => {
-    return {
-        Styles: {...state.Styles},
-        ...ownProps,
-    }
-}
 
 class ItemImage extends Component {
   render() {
