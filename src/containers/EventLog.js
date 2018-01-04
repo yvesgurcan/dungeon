@@ -1,20 +1,11 @@
 import React, {Component} from "react"
 import {connect} from 'react-redux'
-import {View, Text} from "./../components/Web.js"
-import {ActionButtonContainer as Button} from "./../components/Button.js"
-import {TextEditContainer as TextEdit} from "./../components/Input.js"
-import {ClearFloat} from "./../components/Misc.js"
-import {ItemImageBlockContainer as ItemImage} from "./../components/ItemImage.js"
-import {ArrowContainer as Arrow} from "./../components/Arrow.js"
-import {ToolTipContainer as ToolTip} from "./../components/ToolTip.js"
-import Gameplay from "./../GameplayAssets.js"
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    ...state,
-    ...ownProps,
-  }
-}
+import mapStateToProps from "./../mapStateToProps"
+import {View, Text} from "./../components/Web"
+import {ActionButtonContainer as Button} from "./../components/Button"
+import {TextEditContainer as TextEdit} from "./../components/Input"
+import {ToolTipContainer as ToolTip} from "./../components/ToolTip"
+import Gameplay from "./../GameplayAssets"
 
 class ClearLog extends Component {
   render() {

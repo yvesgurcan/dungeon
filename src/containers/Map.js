@@ -1,14 +1,8 @@
 import React, {Component} from "react"
 import {connect} from 'react-redux'
-import {Text, View} from "./../components/Web.js"
-import Utilities from "./../Utilities.js"
-
-const mapStateToProps = (state, ownProps) => {
-    return {
-        ...state,
-      ...ownProps,
-    }
-}
+import mapStateToProps from "./../mapStateToProps"
+import {Text, View} from "./../components/Web"
+import Utilities from "./../Utilities"
 
 const {North, South, West, East} = Utilities.Directions
 const {Wall, Door, LootContainer, Empty} = Utilities.MapObjects

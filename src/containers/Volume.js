@@ -1,15 +1,9 @@
 import React, {Component} from "react"
 import {connect} from 'react-redux'
-import {SliderContainer as Slider} from "./../components/Slider.js"
-import {View} from "./../components/Web.js"
-import Gameplay from "./../GameplayAssets.js"
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-      ...state,
-    ...ownProps,
-  }
-}
+import mapStateToProps from "./../mapStateToProps"
+import {SliderContainer as Slider} from "./../components/Slider"
+import {View} from "./../components/Web"
+import Gameplay from "./../GameplayAssets"
 
 class Volume extends Component {
     onClick = (NewValueRatio) => {

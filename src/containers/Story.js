@@ -1,13 +1,7 @@
 import React, {Component} from "react"
 import {connect} from 'react-redux'
-import {Text, View, LineBreak, Image} from "./../components/Web.js"
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-      ...state,
-    ...ownProps,
-  }
-}
+import mapStateToProps from "./../mapStateToProps"
+import {Text, View, LineBreak, Image} from "./../components/Web"
 
 const storyPath = "./graphics/story/"
 const imgExt = ".png"

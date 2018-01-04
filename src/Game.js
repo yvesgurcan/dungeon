@@ -1,47 +1,48 @@
 import React, {Component} from "react"
 import {createStore} from 'redux'
 import {Provider, connect} from 'react-redux'
+import mapStateToProps from "./mapStateToProps"
 import Reducers from './Reducers'
 
-import World from "./WorldAssets.js"
-import Campaign from "./LegendsOfTheCatacombs.js"
-import Gameplay from "./GameplayAssets.js"
-import Utilities from "./Utilities.js"
+import World from "./WorldAssets"
+import Campaign from "./LegendsOfTheCatacombs"
+import Gameplay from "./GameplayAssets"
+import Utilities from "./Utilities"
 
-import Functions from "./Functions.js"
+import Functions from "./Functions"
 
 // Components
-import {Text, View, Block, HeadingContainer as Heading} from "./components/Web.js"
-import {ItemImageBlockContainer as ItemImage} from "./components/ItemImage.js"
-import {ActionButtonContainer as Button} from "./components/Button.js"
-import {ArrowContainer as Arrow} from "./components/Arrow.js"
-import {ToolTipContainer as ToolTip} from "./components/ToolTip.js"
-import {TextEditContainer as TextEdit, TextAreaContainer as TextArea} from "./components/Input.js"
-import {ClearFloat, ContactContainer as Contact, HeaderContainer as Header} from "./components/Misc.js"
-import {TopBackgroundImageContainer as TopBackgroundImage, BottomBackgroundImageContainer as BottomBackgroundImage, GameStateBackgroundImageContainer as GameStateBackgroundImage} from "./components/BackgroundImages.js"
+import {Text, View, Block, HeadingContainer as Heading} from "./components/Web"
+import {ItemImageBlockContainer as ItemImage} from "./components/ItemImage"
+import {ActionButtonContainer as Button} from "./components/Button"
+import {ArrowContainer as Arrow} from "./components/Arrow"
+import {ToolTipContainer as ToolTip} from "./components/ToolTip"
+import {TextEditContainer as TextEdit} from "./components/Input"
+import {ClearFloat, ContactContainer as Contact, HeaderContainer as Header} from "./components/Misc"
+import {TopBackgroundImageContainer as TopBackgroundImage, BottomBackgroundImageContainer as BottomBackgroundImage, GameStateBackgroundImageContainer as GameStateBackgroundImage} from "./components/BackgroundImages"
 
 // Containers
-import {EventLogContainer as EventLog, ClearLogContainer as ClearLog} from "./containers/EventLog.js"
+import {EventLogContainer as EventLog, ClearLogContainer as ClearLog} from "./containers/EventLog"
 
-import {StoryContainer as Story} from "./containers/Story.js"
+import {StoryContainer as Story} from "./containers/Story"
 
-import {MapContainer as Map} from "./containers/Map.js"
+import {MapContainer as Map} from "./containers/Map"
 
-import {GearContainer as Gear, WeaponReadyContainer as WeaponReady, WeaponReadyBlockContainer as WeaponReadyBlock, PlayerNameAndWeaponsContainer as PlayerNameAndWeapons} from "./containers/GearAndWeapons.js"
+import {GearContainer as Gear, PlayerNameAndWeaponsContainer as PlayerNameAndWeapons} from "./containers/GearAndWeapons"
 
-import {PlayerVitalsContainer as PlayerVitals} from "./containers/Vitals.js"
+import {PlayerVitalsContainer as PlayerVitals} from "./containers/Vitals"
 
-import {DirectionalArrows} from "./containers/DirectionalArrows.js"
+import {DirectionalArrows} from "./containers/DirectionalArrows"
 
-import {PlayerAbilitiesContainer as PlayerAbilities, PlayerLevelAndArmorContainer as PlayerLevelAndArmor} from "./containers/Abilities.js"
+import {PlayerAbilitiesContainer as PlayerAbilities, PlayerLevelAndArmorContainer as PlayerLevelAndArmor} from "./containers/Abilities"
 
-import {InventoryContainer as Inventory} from "./containers/Inventory.js"
+import {InventoryContainer as Inventory} from "./containers/Inventory"
 
-import {SpellBookContainer as SpellBook} from "./containers/SpellBook.js"
+import {SpellBookContainer as SpellBook} from "./containers/SpellBook"
 
-import {BottomControlsContainer, GameStateOptionsContainer as GameStateOptions, GameStateBoxContainer as GameStateBox} from "./containers/SaveAndLoad.js"
+import {BottomControlsContainer, GameStateOptionsContainer as GameStateOptions, GameStateBoxContainer as GameStateBox} from "./containers/SaveAndLoad"
 
-import {VolumeContainer as Volume} from "./containers/Volume.js"
+import {VolumeContainer as Volume} from "./containers/Volume"
 
 /* store */
 
@@ -50,14 +51,6 @@ const store = createStore(
   {},
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 )
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    ...state,
-    ...ownProps
-    // dispatch is automatically added to the list of props passed to the component
-  }
-}
 
 /* utility */
 

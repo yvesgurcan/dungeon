@@ -1,17 +1,11 @@
 import React, {Component} from "react"
 import {connect} from 'react-redux'
-import {Text, View, LineBreak, Image} from "./../components/Web.js"
-import {ActionButtonContainer as Button} from "./../components/Button.js"
-import {ToolTipContainer as ToolTip} from "./../components/ToolTip.js"
-import {TextAreaContainer as TextArea} from "./../components/Input.js"
-import Gameplay from "./../GameplayAssets.js"
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-      ...state,
-    ...ownProps,
-  }
-}
+import mapStateToProps from "./../mapStateToProps"
+import {View} from "./../components/Web"
+import {ActionButtonContainer as Button} from "./../components/Button"
+import {ToolTipContainer as ToolTip} from "./../components/ToolTip"
+import {TextAreaContainer as TextArea} from "./../components/Input"
+import Gameplay from "./../GameplayAssets"
 
 class BottomControls extends Component {
   render() {

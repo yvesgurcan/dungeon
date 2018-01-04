@@ -1,17 +1,11 @@
 import React, {Component} from "react"
 import {connect} from 'react-redux'
-import {ToolTipContainer as ToolTip} from "./../components/ToolTip.js"
-import {ItemImageBlockContainer as ItemImage} from "./../components/ItemImage.js"
-import {View} from "./../components/Web.js"
-import Utilities from "./../Utilities.js"
-import Gameplay from "./../GameplayAssets.js"
-
-const mapStateToProps = (state, ownProps) => {
-    return {
-        ...state,
-      ...ownProps,
-    }
-}
+import mapStateToProps from "./../mapStateToProps"
+import {ToolTipContainer as ToolTip} from "./../components/ToolTip"
+import {ItemImageBlockContainer as ItemImage} from "./../components/ItemImage"
+import {View} from "./../components/Web"
+import Utilities from "./../Utilities"
+import Gameplay from "./../GameplayAssets"
 
 class SpellBook extends Component {
 

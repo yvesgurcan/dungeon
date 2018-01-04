@@ -1,16 +1,9 @@
 import React, {Component} from "react"
 import {connect} from 'react-redux'
-import {ToolTipContainer as ToolTip} from "./../components/ToolTip.js"
-import {ItemImageBlockContainer as ItemImage} from "./../components/ItemImage.js"
-import {View} from "./../components/Web.js"
-import Gameplay from "./../GameplayAssets.js"
-
-const mapStateToProps = (state, ownProps) => {
-    return {
-        ...state,
-      ...ownProps,
-    }
-}
+import mapStateToProps from "./../mapStateToProps"
+import {ToolTipContainer as ToolTip} from "./../components/ToolTip"
+import {View} from "./../components/Web"
+import Gameplay from "./../GameplayAssets"
 
 class StatBar extends Component {
 

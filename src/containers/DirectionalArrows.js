@@ -1,16 +1,10 @@
 import React, {Component} from "react"
 import {connect} from 'react-redux'
-import {View} from "./../components/Web.js"
-import {ArrowContainer as Arrow} from "./../components/Arrow.js"
-import {ToolTipContainer as ToolTip} from "./../components/ToolTip.js"
-import Gameplay from "./../GameplayAssets.js"
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    Styles: {...state.Styles},
-    ...ownProps,
-  }
-}
+import mapStateToProps from "./../mapStateToProps"
+import {View} from "./../components/Web"
+import {ArrowContainer as Arrow} from "./../components/Arrow"
+import {ToolTipContainer as ToolTip} from "./../components/ToolTip"
+import Gameplay from "./../GameplayAssets"
 
 class GoNorth extends Component {
   MovePlayer = () => {

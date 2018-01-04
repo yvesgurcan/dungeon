@@ -1,18 +1,11 @@
 import React, {Component} from "react"
 import {connect} from 'react-redux'
-import {View, Text} from "./../components/Web.js"
-import {ClearFloat} from "./../components/Misc.js"
-import {ItemImageBlockContainer as ItemImage} from "./../components/ItemImage.js"
-import {ArrowContainer as Arrow} from "./../components/Arrow.js"
-import {ToolTipContainer as ToolTip} from "./../components/ToolTip.js"
-import Gameplay from "./../GameplayAssets.js"
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    ...state,
-    ...ownProps,
-  }
-}
+import mapStateToProps from "./../mapStateToProps"
+import {View, Text} from "./../components/Web"
+import {ClearFloat} from "./../components/Misc"
+import {ItemImageBlockContainer as ItemImage} from "./../components/ItemImage"
+import {ToolTipContainer as ToolTip} from "./../components/ToolTip"
+import Gameplay from "./../GameplayAssets"
 
 class Inventory extends Component {
 

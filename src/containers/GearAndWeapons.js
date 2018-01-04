@@ -1,14 +1,8 @@
 import React, {Component} from "react"
 import {connect} from 'react-redux'
-import {View, Text} from "./../components/Web.js"
-import {ItemImageBlockContainer as ItemImage} from "./../components/ItemImage.js"
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    ...state,
-    ...ownProps,
-  }
-}
+import mapStateToProps from "./../mapStateToProps"
+import {View, Text} from "./../components/Web"
+import {ItemImageBlockContainer as ItemImage} from "./../components/ItemImage"
 
 class Gear extends Component {
   render() {
@@ -25,7 +19,6 @@ export const GearContainer = connect(mapStateToProps)(Gear)
 class WeaponReady extends Component {
   render() {
     let {Styles, Item, Slot} = {...this.props}
-    this.props
     if (!Item) {
       return (
         <View style={Styles.ReadyItem}>
