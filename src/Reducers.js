@@ -105,6 +105,13 @@ function Maps (State, Action) {
                 MonsterMap: [...Action.MonsterMap],
             }
             break
+        
+        case "UPDATE_DISCOVERY_MAP":
+            NewState = {
+                ...NewState,
+                DiscoveryMap: [...Action.DiscoveryMap],
+            }
+            break
             
         default:
             break
@@ -155,6 +162,40 @@ function Story (State, Action) {
 
         case "UPDATE_STORY":
             NewState = {...NewState, ...Action.Story}
+            break
+
+        default:
+            break
+    }
+
+    return NewState
+}
+
+function Texts (State, Action) {
+
+    let NewState = {...State}
+
+    switch (Action.type) {
+
+        case "UPDATE_TEXTS":
+            NewState = [...Action.Texts]
+            break
+
+        default:
+            break
+    }
+
+    return NewState
+}
+
+function CurrentEvent (State, Action) {
+
+    let NewState = {...State}
+
+    switch (Action.type) {
+
+        case "UPDATE_CURRENT_EVENT":
+            NewState = [...Action.Event]
             break
 
         default:
@@ -273,6 +314,8 @@ var dispatch = combineReducers({
     Loot,
     EventLog,
     Story,
+    Texts,
+    CurrentEvent,
     Cheats,
     Sound,
     Debug,

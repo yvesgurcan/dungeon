@@ -1,8 +1,6 @@
 import React, {Component} from "react"
-import {createStore} from 'redux'
 import {Provider, connect} from 'react-redux'
-import mapStateToProps from "./mapStateToProps"
-import Reducers from './Reducers'
+import mapStateToProps, {store} from "./mapStateToProps"
 
 import World from "./WorldAssets"
 import Campaign from "./LegendsOfTheCatacombs"
@@ -43,14 +41,6 @@ import {SpellBookContainer as SpellBook} from "./containers/SpellBook"
 import {BottomControlsContainer, GameStateOptionsContainer as GameStateOptions, GameStateBoxContainer as GameStateBox} from "./containers/SaveAndLoad"
 
 import {VolumeContainer as Volume} from "./containers/Volume"
-
-/* store */
-
-const store = createStore(
-  Reducers,
-  {},
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-)
 
 /* utility */
 
@@ -2097,7 +2087,7 @@ class Game extends Component {
       AvailableStartSpell: [...Campaign.AvailableStartSpell],
       LootContainers: this.GenerateIds([...Campaign.LootContainers], "LootContainers"),
       Monsters: this.GenerateIds([...Campaign.Monsters], "Monsters"),
-      Text: [...Campaign.Text],
+      Texts: [...Campaign.Text],
       WallMap: [...Campaign.WallMap],
       GameStarted: {
         Milliseconds: Date.now(),
@@ -2234,6 +2224,7 @@ class Game extends Component {
     this.props.dispatch({type: "UPDATE_CHEATS", Cheats: InitState.Cheats})
     this.props.dispatch({type: "UPDATE_EVENT_LOG", EventLog: InitState.EventLog})
     this.props.dispatch({type: "UPDATE_STORY", Story: InitState.Story})
+    this.props.dispatch({type: "UPDATE_TEXTS", Texts: InitState.Texts})
     this.props.dispatch({type: "UPDATE_SOUND", Sound: InitState.Sound})
     this.props.dispatch({
       type: "UPDATE_MAPS",
@@ -4619,7 +4610,7 @@ class Game extends Component {
           <Story />
           <Event {... this} {... this.state} />
         </StoryBlock>
-        <Map {... this.state}/>
+        <Map/>
         {/* row 4 */}
         <BottomBackgroundImage/>
         <Controls />

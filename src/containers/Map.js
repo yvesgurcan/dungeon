@@ -17,8 +17,8 @@ class Map extends Component {
 
   DrawMap = () => {
     // let {WallMap, WallMapRevealed, Player} = this.props
-    let WallMap = [...this.props.WallMap]
-    let WallMapRevealed = [...this.props.WallMapRevealed]
+    let WallMap = [...this.props.Maps.WallMap]
+    let WallMapRevealed = [...this.props.Maps.WallMapRevealed]
     let {Player, Styles} = {...this.props}
 
     return WallMapRevealed.map((HorizontalLine, y) => {
@@ -58,7 +58,7 @@ class Map extends Component {
 
   DrawMonster = ({x, y}) => {
 
-    let MonsterMap = Object.assign([], this.props.MonsterMap)
+    let MonsterMap = [...this.props.Maps.MonsterMap]
     let ShowFullMap = this.props.ShowFullMap
     let {Player, Styles} = {...this.props}
 
@@ -82,10 +82,10 @@ class Map extends Component {
   DrawMapObject = (MapObject, MapObjectRevealed, x, y) => {
 
     let ShowFullMap = this.props.ShowFullMap
-    let WallMap = Object.assign([], this.props.WallMap)
-    let WallMapRevealed = Object.assign([], this.props.WallMapRevealed)
-    let DiscoveryMap = Object.assign([], this.props.DiscoveryMap)
-    let LootMap = Object.assign([], this.props.LootMap)
+    let WallMap = [...this.props.Maps.WallMap]
+    let WallMapRevealed = [...this.props.Maps.WallMapRevealed]
+    let DiscoveryMap = [...this.props.Maps.DiscoveryMap]
+    let LootMap = [...this.props.Maps.LootMap]
     let {Player, Styles} = {...this.props}
 
     // player marker
