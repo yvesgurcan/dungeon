@@ -80,7 +80,7 @@ You can also cast [spells](#spellbook) that will injure your enemies or affect t
 
 ### [Experience](#toc)
 
-As you slay the monsters in this dungeon, you gain experience (XP). If you amass enough XP, your character level up. Reaching the next level means that you can learn new spells and gain bonuses that make you stronger, wiser, more vigorous or more dexterous (your choice).
+As you slay the monsters in this dungeon, you gain experience (XP). If you gain enough XP, your character levels up. Reaching the next level means that you can learn new spells and gain bonuses that make you stronger, wiser, more vigorous or more dexterous (your choice).
 
 ### [Backpack](#toc)
 
