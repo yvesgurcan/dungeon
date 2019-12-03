@@ -45,7 +45,7 @@ When you start the game, you can choose to create your own character or use the 
 
 Your abilities (strength, dexterity, constitution, and intelligence) are generated in function of your race and your class. You may influence your ability scores by generating new base numbers randomly.
 
-Spellcasters also get to choose a [spell](#spellbook) that they will have memorized from the get-go.
+Spellcasters also get to choose a [spell](#spellbook) that can use from the start of the game.
 
 Whenever you are satisfied with your character, you may begin your adventure by clicking on "Let's play!". If you were to change your mind during the game, you can start again by clicking on "New Game".
 
