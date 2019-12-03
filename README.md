@@ -22,8 +22,10 @@ The source code is available [here](https://github.com/yvesgurcan/dungeon).
     - [Event Log](#event-log)
     - [Keyboard Shortcuts](#keyboard-shortcuts)
     - [Save/Load Game](#saveload-game)
-- [Developer's Corner](#developers-corner)
-    - [Install *Dungeon!*](#install-dungeon)
+- [Development](#developers-corner)
+    - [Install](#install)
+    - [Build](#build)
+    - [Contribute](#contribute)
 
 ## [Releases](#toc)
 
@@ -119,16 +121,20 @@ If you want to leave the game and get back to it later, you can click on "Save G
 
 Whenever you want to resume your game, click on "Load Game", paste the saved game data, and click on "Load Game" again.
 
-## [Developer's Corner](#toc)
+## [Development](#toc)
 
-### [Install *Dungeon!*](#toc)
+### [Install](#toc)
 You can install all the dependencies necessary to run this program with `npm` by typing:
  - `npm install`
 
-To run the game on a local server, type:
+To run the game on a local development server, type:
  - `npm start`
 
 ### [Build](#toc)
 To build the project, type one of the following command:
 - `bash compile-dev` (UNIX only; creates a dated dev build at `/dev` where debug flags are not altered on load)
 - `bash compile-stable` (UNIX only; creates a stable build at `/stable`where debug is automatically deactivated on load)
+
+### [Contribute](#toc)
+
+You are welcome to fork this project, alter the code, and submit pull requests.
