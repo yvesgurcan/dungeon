@@ -94,7 +94,7 @@ Each slot can only take 1 item at a time. In order to equip an item, it must fit
 ### [Spellbook](#toc)
 As you progress throughout your adventure, you will learn magic spells (unless your character class disallows it). Each spell you memorize is contained in your spellbook. You can only learn spells that are appropriate to your level.
 
-To summon magic, simply click on one of the spells you learnt or use [keyboard shortcuts](#keyboard).
+To summon magic, simply click on one of the spells you learnt or use [keyboard shortcuts](#keyboard-shortcuts).
 
 Casting a spell is an action that consumes a certain amount of mana. If your pool of mana is not full enough, you will not be able to cast the spell.
 
