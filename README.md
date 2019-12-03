@@ -72,7 +72,7 @@ To unlock a door, you will need to find the appropriate key. Keys can be found o
 
 When your progression is blocked by a monster, moving towards them will automatically start a fight. Your character will try to hit them with the weapon currently in their hand.
 
-Whether you are able to hit your target depends on how dexterous you are. If your attack is successful, the monster may take some damage. Your strength and the weapon you used are contingent on the severity of the wound inflicted to your enemy.
+Whether you are able to hit your target depends on how dexterous you are. If your attack is successful, the monster may take some damage. Your strength and the weapon you used influence the severity of the wound inflicted to your enemy.
 
 When you attack a monster or when a monster is close enough to you, it will try to hit you as well. If the offensive is successful, your health may decrease. If your health reaches an unviable level, you collapse on the ground and die.
 
