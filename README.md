@@ -27,7 +27,7 @@ To play, click [here](http://dungeon.yvesgurcan.com/stable/). When the page load
 
 ## [Releases](#toc)
 
-*Dungeon!* is in pre-alpha. Since the game is constantly evolving, two different versions are released:
+*Dungeon!* is in pre-alpha. Two different versions are released:
 - a [stable release](http://dungeon.yvesgurcan.com/stable/)
 - a [dev release](http://dungeon.yvesgurcan.com/dev/).
 
