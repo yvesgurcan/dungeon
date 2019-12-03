@@ -24,6 +24,7 @@ The source code is available [here](https://github.com/yvesgurcan/dungeon).
     - [Keyboard Shortcuts](#keyboard-shortcuts)
     - [Save/Load Game](#saveload-game)
 - [Development](#developers-corner)
+    - [The Project](#the-project)
     - [Install](#install)
     - [Build](#build)
     - [Contribute](#contribute)
@@ -123,6 +124,10 @@ If you want to leave the game and get back to it later, you can click on "Save G
 Whenever you want to resume your game, click on "Load Game", paste the saved game data, and click on "Load Game" again.
 
 ## [Development](#toc)
+
+## [The Project](#toc)
+
+This application is fully contained in the client's browser. It uses React to manage the view and Redux to manage data.
 
 ### [Install](#toc)
 You can install all the dependencies necessary to run this program with `npm` by typing:
