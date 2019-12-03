@@ -127,7 +127,7 @@ Whenever you want to resume your game, click on "Load Game", paste the saved gam
 
 ## [The Project](#toc)
 
-This application is fully contained in the client's browser. It uses React to manage the view and Redux to manage data.
+This application is fully contained in the client's browser. It uses React to manage the view and Redux to manage data. *Dungeon!* leverages `create-react-app`. 
 
 ### [Install](#toc)
 You can install all the dependencies necessary to run this program with `npm` by typing:
