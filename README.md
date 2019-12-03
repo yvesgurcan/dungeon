@@ -50,7 +50,7 @@ Spellcasters also get to choose a [spell](#spellbook) they can use from the star
 Whenever you are satisfied with your character, you may begin your adventure by clicking on "Let's play!". If you were to change your mind during the game, you can start again by clicking on "New Game".
 
 ### [Map](#toc)
-Use the directional arrows on the interface or use [keyboard shortcuts](#keyboard) to move your character on the map.
+Use the directional arrows on the interface or use [keyboard shortcuts](#keyboard-shortcuts) to move your character on the map.
 
 As you move, parts of the map nearby you are revealed. You are free to go wherever pleases you, unless you bump into a wall, a [locked door](#lockeddoor), or a monster.
 
