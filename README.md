@@ -1,4 +1,4 @@
-*Dungeon!* is an adventure game written in React.
+*Dungeon!* is an old-school top-view RPG game written with  React.
 
 You can play the [latest stable version](http://dungeon.yvesgurcan.com/stable/) or the [dev release](http://dungeon.yvesgurcan.com/dev/).
 
