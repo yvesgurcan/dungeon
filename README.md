@@ -152,8 +152,8 @@ To run the game on a local development server, type:
 
 To build the project, type one of the following command:
 
--   `bash compile-dev` (UNIX only; creates a dated dev build at `/dev` where debug flags are not altered on load)
--   `bash compile-stable` (UNIX only; creates a stable build at `/stable`where debug is automatically deactivated on load)
+    npm run build
+    npm run build:dev
 
 ### [Contribute](#toc)
 
