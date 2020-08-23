@@ -1,88 +1,103 @@
-import React, {Component} from "react"
-import {connect} from 'react-redux'
-import mapStateToProps from "./../mapStateToProps"
-import {View} from "./Web"
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import mapStateToProps from './../mapStateToProps';
+import { View } from './Web';
 
 class ActionButton extends Component {
     constructor(props) {
-        super(props)
+        super(props);
 
-        let {SmallPadding, StayClicked, Clicked, Styles} = {...this.props}
+        let { SmallPadding, StayClicked, Clicked, Styles } = { ...this.props };
 
         if (StayClicked && Clicked) {
             this.state = {
-                style: SmallPadding ? Styles.ActionButtonHoverSmallPadding : Styles.ActionButtonHover 
-            }
-        }
-        else {
+                style: SmallPadding
+                    ? Styles.ActionButtonHoverSmallPadding
+                    : Styles.ActionButtonHover
+            };
+        } else {
             this.state = {
-                style: SmallPadding ? Styles.ActionButtonSmallPadding : Styles.ActionButton 
-            }  
+                style: SmallPadding
+                    ? Styles.ActionButtonSmallPadding
+                    : Styles.ActionButton
+            };
         }
     }
 
     componentWillReceiveProps(NextProps) {
+        let { StayClicked, Clicked, SmallPadding } = { ...NextProps };
+        let CurrentlyClicked = { ...this.props.Clicked };
+        let CurrentlySmallPadding = { ...this.props.SmallPadding };
+        let { Styles } = { ...this.props };
 
-        let {StayClicked, Clicked, SmallPadding} = {...NextProps}
-        let CurrentlyClicked = {...this.props.Clicked}
-        let CurrentlySmallPadding = {...this.props.SmallPadding}
-        let {Styles} = {...this.props}
-        
         if (StayClicked && CurrentlyClicked && !Clicked) {
-            let {Styles} = {...this.props}
+            let { Styles } = { ...this.props };
             this.setState({
-                style: SmallPadding ? Styles.ActionButtonSmallPadding : Styles.ActionButton,
-            })
+                style: SmallPadding
+                    ? Styles.ActionButtonSmallPadding
+                    : Styles.ActionButton
+            });
         }
 
         if (!StayClicked && SmallPadding !== CurrentlySmallPadding) {
             this.setState({
-                style: SmallPadding ? Styles.ActionButtonSmallPadding : Styles.ActionButton,
-            })
+                style: SmallPadding
+                    ? Styles.ActionButtonSmallPadding
+                    : Styles.ActionButton
+            });
         }
-
     }
 
     NormalStyle = () => {
-        let {SmallPadding, Styles} = {...this.props}
+        let { SmallPadding, Styles } = { ...this.props };
         this.setState({
-            style: SmallPadding ? Styles.ActionButtonSmallPadding : Styles.ActionButton
-        })
-    }
+            style: SmallPadding
+                ? Styles.ActionButtonSmallPadding
+                : Styles.ActionButton
+        });
+    };
 
     HoverStyle = () => {
-        let {SmallPadding, Styles} = {...this.props}
+        let { SmallPadding, Styles } = { ...this.props };
         this.setState({
-            style: SmallPadding ? Styles.ActionButtonHoverSmallPadding : Styles.ActionButtonHover
-        })
-    }
+            style: SmallPadding
+                ? Styles.ActionButtonHoverSmallPadding
+                : Styles.ActionButtonHover
+        });
+    };
 
     onClick = () => {
-
-        let {SmallPadding, Styles} = {...this.props}
+        let { SmallPadding, Styles } = { ...this.props };
         this.setState({
-            style: SmallPadding ? Styles.ActionButtonClickSmallPadding : Styles.ActionButtonClick
-        })
+            style: SmallPadding
+                ? Styles.ActionButtonClickSmallPadding
+                : Styles.ActionButtonClick
+        });
 
-        let that = this
+        let that = this;
         setTimeout(function () {
-            if (that.state.style === Styles.ActionButtonClick || that.state.style === Styles.ActionButtonClickSmallPadding) {
-                that.setState({ style: SmallPadding ? Styles.ActionButtonHoverSmallPadding : Styles.ActionButtonHover })
+            if (
+                that.state.style === Styles.ActionButtonClick ||
+                that.state.style === Styles.ActionButtonClickSmallPadding
+            ) {
+                that.setState({
+                    style: SmallPadding
+                        ? Styles.ActionButtonHoverSmallPadding
+                        : Styles.ActionButtonHover
+                });
             }
-        }, 50)  
+        }, 50);
 
         if (!this.props.onClick) {
-            console.warn("This feature is not ready yet :)")
-            return null
+            console.warn('This feature is not ready yet :)');
+            return null;
         }
 
-        this.props.onClick()
+        this.props.onClick();
+    };
 
-    }
-    
     render() {
-
-        let {Clicked, StayClicked} = {...this.props}
+        let { Clicked, StayClicked } = { ...this.props };
 
         return (
             <View
@@ -90,10 +105,13 @@ class ActionButton extends Component {
                 onClick={this.onClick}
                 onMouseMove={this.HoverStyle}
                 onMouseLeave={Clicked && StayClicked ? null : this.NormalStyle}
-                style={this.props.hidden ? {display: "none"} : this.state.style}>
+                style={
+                    this.props.hidden ? { display: 'none' } : this.state.style
+                }
+            >
                 {this.props.children}
             </View>
-        )
+        );
     }
 }
-export const ActionButtonContainer = connect(mapStateToProps)(ActionButton)
+export const ActionButtonContainer = connect(mapStateToProps)(ActionButton);
