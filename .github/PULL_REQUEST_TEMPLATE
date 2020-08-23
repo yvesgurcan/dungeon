@@ -1,0 +1,19 @@
+## Summary
+
+*Describe what modifications this PR brings to the project.*
+
+-
+
+## Checklist
+
+*All the relevant tasks below must be performed in addition to automated CI/CD checks.*
+
+- [ ] Changes are documented.
+- [ ] Tests were added, deleted, and/or updated.
+- [ ] Version was bumped.
+
+## Issue(s) adressed
+
+*Enter the issue number of the bug(s) that this PR fixes.*
+
+- Closes #
