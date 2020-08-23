@@ -105,6 +105,15 @@ class Contact extends Component {
 export const ContactContainer = connect(mapStateToProps)(Contact);
 
 class Header extends Component {
+    componentWillMount() {
+        console.log('dev mode');
+        console.log('dev build url', Utilities.DevBuild[Utilities.UserOS]);
+        console.log(
+            'stable build url',
+            Utilities.StableBuild[Utilities.UserOS]
+        );
+    }
+
     // content is static
     shouldComponentUpdate(nextProps) {
         if (
@@ -124,48 +133,22 @@ class Header extends Component {
                 <PageTitle>Dungeon!</PageTitle>
                 <PageSubtitle>an adventure game in React</PageSubtitle>
                 <Version>
-                    {window.location.href.indexOf('localhost') > -1 ? (
-                        <Text>
-                            Dev Mode (
-                            <Text>
-                                <LinkContainer
-                                    href={Utilities.DevBuild[Utilities.UserOS]}
-                                >
-                                    dev build url
-                                </LinkContainer>
-                                ;
-                            </Text>{' '}
-                            <Text>
-                                <LinkContainer
-                                    href={
-                                        Utilities.StableBuild[Utilities.UserOS]
-                                    }
-                                >
-                                    stable build url
-                                </LinkContainer>
-                            </Text>
-                            )
-                        </Text>
+                    {window.location.href.includes('localhost') ? (
+                        <Text>v{process.env.REACT_APP_VERSION} (dev mode)</Text>
                     ) : process.env.REACT_APP_RELEASE === 'dev' ? (
                         <Text>
-                            {process.env.REACT_APP_STAGE}
-                            <Text>
-                                (v{process.env.REACT_APP_VERSION}{' '}
-                                {process.env.REACT_APP_RELEASE}
-                                {process.env.REACT_APP_BUILD_TIME ? (
-                                    <Text>
-                                        ; build:{' '}
-                                        {process.env.REACT_APP_BUILD_TIME}
-                                    </Text>
-                                ) : null}
-                                )
-                            </Text>
+                            v{process.env.REACT_APP_VERSION}{' '}
+                            {process.env.REACT_APP_RELEASE}
+                            {process.env.REACT_APP_BUILD_TIME ? (
+                                <Text>
+                                    ; build: {process.env.REACT_APP_BUILD_TIME}
+                                </Text>
+                            ) : null}
                         </Text>
                     ) : (
                         <Text>
-                            {process.env.REACT_APP_STAGE}
-                            (v{process.env.REACT_APP_VERSION}{' '}
-                            {process.env.REACT_APP_RELEASE})
+                            v{process.env.REACT_APP_VERSION}{' '}
+                            {process.env.REACT_APP_RELEASE}
                         </Text>
                     )}
                 </Version>

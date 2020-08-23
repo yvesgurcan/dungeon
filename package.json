@@ -15,9 +15,8 @@
     },
     "scripts": {
         "start": "react-scripts start",
-        "build:dev": "bash scripts/compile-dev",
-        "build:stable": "bash scripts/compile-stable",
-        "build:both": "bash scripts/compile-both",
+        "build": "bash scripts/build stable",
+        "build:dev": "bash scripts/build dev",
         "build:react-script": "react-scripts build",
         "test": "react-scripts test --env=jsdom",
         "eject": "react-scripts eject"
