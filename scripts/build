@@ -1,0 +1,63 @@
+# Check script argument
+if [ -z "$1" ]; then
+    echo "Release type (e.g., 'dev' or 'stable') not provided." 1>&2
+    exit 126
+fi
+
+# Grab version from NPM package file
+PACKAGE_VERSION=$(cat package.json \
+  | grep version \
+  | head -1 \
+  | awk -F: '{ print $2 }' \
+  | sed 's/[ ",]//g')
+
+echo "Choose how to bump the version"
+echo "  p for patch (default)"
+echo "  m for minor"
+echo "  M for major"
+
+read -p ">" VERSION_BUMP_TYPE 
+
+INCREMENTED_VERSION=$PACKAGE_VERSION
+
+increment_version() {
+  local delimiter1=-
+  local array1=($(echo "$PACKAGE_VERSION" | tr $delimiter1 '\n'))
+  local delimiter2=.
+  local array2=($(echo "${array1[0]}" | tr $delimiter2 '\n'))
+
+  for index in ${!array2[@]}; do
+    if [ $index -eq $1 ]; then
+      local value=array2[$index]
+      value=$((value+1))
+      array2[$index]=$value
+      break
+    fi
+  done
+
+  INCREMENTED_VERSION=$(IFS=$delimiter2 ; echo "${array2[*]}-${array1[1]}")
+}
+
+if [ "$VERSION_BUMP_TYPE" == "M" ]; then
+    increment_version 0
+elif [ "$VERSION_BUMP_TYPE" == "m" ]; then
+    increment_version 1
+else
+    increment_version 2
+fi
+
+npm version $INCREMENTED_VERSION
+
+
+echo ""
+
+# Write environment variables
+echo "REACT_APP_RELEASE=$1" > .env
+echo "REACT_APP_VERSION=$INCREMENTED_VERSION" >> .env
+echo "REACT_APP_BUILD_TIME="`date "+%Y/%m/%d %H:%M"` >> .env
+
+cat .env
+npm run build:react-script
+rm -rf ./dev
+mv ./build ./dev
+echo "build folder moved to /dev"
