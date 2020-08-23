@@ -1,15 +1,15 @@
 {
-  "short_name": "Dungeon!",
-  "name": "Dungeon! An adventure game in React.",
-  "icons": [
-    {
-      "src": "./graphics/misc/favicon.png",
-      "sizes": "16x16",
-      "type": "image/png"
-    }
-  ],
-  "start_url": "./build/",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+    "short_name": "Dungeon!",
+    "name": "Dungeon! An adventure game in React.",
+    "icons": [
+        {
+            "src": "./graphics/misc/favicon.png",
+            "sizes": "16x16",
+            "type": "image/png"
+        }
+    ],
+    "start_url": "./build/",
+    "display": "standalone",
+    "theme_color": "#000000",
+    "background_color": "#ffffff"
 }

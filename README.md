@@ -1,39 +1,41 @@
-*Dungeon!* is an old-school top-view RPG game written with  React.
+_Dungeon!_ is an old-school top-view RPG game written with React.
 
 You can play the [latest stable version](http://dungeon.yvesgurcan.com/stable/) or the [dev release](http://dungeon.yvesgurcan.com/dev/).
 
 The source code is available [here](https://github.com/yvesgurcan/dungeon).
 
 ## TL;DR
-- [Click here to play.](http://dungeon.yvesgurcan.com/stable/) A default character with random ability scores is created for you.
-- Use `npm` to install and run the project. Feel free to fork the repository.
+
+-   [Click here to play.](http://dungeon.yvesgurcan.com/stable/) A default character with random ability scores is created for you.
+-   Use `npm` to install and run the project. Feel free to fork the repository.
 
 ## <a name="toc"/> Guide
 
-- [Releases](#releases)
-- [How to play](#how-to-play)
-    - [Create Your Character](#create-your-character)
-    - [Map](#map)
-    - [Locked Doors](#locked-doors)
-    - [Combat](#combat)
-    - [Experience](#experience)
-    - [Backpack](#backpack)
-    - [Equipment](#equipment)
-    - [Spellbook](#spellbook)
-    - [Event Log](#event-log)
-    - [Keyboard Shortcuts](#keyboard-shortcuts)
-    - [Save/Load Game](#saveload-game)
-- [Development](#developers-corner)
-    - [The Project](#the-project)
-    - [Install](#install)
-    - [Build](#build)
-    - [Contribute](#contribute)
+-   [Releases](#releases)
+-   [How to play](#how-to-play)
+    -   [Create Your Character](#create-your-character)
+    -   [Map](#map)
+    -   [Locked Doors](#locked-doors)
+    -   [Combat](#combat)
+    -   [Experience](#experience)
+    -   [Backpack](#backpack)
+    -   [Equipment](#equipment)
+    -   [Spellbook](#spellbook)
+    -   [Event Log](#event-log)
+    -   [Keyboard Shortcuts](#keyboard-shortcuts)
+    -   [Save/Load Game](#saveload-game)
+-   [Development](#developers-corner)
+    -   [The Project](#the-project)
+    -   [Install](#install)
+    -   [Build](#build)
+    -   [Contribute](#contribute)
 
 ## [Releases](#toc)
 
-*Dungeon!* is in pre-alpha. Two different versions are released:
-- a [stable release](http://dungeon.yvesgurcan.com/stable/)
-- a [dev release](http://dungeon.yvesgurcan.com/dev/).
+_Dungeon!_ is in pre-alpha. Two different versions are released:
+
+-   a [stable release](http://dungeon.yvesgurcan.com/stable/)
+-   a [dev release](http://dungeon.yvesgurcan.com/dev/).
 
 It is recommended to play the [stable release](http://dungeon.yvesgurcan.com/stable/). Less features are available in this version of the game, but it is also less likely to crash.
 
@@ -43,9 +45,10 @@ The [dev release](http://dungeon.yvesgurcan.com/dev/) is always an option, but t
 
 ### [Create Your Character](#toc)
 
-When you start the game, you can choose to create your own character or use the characteristics that were automatically generated for you. Here are the 2 main aspects that define your character: 
-- Race: The race that you choose will provide bonuses to some of your character's abilities.
-- Class: The class that you select determines which abilities are the most important to your character. Each class excels at different types of weapons. Some classes also allow your character to cast [spells](#spellbook).
+When you start the game, you can choose to create your own character or use the characteristics that were automatically generated for you. Here are the 2 main aspects that define your character:
+
+-   Race: The race that you choose will provide bonuses to some of your character's abilities.
+-   Class: The class that you select determines which abilities are the most important to your character. Each class excels at different types of weapons. Some classes also allow your character to cast [spells](#spellbook).
 
 Your abilities (strength, dexterity, constitution, and intelligence) are generated in function of your race and your class. You may influence your ability scores by generating new base numbers randomly.
 
@@ -54,17 +57,19 @@ Spellcasters also get to choose a [spell](#spellbook) they can use from the star
 Whenever you are satisfied with your character, you may begin your adventure by clicking on "Let's play!". If you were to change your mind during the game, you can start again by clicking on "New Game".
 
 ### [Map](#toc)
+
 Use the directional arrows on the interface or use [keyboard shortcuts](#keyboard-shortcuts) to move your character on the map.
 
 As you move, parts of the map nearby you are revealed. You are free to go wherever pleases you, unless you bump into a wall, a [locked door](#lockeddoor), or a monster.
 
 Here is the meaning of the symbols seen on the map:
-- <span style="color: purple">purple dot</span>: you
-- <span style="color: red">red dot</span>: monster
-- <span style="color: orange">orange dot</span>: loot
-- <span style="color: lightsteelblue; -webkit-text-stroke: 0.2px black">blue rectangle</span>: door
-- black line: wall
-- black square: pillar
+
+-   <span style="color: purple">purple dot</span>: you
+-   <span style="color: red">red dot</span>: monster
+-   <span style="color: orange">orange dot</span>: loot
+-   <span style="color: lightsteelblue; -webkit-text-stroke: 0.2px black">blue rectangle</span>: door
+-   black line: wall
+-   black square: pillar
 
 The map is always centered around you.
 
@@ -91,11 +96,13 @@ As you slay the monsters in this dungeon, you gain experience (XP). If you gain 
 When you find loot, you can put it in your backpack. You can pick up as many items as your backpack allows, provided that your inventory and gear do not exceed the maximum weight (determined by your strength) you can carry.
 
 ### [Equipment](#toc)
+
 In addition to your inventory, you also carry items on your person. For example, items can be held in your left or right hands, worn around your neck, or on your head.
 
 Each slot can only take 1 item at a time. In order to equip an item, it must fit the part of your body that you are trying to put it on. For example, a ring can only go on your fingers, arrows can only go in the quiver on your back, and boots can only be worn on your feet.
 
 ### [Spellbook](#toc)
+
 As you progress throughout your adventure, you will learn magic spells (unless your character class disallows it). Each spell you memorize is contained in your spellbook. You can only learn spells that are appropriate to your level.
 
 To summon magic, simply click on one of the spells you learnt or use [keyboard shortcuts](#keyboard-shortcuts).
@@ -105,17 +112,19 @@ Casting a spell is an action that consumes a certain amount of mana. If your poo
 Moreover, casting a spell requires a great amount of concentration. Sometimes, your incantation will fail and the mana you gathered will dissipate without producing the effect you expected. The success or failure of your magic is determined by your intelligence and the difficulty of the spell.
 
 ### [Event Log](#toc)
+
 At the top of your screen, a log keeps tracks of actions that happened in the game. The feedback is mostly about your surroundings--whether you came across a locked door, bumped into a wall, or if you were not able to pick up the loot you found. The log is also very useful in combat and for spellcasting. It tells you who is attacking you and how your spell turned out.
 
 ### [Keyboard Shortcuts](#toc)
 
 If you are playing on desktop, you can use your keyboard instead of clicking on the interface. Here are the available shortcuts:
-- up arrow: go north
-- down arrow: go south
-- left arrow: go west
-- right arrow: go east
-- any number between 01 (padding zero is necessary) and 28: cast the [spell](#spellbook) corresponding to the number you typed
-- t: take loot
+
+-   up arrow: go north
+-   down arrow: go south
+-   left arrow: go west
+-   right arrow: go east
+-   any number between 01 (padding zero is necessary) and 28: cast the [spell](#spellbook) corresponding to the number you typed
+-   t: take loot
 
 ### [Save/Load Game](#toc)
 
@@ -127,19 +136,24 @@ Whenever you want to resume your game, click on "Load Game", paste the saved gam
 
 ## [The Project](#toc)
 
-This application is fully contained in the client's browser. It uses React to manage the view and Redux to manage data. *Dungeon!* leverages `create-react-app`. 
+This application is fully contained in the client's browser. It uses React to manage the view and Redux to manage data. _Dungeon!_ leverages `create-react-app`.
 
 ### [Install](#toc)
+
 You can install all the dependencies necessary to run this program with `npm` by typing:
- - `npm install`
+
+    npm install
 
 To run the game on a local development server, type:
- - `npm start`
+
+    npm start
 
 ### [Build](#toc)
+
 To build the project, type one of the following command:
-- `bash compile-dev` (UNIX only; creates a dated dev build at `/dev` where debug flags are not altered on load)
-- `bash compile-stable` (UNIX only; creates a stable build at `/stable`where debug is automatically deactivated on load)
+
+-   `bash compile-dev` (UNIX only; creates a dated dev build at `/dev` where debug flags are not altered on load)
+-   `bash compile-stable` (UNIX only; creates a stable build at `/stable`where debug is automatically deactivated on load)
 
 ### [Contribute](#toc)
 
