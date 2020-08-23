@@ -140,7 +140,7 @@ class Header extends Component {
                             v{process.env.REACT_APP_VERSION}{' '}
                             {process.env.REACT_APP_RELEASE}
                             {process.env.REACT_APP_BUILD_TIME ? (
-                                <Text>{process.env.REACT_APP_BUILD_TIME}</Text>
+                                <Text> {process.env.REACT_APP_BUILD_TIME}</Text>
                             ) : null}
                         </Text>
                     ) : (

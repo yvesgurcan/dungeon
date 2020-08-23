@@ -15,13 +15,13 @@ RELEASE_TYPE=$1
 if [ -z "$1" ]; then
     echo "Enter a release type (default is 'dev')"
     read -p ">" RELEASE_TYPE 
+    echo ""
 fi
 
 if [ -z $RELEASE_TYPE ]; then
     RELEASE_TYPE="dev"
 fi
 
-echo ""
 echo "Release type: $RELEASE_TYPE"
 echo ""
 
@@ -31,6 +31,7 @@ echo "Choose how to bump the version"
 echo "  p for patch (default)"
 echo "  m for minor"
 echo "  M for major"
+echo "  d for don't bump the version"
 
 read -p ">" VERSION_BUMP_TYPE 
 
@@ -60,6 +61,8 @@ if [ "$VERSION_BUMP_TYPE" == "M" ]; then
 elif [ "$VERSION_BUMP_TYPE" == "m" ]; then
     VERSION_BUMP_TYPE="minor"
     increment_version 1
+elif [ "$VERSION_BUMP_TYPE" == "d" ]; then
+    VERSION_BUMP_TYPE="none"
 else
     VERSION_BUMP_TYPE="patch"
     increment_version 2
@@ -68,13 +71,14 @@ fi
 
 echo ""
 echo "Version bump type: $VERSION_BUMP_TYPE"
-echo ""
 
 # Run NPM version script
 
-echo ""
-echo "Updating package version wth NPM..."
-npm version $INCREMENTED_VERSION
+if [ "$VERSION_BUMP_TYPE" != "none" ]; then
+    echo ""
+    echo "Updating package version wth NPM..."
+    npm version $INCREMENTED_VERSION
+fi
 
 # Write environment variables
 
@@ -92,4 +96,4 @@ cat .env
 npm run build:react-script
 rm -rf ./$RELEASE_TYPE
 mv ./build ./$RELEASE_TYPE
-echo "build folder moved to /$RELEASE_TYPE"
+echo "Build folder moved to /$RELEASE_TYPE."
