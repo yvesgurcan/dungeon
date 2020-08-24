@@ -3,7 +3,7 @@ import Reducers from './Reducers';
 import Gameplay from './GameplayAssets';
 import Utilities from './Utilities';
 
-const { Wall, Door, LootContainer, Undiscovered, Empty } = Utilities.MapObjects;
+const { Door, Empty } = Utilities.MapObjects;
 
 export const store = createStore(
     Reducers,

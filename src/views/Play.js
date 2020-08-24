@@ -6,12 +6,7 @@ import Utilities from '../Utilities';
 import Functions from '../Functions';
 
 // Components
-import {
-    Text,
-    View,
-    Block,
-    HeadingContainer as Heading
-} from '../components/Web';
+import { Text, View, Block } from '../components/Web';
 import { ItemImageBlockContainer as ItemImage } from '../components/ItemImage';
 import { ActionButtonContainer as Button } from '../components/Button';
 import { ToolTipContainer as ToolTip } from '../components/ToolTip';
@@ -392,8 +387,8 @@ export default props => {
             {/* row 2 */}
             <Contact />
             <TopBackgroundImage />
-            <EventLog />
-            <ClearLog />
+            <EventLog {...props} />
+            <ClearLog {...props} />
             {/* row 3 */}
             <StoryBlock {...props}>
                 <Story />
@@ -412,12 +407,12 @@ export default props => {
             <PlayerLevelAndArmor />
             <PlayerAbilities />
             <Inventory />
-            <SpellBook />
+            <SpellBook {...props} />
             <Gear />
             <BottomControlsContainer />
             <GameStateBackgroundImage />
-            <GameStateOptions />
-            <GameStateBox />
+            <GameStateOptions {...props} />
+            <GameStateBox {...props} />
             <Volume />
         </View>
     );

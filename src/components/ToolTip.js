@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import mapStateToProps from './../mapStateToProps';
+import mapStateToProps from '../mapStateToProps';
+import Utilities from '../Utilities';
 import { View } from './Web';
+
+let Debug =
+    process.env.REACT_APP_RELEASE === 'stable' ? false : Utilities.Debug;
 
 class HoverToolTip extends Component {
     constructor(props) {
