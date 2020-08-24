@@ -1,6 +1,6 @@
 {
     "name": "dungeon",
-    "version": "0.6.8-alpha",
+    "version": "0.6.9-alpha",
     "private": true,
     "devDependencies": {
         "react-scripts": "1.0.13"
