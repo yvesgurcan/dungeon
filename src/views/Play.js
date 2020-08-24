@@ -6,12 +6,7 @@ import Utilities from '../Utilities';
 import Functions from '../Functions';
 
 // Components
-import {
-    Text,
-    View,
-    Block,
-    HeadingContainer as Heading
-} from '../components/Web';
+import { Text, View, Block } from '../components/Web';
 import { ItemImageBlockContainer as ItemImage } from '../components/ItemImage';
 import { ActionButtonContainer as Button } from '../components/Button';
 import { ToolTipContainer as ToolTip } from '../components/ToolTip';

@@ -298,7 +298,7 @@ class Game extends Component {
                           'repeat(9, 75px)'
                         : // column1-10
                           'repeat(9, 90px)',
-                    gridTemplateRows: 'auto ' + 'auto ' + 'auto'
+                    gridTemplateRows: 'auto auto auto'
                 },
                 CharacterHeader: {
                     padding: HUDPadding,
