@@ -412,12 +412,12 @@ export default props => {
             <PlayerLevelAndArmor />
             <PlayerAbilities />
             <Inventory />
-            <SpellBook />
+            <SpellBook {...props} />
             <Gear />
             <BottomControlsContainer />
             <GameStateBackgroundImage />
-            <GameStateOptions />
-            <GameStateBox />
+            <GameStateOptions {...props} />
+            <GameStateBox {...props} />
             <Volume />
         </View>
     );
