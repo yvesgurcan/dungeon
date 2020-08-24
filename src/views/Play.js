@@ -392,8 +392,8 @@ export default props => {
             {/* row 2 */}
             <Contact />
             <TopBackgroundImage />
-            <EventLog />
-            <ClearLog />
+            <EventLog {...props} />
+            <ClearLog {...props} />
             {/* row 3 */}
             <StoryBlock {...props}>
                 <Story />
