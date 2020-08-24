@@ -1,6 +1,7 @@
 {
     "search.exclude": {
         "**/stable": true,
-        "**/dev": true
+        "**/dev": true,
+        "package-lock.json": true
     }
 }

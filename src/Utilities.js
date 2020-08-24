@@ -2,7 +2,7 @@ import WorldAssets from './WorldAssets.js';
 
 const Debug = true;
 const SoundDebug = false;
-const Cheats = true;
+const Cheats = false;
 
 const MobileScreenBreakpoint = 400;
 const TabletScreenBreakpoint = 769;
@@ -30,9 +30,9 @@ export const Utilities = {
     },
 
     // debug
-    Debug: Debug,
+    Debug,
     DebugCreateCharacter: false,
-    SoundDebug: SoundDebug,
+    SoundDebug,
     DebugVolume: 0,
     // cheats
     Cheats: {
@@ -44,8 +44,8 @@ export const Utilities = {
 
     // responsiveness
     ScreenSize: {
-        MobileScreen: MobileScreen,
-        TabletScreen: TabletScreen
+        MobileScreen,
+        TabletScreen
     },
     ScreenBreakpoints: {
         MobileScreen: MobileScreenBreakpoint,

@@ -36,7 +36,7 @@ import {
     PlayerNameAndWeaponsContainer as PlayerNameAndWeapons
 } from '../containers/GearAndWeapons';
 
-import { PlayerVitalsContainer as PlayerVitals } from '../containers/Vitals';
+import { PlayerVitalsContainer as PlayerVitals } from '../containers/PlayerVitals';
 
 import { DirectionalArrows } from '../containers/DirectionalArrows';
 
@@ -194,7 +194,7 @@ class Loot extends Component {
 
     render() {
         // let {item} = this.props
-        let item = Object.assign({}, this.props.item);
+        let item = { ...this.props.item };
 
         return (
             <ItemImage

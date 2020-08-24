@@ -39,20 +39,17 @@ class HealthBar extends Component {
         let { Player, Styles } = { ...this.props };
         let style = {
             ...Styles.HealthBar,
-            width:
-                Math.min(
-                    100,
-                    (Player.Health.Current / Player.Health.Max) * 100
-                ) + '%'
+            width: Math.min(100, (Player.Health / Player.MaxHealth) * 100) + '%'
         };
+        console.log('oi', Player.Health);
         return (
             <View>
                 <StatBarContainer
                     Metric="Health"
                     ShowLabel
                     style={style}
-                    max={Player.Health.Max}
-                    current={Player.Health.Current}
+                    max={Player.MaxHealth}
+                    current={Player.Health}
                     Description={Gameplay.Help.Vitals.Health}
                 />
             </View>
@@ -66,9 +63,7 @@ class ManaBar extends Component {
         let { Player, Styles } = { ...this.props };
         let style = {
             ...Styles.ManaBar,
-            width:
-                Math.min(100, (Player.Mana.Current / Player.Mana.Max) * 100) +
-                '%'
+            width: Math.min(100, (Player.Mana / Player.MaxMana) * 100) + '%'
         };
         return (
             <View>
@@ -76,8 +71,8 @@ class ManaBar extends Component {
                     Metric="Mana"
                     ShowLabel
                     style={style}
-                    max={Player.Mana.Max}
-                    current={Player.Mana.Current}
+                    max={Player.MaxMana}
+                    current={Player.Mana}
                 />
             </View>
         );
@@ -93,9 +88,7 @@ class StaminaBar extends Component {
             width:
                 Math.min(
                     100,
-                    Math.ceil(
-                        (Player.Stamina.Current / Player.Stamina.Max) * 100
-                    )
+                    Math.ceil((Player.Stamina / Player.MaxStamina) * 100)
                 ) + '%'
         };
         return (

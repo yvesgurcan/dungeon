@@ -1774,10 +1774,6 @@ class Game extends Component {
             Intelligence: Player.Intelligence
         };
 
-        Player.Health = { Current: Player.Health, Max: Player.MaxHealth };
-        Player.Mana = { Current: Player.Mana, Max: Player.MaxMana };
-        Player.Stamina = { Current: Player.Stamina, Max: Player.MaxStamina };
-
         // Spellbook
         if (!Player.Class.Spellcaster) {
             delete Player.SpellBook;
@@ -2777,7 +2773,7 @@ class Game extends Component {
     };
 
     CastSpell = (Spell, Caster) => {
-        let Player = { ...this.state.Player };
+        let Player = { ...this.props.Player };
         let Monsters = [...this.state.Monsters];
         let MonsterMap = [...this.state.MonsterMap];
         let Turn = this.state.Turn;
@@ -3003,6 +2999,11 @@ class Game extends Component {
                             this.MoveMonsters();
                         }
                     );
+                    this.props.dispatch({
+                        type: 'UPDATE_PLAYER',
+                        Player: Caster
+                    });
+                    
                 }
 
                 return true;
@@ -3014,6 +3015,10 @@ class Game extends Component {
                 if (CasterIsPlayer) {
                     Caster.Mana -= Spell.ManaCost || 0;
                     this.setState({ Player: Caster });
+                    this.props.dispatch({
+                        type: 'UPDATE_PLAYER',
+                        Player: Caster
+                    });
 
                     this.SetText(
                         Gameplay.Messages.Spell.Failed[
@@ -3887,26 +3892,22 @@ class Game extends Component {
     };
 
     PlayerTakeDamage = Damage => {
-        let Player = { ...this.state.Player };
-        let GodMode = this.state.GodMode;
+        let Player = { ...this.props.Player };
+        const GodMode = this.props.Cheats.GodMode;
 
         if (!GodMode) {
             Player.Health = Math.max(0, Player.Health - Damage);
 
-            console.log('Boom!', Player.Health);
-
             if (Player.Health <= 0) {
                 Player.Dead = true;
                 this.SetText(Gameplay.Messages.PlayerDead);
-                this.setState({ Player: Player });
-
-                return false;
             }
 
-            this.setState({ Player: Player });
+            this.props.dispatch({
+                type: 'UPDATE_PLAYER',
+                Player
+            });
         }
-
-        return true;
     };
 
     MonsterTakeDamage = (Monster, Damage, index = null) => {
