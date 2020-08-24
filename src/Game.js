@@ -3696,7 +3696,7 @@ class Game extends Component {
     UpdateText = ({ x, y }) => {
         let currentText = this.state.currentText;
         let currentTextImage = this.state.currentTextImage;
-        let StoryTexts = [...this.state.Text];
+        let StoryTexts = [...this.state.Texts];
 
         let matchTextAccessPoint = false;
 
