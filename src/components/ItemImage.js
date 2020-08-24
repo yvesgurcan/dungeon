@@ -479,10 +479,13 @@ class ItemImageBlock extends Component {
         let Item = { ...this.props.item };
         if (!Object.getOwnPropertyNames(Item).length) return null;
 
+        console.log({ Item }, this.props);
+
         // TODO: experimenting with reducers.....
         // copy the prop to prevent mutating it
         let Player = update(this.props.Player, { $merge: {} });
         // do mutation of the copied prop
+        /*
         Player = update(Player, {
             $merge: {
                 Health: {
@@ -491,6 +494,7 @@ class ItemImageBlock extends Component {
                 }
             }
         });
+        */
 
         console.log(this.props.Player, Player);
         // put the new object in the state

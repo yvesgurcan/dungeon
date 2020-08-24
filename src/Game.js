@@ -3042,7 +3042,6 @@ class Game extends Component {
     };
 
     MovePlayer = Direction => {
-        console.log('yolo');
         let Player = { ...this.state.Player };
         let WallMap = [...this.state.WallMap];
         let MonsterMap = [...this.state.MonsterMap];

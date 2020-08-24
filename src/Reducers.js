@@ -41,7 +41,7 @@ function Player(PlayerState, Action) {
 
         case 'USE_ITEM':
             // do mutations of the copied state
-            debugger;
+            /*
             NewPlayerState = update(PlayerState, {
                 $merge: {
                     Health: {
@@ -50,8 +50,9 @@ function Player(PlayerState, Action) {
                     }
                 }
             });
+            */
 
-            console.log(PlayerState, NewPlayerState);
+            // console.log(PlayerState, NewPlayerState);
 
             // dispatch({type: "REMOVE_ITEM", Item: []})
 
