@@ -12,63 +12,6 @@ import Functions from './Functions';
 import CreateCharacter from './views/CreateCharacter';
 import Play from './views/Play';
 
-// Components
-import {
-    Text,
-    View,
-    Block,
-    HeadingContainer as Heading
-} from './components/Web';
-import { ItemImageBlockContainer as ItemImage } from './components/ItemImage';
-import { ActionButtonContainer as Button } from './components/Button';
-import { ToolTipContainer as ToolTip } from './components/ToolTip';
-import {
-    ClearFloat,
-    ContactContainer as Contact,
-    HeaderContainer as Header
-} from './components/Misc';
-import {
-    TopBackgroundImageContainer as TopBackgroundImage,
-    BottomBackgroundImageContainer as BottomBackgroundImage,
-    GameStateBackgroundImageContainer as GameStateBackgroundImage
-} from './components/BackgroundImages';
-
-// Containers
-import {
-    EventLogContainer as EventLog,
-    ClearLogContainer as ClearLog
-} from './containers/EventLog';
-
-import { StoryContainer as Story } from './containers/Story';
-
-import { MapContainer as Map } from './containers/Map';
-
-import {
-    GearContainer as Gear,
-    PlayerNameAndWeaponsContainer as PlayerNameAndWeapons
-} from './containers/GearAndWeapons';
-
-import { PlayerVitalsContainer as PlayerVitals } from './containers/Vitals';
-
-import { DirectionalArrows } from './containers/DirectionalArrows';
-
-import {
-    PlayerAbilitiesContainer as PlayerAbilities,
-    PlayerLevelAndArmorContainer as PlayerLevelAndArmor
-} from './containers/Abilities';
-
-import { InventoryContainer as Inventory } from './containers/Inventory';
-
-import { SpellBookContainer as SpellBook } from './containers/SpellBook';
-
-import {
-    BottomControlsContainer,
-    GameStateOptionsContainer as GameStateOptions,
-    GameStateBoxContainer as GameStateBox
-} from './containers/SaveAndLoad';
-
-import { VolumeContainer as Volume } from './containers/Volume';
-
 /* utility */
 
 let Debug =
@@ -2718,7 +2661,7 @@ class Game extends Component {
     onClickArrow = key => {
         let arrowStyle = {};
         arrowStyle[key] = Styles.ArrowBlockClick;
-        this.setState({ arrowStyle: arrowStyle }, function () {
+        this.setState({ arrowStyle }, function () {
             this.ResetArrowStyle();
         });
     };
@@ -3099,6 +3042,7 @@ class Game extends Component {
     };
 
     MovePlayer = Direction => {
+        console.log('yolo');
         let Player = { ...this.state.Player };
         let WallMap = [...this.state.WallMap];
         let MonsterMap = [...this.state.MonsterMap];

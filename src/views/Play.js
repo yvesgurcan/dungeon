@@ -399,13 +399,13 @@ export default props => {
                 <Story />
                 <Event {...props} />
             </StoryBlock>
-            <Map />
+            <Map {...props} />
             {/* row 4 */}
             <BottomBackgroundImage />
             <Controls {...props} />
             <PlayerNameAndWeapons />
             <PlayerVitals />
-            <DirectionalArrows />
+            <DirectionalArrows {...props} />
             <ResponsiveTabSelector {...props} />
             <RepsonsiveStatsContainer {...props} />
             <Rest {...props} />
