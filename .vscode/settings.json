@@ -1,0 +1,6 @@
+{
+    "search.exclude": {
+        "**/stable": true,
+        "**/dev": true
+    }
+}
