@@ -1633,7 +1633,7 @@ class Game extends Component {
             { CreateCharacter: true, GameInBackground: this.state },
             function () {
                 let Player = this.CreateCharacter();
-                this.setState({ Player: Player }, function () {
+                this.setState({ Player }, function () {
                     this.CalculateStyles();
                     this.forceUpdate();
                 });
@@ -1644,7 +1644,7 @@ class Game extends Component {
     GeneratePlayerStats = () => {
         let Player = { ...this.state.Player };
         Player = this.CreateCharacter(Player);
-        this.setState({ Player: Player });
+        this.setState({ Player });
     };
 
     CreateCharacter = Player => {
@@ -1863,26 +1863,26 @@ class Game extends Component {
         let Player = { ...this.state.Player };
         Player.Race = { ...RaceObject };
         Player = this.CreateCharacter(Player);
-        this.setState({ Player: Player }, function () {});
+        this.setState({ Player }, function () {});
     };
 
     SetClass = ClassObject => {
         let Player = { ...this.state.Player };
         Player.Class = { ...ClassObject };
         Player = this.CreateCharacter(Player);
-        this.setState({ Player: Player });
+        this.setState({ Player });
     };
 
     SetFirstSpell = SpellBook => {
         let Player = { ...this.state.Player };
         Player.SpellBook = SpellBook;
-        this.setState({ Player: Player });
+        this.setState({ Player });
     };
 
     SavePlayerName = input => {
         let Player = { ...this.state.Player };
         Player[input.name] = input.value;
-        this.setState({ Player: Player });
+        this.setState({ Player });
     };
 
     StartPlaying = () => {
@@ -3174,12 +3174,12 @@ class Game extends Component {
         }
 
         this.setState({
-            Player: Player,
-            Turn: Turn,
-            currentEvent: currentEvent,
-            currentText: currentText,
-            currentTextImage: currentTextImage,
-            DiscoveryMap: DiscoveryMap
+            Player,
+            Turn,
+            currentEvent,
+            currentText,
+            currentTextImage,
+            DiscoveryMap
         });
 
         // update story text
@@ -3414,7 +3414,7 @@ class Game extends Component {
                 Backpack.Weight = this.CheckInventoryWeight(loot, true);
                 Player.Stationary = true;
 
-                this.setState({ Backpack: Backpack, Player: Player });
+                this.setState({ Backpack, Player });
 
                 this.SetText(Gameplay.Messages.Loot.Gathered);
                 this.PlaySound('take_loot');
@@ -3428,8 +3428,8 @@ class Game extends Component {
 
     TakeSingleLoot = (lootIndex, containerId) => {
         let LootContainers = [...this.state.LootContainers];
-        let Backpack = { ...this.state.Backpack };
-        let Player = { ...this.state.Player };
+        let Backpack = { ...this.props.Player.Backpack };
+        let Player = { ...this.props.Player };
 
         if (Player.Dead) return false;
 
@@ -3456,14 +3456,12 @@ class Game extends Component {
                     true
                 );
 
-                console.log(Backpack);
-
                 this.setState({ Backpack: Backpack }, function () {
                     matchLootContainer.items.splice(lootIndex, 1);
                     Player.Stationary = true;
                     this.setState({
                         currentEvent: this.state.currentEvent,
-                        Player: Player
+                        Player
                     });
                 });
             } else {
@@ -3870,8 +3868,6 @@ class Game extends Component {
                         this.AbilityModifier(Player.Strength)
                 );
 
-                // console.log(Gear.LeftHand.Damage.Min + this.AbilityModifier(Player.Strength), Gear.LeftHand.Damage.Max + this.AbilityModifier(Player.Strength))
-
                 this.PlaySound('attack_hit');
 
                 this.SetText(
@@ -4034,7 +4030,7 @@ class Game extends Component {
             this.SetText(Message);
         }
 
-        this.setState({ Player: Player, Backpack: Backpack }, function () {
+        this.setState({ Player, Backpack }, function () {
             Backpack = { ...this.state.Backpack };
             Backpack.Weight = this.CheckInventoryWeight(null, true);
             this.setState({ Backpack: Backpack });
@@ -4077,10 +4073,10 @@ class Game extends Component {
 
         this.SetText(Messages[this.RandomInteger(Messages.length)]);
 
-        this.setState({ Player: Player, Backpack: Backpack }, function () {
+        this.setState({ Player, Backpack }, function () {
             Backpack = { ...this.state.Backpack };
             Backpack.Weight = this.CheckInventoryWeight(null, true);
-            this.setState({ Backpack: Backpack });
+            this.setState({ Backpack });
         });
     };
 
@@ -4118,7 +4114,7 @@ class Game extends Component {
                 Player.Level++;
             }
 
-            this.setState({ Player: Player });
+            this.setState({ Player });
         }
     };
 

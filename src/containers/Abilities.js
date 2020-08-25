@@ -7,7 +7,9 @@ import Gameplay from './../GameplayAssets';
 
 class PlayerLevelAndArmor extends Component {
     render() {
-        let { Player, Styles, MobileScreen, TabletScreen } = { ...this.props };
+        const { Player, Styles, MobileScreen, TabletScreen } = {
+            ...this.props
+        };
         return (
             <View
                 style={
@@ -62,7 +64,9 @@ export const PlayerLevelAndArmorContainer = connect(mapStateToProps)(
 
 class PlayerAbilities extends Component {
     render() {
-        let { Player, Styles, MobileScreen, TabletScreen } = { ...this.props };
+        const { Player, Styles, MobileScreen, TabletScreen } = {
+            ...this.props
+        };
         return (
             <View
                 style={
