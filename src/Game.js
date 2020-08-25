@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Provider, connect } from 'react-redux';
-import mapStateToProps, { store } from './mapStateToProps';
+import mapStateToProps from './store/mapStateToProps';
+import Store from './store/Store';
 
 import World from './WorldAssets';
 import Campaign from './LegendsOfTheCatacombs';
@@ -2015,7 +2016,7 @@ class Game extends Component {
 
     ListenToKeyboard = keypress => {
         let State = { ...this.state };
-        let Player = { ...this.state.Player };
+        let Player = { ...this.props.Player };
         let Keystrokes = this.state.Keystrokes
             ? [...this.state.Keystrokes]
             : [];
@@ -3003,7 +3004,6 @@ class Game extends Component {
                         type: 'UPDATE_PLAYER',
                         Player: Caster
                     });
-                    
                 }
 
                 return true;
@@ -3047,7 +3047,7 @@ class Game extends Component {
     };
 
     MovePlayer = Direction => {
-        let Player = { ...this.state.Player };
+        let Player = { ...this.props.Player };
         let WallMap = [...this.state.WallMap];
         let MonsterMap = [...this.state.MonsterMap];
         let NoClip = this.state.NoClip;
@@ -3366,7 +3366,7 @@ class Game extends Component {
 
         if (currentEvent.length === 0) return false;
 
-        let Player = { ...this.state.Player };
+        let Player = { ...this.props.Player };
         let Backpack = { ...this.state.Backpack };
 
         if (Player.Dead) return false;
@@ -3809,7 +3809,7 @@ class Game extends Component {
     };
 
     AttackPlayer = Monster => {
-        let Player = { ...this.state.Player };
+        let Player = { ...this.props.Player };
 
         if (Player.Dead) return false;
 
@@ -4138,7 +4138,7 @@ const GameContainer = connect(mapStateToProps)(Game);
 class GameStore extends Component {
     render() {
         return (
-            <Provider store={store}>
+            <Provider store={Store}>
                 <GameContainer />
             </Provider>
         );

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import mapStateToProps from './../mapStateToProps';
+import mapStateToProps from '../store/mapStateToProps';
 import { View, Text } from './../components/Web';
 import { ActionButtonContainer as Button } from './../components/Button';
 import { TextEditContainer as TextEdit } from './../components/Input';

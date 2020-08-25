@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import mapStateToProps from './../mapStateToProps';
+import mapStateToProps from '../store/mapStateToProps';
 
 // a
 export class URL extends Component {

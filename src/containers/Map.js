@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import mapStateToProps from './../mapStateToProps';
+import mapStateToProps from '../store/mapStateToProps';
 import { Text, View } from './../components/Web';
 import Utilities from './../Utilities';
 

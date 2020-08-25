@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import mapStateToProps from './../mapStateToProps';
+import mapStateToProps from '../store/mapStateToProps';
 import { ToolTipContainer as ToolTip } from './../components/ToolTip';
 import { View } from './../components/Web';
 import Gameplay from './../GameplayAssets';
@@ -41,7 +41,6 @@ class HealthBar extends Component {
             ...Styles.HealthBar,
             width: Math.min(100, (Player.Health / Player.MaxHealth) * 100) + '%'
         };
-        console.log('oi', Player.Health);
         return (
             <View>
                 <StatBarContainer

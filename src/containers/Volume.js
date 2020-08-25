@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import mapStateToProps from './../mapStateToProps';
+import mapStateToProps from '../store/mapStateToProps';
 import { SliderContainer as Slider } from './../components/Slider';
 import { View } from './../components/Web';
 import Gameplay from './../GameplayAssets';

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import mapStateToProps from './../mapStateToProps';
+import mapStateToProps from '../store/mapStateToProps';
 import { ToolTipContainer as ToolTip } from './../components/ToolTip';
 import { ItemImageBlockContainer as ItemImage } from './../components/ItemImage';
 import { View } from './../components/Web';

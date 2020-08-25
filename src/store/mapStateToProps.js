@@ -1,16 +1,10 @@
-import { createStore } from 'redux';
-import Reducers from './Reducers';
-import Gameplay from './GameplayAssets';
-import Utilities from './Utilities';
+import Store from './Store';
+import Gameplay from '../GameplayAssets';
+import Utilities from '../Utilities';
 
 const { Door, Empty } = Utilities.MapObjects;
 
-export const store = createStore(
-    Reducers,
-    {},
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-);
-const dispatch = store.dispatch;
+const dispatch = Store.dispatch;
 
 const mapStateToProps = (state, ownProps) => {
     const IndefiniteArticle = (word, capitalize) => {
