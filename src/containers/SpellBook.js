@@ -9,7 +9,6 @@ import Gameplay from './../GameplayAssets';
 
 class SpellBook extends Component {
     DisplaySpellBook = () => {
-        // let {Player} = this.props
         let Player = { ...this.props.Player };
         let Spells = Player.SpellBook ? Player.SpellBook.Spells : [];
 
