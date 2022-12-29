@@ -3,7 +3,7 @@
   "version": "0.6.12-alpha",
   "private": true,
   "devDependencies": {
-    "react-scripts": "^3.4.3"
+    "react-scripts": "^5.0.1"
   },
   "dependencies": {
     "deep-freeze": "0.0.1",
